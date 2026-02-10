@@ -4,18 +4,20 @@ Ten dokument zapisuje wszystkie decyzje podjęte w trakcie projektowania PostVis
 
 ## Data: 2026-02-10
 
-### Decyzja 1: Struktura repozytorium — Monorepo
-**Status:** Przyjęte
+### Decyzja 1: Struktura repozytorium — Integrated Laravel + Vue Monorepo
+**Status:** Przyjęte (updated 2026-02-10)
 
-Jeden repo zawierający backend (Laravel), frontend (Vue), dokumentację, prompty i dane demo.
+Jeden repo, zintegrowane Laravel + Vue (Vue w `resources/js/`, nie osobny katalog). See Decyzja 19.
 
 ```
 postvisit/
-├── backend/            # Laravel API
-├── frontend/           # Vue SPA
+├── app/                # Laravel application (controllers, models, services)
+├── resources/js/       # Vue 3 SPA (integrated)
 ├── docs/               # dokumentacja robocza
 ├── prompts/            # system prompts dla Opus (wersjonowane jak kod)
 ├── demo/               # dane demo, scenariusze, seed data
+├── database/           # migrations, seeders, factories
+├── tests/              # PHPUnit tests (67 tests)
 ├── CLAUDE.md
 ├── README.md
 ├── LICENSE
@@ -188,3 +190,28 @@ Bun jako package manager zamiast npm. Szybszy install, szybszy build. Bun 1.3.9.
 **Status:** Przyjęte (2026-02-10)
 
 Database driver (PostgreSQL) dla cache i queue. Prostsze niż Redis, wystarczające na hackathon. Zero dodatkowej infrastruktury.
+
+### Decyzja 22: Tailwind CSS v4 (not v3)
+**Status:** Przyjęte (2026-02-10)
+
+Laravel 12 ships with Tailwind CSS v4. Using native integration, no separate tailwind.config.js needed (CSS-first config via `@theme`).
+
+### Decyzja 23: PrimeVue 4 as UI component library
+**Status:** Przyjęte (2026-02-10)
+
+PrimeVue 4 + Aura theme for production-quality UI. Replaces custom Tailwind-only components. See POST-1.
+
+### Decyzja 24: Linear for project management
+**Status:** Przyjęte (2026-02-10)
+
+Linear (team POST in medduties workspace) for issue tracking. GraphQL API access via `$LINEAR_API_KEY`. All issues tagged `agent-ready` can be worked on autonomously.
+
+### Decyzja 25: Voice chat via OpenAI Whisper + TTS
+**Status:** Przyjęte (2026-02-10)
+
+MediaRecorder in browser → POST to Laravel → proxy to OpenAI Whisper API for STT. Optional TTS via OpenAI TTS API. See POST-16.
+
+### Decyzja 26: Testing strategy — PHPUnit + SQLite in-memory
+**Status:** Przyjęte (2026-02-10)
+
+67 feature tests, 175 assertions, <1s runtime. SQLite in-memory for speed. PostgreSQL-specific features (ilike) handled with conditional logic for test compatibility.

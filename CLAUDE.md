@@ -205,8 +205,10 @@ curl -s -X POST 'https://api.linear.app/graphql' \
 - [ ] Mock doctor dashboard data (patient list, alerts) — JSON (dashboard endpoint now works with real data)
 
 ### Dokumentacja (hackathon criterion)
-- [ ] README.md — project overview, setup, demo guide
-- [ ] docs/api.md — full API documentation
+- [x] README.md — project overview, setup, demo guide — DONE
+- [x] docs/api.md — full API documentation (45 endpoints) — DONE
+- [x] docs/decisions.md — updated with all 26 decisions — DONE
+- [x] docs/licenses.md — updated with current deps — DONE
 - [ ] docs/architecture.md — system architecture, data flow, AI pipeline
 - [ ] docs/demo-guide.md — step-by-step demo walkthrough
 - [ ] CHANGELOG.md — feature changelog

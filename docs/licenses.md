@@ -23,11 +23,16 @@
 
 | Dependencja | Licencja | Typ | Status |
 |-------------|----------|-----|--------|
-| Laravel 11 | MIT | Backend framework | ✅ OK |
+| Laravel 12 | MIT | Backend framework | ✅ OK |
 | Vue 3 | MIT | Frontend framework | ✅ OK |
+| Vue Router 4 | MIT | Client-side routing | ✅ OK |
+| Pinia | MIT | State management | ✅ OK |
 | Vite | MIT | Build tool | ✅ OK |
-| Anthropic PHP SDK | MIT | API client | ✅ OK |
-| php-fhir (dcarbone) | Apache 2.0 | FHIR classes | ✅ OK |
+| Tailwind CSS v4 | MIT | CSS framework | ✅ OK |
+| Axios | MIT | HTTP client | ✅ OK |
+| Laravel Sanctum | MIT | SPA authentication | ✅ OK |
+| Anthropic PHP SDK (`anthropic-ai/laravel`) | MIT | AI API client | ✅ OK |
+| Bun | MIT | Package manager / runtime | ✅ OK |
 
 ## Model AI
 
