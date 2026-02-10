@@ -11,11 +11,21 @@ const api = axios.create({
     },
 });
 
+let csrfFetched = false;
+
+api.interceptors.request.use(async (config) => {
+    if (['post', 'put', 'patch', 'delete'].includes(config.method) && !csrfFetched) {
+        await axios.get('/sanctum/csrf-cookie', { withCredentials: true });
+        csrfFetched = true;
+    }
+    return config;
+});
+
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
-            window.location.href = '/login';
+        if (error.response?.status === 419) {
+            csrfFetched = false;
         }
         return Promise.reject(error);
     },

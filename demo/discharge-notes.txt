@@ -1,0 +1,208 @@
+DISCHARGE SUMMARY / VISIT NOTES
+================================================================
+
+CITY HEART CLINIC — Cardiology Department
+Date of Visit: February 10, 2026
+Provider: Michael Nedo, MD — Cardiology
+Patient: Alex Johnson
+DOB: March 15, 1985 (Age: 41)
+MRN: MRN-001
+
+================================================================
+CHIEF COMPLAINT
+================================================================
+Heart palpitations for approximately two weeks.
+
+================================================================
+HISTORY OF PRESENT ILLNESS
+================================================================
+Mr. Johnson is a 41-year-old male with no significant past medical
+history who presents with a two-week history of palpitations. He
+describes the sensation as his heart "skipping a beat" or producing
+an extra beat, with associated brief fluttering in the chest. Symptoms
+began gradually, initially noticed at rest while lying in bed at night,
+and subsequently during the daytime while sedentary at work.
+
+Frequency varies from a few episodes per day to episodes occurring
+every few minutes. Episodes are typically single premature beats,
+with occasional brief runs of 2-3 beats lasting only seconds.
+Patient denies sustained palpitations.
+
+Associated symptoms: Occasional brief lightheadedness immediately
+following a strong premature beat, resolving within seconds.
+Denies chest pain, dyspnea, syncope, or pre-syncope.
+
+Aggravating factors: Patient reports significantly increased
+occupational stress over the past several weeks due to a major
+project deadline. Caffeine intake has increased to 4-5 cups of
+coffee daily. Sleep has been reduced due to extended work hours.
+Exercise frequency has decreased from 3-4x/week to approximately
+1x/week.
+
+Alcohol: Occasional, 1-2 beers on weekends.
+Tobacco: Denies.
+Recreational drugs: Denies.
+Supplements: Daily multivitamin only.
+
+================================================================
+PAST MEDICAL HISTORY
+================================================================
+No significant past medical history.
+No prior surgeries.
+No known drug allergies (NKDA).
+No current medications.
+Last routine physical: approximately 1 year ago, unremarkable.
+
+================================================================
+FAMILY HISTORY
+================================================================
+Father: Hypertension, medically managed.
+No family history of sudden cardiac death, cardiomyopathy,
+arrhythmias, or premature coronary artery disease.
+
+================================================================
+PHYSICAL EXAMINATION
+================================================================
+General: Well-appearing male, no acute distress.
+Vitals:
+  - Blood Pressure: 140/90 mmHg (left arm, seated)
+  - Heart Rate: 78 bpm (irregular — occasional premature beats)
+  - Respiratory Rate: 16/min
+  - SpO2: 99% on room air
+  - Temperature: 98.4°F (36.9°C)
+  - BMI: 26.2
+
+Cardiovascular:
+  - Heart sounds: S1/S2 normal.
+  - Rhythm: Irregularly irregular with premature beats.
+  - Murmur: Grade I/VI systolic murmur at apex, consistent with
+    mild mitral regurgitation.
+  - No S3, S4, rubs, or gallops.
+  - JVP not elevated.
+  - Carotid upstrokes normal, no bruits.
+
+Pulmonary: Clear to auscultation bilaterally.
+Extremities: No edema, peripheral pulses 2+ and symmetric.
+Neurological: Alert and oriented, no focal deficits.
+
+================================================================
+DIAGNOSTIC STUDIES
+================================================================
+
+12-Lead EKG:
+  - Rate: 78 bpm
+  - Rhythm: Normal sinus rhythm with frequent PVCs
+  - PR Interval: 160 ms (normal)
+  - QRS Duration: 88 ms (normal); PVC complexes 140 ms (wide)
+  - QTc: 420 ms (normal)
+  - Axis: Normal
+  - ST/T changes: None
+  - Interpretation: Normal sinus rhythm with premature ventricular
+    contractions (PVCs). No ST-T wave abnormalities. No evidence
+    of ischemia, hypertrophy, or conduction delay.
+
+Transthoracic Echocardiogram (TTE):
+  - LV function: Normal. LVEF 55% (biplane Simpson's).
+  - LV dimensions: Normal. No hypertrophy.
+  - LV wall motion: Normal, no regional wall motion abnormalities.
+  - RV function: Normal. TAPSE 22 mm.
+  - Valves:
+    - Mitral valve: Mild regurgitation (trace-to-mild). Leaflets
+      normal morphology. No prolapse.
+    - Aortic valve: Trileaflet, no stenosis or regurgitation.
+    - Tricuspid valve: Trace regurgitation (physiologic).
+    - Pulmonic valve: Normal.
+  - Atria: Normal size bilaterally.
+  - No pericardial effusion.
+  - Aortic root: Normal diameter.
+  - Estimated RVSP: Normal.
+  - Interpretation: Normal biventricular function and structure.
+    Mild mitral regurgitation, clinically insignificant. No
+    structural basis for arrhythmia identified.
+
+Laboratory (ordered, results pending):
+  - TSH (thyroid function)
+  - Basic Metabolic Panel (electrolytes, potassium, creatinine)
+  - Complete Blood Count
+  - Lipid Panel
+
+================================================================
+ASSESSMENT
+================================================================
+1. Premature Ventricular Contractions (PVCs)
+   ICD-10: I49.3
+   - Frequent PVCs confirmed on 12-lead EKG
+   - Likely related to increased stress, caffeine, and sleep
+     deprivation
+   - Structurally normal heart on echocardiogram
+   - No high-risk features (no sustained VT, normal EF, no
+     syncope, no family history of SCD)
+   - Classification: Benign, symptomatic
+
+2. Elevated Blood Pressure
+   ICD-10: R03.0
+   - 140/90 mmHg, single reading
+   - May be situational (white coat, stress, caffeine)
+   - Will reassess on follow-up after lifestyle modifications
+     and beta-blocker therapy
+
+3. Mild Mitral Valve Regurgitation
+   ICD-10: I34.0
+   - Trace-to-mild, clinically insignificant
+   - Normal valve morphology, no prolapse
+   - No treatment needed, routine monitoring
+
+================================================================
+PLAN
+================================================================
+
+MEDICATIONS:
+  - START: Propranolol 40 mg PO BID (twice daily)
+    Indication: PVC suppression and heart rate/BP control
+    Instructions: Take with food. Do not discontinue abruptly.
+    Dispense: 30-day supply, 3 refills
+
+LIFESTYLE MODIFICATIONS:
+  - Reduce caffeine to 1-2 cups/day maximum, none after noon
+  - Resume regular exercise: 30 min moderate activity 3-4x/week
+  - Prioritize sleep hygiene: 7-8 hours/night, regular schedule
+  - Stress management techniques (exercise, mindfulness,
+    counseling if needed)
+
+FOLLOW-UP:
+  - Return visit in 2 weeks:
+    - Reassess blood pressure
+    - Evaluate PVC symptom response to propranolol
+    - Review laboratory results
+  - 24-hour Holter monitor: Schedule at next visit to quantify
+    PVC burden
+  - Repeat echocardiogram in 12 months (routine surveillance of
+    mitral regurgitation)
+
+LABS ORDERED (today):
+  - TSH
+  - Basic Metabolic Panel
+  - CBC
+  - Lipid Panel
+
+PATIENT EDUCATION:
+  - Discussed nature of PVCs — common, usually benign when
+    heart structure is normal
+  - Discussed propranolol mechanism, expected benefits, and
+    potential side effects (fatigue, lightheadedness on standing,
+    cold extremities, reduced exercise heart rate)
+  - Emphasized: do not stop propranolol abruptly
+  - Discussed significance of mild mitral regurgitation (benign,
+    monitoring only)
+
+RETURN PRECAUTIONS:
+  - Seek immediate medical attention for: sustained palpitations
+    lasting >30 seconds, chest pain, syncope or near-syncope,
+    severe dizziness, shortness of breath at rest
+
+================================================================
+Electronically signed by:
+Michael Nedo, MD — Cardiology
+City Heart Clinic
+February 10, 2026
+================================================================

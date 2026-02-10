@@ -21,7 +21,15 @@ class Notification extends Model
         'body',
         'data',
         'read_at',
+        'created_at',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Notification $notification) {
+            $notification->created_at ??= now();
+        });
+    }
 
     protected function casts(): array
     {

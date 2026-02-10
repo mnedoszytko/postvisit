@@ -28,8 +28,13 @@
             :to="`/visits/${visit.id}`"
             class="block p-4 hover:bg-gray-50 transition-colors"
           >
-            <p class="font-medium text-gray-900">{{ visit.visit_type || 'Visit' }}</p>
-            <p class="text-sm text-gray-500">{{ visit.visit_date }}</p>
+            <p class="font-medium text-gray-900">{{ visit.reason_for_visit || visit.visit_type || 'Visit' }}</p>
+            <p class="text-sm text-gray-500">
+              {{ visit.started_at ? new Date(visit.started_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '' }}
+              <span v-if="visit.practitioner" class="ml-2">
+                &middot; Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
+              </span>
+            </p>
           </router-link>
         </div>
       </section>
@@ -62,8 +67,9 @@ const initials = computed(() => {
 });
 
 onMounted(() => {
-    if (auth.user?.id) {
-        visitStore.fetchVisits(auth.user.id);
+    const patientId = auth.user?.patient_id || auth.user?.patient?.id;
+    if (patientId) {
+        visitStore.fetchVisits(patientId);
     }
 });
 </script>

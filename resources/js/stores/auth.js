@@ -5,6 +5,7 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null,
         token: null,
+        initialized: false,
     }),
 
     getters: {
@@ -16,9 +17,10 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         async login(email, password) {
             const api = useApi();
-            const { data } = await api.post('/auth/login', { email, password });
-            this.token = data.token;
-            this.user = data.user;
+            const response = await api.post('/auth/login', { email, password });
+            const payload = response.data.data;
+            this.token = payload.token;
+            this.user = payload.user;
         },
 
         async logout() {
@@ -32,6 +34,17 @@ export const useAuthStore = defineStore('auth', {
             const api = useApi();
             const { data } = await api.get('/auth/user');
             this.user = data.data;
+        },
+
+        async init() {
+            if (this.initialized) return;
+            this.initialized = true;
+            try {
+                await this.fetchUser();
+            } catch {
+                this.user = null;
+                this.token = null;
+            }
         },
 
         setDemoUser(role) {

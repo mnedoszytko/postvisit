@@ -30,7 +30,7 @@ export const useVisitStore = defineStore('visit', {
             try {
                 const api = useApi();
                 const { data } = await api.get(`/patients/${patientId}/visits`);
-                this.visits = data.data;
+                this.visits = data.data || [];
             } catch (err) {
                 this.error = err.response?.data?.error?.message || 'Failed to load visits';
             } finally {

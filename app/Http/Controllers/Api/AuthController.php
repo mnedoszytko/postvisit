@@ -52,7 +52,11 @@ class AuthController extends Controller
             ]);
         }
 
-        $user = User::where('email', $request->email)->firstOrFail();
+        if ($request->hasSession()) {
+            $request->session()->regenerate();
+        }
+
+        $user = $request->user();
         $user->update(['last_login_at' => now()]);
 
         $token = $user->createToken('auth-token')->plainTextToken;

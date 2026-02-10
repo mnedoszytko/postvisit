@@ -17,7 +17,8 @@ export const useChatStore = defineStore('chat', {
             try {
                 const api = useApi();
                 const { data } = await api.post(`/visits/${visitId}/chat`, { message });
-                this.messages.push({ role: 'assistant', content: data.data.content });
+                const aiMsg = data.data.ai_message;
+                this.messages.push({ role: 'assistant', content: aiMsg?.message_text || 'No response' });
                 return data.data;
             } catch (err) {
                 this.error = err.response?.data?.error?.message || 'Failed to send message';

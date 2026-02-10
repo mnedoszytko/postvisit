@@ -1,0 +1,129 @@
+VISIT TRANSCRIPT — PostVisit.ai Demo
+Date: 2026-02-10
+Provider: Dr. Michael Nedo, MD — Cardiology
+Patient: Alex Johnson, 41M
+Recording initiated by patient (reverse scribe, mutual consent)
+
+---
+
+[00:00] DR. NEDO: Good morning, Alex. I'm Dr. Nedo, one of the cardiologists here at City Heart Clinic. Have a seat. So, your primary care doctor referred you — tell me what's been going on.
+
+[00:12] PATIENT: Hi, doctor. Yeah, so about two weeks ago I started feeling these... I don't know how to describe it... like my heart skips a beat? Or sometimes it feels like it's doing an extra beat. It's this weird fluttering in my chest.
+
+[00:28] DR. NEDO: Okay. And when you say two weeks, was there a specific moment it started, or did it come on gradually?
+
+[00:34] PATIENT: It kind of came on gradually. I noticed it first when I was lying in bed at night, trying to fall asleep. Then I started noticing it during the day too, especially when I'm sitting at my desk at work.
+
+[00:47] DR. NEDO: How often would you say it happens? A few times a day, a few times an hour?
+
+[00:52] PATIENT: Some days it's just a few times. Other days, like yesterday, it felt like it was happening every few minutes. That's when I got worried and called my doctor.
+
+[01:03] DR. NEDO: I understand. And when it happens, does it last just a second — like a single skip — or does it go on for longer stretches?
+
+[01:10] PATIENT: Usually just a single skip. Once or twice I felt like there were two or three in a row, but that only lasted a couple of seconds.
+
+[01:19] DR. NEDO: Do you get any chest pain with it? Shortness of breath? Dizziness or feeling lightheaded?
+
+[01:25] PATIENT: No real chest pain. Sometimes after a strong one I feel a little lightheaded for a second, but it passes right away. No shortness of breath.
+
+[01:35] DR. NEDO: Have you ever fainted or felt like you were about to faint?
+
+[01:38] PATIENT: No, never.
+
+[01:40] DR. NEDO: Good. Now, has anything changed in your life in the past few weeks? More stress at work? Changes in sleep? Caffeine intake?
+
+[01:49] PATIENT: Actually, yeah. Work has been pretty intense lately. We have a big project deadline coming up, so I've been putting in longer hours. Probably more stressed than usual. And I'll be honest, I've been drinking more coffee than I should — maybe four or five cups a day.
+
+[02:06] DR. NEDO: That's a lot of coffee. Any alcohol?
+
+[02:09] PATIENT: Maybe a beer or two on weekends. Nothing crazy.
+
+[02:13] DR. NEDO: Any energy drinks or supplements?
+
+[02:16] PATIENT: No energy drinks. I take a multivitamin, that's it.
+
+[02:20] DR. NEDO: Okay. Any history of heart problems in your family? Parents, siblings, anyone with heart disease at a young age?
+
+[02:28] PATIENT: My dad had high blood pressure, but he's managing it with medication. No heart attacks or anything like that in the family that I know of.
+
+[02:37] DR. NEDO: And you personally — any medical history? High blood pressure, diabetes, thyroid issues, anything?
+
+[02:43] PATIENT: No, I've been pretty healthy. No medications, no surgeries. Last physical was about a year ago and everything was fine.
+
+[02:51] DR. NEDO: Do you exercise?
+
+[02:53] PATIENT: I try to. I used to run three or four times a week, but with the work stress I've been slacking. Maybe once a week now.
+
+[03:01] DR. NEDO: Alright. Let me examine you and then we'll do some tests. Let me check your blood pressure first.
+
+[03:08] [Blood pressure measurement]
+
+[03:25] DR. NEDO: Your blood pressure is 140 over 90. That's a bit elevated. Could be the stress, could be the coffee, or it could be something we need to keep an eye on. Let me listen to your heart now.
+
+[03:38] [Cardiac auscultation]
+
+[03:58] DR. NEDO: I can hear a few of those extra beats right now, actually. Your heart rhythm is mostly regular, but there are some premature beats mixed in. I also hear a very faint murmur. Nothing that sounds alarming, but we'll get a better look with the echo.
+
+[04:14] DR. NEDO: Let's do an EKG first and then the echocardiogram. The EKG will show us the electrical pattern of your heart, and the echo will let us see the structure — the valves, the muscle, how it's pumping.
+
+[04:28] PATIENT: Okay. Should I be worried?
+
+[04:31] DR. NEDO: Based on what I'm seeing so far, I don't think this is anything dangerous. But let's get the full picture before we talk about it. Better to know for sure than to guess.
+
+[04:42] [12-lead EKG performed]
+
+[05:10] DR. NEDO: Alright, looking at your EKG. So your basic rhythm is normal — that's good. Normal sinus rhythm, heart rate is 78, all the intervals look fine. But I can see these extra beats here — see these wider complexes? These are called PVCs — premature ventricular contractions. Basically, your heart's lower chambers are firing off an extra beat before they're supposed to.
+
+[05:38] PATIENT: Is that serious?
+
+[05:40] DR. NEDO: In most cases, PVCs by themselves are not dangerous. They're actually very common — most people have them occasionally and never even notice. The question is always: is there something underneath causing them, and how many are you having? That's what we need to figure out.
+
+[05:58] [Echocardiogram performed — approximately 15 minutes]
+
+[21:15] DR. NEDO: Okay, Alex, good news. Your echo looks very good overall. Your heart muscle is strong — the ejection fraction is 55%, which is normal. The walls are contracting well, no signs of any structural heart disease. There is one small finding — you have mild mitral valve regurgitation. That means one of your heart valves leaks back a tiny amount of blood when your heart pumps.
+
+[21:42] PATIENT: That sounds bad.
+
+[21:44] DR. NEDO: I know it sounds concerning, but mild mitral regurgitation is extremely common. Many people have trace or mild regurgitation and never have any issues from it. At this level, it doesn't need treatment. We'll just monitor it over time.
+
+[22:00] DR. NEDO: So let me put the whole picture together for you. You're a 41-year-old guy, no significant medical history, under increased stress at work, drinking quite a bit of coffee. You're having palpitations that are caused by PVCs — premature ventricular contractions. Your heart structure looks good on the echo, and the EKG shows a normal underlying rhythm with these extra beats. Your blood pressure is a little elevated at 140/90.
+
+[22:30] DR. NEDO: The good news is that this is a very treatable situation. Here's what I'd like to do.
+
+[22:37] DR. NEDO: First, I want to start you on a medication called propranolol. It's a beta-blocker — it works by slowing your heart rate down a little and making your heart less reactive to stress hormones like adrenaline. It's very effective for PVCs and it'll also help with that borderline blood pressure. I'm going to prescribe 40 milligrams, twice a day.
+
+[23:02] PATIENT: Are there side effects I should know about?
+
+[23:05] DR. NEDO: Good question. The most common ones are feeling a bit more tired, especially in the first week or so as your body adjusts. Some people feel a little lightheaded when they stand up quickly — that's because it lowers your blood pressure. Cold hands and feet sometimes. If you're exercising, you might notice your heart rate doesn't go as high as usual. But most people tolerate it very well. One important thing — don't stop taking it suddenly. If we decide to stop it, we'll taper it down gradually.
+
+[23:38] PATIENT: Okay. Can I still drink coffee?
+
+[23:41] DR. NEDO: I'd really like you to cut back significantly. Five cups is a lot. Caffeine is a stimulant and it can definitely trigger PVCs. Try to get down to one, maybe two cups a day. And no coffee after noon if you can help it. It'll also help with the stress and sleep.
+
+[23:58] PATIENT: Alright, I'll try.
+
+[24:01] DR. NEDO: Beyond the medication, I also want you to focus on the stress management piece. I know it's easier said than done with a busy job, but stress and sleep deprivation are big triggers for PVCs. Try to get back to your exercise routine — even 30 minutes of walking or light jogging a few times a week will help. Regular sleep schedule. If the stress is really bad, consider talking to someone about it.
+
+[24:28] DR. NEDO: For follow-up, I want to see you back in two weeks. We'll check your blood pressure again and see how the propranolol is working. If the palpitations have improved and your blood pressure is better, we'll continue the same dose. If not, we may need to adjust.
+
+[24:45] DR. NEDO: I also want to order a 24-hour Holter monitor. That's a small device you wear on your chest for a full day — it records every heartbeat. That will tell us exactly how many PVCs you're having and whether there are any other rhythm issues we might be missing. We'll schedule that for your next visit.
+
+[25:05] DR. NEDO: And I'm ordering some blood work — I want to check your thyroid function, potassium levels, and a basic metabolic panel. Thyroid problems and electrolyte imbalances can both cause PVCs, so we want to rule those out. You can get the blood draw done at the lab downstairs today if you have time.
+
+[25:24] PATIENT: I can do that. So just to make sure I have this right — I have these PVCs, which are extra heartbeats, my heart itself is structurally fine, the valve thing is minor, and the treatment is the propranolol plus lifestyle changes?
+
+[25:40] DR. NEDO: That's exactly right. You've got a good understanding. The PVCs are the main issue, and we have a clear plan to address them. Your heart is structurally healthy, and that's the most important thing. We'll get this under control.
+
+[25:54] PATIENT: Great. Thank you, doctor. I feel a lot better knowing what's going on.
+
+[25:59] DR. NEDO: Of course. Any other questions before we wrap up?
+
+[26:03] PATIENT: I don't think so. Two weeks, blood work today, cut the coffee, take the propranolol.
+
+[26:09] DR. NEDO: Perfect. My nurse will get your prescription set up and schedule the follow-up. And if the palpitations suddenly get much worse, or if you feel chest pain, severe dizziness, or shortness of breath — call us right away or go to the ER. Don't wait for the follow-up.
+
+[26:24] PATIENT: Got it. Thanks again.
+
+[26:26] DR. NEDO: Take care, Alex. We'll get this sorted out.
+
+[END OF TRANSCRIPT — Duration: 26 minutes 30 seconds]

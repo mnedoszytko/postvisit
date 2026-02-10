@@ -84,8 +84,11 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
     const auth = useAuthStore();
+
+    // Try to restore session on first navigation
+    await auth.init();
 
     if (to.meta.requiresAuth && !auth.isAuthenticated) {
         return { name: 'login', query: { redirect: to.fullPath } };
