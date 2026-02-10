@@ -17,48 +17,79 @@ When the user corrects a mistake, **immediately** log it in `docs/lessons.md` wi
 
 ## Stack
 
-- **Backend**: Laravel, PHP 8.4
-- **Frontend**: Vue 3, Vite
-- **AI**: Claude Opus 4.6 (Anthropic SDK)
+- **Backend**: Laravel 12, PHP 8.4
+- **Frontend**: Vue 3 (integrated in `resources/js/`), Vite
+- **CSS**: Tailwind CSS v4
+- **Package manager**: Bun
+- **AI**: Claude Opus 4.6 (Anthropic PHP SDK — `anthropic-ai/laravel`)
+- **Auth**: Laravel Sanctum (cookie-based SPA)
 - **Hosting**: Laravel Forge + Hetzner
-- **Development**: Laravel Herd (local)
-- **Database**: PostgreSQL (jsonb, tsvector, native UUID)
-- **Cache**: TBD — do ustalenia przy scaffoldingu
+- **Development**: Laravel Herd (local, PHP 8.4 isolated)
+- **Database**: PostgreSQL 17 (Herd) — jsonb, tsvector, native UUID
+- **Cache**: Database driver (PostgreSQL)
+- **Queue**: Database driver (PostgreSQL)
 
 ## Essential Commands
 
 ### Development
-- Never run `npm run dev` — dev server already runs in background via Herd
+- Never run `bun run dev` or `npm run dev` — dev server already runs in background via Herd
 - Never run `php artisan serve` — Herd handles this automatically
 - Local URL: `postvisit.test` (Herd convention based on directory name)
+- Use `herd php artisan` for all artisan commands (ensures PHP 8.4 isolated version)
 
 ### Backend
-- `php artisan test` — run all tests
-- `php artisan test --filter=ClassName` — run single test class
-- `php artisan migrate` — run migrations
+- `herd php artisan test` — run all tests
+- `herd php artisan test --filter=ClassName` — run single test class
+- `herd php artisan migrate` — run migrations
 - `./vendor/bin/pint` — fix PHP code style (Laravel Pint)
 
 ### Frontend
-- `npm run build` — build for production
-- `npx eslint resources/js --ext .vue,.js,.ts --fix` — fix JS/Vue code style
+- `bun run build` — build for production
+- `bun add <package>` — add dependency (NOT npm)
 
 ## Architecture
 
 ```
 postvisit/
-├── backend/            # Laravel API
-├── frontend/           # Vue SPA
-├── docs/               # dokumentacja robocza (seed.md, decisions.md, architecture.md)
-├── prompts/            # system prompts dla Opus — wersjonowane jak kod
-├── demo/               # dane demo, scenariusz, seed data medyczne
-├── README.md
-├── LICENSE
-├── SECURITY.md
-└── .env.example
+├── app/
+│   ├── Http/Controllers/Api/   # API controllers
+│   ├── Http/Middleware/         # RoleMiddleware, AuditMiddleware
+│   ├── Http/Requests/          # Form Request validation
+│   ├── Http/Resources/         # API Resources (JSON transformers)
+│   ├── Models/                 # Eloquent models (18, all HasUuids)
+│   └── Services/
+│       ├── AI/                 # AI service layer (10 classes)
+│       ├── Medications/        # RxNorm client
+│       └── Stt/                # STT adapter (Whisper)
+├── resources/
+│   ├── js/
+│   │   ├── views/              # Vue views (11 screens)
+│   │   ├── components/         # Reusable Vue components
+│   │   ├── stores/             # Pinia stores (auth, visit, chat, doctor)
+│   │   ├── router/             # Vue Router
+│   │   ├── composables/        # useApi, useSse, useAuth
+│   │   └── layouts/            # PatientLayout, DoctorLayout
+│   └── css/                    # Tailwind CSS
+├── prompts/                    # AI system prompts — versioned like code
+├── demo/                       # Demo data, mocks, guidelines
+├── docs/                       # Working documentation
+├── routes/
+│   ├── api.php                 # /api/v1/ endpoints (~40)
+│   └── web.php                 # SPA catch-all
+└── database/
+    ├── migrations/             # 22 migration files
+    └── seeders/                # DemoSeeder
 ```
 
 ### Prompts as Code
-System prompts w `prompts/` są wersjonowane i review'owalne. Nie hardcode'uj promptów w kontrolerach — importuj z plików.
+System prompts in `prompts/` are versioned and reviewable. Never hardcode prompts in controllers — import from files via `PromptLoader` service.
+
+### Key Architecture Patterns
+- **Integrated SPA**: Vue runs inside Laravel (resources/js/), not a separate repo. Zero CORS issues.
+- **Sanctum cookie auth**: Same-origin, stateful sessions. No tokens in localStorage.
+- **SSE streaming**: AI responses stream via Server-Sent Events (`/chat`, `/explain` endpoints).
+- **Service layer**: All AI logic in `app/Services/AI/`, business logic never in controllers.
+- **UUID everywhere**: All models use `HasUuids` trait, PostgreSQL native uuid type.
 
 ## Coding Guidelines
 

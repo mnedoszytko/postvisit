@@ -168,3 +168,23 @@ Demo: Laravel REST API + Sanctum. Ale architektura od dnia zero zakłada:
 - Ecosystem integration (webhooks, CDS Hooks — roadmap)
 
 PostVisit.ai to NIE standalone wyspa — to skalowalny produkt w healthcare ekosystemie.
+
+### Decyzja 19: Integrated Laravel + Vue (zmiana z osobnych katalogów)
+**Status:** Przyjęte (2026-02-10)
+
+Zmiana z `backend/` + `frontend/` na zintegrowaną architekturę:
+- Vue 3 w `resources/js/` (standard Laravel)
+- Zero CORS issues (same-origin)
+- Simpler auth (Sanctum cookie-based)
+- Faster development for hackathon
+- API (`/api/v1/`) remains standalone and fully accessible
+
+### Decyzja 20: Bun zamiast npm
+**Status:** Przyjęte (2026-02-10)
+
+Bun jako package manager zamiast npm. Szybszy install, szybszy build. Bun 1.3.9.
+
+### Decyzja 21: Cache i Queue — Database driver
+**Status:** Przyjęte (2026-02-10)
+
+Database driver (PostgreSQL) dla cache i queue. Prostsze niż Redis, wystarczające na hackathon. Zero dodatkowej infrastruktury.
