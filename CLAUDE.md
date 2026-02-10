@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Pełna dokumentacja projektu: `docs/seed.md`
 Log decyzji: `docs/decisions.md`
 Log błędów i poprawek: `docs/lessons.md`
+Tracker licencji i compliance: `docs/licenses.md`
 
 ## Continuous Improvement Process
 
@@ -70,6 +71,15 @@ System prompts w `prompts/` są wersjonowane i review'owalne. Nie hardcode'uj pr
 - NEVER hardcode data to resolve a problem — only if explicitly instructed by user
 - Never Co-Author commits with Claude Code as author
 
+### Hackathon Compliance (CRITICAL)
+When adding ANY new dependency, data source, or external service:
+1. Check its license — must be open source or public domain for bundled components
+2. Update `docs/licenses.md` with: name, license, role, status
+3. If proprietary API (not bundled): mark as "external service" — OK if our integration code is open source
+4. If data bundled in repo: ONLY CC-BY, CC-BY-SA, or public domain. NO CC-BY-NC, NO proprietary.
+5. Demo video must show ONLY open source components
+6. When in doubt — ASK before adding
+
 ### Architecture Decision Escalation
 Gdy napotkasz fork in the road — ZATRZYMAJ SIĘ i eskaluj:
 
@@ -89,5 +99,6 @@ Dla feature'ów dotyczących danych medycznych, promptów AI, lub flow pacjenta 
 - **Production / demo**: Claude Opus 4.6
 - **Tests / development**: Sonnet is OK (cost optimization)
 - **Subagents (Task tool)**: always use `model: 'opus'`
+- **Agent Teams**: always use `model: 'opus'` — NEVER haiku or sonnet for teammates
 
 - Hackathon deadline: **16 lutego 2026, 15:00 EST** — priorytet to działający prototyp, nie perfekcyjna dokumentacja

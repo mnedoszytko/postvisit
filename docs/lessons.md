@@ -14,3 +14,8 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
 - **Błąd:** CLAUDE.md zawierał "MySQL, Redis, PHP 8.2+" — skopiowane z PreVisit bez pytania
 - **Korekta:** PHP 8.4 (bez dyskusji), baza danych i cache do ustalenia
 - **Wniosek:** Każdy projekt ma własne założenia. Nie kopiuj stacku z siostrzanych projektów — pytaj albo oznacz jako TBD
+
+### Lesson 3: Informuj o postępie
+- **Błąd:** Nie podawałem numeru sekcji w kontekście całości (np. "sekcja 4" bez "z 11")
+- **Korekta:** Zawsze mów "sekcja X z Y" żeby user wiedział na jakim etapie jest
+- **Wniosek:** Przy iteracyjnej pracy sekcja po sekcji, zawsze dawaj kontekst postępu

@@ -90,4 +90,61 @@ Użytkownik wklei 2 scenariusze filmiku. Czekamy na dane.
 - **Special prizes:** "Most Creative Opus 4.6 Exploration" i "The Keep Thinking Prize"
 - **Sędziowie:** 6 osób z Anthropic (Boris Cherny, Cat Wu, Thariq Shihpar, Lydia Hallie, Ado Kukic, Jason Bigman)
 - **Winners showcase:** 21 lutego w SF
-- **Submission:** GitHub repo + demo video (1-5 min) + opis projektu (<500 słów)
+- **Submission:** GitHub repo + demo video (1-5 min) + opis projektu (limit słów: sprawdzić na portalu — prawdopodobnie 200)
+
+### Decyzja 10: Model policy — Sonnet OK do testów
+**Status:** Przyjęte
+
+- **Produkcja / demo:** Opus 4.6
+- **Testy / development:** Sonnet jest OK (optymalizacja kosztów)
+- **Subagenty (Task tool):** zawsze Opus
+
+### Decyzja 11: Kontekst AI — do osobnej dyskusji
+**Status:** Odłożone
+
+Źródła kontekstu AI (dane wizyty, wytyczne kliniczne, guardrails) będą szczegółowo omówione w dedykowanej dyskusji. Usunięte z CLAUDE.md do czasu ustalenia.
+
+### Decyzja 12: PHP 8.4
+**Status:** Przyjęte
+
+PHP 8.4 — bez dyskusji. Baza danych i cache do ustalenia przy scaffoldingu.
+
+### Decyzja 13: Baza danych — PostgreSQL
+**Status:** Przyjęte (zmiana z "Odłożone")
+
+PostgreSQL — decyzja podjęta na podstawie analizy data-model.md:
+- **jsonb** — natywne indeksowanie na `specialty_data`, `extracted_entities`, `diarized_transcript`
+- **tsvector** — full-text search na transkryptach i notatkach klinicznych
+- **UUID** — natywny typ (nie varchar)
+- **Partitioning** — audit_logs partitioned by month
+- Standard w healthcare (HIPAA/SOC2)
+
+Cache i CSS framework — do ustalenia przy scaffoldingu.
+
+### Decyzja 14: Agent Teams — włączone
+**Status:** Przyjęte
+
+Włączony eksperymentalny feature `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` w `~/.claude/settings.json`. Pozwala na spawning zespołów agentów, które pracują równolegle i mogą dyskutować między sobą (np. backend + frontend + devil's advocate). Nowa funkcja Opus 4.6 — aktywna po restarcie terminala.
+
+### Decyzja 15: Demo video — orientacja i napisy
+**Status:** Do ustalenia
+
+**Orientacja:**
+Film musi pokazać dwie rzeczy: UI aplikacji (iOS mobile) i architekturę/flow systemu.
+
+Opcje:
+- **Horyzontalny (16:9)** — standard dla software demo. Łatwiej pokazać split screen (phone mockup + schemat architektury obok). Sędziowie oglądają na laptopie. Większość hackathonowych filmów jest landscape.
+- **Wertykalny (9:16)** — naturalny dla mobile app. Ale sędziowie raczej nie oglądają na telefonie, i trudno zmieścić tekst/schematy obok.
+- **Horyzontalny z phone mockup w centrum** — kompromis: landscape frame, w środku telefon z apką, po bokach context/architektura.
+
+**Napisy / captions:**
+- Muszą być — sędziowie mogą oglądać bez dźwięku
+- Burned-in (hardcoded w wideo) vs. osobny plik (.srt)
+
+Narzędzia do rozważenia:
+- **CapCut** — free, auto-captions, dobre style
+- **Descript** — transkrypcja + edycja tekstu = edycja wideo
+- **DaVinci Resolve** — free, professional, ale krzywa uczenia
+- **Whisper + ffmpeg** — generuj .srt z Whisper, burn-in przez ffmpeg (full open source pipeline)
+
+Styl napisów: krótkie, keyword-heavy, wyjaśniające co się dzieje na ekranie (nie pełny voiceover transcript).
