@@ -7,6 +7,7 @@ use App\Models\Medication;
 use App\Models\MedicationInteraction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MedicationController extends Controller
 {
@@ -18,8 +19,10 @@ class MedicationController extends Controller
 
         $query = $request->input('q');
 
-        $medications = Medication::where('generic_name', 'ilike', "%{$query}%")
-            ->orWhere('display_name', 'ilike', "%{$query}%")
+        $like = DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
+
+        $medications = Medication::where('generic_name', $like, "%{$query}%")
+            ->orWhere('display_name', $like, "%{$query}%")
             ->orWhere('rxnorm_code', $query)
             ->where('is_active', true)
             ->limit(20)

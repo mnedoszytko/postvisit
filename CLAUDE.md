@@ -11,6 +11,26 @@ Log decyzji: `docs/decisions.md`
 Log błędów i poprawek: `docs/lessons.md`
 Tracker licencji i compliance: `docs/licenses.md`
 
+## Incremental Documentation (CRITICAL — hackathon judging criterion)
+
+Documentation is a **core evaluation criterion** of this hackathon. Build it incrementally as you code — NOT at the end.
+
+### Rules
+1. **After completing any feature, endpoint, or significant change** — immediately update the relevant doc file(s).
+2. **README.md** — keep it current: project overview, setup instructions, architecture summary, demo instructions. Update after every major milestone.
+3. **docs/api.md** — document every API endpoint as it's implemented: method, path, auth, request/response examples.
+4. **docs/architecture.md** — update when architecture changes: diagrams, data flow, service layer, AI pipeline.
+5. **docs/ai-prompts.md** — document each AI prompt: purpose, input context, expected output, versioning.
+6. **docs/demo-guide.md** — step-by-step demo walkthrough, keep in sync with the actual working demo.
+7. **Code comments** — add JSDoc/PHPDoc for non-obvious public methods. Don't over-comment, but document "why" not "what".
+8. **CHANGELOG.md** — maintain a human-readable changelog of features added, in reverse chronological order.
+
+### Documentation Quality Standards
+- All docs in English (final submission language)
+- Include code examples and screenshots where helpful
+- Keep docs concise but complete — judges have limited time
+- Every doc should be understandable by someone new to the project
+
 ## Continuous Improvement Process
 
 When the user corrects a mistake, **immediately** log it in `docs/lessons.md` with: what went wrong, the correction, and the takeaway. Every 3-5 iterations, review `docs/lessons.md` and promote recurring patterns into this CLAUDE.md file.
@@ -176,10 +196,17 @@ curl -s -X POST 'https://api.linear.app/graphql' \
 ## TODO — PRZYPOMNIENIA DLA NEDO
 
 ### BLOKUJĄCE (bez tego demo nie ruszy)
-- [ ] **Transkrypt wizyty** — Nedo pisze w gabinecie (11 luty). Realistyczny dialog kardiolog-pacjent. Scenariusz: PVCs, propranolol 40mg 2x/day. Format: tekst. Zapisz w `demo/transcript.txt`.
-- [ ] **Wypis lekarski / discharge notes** — Nedo pisze w gabinecie (11 luty). Prawdziwy format wypisu. Zapisz w `demo/discharge-notes.txt`.
+- [x] **Transkrypt wizyty** — DONE (`demo/transcript.txt`). Realistyczny dialog kardiolog-pacjent, PVCs, propranolol 40mg 2x/day.
+- [x] **Wypis lekarski / discharge notes** — DONE (`demo/discharge-notes.txt`). Pełny format wypisu.
 
 ### Do wygenerowania (Claude zrobi)
-- [ ] Mock lab results (cholesterol, K+, TSH) — JSON
+- [x] Mock lab results (cholesterol, K+, TSH) — DONE (seeded in DemoSeeder as Observations)
 - [ ] Mock Apple Watch data (HR, PVC events) — JSON
-- [ ] Mock doctor dashboard data (patient list, alerts) — JSON
+- [ ] Mock doctor dashboard data (patient list, alerts) — JSON (dashboard endpoint now works with real data)
+
+### Dokumentacja (hackathon criterion)
+- [ ] README.md — project overview, setup, demo guide
+- [ ] docs/api.md — full API documentation
+- [ ] docs/architecture.md — system architecture, data flow, AI pipeline
+- [ ] docs/demo-guide.md — step-by-step demo walkthrough
+- [ ] CHANGELOG.md — feature changelog
