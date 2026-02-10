@@ -39,3 +39,8 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
 - **Bug:** TranscriptController::store did not set `stt_provider` or `audio_duration_seconds`, both NOT NULL in migration
 - **Fix:** Default `stt_provider` to `'none'` and `audio_duration_seconds` to `0` when not provided
 - **Takeaway:** Check all NOT NULL columns in migrations when building controllers — ensure every column has a value.
+
+### Lesson 8: Sanctum TransientToken has no delete() method
+- **Bug:** `AuthController::logout()` called `$request->user()->currentAccessToken()->delete()` which crashes with cookie-based SPA auth because Sanctum returns a `TransientToken` (not a `PersonalAccessToken`)
+- **Fix:** Check `method_exists($token, 'delete')` before calling. Also invalidate session + regenerate CSRF for cookie auth.
+- **Takeaway:** Sanctum SPA auth uses sessions, not tokens. Always handle both auth modes (token + session) in logout.

@@ -111,6 +111,49 @@ System prompts in `prompts/` are versioned and reviewable. Never hardcode prompt
 - **Service layer**: All AI logic in `app/Services/AI/`, business logic never in controllers.
 - **UUID everywhere**: All models use `HasUuids` trait, PostgreSQL native uuid type.
 
+## Git Strategy
+
+### Branches
+- **`main`** — primary branch, all safe work goes here directly
+- **`feature/*`** — only for risky/large changes (UI overhaul, new major feature)
+- No `dev` branch — unnecessary overhead for hackathon phase
+
+### Commit Rules
+- **Safe changes → commit to `main`**: docs, config, tests, small fixes, new endpoints, bug fixes
+- **Risky changes → feature branch**: PrimeVue integration, voice chat, major refactors
+- **Every commit must**: pass `herd php artisan test` (67+ tests) AND `bun run build` (frontend compiles)
+- **Never push to `main` if tests fail**
+- Never Co-Author commits with Claude Code as author
+- Check `storage/logs/laravel.log` for errors after making changes
+
+### Feature Branch Workflow
+```
+git checkout -b feature/xyz main
+# ... work ...
+herd php artisan test && bun run build   # must pass
+git checkout main && git merge feature/xyz
+git push origin main
+git branch -d feature/xyz
+```
+
+### Tags (checkpoints)
+Before merging a large feature branch, tag current main:
+```
+git tag v0.x-description
+```
+Use for rollback if merge breaks something.
+
+### Multi-Agent Safety
+- Agents working in parallel MUST use separate feature branches
+- Only one agent merges to `main` at a time
+- After merge, other agents rebase: `git pull --rebase origin main`
+- If merge conflict: resolve on feature branch, never force-push main
+
+### VPS Deployment (when Forge is ready)
+- Forge will auto-deploy from `main`
+- Before enabling: add `dev` branch as buffer between work and deploy
+- Flow becomes: `feature/* → dev → main (deploy)`
+
 ## Coding Guidelines
 
 ### Language Policy
