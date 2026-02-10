@@ -1,0 +1,83 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: postvisit-app
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    depends_on:
+      - db
+    environment:
+      - APP_ENV=local
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=postvisit
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=secret
+    networks:
+      - postvisit
+
+  web:
+    image: nginx:alpine
+    container_name: postvisit-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - postvisit
+
+  db:
+    image: postgres:17-alpine
+    container_name: postvisit-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postvisit
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - postvisit
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: postvisit-queue
+    restart: unless-stopped
+    command: php artisan queue:work --tries=3 --timeout=90
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    depends_on:
+      - db
+    environment:
+      - APP_ENV=local
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=postvisit
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=secret
+    networks:
+      - postvisit
+
+volumes:
+  pgdata:
+
+networks:
+  postvisit:
+    driver: bridge
