@@ -4,27 +4,58 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Visit;
-use Illuminate\Http\JsonResponse;
+use App\Services\AI\MedicalExplainer;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExplainController extends Controller
 {
-    public function explain(Request $request, Visit $visit): JsonResponse
+    public function __construct(
+        private MedicalExplainer $explainer,
+    ) {}
+
+    public function explain(Request $request, Visit $visit): StreamedResponse
     {
         $validated = $request->validate([
             'term' => ['required', 'string', 'max:500'],
             'context' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        // TODO: Use MedicalExplainer service with SSE streaming
-        // For now, return a placeholder response
-        return response()->json([
-            'data' => [
-                'term' => $validated['term'],
-                'explanation' => 'AI explanations will be available once the Anthropic API key is configured.',
-                'visit_id' => $visit->id,
-                'source' => 'placeholder',
-            ],
+        $visit->load(['patient', 'practitioner', 'visitNote', 'observations', 'conditions', 'prescriptions.medication', 'transcript']);
+
+        return response()->stream(function () use ($visit, $validated) {
+            try {
+                foreach ($this->explainer->explain($visit, $validated['term'], $validated['context'] ?? null) as $chunk) {
+                    echo "data: " . json_encode(['text' => $chunk]) . "\n\n";
+                    if (ob_get_level()) {
+                        ob_flush();
+                    }
+                    flush();
+                }
+            } catch (\Throwable $e) {
+                echo "data: " . json_encode(['text' => 'Unable to generate explanation at this time. Please try again.', 'error' => true]) . "\n\n";
+                if (ob_get_level()) {
+                    ob_flush();
+                }
+                flush();
+
+                \Illuminate\Support\Facades\Log::error('Explain AI error', [
+                    'visit_id' => $visit->id,
+                    'term' => $validated['term'],
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            echo "data: [DONE]\n\n";
+            if (ob_get_level()) {
+                ob_flush();
+            }
+            flush();
+        }, 200, [
+            'Content-Type' => 'text/event-stream',
+            'Cache-Control' => 'no-cache',
+            'Connection' => 'keep-alive',
+            'X-Accel-Buffering' => 'no',
         ]);
     }
 }

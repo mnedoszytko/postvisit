@@ -71,38 +71,62 @@ class ContextAssembler
     {
         $parts = ["--- VISIT DATA ---"];
 
-        $parts[] = "Visit Date: " . ($visit->visit_date ?? 'Unknown');
-        $parts[] = "Specialty: " . ($visit->specialty ?? 'General');
+        $parts[] = "Visit Date: " . ($visit->started_at ?? 'Unknown');
+        $parts[] = "Visit Type: " . ($visit->visit_type ?? 'General');
+        $parts[] = "Reason for Visit: " . ($visit->reason_for_visit ?? 'Not specified');
 
         if ($visit->practitioner) {
-            $parts[] = "Practitioner: Dr. " . $visit->practitioner->full_name;
+            $parts[] = "Practitioner: Dr. {$visit->practitioner->first_name} {$visit->practitioner->last_name}";
+            $parts[] = "Specialty: " . ($visit->practitioner->primary_specialty ?? 'General');
         }
 
-        // Structured visit notes
+        // Visit note (SOAP)
         if ($visit->visitNote) {
             $note = $visit->visitNote;
-            if ($note->structured_sections) {
-                $parts[] = "\nStructured Visit Sections:";
-                $parts[] = json_encode($note->structured_sections, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            if ($note->chief_complaint) {
+                $parts[] = "\nChief Complaint: {$note->chief_complaint}";
             }
-            if ($note->soap_note) {
-                $parts[] = "\nSOAP Note:";
-                $parts[] = json_encode($note->soap_note, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            if ($note->history_of_present_illness) {
+                $parts[] = "\nHistory of Present Illness:\n{$note->history_of_present_illness}";
+            }
+            if ($note->review_of_systems) {
+                $parts[] = "\nReview of Systems:\n{$note->review_of_systems}";
+            }
+            if ($note->physical_exam) {
+                $parts[] = "\nPhysical Examination:\n{$note->physical_exam}";
+            }
+            if ($note->assessment) {
+                $parts[] = "\nAssessment:\n{$note->assessment}";
+            }
+            if ($note->plan) {
+                $parts[] = "\nPlan:\n{$note->plan}";
+            }
+            if ($note->follow_up) {
+                $parts[] = "\nFollow-up:\n{$note->follow_up}";
             }
         }
 
         // Transcript
         if ($visit->transcript) {
-            $parts[] = "\nVisit Transcript:";
-            $parts[] = $visit->transcript->clean_text ?? $visit->transcript->raw_text ?? '';
+            $transcript = $visit->transcript->clean_transcript ?? $visit->transcript->raw_transcript ?? '';
+            if ($transcript && $transcript !== 'PLACEHOLDER - Awaiting real transcript from Dr. Nedo') {
+                $parts[] = "\nVisit Transcript:\n{$transcript}";
+            }
         }
 
         // Observations (test results)
         if ($visit->observations && $visit->observations->isNotEmpty()) {
             $parts[] = "\nTest Results & Observations:";
             foreach ($visit->observations as $obs) {
-                $parts[] = "- {$obs->display_name}: {$obs->value} {$obs->unit}" .
-                    ($obs->interpretation ? " ({$obs->interpretation})" : '');
+                $value = $obs->value_type === 'quantity'
+                    ? "{$obs->value_quantity} {$obs->value_unit}"
+                    : ($obs->value_string ?? '');
+                $parts[] = "- {$obs->code_display}: {$value}" .
+                    ($obs->interpretation ? " (interpretation: {$obs->interpretation})" : '') .
+                    ($obs->reference_range_text ? " [ref: {$obs->reference_range_text}]" : '');
+                if ($obs->specialty_data) {
+                    $parts[] = "  Details: " . json_encode($obs->specialty_data, JSON_UNESCAPED_UNICODE);
+                }
             }
         }
 
@@ -120,27 +144,32 @@ class ContextAssembler
 
         $parts = ["--- PATIENT RECORD ---"];
         $parts[] = "Name: {$patient->first_name} {$patient->last_name}";
-        $parts[] = "Date of Birth: " . ($patient->date_of_birth ?? 'Unknown');
-        $parts[] = "Sex: " . ($patient->sex ?? 'Unknown');
+        $parts[] = "Date of Birth: " . ($patient->dob ?? 'Unknown');
+        $parts[] = "Gender: " . ($patient->gender ?? 'Unknown');
 
-        // Conditions
-        if ($patient->conditions && $patient->conditions->isNotEmpty()) {
+        // Conditions from the visit
+        $conditions = $visit->conditions;
+        if ($conditions && $conditions->isNotEmpty()) {
             $parts[] = "\nKnown Conditions:";
-            foreach ($patient->conditions as $condition) {
-                $parts[] = "- {$condition->display_name}" .
-                    ($condition->clinical_status ? " ({$condition->clinical_status})" : '');
+            foreach ($conditions as $condition) {
+                $parts[] = "- {$condition->code_display} ({$condition->code})" .
+                    ($condition->clinical_status ? " — status: {$condition->clinical_status}" : '') .
+                    ($condition->clinical_notes ? "\n  Notes: {$condition->clinical_notes}" : '');
             }
         }
 
-        // Active prescriptions
-        if ($patient->prescriptions && $patient->prescriptions->isNotEmpty()) {
-            $active = $patient->prescriptions->where('status', 'active');
+        // Active prescriptions from the visit
+        $prescriptions = $visit->prescriptions;
+        if ($prescriptions && $prescriptions->isNotEmpty()) {
+            $active = $prescriptions->where('status', 'active');
             if ($active->isNotEmpty()) {
                 $parts[] = "\nCurrent Medications:";
                 foreach ($active as $rx) {
                     $med = $rx->medication;
-                    $parts[] = "- " . ($med ? $med->generic_name : $rx->display_name) .
-                        " {$rx->dosage_text}";
+                    $name = $med ? $med->generic_name : 'Unknown medication';
+                    $parts[] = "- {$name} {$rx->dose_quantity}{$rx->dose_unit} {$rx->frequency}" .
+                        ($rx->frequency_text ? " ({$rx->frequency_text})" : '') .
+                        ($rx->special_instructions ? "\n  Instructions: {$rx->special_instructions}" : '');
                 }
             }
         }
@@ -174,19 +203,24 @@ class ContextAssembler
                 continue;
             }
 
-            $parts[] = "\nMedication: {$med->generic_name}";
+            $parts[] = "\nMedication: {$med->generic_name} ({$med->display_name})";
             if ($med->brand_names) {
                 $parts[] = "Brand Names: " . implode(', ', (array) $med->brand_names);
             }
-            $parts[] = "Prescribed Dose: {$rx->dosage_text}";
+            $parts[] = "Prescribed Dose: {$rx->dose_quantity}{$rx->dose_unit}";
             $parts[] = "Route: " . ($rx->route ?? 'oral');
             $parts[] = "Frequency: " . ($rx->frequency ?? 'as directed');
-
-            if ($med->side_effects) {
-                $parts[] = "Known Side Effects: " . json_encode($med->side_effects);
+            if ($rx->special_instructions) {
+                $parts[] = "Special Instructions: {$rx->special_instructions}";
             }
-            if ($med->contraindications) {
-                $parts[] = "Contraindications: " . json_encode($med->contraindications);
+            if ($rx->indication) {
+                $parts[] = "Indication: {$rx->indication}";
+            }
+            if ($med->pregnancy_category) {
+                $parts[] = "Pregnancy Category: {$med->pregnancy_category}";
+            }
+            if ($med->black_box_warning) {
+                $parts[] = "WARNING: This medication has a black box warning.";
             }
         }
 

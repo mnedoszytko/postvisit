@@ -46,8 +46,8 @@ class QaAssistant
 
         foreach ($history as $msg) {
             $messages[] = [
-                'role' => $msg->role,
-                'content' => $msg->content,
+                'role' => $msg->sender_type === 'patient' ? 'user' : 'assistant',
+                'content' => $msg->message_text,
             ];
         }
 
