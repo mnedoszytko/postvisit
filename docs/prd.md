@@ -582,125 +582,205 @@ This is a key differentiator for the hackathon — demonstrates creative use of 
 | External API | GraphQL / REST / hybrid | TBD |
 | Detailed system prompts | To be engineered during implementation | Open task |
 
-## 7. Data Model — DRAFT (requires healthcare standards research)
+## 7. Data Model
 
-**STATUS: NOT DONE.** Current model is a preliminary draft. Awaiting deep research on healthcare data standards (HL7 FHIR, ICD-10, SNOMED CT, LOINC, RxNorm, etc.) to redesign with production-grade, standards-compliant architecture. See open task.
+**STATUS: COMPLETE.** Full FHIR R4 aligned data model in `docs/data-model.md`.
 
-### Core Entities (preliminary — will be replaced)
+### Summary
+
+- **17 tables** mapped to FHIR R4 resources (Patient, Encounter, Observation, Condition, MedicationRequest, etc.)
+- **Coding systems:** ICD-10-CM, ICD-11, SNOMED CT, LOINC, RxNorm, ATC, CPT
+- **PostgreSQL** — chosen for jsonb (specialty_data, extracted_entities), tsvector (full-text search), native UUID, partitioning (audit_logs)
+- **Extensibility:** `specialty_data` jsonb field on observations handles any specialty (cardiology ECHO/EKG, endocrinology, etc.) without schema changes
+- **HIPAA:** audit_logs with phi_accessed tracking, soft deletes, encryption markers
+- **GDPR:** consents table + consent fields on patients
+
+### Key Design Decisions
+
+1. **`diagnostic_reports` removed** — observations + documents + visit_notes cover this. No duplication.
+2. **`medications` as RxNorm cache** — propranolol seeded for demo reliability. All other drugs fetched from RxNorm API on-demand and cached locally. Search always works.
+3. **`roles` simplified** — enum on `users` table for demo (patient|doctor|admin). Full RBAC table is roadmap.
+4. **`consents` table** — excluded from demo. Consent fields on `patients` are sufficient.
+5. **`notifications` table** — needed but missing from data-model.md. To be added during implementation.
+
+### Relationships
 
 ```
-Patient ──┬── has many ──→ Visits
-           ├── has many ──→ Medications (patient's full med list)
-           ├── has many ──→ Documents (general, not visit-specific)
-           ├── has many ──→ Conditions (chronic diseases, comorbidities)
-           └── belongs to many ──→ Doctors
+patients ──1:n──► visits ──1:n──► observations
+    │                 │               │
+    │                 ├──1:n──► conditions
+    │                 ├──1:n──► prescriptions ──n:1──► medications
+    │                 ├──1:n──► documents
+    │                 ├──1:1──► visit_notes
+    │                 ├──1:1──► transcripts
+    │                 └──1:n──► chat_sessions ──1:n──► chat_messages
+    │
+    ├──1:n──► consents
+    └──1:1──► users
 
-Doctor ────┬── has many ──→ Patients
-            └── has many ──→ Visits
+practitioners ──1:n──► visits
+         │
+         ├──1:n──► prescriptions
+         ├──1:n──► visit_notes
+         └──n:1──► organizations
 
-Visit ─────┬── belongs to ──→ Patient (one)
-            ├── belongs to ──→ Doctor (one)
-            ├── has one ─────→ Transcript (from Companion Scribe)
-            ├── has one ─────→ StructuredVisit (AI-generated sections)
-            ├── has many ────→ Documents (visit-specific uploads)
-            ├── has many ────→ Prescriptions (meds prescribed at this visit)
-            ├── has many ────→ ChatSessions (Q&A conversations)
-            └── has many ────→ Messages (patient ↔ doctor feedback)
+medications ──1:n──► medication_interactions (self-referencing)
+
+users ──1:n──► audit_logs
 ```
 
-### Entity Details
-
-**Patient**
-- id, name, date_of_birth, photo
-- contact info
-- Owns their data — access control anchor
-
-**Doctor**
-- id, name, specialty, photo
-- credentials
-
-**Patient ↔ Doctor (many-to-many)**
-- patient_id, doctor_id
-- relationship metadata (primary/specialist, since when)
-
-**Visit**
-- id, patient_id, doctor_id
-- date, specialty
-- status (recording / processing / ready / archived)
-
-**Transcript**
-- id, visit_id
-- raw_audio_url (stored file reference)
-- raw_text (STT output)
-- processed_text (cleaned by Scribe Processor agent)
-
-**StructuredVisit** (AI-generated from transcript + documents)
-- id, visit_id
-- sections stored as structured JSON:
-  - reason_for_visit
-  - symptoms
-  - history_interview
-  - comorbidities
-  - physical_examination
-  - additional_tests (array — specialty-dependent)
-  - conclusions
-  - recommendations
-  - next_steps
-
-**Document**
-- id, patient_id (general) OR visit_id (visit-specific)
-- type (PDF, image, scan, lab result)
-- category (lab, imaging, discharge, referral, other)
-- file_url, filename
-- ai_extracted_data (JSON — output from Document Analyzer agent)
-
-**Medication** (patient's ongoing medication list)
-- id, patient_id
-- drug_name, dose, frequency, route
-- status (active / discontinued / changed)
-- prescribed_at_visit_id (links to visit where first prescribed)
-- editable by both patient and doctor
-- Drug dictionary/lookup integration (open source source — TBD)
-
-**Prescription** (what was prescribed at a specific visit)
-- id, visit_id, medication_id
-- action (new / changed / continued / discontinued)
-- notes
-
-**ChatSession**
-- id, visit_id, patient_id
-- created_at
-- context_snapshot (static context loaded at session start — no duplication per turn)
-
-**ChatMessage**
-- id, chat_session_id
-- role (patient / ai)
-- content (text)
-- attachments (if any)
-- ai_model_used, tokens_used (audit)
-
-**Message** (patient ↔ doctor direct communication)
-- id, visit_id (optional — can be general)
-- sender_type (patient / doctor), sender_id
-- content, attachments
-- read_at
-
-**Condition** (patient's chronic diseases / comorbidities)
-- id, patient_id
-- name, icd_code (optional)
-- status (active / resolved)
-- diagnosed_date
-
-**AuditLog**
-- id, user_type, user_id
-- action (viewed, asked, explained, sent, etc.)
-- target_type, target_id
-- metadata (JSON)
-- timestamp
+Full field definitions, coding system details, jsonb examples, and demo scope: see `docs/data-model.md`.
 
 ## 8. API Design
 
-**STATUS: BLOCKED** — depends on Data Model (Section 7) finalization. To be designed after healthcare standards research is complete.
+### Design Philosophy
+
+This is NOT a standalone island. PostVisit.ai is designed as a scalable product that will be part of a larger healthcare ecosystem. The API must reflect this from day one:
+
+1. **Interoperability-first.** FHIR R4 data model means we can expose native FHIR endpoints when needed. Other healthcare systems can integrate.
+2. **Agent-friendly.** The system operates on agentic paradigms — external AI agents must be able to interact with PostVisit through a documented, discoverable API.
+3. **Ecosystem-ready.** GraphQL layer (roadmap) for self-documenting, introspectable API that agents and third-party systems can discover and navigate programmatically.
+
+### Conventions
+
+- **Prefix:** `/api/v1/`
+- **Format:** JSON, FHIR-aligned naming where applicable
+- **Auth:** Laravel Sanctum (token-based, SPA-friendly)
+- **Responses:** `{ data: {...}, meta: {...} }` — Laravel API Resource standard
+- **Errors:** `{ error: { code, message, details } }`
+- **Pagination:** cursor-based (Laravel built-in)
+- **Rate limiting:** Laravel throttle middleware
+
+### API Surface by Module
+
+#### Module 1: Core Health
+
+```
+GET    /patients/{id}                         → patient profile + conditions + meds
+PATCH  /patients/{id}                         → update patient data
+GET    /patients/{id}/visits                  → visit history (paginated)
+GET    /patients/{id}/conditions              → conditions list
+POST   /patients/{id}/conditions              → add condition
+GET    /patients/{id}/health-record           → aggregated health record
+POST   /patients/{id}/documents               → upload document
+GET    /patients/{id}/documents               → list documents (filterable by type)
+GET    /documents/{id}                        → document detail + download URL
+```
+
+#### Module 2: Companion Scribe
+
+```
+POST   /visits                                → create new visit (starts recording context)
+POST   /visits/{id}/transcript                → upload audio file or raw transcript text
+GET    /visits/{id}/transcript                → get transcript + processing status
+POST   /visits/{id}/transcript/process        → trigger AI processing pipeline
+GET    /visits/{id}/transcript/status         → processing status (pending|processing|completed|failed)
+```
+
+#### Module 3: PostVisit (AI engine)
+
+```
+GET    /visits/{id}                           → full structured visit (all sections)
+GET    /visits/{id}/summary                   → patient-friendly summary
+POST   /visits/{id}/explain                   → explain medical term/section in visit context
+         body: { element: "Paroxysmal Ventricular Contractions", section: "diagnosis" }
+         response: { explanation: "...", sources: [...] }
+
+POST   /visits/{id}/chat                      → send message, receive AI response
+         body: { message: "What causes PVCs?" }
+         response: SSE stream of AI response tokens
+
+GET    /visits/{id}/chat/history              → full chat history for this visit
+```
+
+#### Module 4: Reference (internal — not directly exposed)
+
+Reference module is consumed internally by PostVisit AI subsystems. No direct patient-facing endpoints. Evidence is surfaced through chat responses and explanations with source citations.
+
+#### Module 5: Meds
+
+```
+GET    /medications/search?q={query}          → RxNorm API proxy — search drugs by name
+         response: { data: [{ rxnorm_code, generic_name, brand_names, form, strength }] }
+
+GET    /medications/{rxnorm_code}             → drug detail (from local cache or RxNorm fetch)
+GET    /medications/{rxnorm_code}/interactions → known drug interactions
+GET    /visits/{id}/prescriptions             → prescriptions for this visit
+GET    /patients/{id}/prescriptions           → all active prescriptions for patient
+GET    /patients/{id}/prescriptions/interactions → interaction check across all patient meds
+```
+
+#### Module 6: Feedback
+
+```
+POST   /visits/{id}/messages                  → patient sends message to doctor
+         body: { content: "...", attachments: [...] }
+GET    /visits/{id}/messages                  → message thread (paginated)
+PATCH  /messages/{id}/read                    → mark message as read
+```
+
+#### Module 7: Doctor
+
+```
+GET    /doctor/dashboard                      → overview: patient count, unread messages, alerts
+GET    /doctor/patients                       → patient list (searchable, sortable, paginated)
+GET    /doctor/patients/{id}                  → patient detail: profile, visits, engagement
+GET    /doctor/patients/{id}/visits           → patient's visit history
+GET    /doctor/patients/{id}/engagement       → what patient read, asked, clicked
+GET    /doctor/patients/{id}/chat-audit       → what AI told the patient (full audit)
+GET    /doctor/notifications                  → unread messages, alerts, flags
+POST   /doctor/messages/{id}/reply            → doctor responds to patient message
+```
+
+#### Module 8: Audit & Security
+
+```
+GET    /audit/logs                            → filtered audit trail (admin/doctor only)
+         params: ?resource_type=&user_id=&from=&to=&phi_accessed=
+```
+
+#### Module 9: Demo Engine
+
+```
+POST   /demo/start                            → create demo session with seeded visit + mock data
+GET    /demo/status                           → current demo session state
+POST   /demo/reset                            → reset demo to initial state
+POST   /demo/simulate-alert                   → trigger mock 2AM alert for doctor dashboard
+```
+
+#### Auth
+
+```
+POST   /auth/register                         → create account (patient or doctor)
+POST   /auth/login                            → get Sanctum token
+POST   /auth/logout                           → revoke token
+GET    /auth/user                             → current user + role + linked patient/practitioner
+```
+
+### Key Architecture Decisions
+
+1. **Chat = stateless per request.** Client sends only the message. Server assembles full context (visit + record + guidelines + history) and calls Opus. Client never manages AI context.
+
+2. **SSE for AI responses.** Endpoints that trigger AI (`/chat`, `/explain`) return Server-Sent Events — response streamed token by token. Laravel supports this natively. Better UX than waiting for full response.
+
+3. **RxNorm proxy with local cache.** `/medications/search` hits RxNorm API and caches results in `medications` table. Frontend never calls RxNorm directly. Propranolol pre-seeded for demo reliability.
+
+4. **FHIR export endpoints (roadmap).** Architecture supports future FHIR-native endpoints: `/patients/{id}/fhir/Patient`, `/visits/{id}/fhir/Encounter`. Not on demo, but data model is ready.
+
+5. **GraphQL layer (roadmap).** Self-documenting API for agent-to-agent communication and third-party integrations. REST for demo, GraphQL for production extensibility.
+
+6. **Webhook support (roadmap).** External systems can subscribe to events (visit completed, alert triggered, message sent). Enables integration into broader healthcare ecosystem.
+
+### Interoperability Roadmap
+
+| Phase | Capability | Standard |
+|-------|-----------|----------|
+| Demo | REST API + Sanctum auth | Laravel conventions |
+| v1.0 | FHIR R4 export endpoints | HL7 FHIR R4 |
+| v1.0 | GraphQL layer | GraphQL spec |
+| v2.0 | SMART on FHIR app launch | SMART App Launch Framework |
+| v2.0 | CDS Hooks service | HL7 CDS Hooks |
+| v2.0 | Webhook subscriptions | Custom + FHIR Subscriptions |
 
 ## 9. Demo Scenario
 
@@ -754,3 +834,161 @@ Not screen-recorded — implied. Phone on doctor's desk during visit, 2-second f
 
 ### Tagline
 **"The bridge between your visit and your health."**
+
+## 10. Compliance & Safety
+
+### Regulatory Context
+
+PostVisit.ai operates in healthcare — the most regulated industry. Two frameworks matter:
+
+- **HIPAA** (US) — Protected Health Information (PHI) handling, audit trails, access control, encryption
+- **GDPR** (EU) — patient consent, right to erasure, data portability, purpose limitation
+
+For demo: we demonstrate **awareness and architecture readiness**, not full certification. Full HIPAA/GDPR compliance requires legal review, BAA agreements, and infrastructure hardening — that's production.
+
+### HIPAA — What We Implement
+
+**On demo:**
+
+| Requirement | Implementation | Status |
+|-------------|---------------|--------|
+| Audit trail | `audit_logs` table — every data access logged with user, action, resource, timestamp, PHI flag | Demo |
+| Access control | Role-based: patient sees own data, doctor sees assigned patients only | Demo |
+| PHI encryption at rest | `ssn_encrypted` (AES-256), `ip_address` encrypted in audit logs | Demo |
+| Encryption in transit | TLS (Let's Encrypt) on all endpoints | Demo |
+| Minimum necessary | API returns only data relevant to the requesting user's role | Demo |
+| Session management | Sanctum tokens with expiration | Demo |
+
+**Roadmap (not demo):**
+
+| Requirement | Notes |
+|-------------|-------|
+| BAA with Anthropic | Required for production PHI processing. Anthropic offers BAA for Claude healthcare. |
+| BAA with hosting provider | Hetzner or HIPAA-compliant cloud (AWS/GCP) |
+| Breach notification | 60-day notification policy |
+| Data retention policy | Configurable per organization |
+| Disaster recovery | Backups, failover |
+
+### GDPR — What We Implement
+
+**On demo:**
+
+| Requirement | Implementation |
+|-------------|---------------|
+| Consent tracking | `patients.consent_given`, `consent_date`, `data_sharing_consent` |
+| Right to erasure | `patients.right_to_erasure_requested` flag + soft deletes across all tables |
+| Purpose limitation | AI uses data only in context of the visit it belongs to |
+| Data minimization | System collects only what's needed for clinical context |
+
+**Roadmap:**
+- Full `consents` table with versioning, multi-type consent, expiration
+- Data export (FHIR-native patient data export)
+- Cookie consent (web frontend)
+- DPO contact information
+
+### AI Safety & Guardrails
+
+**Behavioral guardrails (embedded in system prompts):**
+
+1. **Never diagnose.** AI explains what the doctor said, never issues new diagnoses.
+2. **Never prescribe.** AI explains prescribed medications, never suggests new ones.
+3. **Never contradict the doctor.** AI contextualizes recommendations with guidelines, never overrides clinical decisions.
+4. **Escalation protocol.** When patient describes dangerous symptoms (chest pain, severe bleeding, suicidal ideation) → immediate redirect to emergency care. No AI discussion of acute emergencies.
+5. **Source grounding.** Every answer must be traceable to: visit data, clinical guidelines, or drug database. No hallucinated medical advice.
+6. **Uncertainty disclosure.** When AI cannot answer confidently → "Please discuss this with your doctor" rather than guessing.
+
+**Technical guardrails:**
+
+| Guardrail | How |
+|-----------|-----|
+| Context boundary | AI only accesses data from the patient's own visits and record — never cross-patient |
+| Token audit | Every AI interaction logged: model used, tokens consumed, prompt hash |
+| Response review | Doctor can audit every AI response via dashboard (D2 story) |
+| Rate limiting | Chat requests throttled to prevent abuse |
+| Input sanitization | Patient messages sanitized before AI processing |
+
+### Medical Disclaimer
+
+Prominent on every screen, in README, in SECURITY.md:
+
+> **PostVisit.ai is a patient education and communication tool. It is NOT a medical device, does NOT provide medical advice, and does NOT replace professional medical judgment. Always consult your healthcare provider for medical decisions.**
+
+### Demo Data Policy
+
+- **No real patient data.** All demo data is fictional, written by a physician for realism.
+- **No real PHI.** Mock patients, mock visits, mock lab results.
+- **Disclaimer in README:** "All patient data in this demo is fictional. No real patient information is used or stored."
+
+### Security Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│  Frontend (Vue SPA)                          │
+│  • No PHI stored client-side                 │
+│  • Sanctum token in httpOnly cookie          │
+│  • TLS only                                  │
+└──────────────┬──────────────────────────────┘
+               │ HTTPS
+┌──────────────▼──────────────────────────────┐
+│  Backend (Laravel API)                       │
+│  • Sanctum auth middleware                   │
+│  • Role-based access control                 │
+│  • Input validation + sanitization           │
+│  • Audit logging on every PHI access         │
+│  • Rate limiting                             │
+└──────────────┬──────────────────────────────┘
+               │ Encrypted connection
+┌──────────────▼──────────────────────────────┐
+│  PostgreSQL                                  │
+│  • Sensitive fields encrypted (AES-256)      │
+│  • Soft deletes (GDPR erasure)               │
+│  • Audit logs immutable (append-only)        │
+└──────────────────────────────────────────────┘
+               │
+┌──────────────▼──────────────────────────────┐
+│  Anthropic API (Claude Opus 4.6)             │
+│  • Zero data retention (API policy)          │
+│  • BAA available (production)                │
+│  • Context assembled server-side only        │
+└──────────────────────────────────────────────┘
+```
+
+## 11. Out of Scope
+
+Explicit boundaries — what is NOT in the demo.
+
+### Excluded from Demo
+
+| Item | Why | When |
+|------|-----|------|
+| Real patient data | Fictional data only. No real PHI. | Never for demo |
+| Native mobile app (iOS/Android) | Vue SPA, responsive. No App Store. | Roadmap |
+| Multi-tenancy | Single organization. `organizations` table ready. | Roadmap |
+| Appointment booking (real) | Concept shown, no calendar integration. | Roadmap |
+| Payment / billing | No insurance, billing codes, or payments. | Roadmap |
+| Vector DB / RAG | 1M context window sufficient. No Pinecone/Qdrant. | Evaluate post-demo |
+| Drug-drug interactions (seeded) | Table exists, not seeded. DrugBank too much work. | Roadmap |
+| Document upload pipeline | Table exists. Full upload + AI extraction not on demo. | Roadmap |
+| Apple Health / Google Health | Researched (`docs/connectors.md`). Not implemented. | Roadmap |
+| Full RBAC | Enum role for demo. Full permissions table later. | Roadmap |
+| Full consent management | Basic fields on `patients`. Full `consents` table later. | Roadmap |
+| E-prescribing | Shows prescriptions, doesn't generate legal Rx. | Out of scope entirely |
+| FDA / CE certification | Not a medical device. No regulatory submission. | N/A |
+| Doctor-side ambient scribing | Patient "reverse scribe" only. | Roadmap |
+| Offline mode | Requires internet. | Roadmap |
+| Push notifications (real) | Concept shown. No FCM/APNs. | Roadmap |
+
+### Stretch Goal (if time permits)
+
+| Item | Notes |
+|------|-------|
+| Multi-language UI | Architecture supports it (`preferred_language` in data model). Add at the very end if time allows. |
+
+### Demo Deliverable (recap)
+
+1. **Patient flow:** Landing → Demo → Scribe → Processing → Visit View → Chat → Meds → Feedback
+2. **Doctor flow:** Dashboard → Patient detail → Chat audit → Response
+3. **AI pipeline:** Transcript → Structured visit → Q&A → Explanations → Escalation
+4. **Data:** FHIR R4, PostgreSQL, seeded PVCs + propranolol scenario
+5. **API:** REST + Sanctum, SSE streaming, RxNorm proxy
+6. **Compliance:** Audit logs, access control, encryption, disclaimer

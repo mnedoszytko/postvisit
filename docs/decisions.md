@@ -148,3 +148,23 @@ Narzędzia do rozważenia:
 - **Whisper + ffmpeg** — generuj .srt z Whisper, burn-in przez ffmpeg (full open source pipeline)
 
 Styl napisów: krótkie, keyword-heavy, wyjaśniające co się dzieje na ekranie (nie pełny voiceover transcript).
+
+### Decyzja 16: Data model — FHIR R4, diagnostic_reports usunięte
+**Status:** Przyjęte
+
+Data model w `docs/data-model.md` — 17 tabel, FHIR R4 aligned. `diagnostic_reports` usunięte (duplikacja z observations + documents + visit_notes). `roles` uproszczone do enum na demo. `consents` tabela wyłączona z demo.
+
+### Decyzja 17: Medications — RxNorm API + local cache
+**Status:** Przyjęte
+
+Tabela `medications` działa jako local cache. Propranolol seeded (demo niezawodność). Reszta leków fetched z RxNorm API on-demand (`rxnav.nlm.nih.gov/REST/`). Sędziowie mogą wyszukać dowolny lek.
+
+### Decyzja 18: API — REST na demo, interoperability-first
+**Status:** Przyjęte
+
+Demo: Laravel REST API + Sanctum. Ale architektura od dnia zero zakłada:
+- Interoperability (FHIR R4 export endpoints — roadmap)
+- Agent-friendly API (GraphQL layer — roadmap)
+- Ecosystem integration (webhooks, CDS Hooks — roadmap)
+
+PostVisit.ai to NIE standalone wyspa — to skalowalny produkt w healthcare ekosystemie.
