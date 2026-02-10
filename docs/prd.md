@@ -68,7 +68,7 @@ The system translates expert medical knowledge into clear, accessible language t
   - Symptom reports (e.g., chest pain → urgent escalation to doctor)
 - Decides what to share with the doctor through the feedback channel
 
-**Access model:** TBD — to be decided during architecture. Key principle: patient is the owner and initiator. Whether via account, magic link, or other mechanism — the patient controls the flow.
+**Access model:** Laravel Sanctum (token-based auth). Patient registers with email + password, receives API token. For demo: pre-seeded accounts available. Key principle: patient is the owner and initiator.
 
 ### Secondary User: Doctor
 
@@ -156,7 +156,7 @@ Responsibilities:
 - Transcript becomes a primary context source for PostVisit module
 - Patient owns the recording and transcript
 
-Open decision: STT engine (Whisper / Deepgram / other) — to be decided during architecture.
+**STT engine: Whisper (MIT, open source).** Primary choice for demo — best license, proven quality. Adapter pattern allows swapping providers later (see `docs/stt-scribing.md`).
 
 Related stories: P1
 
@@ -345,7 +345,7 @@ The chat panel is more than a simple text chat. It's a rich interaction surface 
 - Interaction matrix — visual flag if any drugs interact with each other
 - Timeline — what changed at this visit vs. before
 
-Data source: drug database (to be selected — open decision) + visit context from Opus.
+Data source: RxNorm API (free, public domain) with local cache + visit context from Opus.
 
 ### Key Screen: Feedback / Contact Doctor (S8)
 
@@ -571,15 +571,15 @@ This is a modern system built on agentic paradigms — not just traditional API 
 
 This is a key differentiator for the hackathon — demonstrates creative use of Opus 4.6 beyond simple prompt-response patterns.
 
-### Open Decisions (to be resolved during implementation)
+### Open Decisions
 
-| Decision | Options | Status |
-|----------|---------|--------|
-| STT engine | Whisper / Deepgram / AssemblyAI / other | TBD |
-| Voice output (chat) | Anthropic TTS / browser TTS / external | TBD |
-| Drug database source | OpenFDA / DrugBank / other (must be open source) | TBD |
-| Guidelines format | Full text in context / RAG / chunked | TBD |
-| External API | GraphQL / REST / hybrid | TBD |
+| Decision | Resolution | Status |
+|----------|-----------|--------|
+| STT engine | **Whisper** (MIT) for demo. Adapter pattern for provider swapping. | Decided |
+| Voice output (chat) | Browser Web Speech API for demo. Anthropic TTS if available. | TBD |
+| Drug database source | **RxNorm API** (free, public domain) + local cache | Decided |
+| Guidelines format | **Full text in context** — 1M token window fits 4-8 guidelines. No RAG needed. | Decided |
+| External API | **REST** for demo, **GraphQL** layer on roadmap | Decided |
 | Detailed system prompts | To be engineered during implementation | Open task |
 
 ## 7. Data Model

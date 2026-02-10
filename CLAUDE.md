@@ -22,7 +22,8 @@ When the user corrects a mistake, **immediately** log it in `docs/lessons.md` wi
 - **AI**: Claude Opus 4.6 (Anthropic SDK)
 - **Hosting**: Laravel Forge + Hetzner
 - **Development**: Laravel Herd (local)
-- **Database / Cache**: TBD — do ustalenia przy scaffoldingu
+- **Database**: PostgreSQL (jsonb, tsvector, native UUID)
+- **Cache**: TBD — do ustalenia przy scaffoldingu
 
 ## Essential Commands
 
@@ -102,3 +103,14 @@ Dla feature'ów dotyczących danych medycznych, promptów AI, lub flow pacjenta 
 - **Agent Teams**: always use `model: 'opus'` — NEVER haiku or sonnet for teammates
 
 - Hackathon deadline: **16 lutego 2026, 15:00 EST** — priorytet to działający prototyp, nie perfekcyjna dokumentacja
+
+## TODO — PRZYPOMNIENIA DLA NEDO
+
+### BLOKUJĄCE (bez tego demo nie ruszy)
+- [ ] **Transkrypt wizyty** — Nedo pisze w gabinecie (11 luty). Realistyczny dialog kardiolog-pacjent. Scenariusz: PVCs, propranolol 40mg 2x/day. Format: tekst. Zapisz w `demo/transcript.txt`.
+- [ ] **Wypis lekarski / discharge notes** — Nedo pisze w gabinecie (11 luty). Prawdziwy format wypisu. Zapisz w `demo/discharge-notes.txt`.
+
+### Do wygenerowania (Claude zrobi)
+- [ ] Mock lab results (cholesterol, K+, TSH) — JSON
+- [ ] Mock Apple Watch data (HR, PVC events) — JSON
+- [ ] Mock doctor dashboard data (patient list, alerts) — JSON
