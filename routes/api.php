@@ -95,6 +95,8 @@ Route::prefix('v1')->group(function () {
         Route::get('medications/search', [MedicationController::class, 'search']);
         Route::get('medications/{rxnormCode}', [MedicationController::class, 'show']);
         Route::get('medications/{rxnormCode}/interactions', [MedicationController::class, 'interactions']);
+        Route::get('medications/{rxnormCode}/adverse-events', [MedicationController::class, 'adverseEvents']);
+        Route::get('medications/{rxnormCode}/label', [MedicationController::class, 'label']);
 
         // ----- Module 7: Doctor Dashboard (doctor role required) -----
         Route::prefix('doctor')->middleware('role:doctor,admin')->group(function () {

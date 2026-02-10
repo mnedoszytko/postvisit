@@ -5,12 +5,17 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Medication;
 use App\Models\MedicationInteraction;
+use App\Services\Medications\OpenFdaClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class MedicationController extends Controller
 {
+    public function __construct(
+        private OpenFdaClient $openFda,
+    ) {}
+
     public function search(Request $request): JsonResponse
     {
         $request->validate([
@@ -56,5 +61,31 @@ class MedicationController extends Controller
             ->get();
 
         return response()->json(['data' => $interactions]);
+    }
+
+    public function adverseEvents(string $rxnormCode): JsonResponse
+    {
+        $medication = Medication::where('rxnorm_code', $rxnormCode)->first();
+
+        if (! $medication) {
+            return response()->json(['error' => ['message' => 'Medication not found']], 404);
+        }
+
+        $events = $this->openFda->getAdverseEvents($medication->generic_name);
+
+        return response()->json(['data' => $events]);
+    }
+
+    public function label(string $rxnormCode): JsonResponse
+    {
+        $medication = Medication::where('rxnorm_code', $rxnormCode)->first();
+
+        if (! $medication) {
+            return response()->json(['error' => ['message' => 'Medication not found']], 404);
+        }
+
+        $label = $this->openFda->getDrugLabel($medication->generic_name);
+
+        return response()->json(['data' => $label]);
     }
 }

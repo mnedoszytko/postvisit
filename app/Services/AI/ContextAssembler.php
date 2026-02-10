@@ -3,11 +3,14 @@
 namespace App\Services\AI;
 
 use App\Models\Visit;
+use App\Services\Medications\OpenFdaClient;
+use Illuminate\Support\Facades\Log;
 
 class ContextAssembler
 {
     public function __construct(
         private PromptLoader $promptLoader,
+        private OpenFdaClient $openFda,
     ) {}
 
     /**
@@ -55,10 +58,19 @@ class ContextAssembler
             ];
         }
 
+        // Layer 5: FDA safety data (adverse events, labels)
+        $fdaContext = $this->formatFdaSafetyContext($visit);
+        if ($fdaContext) {
+            $contextMessages[] = [
+                'role' => 'user',
+                'content' => $fdaContext,
+            ];
+        }
+
         // Acknowledge context load
         $contextMessages[] = [
             'role' => 'assistant',
-            'content' => 'I have loaded the full visit context, patient record, clinical guidelines, and medication data. I am ready to assist the patient with questions about this visit.',
+            'content' => 'I have loaded the full visit context, patient record, clinical guidelines, medication data, and FDA safety information. I am ready to assist the patient with questions about this visit.',
         ];
 
         return [
@@ -225,6 +237,61 @@ class ContextAssembler
         }
 
         $parts[] = "--- END MEDICATIONS DATA ---";
+
+        return implode("\n", $parts);
+    }
+
+    private function formatFdaSafetyContext(Visit $visit): ?string
+    {
+        $prescriptions = $visit->prescriptions;
+        if (! $prescriptions || $prescriptions->isEmpty()) {
+            return null;
+        }
+
+        $parts = ["--- FDA SAFETY DATA ---"];
+        $hasData = false;
+
+        foreach ($prescriptions as $rx) {
+            $med = $rx->medication;
+            if (! $med || ! $med->generic_name) {
+                continue;
+            }
+
+            try {
+                // Get top adverse events from OpenFDA FAERS database
+                $adverse = $this->openFda->getAdverseEvents($med->generic_name, 5);
+                if (! empty($adverse['events'])) {
+                    $hasData = true;
+                    $parts[] = "\nFDA Adverse Event Reports for {$med->generic_name}:";
+                    foreach ($adverse['events'] as $event) {
+                        $parts[] = "- {$event['reaction']}: {$event['count']} reports";
+                    }
+                }
+
+                // Get key label sections
+                $label = $this->openFda->getDrugLabel($med->generic_name);
+                if (! empty($label)) {
+                    $hasData = true;
+                    if (! empty($label['boxed_warning'])) {
+                        $parts[] = "\nBOXED WARNING for {$med->generic_name}: " . mb_substr($label['boxed_warning'], 0, 500);
+                    }
+                    if (! empty($label['information_for_patients'])) {
+                        $parts[] = "\nPatient Information for {$med->generic_name}: " . mb_substr($label['information_for_patients'], 0, 500);
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Failed to fetch FDA data for context', [
+                    'medication' => $med->generic_name,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if (! $hasData) {
+            return null;
+        }
+
+        $parts[] = "--- END FDA SAFETY DATA ---";
 
         return implode("\n", $parts);
     }
