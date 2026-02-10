@@ -14,7 +14,7 @@ class TranscriptController extends Controller
     {
         $validated = $request->validate([
             'raw_transcript' => ['required', 'string'],
-            'source_type' => ['required', 'in:ambient_device,uploaded_audio,manual_entry'],
+            'source_type' => ['required', 'in:ambient_phone,ambient_device,manual_upload'],
             'stt_provider' => ['nullable', 'string'],
             'audio_duration_seconds' => ['nullable', 'integer'],
             'patient_consent_given' => ['required', 'boolean'],
@@ -22,6 +22,8 @@ class TranscriptController extends Controller
 
         $validated['visit_id'] = $visit->id;
         $validated['patient_id'] = $visit->patient_id;
+        $validated['stt_provider'] = $validated['stt_provider'] ?? 'none';
+        $validated['audio_duration_seconds'] = $validated['audio_duration_seconds'] ?? 0;
         $validated['processing_status'] = 'pending';
         $validated['consent_timestamp'] = $validated['patient_consent_given'] ? now() : null;
 

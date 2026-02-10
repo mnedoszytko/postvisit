@@ -20,7 +20,9 @@ class VisitController extends Controller
             'started_at' => ['required', 'date'],
         ]);
 
+        $validated['fhir_encounter_id'] = 'Encounter/' . \Illuminate\Support\Str::uuid();
         $validated['visit_status'] = 'in_progress';
+        $validated['class'] = $validated['class'] ?? 'AMB';
         $validated['created_by'] = $request->user()->id;
 
         $visit = Visit::create($validated);
