@@ -1,36 +1,50 @@
 # PostVisit.ai
 
+[![Tests](https://img.shields.io/badge/tests-67%20passed-brightgreen)]()
+[![PHP](https://img.shields.io/badge/PHP-8.4-8892BF)]()
+[![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20)]()
+[![Vue](https://img.shields.io/badge/Vue-3-4FC08D)]()
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 **AI-powered post-visit care platform** that bridges the gap between what happens in the doctor's office and what happens after. Built for the [Claude AI Hackathon](https://anthropic.com) (Feb 10-16, 2026).
 
 ## The Problem
 
-After a medical visit, patients forget recommendations, struggle with medical terminology, and have no way to reference what was discussed. Doctors repeat the same explanations and lack feedback on patient understanding. PostVisit.ai solves this by maintaining the full context of a clinical visit and helping the patient afterward.
+After a medical visit, patients forget up to 80% of what their doctor said. They struggle with medical terminology, have no way to reference what was discussed, and are left with confusing discharge papers. Doctors repeat the same explanations and lack feedback on patient understanding.
+
+PostVisit.ai solves this by maintaining the full context of a clinical visit and providing an AI assistant that helps the patient afterward -- grounded in their actual visit data, not generic search results.
 
 ## What It Does
 
-- **Companion Scribe** - Patient-initiated visit recording ("reverse scribe") that captures the full conversation
-- **AI Visit Summary** - Transcription is processed into structured SOAP notes, observations, diagnoses, and prescriptions
-- **Contextual Q&A** - Patient asks questions in natural language, gets answers grounded in their visit data + clinical guidelines
-- **Medication Intelligence** - Drug interaction checks, dosage explanations, and side effect information via RxNorm
-- **Doctor Feedback Loop** - Patients can send follow-up questions and symptoms; doctors receive alerts for concerning patterns
-- **Doctor Dashboard** - Practitioners monitor patient engagement, review AI chat transcripts, and respond to escalations
+- **Companion Scribe** -- Patient-initiated visit recording that captures the full doctor-patient conversation
+- **AI Visit Summary** -- Transcription processed into structured SOAP notes, observations, diagnoses, and prescriptions
+- **Contextual Q&A** -- Patient asks questions in natural language; gets answers grounded in their visit data, clinical guidelines, and FDA safety data
+- **Medication Intelligence** -- Drug interaction checks, dosage explanations, side effect data from OpenFDA FAERS, and official drug labels from DailyMed
+- **Medical Term Explain** -- Click any medical term to get a plain-language explanation tailored to the patient's specific visit context
+- **Escalation Detection** -- AI monitors for urgent symptoms (chest pain, breathing difficulty, suicidal ideation) and redirects to emergency services
+- **Doctor Feedback Loop** -- Patients send follow-up questions; doctors receive alerts for concerning patterns
+- **Doctor Dashboard** -- Practitioners monitor patient engagement, review AI chat transcripts, and respond to escalations
 
 ## Architecture
 
 ```
 PostVisit.ai
-├── Laravel 12 (PHP 8.4)          # API + backend logic
-├── Vue 3 + Tailwind CSS           # Patient & Doctor SPA
-├── Claude Opus 4.6                # AI engine (via Anthropic SDK)
-├── PostgreSQL 17                  # Primary database (UUID, jsonb)
-└── Laravel Sanctum                # Cookie + token auth
++-- Laravel 12 (PHP 8.4)              API + backend logic
++-- Vue 3 + Tailwind CSS               Patient & Doctor SPA
++-- Claude Opus 4.6                    AI engine (streaming SSE)
++-- PostgreSQL 17                      Primary database (UUID, jsonb)
++-- OpenFDA + DailyMed + RxNorm        Drug safety data (public domain)
++-- NIH Clinical Tables               Condition/procedure lookup
++-- Laravel Sanctum                    Cookie + token auth
 ```
 
 **Key design decisions:**
 - Integrated Laravel + Vue (no CORS, shared auth) for hackathon speed
 - UUID primary keys on all tables for FHIR compatibility
 - FHIR-aligned data model (Patient, Encounter, Observation, Condition, MedicationRequest)
+- Server-Sent Events (SSE) for real-time AI streaming
 - AI prompts versioned as files in `prompts/` directory
+- 5-layer AI context assembly: visit data, patient record, clinical guidelines, medications, FDA safety data
 - All patient data is patient-owned (consent model, right to erasure)
 
 ## Tech Stack
@@ -44,6 +58,9 @@ PostVisit.ai
 | CSS | Tailwind CSS | MIT |
 | Auth | Laravel Sanctum | MIT |
 | Drug Data | RxNorm (NLM) | Public Domain |
+| Drug Safety | OpenFDA FAERS | Public Domain |
+| Drug Labels | DailyMed (NLM) | Public Domain |
+| Clinical Tables | NIH Clinical Tables | Public |
 | Guidelines | ESC Clinical Guidelines | CC-BY |
 
 Full license tracking: [`docs/licenses.md`](docs/licenses.md)
@@ -55,6 +72,7 @@ Full license tracking: [`docs/licenses.md`](docs/licenses.md)
 - PostgreSQL 17
 - Bun (or npm)
 - Laravel Herd (recommended) or any local PHP server
+- Anthropic API key
 
 ### Setup
 
@@ -68,6 +86,7 @@ bun install
 cp .env.example .env
 php artisan key:generate
 # Edit .env: set DB_CONNECTION=pgsql, DB_DATABASE=postvisit
+# Edit .env: set ANTHROPIC_API_KEY=sk-ant-...
 
 # Database
 php artisan migrate
@@ -75,6 +94,13 @@ php artisan db:seed --class=DemoSeeder
 
 # Build frontend
 bun run build
+```
+
+### Docker Setup
+
+```bash
+docker compose up -d
+docker compose exec app php artisan migrate --seed
 ```
 
 ### Demo Accounts
@@ -91,7 +117,7 @@ Demo scenario: Cardiology visit for PVCs (premature ventricular contractions), p
 ### API Quick Test
 
 ```bash
-# Start demo session (no auth required)
+# Start demo session (no auth required in local env)
 curl -X POST http://postvisit.test/api/v1/demo/start
 
 # Or login directly
@@ -102,7 +128,7 @@ curl -X POST http://postvisit.test/api/v1/auth/login \
 
 ## API
 
-45 REST endpoints under `/api/v1/`. Key modules:
+47 REST endpoints under `/api/v1/`. Key modules:
 
 | Module | Endpoints | Description |
 |--------|-----------|-------------|
@@ -110,14 +136,30 @@ curl -X POST http://postvisit.test/api/v1/auth/login \
 | Patients | 8 | Profile, visits, conditions, documents, prescriptions |
 | Visits | 3 | Create, view, summary |
 | Transcripts | 4 | Upload, view, process, status |
-| Chat | 2 | Send message (AI), history |
-| Medications | 3 | Search, detail, interactions |
+| Chat (SSE) | 2 | AI Q&A with streaming, history |
+| Explain (SSE) | 1 | Medical term explanation with streaming |
+| Medications | 5 | Search, detail, interactions, adverse events, labels |
 | Feedback | 3 | Patient messages, doctor replies |
 | Doctor | 9 | Dashboard, patients, engagement, audit, notifications |
 | Audit | 1 | HIPAA-compliant audit logs |
 | Demo | 4 | Quick-start, status, reset, simulate alerts |
 
-Full API documentation: [`docs/api.md`](docs/api.md)
+## AI Architecture
+
+PostVisit.ai uses a 5-layer context assembly pattern to give Claude full visit context:
+
+1. **Visit Data** -- SOAP note, observations, test results, transcript
+2. **Patient Record** -- Demographics, conditions, active prescriptions
+3. **Clinical Guidelines** -- Specialty-specific guidelines for the visit type
+4. **Medications** -- Drug details, dosing, interactions from RxNorm
+5. **FDA Safety Data** -- Adverse event reports (FAERS) and official drug labels from OpenFDA
+
+AI services include:
+- **QaAssistant** -- Streaming Q&A with escalation detection
+- **MedicalExplainer** -- Term-level explanations in patient context
+- **MedsAnalyzer** -- Drug analysis with interaction checks
+- **EscalationDetector** -- Keyword + AI urgency evaluation
+- **ContextAssembler** -- Layered context builder
 
 ## Testing
 
@@ -125,27 +167,27 @@ Full API documentation: [`docs/api.md`](docs/api.md)
 php artisan test
 ```
 
-67 feature tests covering all API modules with 175 assertions. Tests use SQLite in-memory for speed.
+67 feature tests covering all API modules with 172+ assertions. Tests use SQLite in-memory for speed, with mocked AI services.
 
 ## Project Structure
 
 ```
 app/
-├── Http/Controllers/Api/     # 13 API controllers
-├── Http/Middleware/           # RoleMiddleware (doctor/admin guards)
-├── Models/                   # 18 Eloquent models (UUID, FHIR-aligned)
-├── Services/AI/              # AI service layer (prompts, context, streaming)
-└── Services/Medications/     # RxNorm integration
++-- Http/Controllers/Api/     # 13 API controllers
++-- Http/Middleware/           # RoleMiddleware (doctor/admin guards)
++-- Models/                   # 18 Eloquent models (UUID, FHIR-aligned)
++-- Services/AI/              # AI service layer (prompts, context, streaming)
++-- Services/Medications/     # RxNorm, OpenFDA, DailyMed, NIH clients
 database/
-├── factories/                # 18 model factories for testing
-├── migrations/               # 22 migrations (PostgreSQL-optimized)
-└── seeders/                  # DemoSeeder (cardiology scenario)
++-- factories/                # 18 model factories for testing
++-- migrations/               # 22 migrations (PostgreSQL-optimized)
++-- seeders/                  # DemoSeeder (cardiology scenario)
 resources/js/
-├── views/                    # 11 Vue views (patient + doctor)
-├── components/               # Reusable components (ChatPanel, VisitSection)
-├── stores/                   # Pinia stores (auth, visit, chat, doctor)
-├── composables/              # useApi (Axios + CSRF), useSse
-└── router/                   # Vue Router with role-based guards
++-- views/                    # 11 Vue views (patient + doctor)
++-- components/               # ChatPanel, VisitSection, ToastContainer
++-- stores/                   # Pinia stores (auth, visit, chat, doctor, toast)
++-- composables/              # useApi (Axios + CSRF)
++-- router/                   # Vue Router with role-based guards
 docs/                         # Project documentation
 prompts/                      # AI system prompts (versioned)
 demo/                         # Demo data and scenarios
@@ -153,20 +195,20 @@ demo/                         # Demo data and scenarios
 
 ## Documentation
 
-- [`docs/prd.md`](docs/prd.md) - Product Requirements Document
-- [`docs/data-model.md`](docs/data-model.md) - Database schema and relationships
-- [`docs/api.md`](docs/api.md) - API endpoint reference
-- [`docs/decisions.md`](docs/decisions.md) - Architecture decision log
-- [`docs/licenses.md`](docs/licenses.md) - Dependency license tracker
-- [`docs/lessons.md`](docs/lessons.md) - Development lessons learned
+- [`docs/prd.md`](docs/prd.md) -- Product Requirements Document
+- [`docs/data-model.md`](docs/data-model.md) -- Database schema and relationships
+- [`docs/decisions.md`](docs/decisions.md) -- Architecture decision log
+- [`docs/licenses.md`](docs/licenses.md) -- Dependency license tracker
+- [`docs/security-audit.md`](docs/security-audit.md) -- OWASP Top 10 security audit
+- [`docs/lessons.md`](docs/lessons.md) -- Development lessons learned
 
 ## Hackathon Tracks
 
 PostVisit.ai addresses all three hackathon tracks:
 
-1. **Build a Tool That Should Exist** - No existing system combines visit context, health records, and clinical guidelines for patient-initiated post-visit support
-2. **Break the Barriers** - AI translates expert medical knowledge into accessible language for any patient
-3. **Amplify Human Judgment** - Doctor-in-the-loop design: the system helps patients understand clinical decisions, never replaces them
+1. **Build a Tool That Should Exist** -- No existing system combines visit context, health records, and clinical guidelines for patient-initiated post-visit support
+2. **Break the Barriers** -- AI translates expert medical knowledge into accessible language for any patient, regardless of health literacy
+3. **Amplify Human Judgment** -- Doctor-in-the-loop design: the system helps patients understand clinical decisions, never replaces them
 
 ## License
 
