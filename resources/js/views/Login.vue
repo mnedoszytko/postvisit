@@ -40,6 +40,26 @@
           {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
       </form>
+
+      <div class="mt-6 space-y-2">
+        <p class="text-center text-xs text-gray-400 uppercase tracking-wide">Demo Access</p>
+        <div class="flex gap-2">
+          <button
+            :disabled="loading"
+            class="flex-1 py-2.5 bg-white text-emerald-700 border border-emerald-300 rounded-lg font-medium hover:bg-emerald-50 transition-colors disabled:opacity-50 text-sm"
+            @click="demoLogin('patient')"
+          >
+            Sign in as Patient
+          </button>
+          <button
+            :disabled="loading"
+            class="flex-1 py-2.5 bg-white text-indigo-700 border border-indigo-300 rounded-lg font-medium hover:bg-indigo-50 transition-colors disabled:opacity-50 text-sm"
+            @click="demoLogin('doctor')"
+          >
+            Sign in as Doctor
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -47,6 +67,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useApi } from '@/composables/useApi';
 import { useRouter, useRoute } from 'vue-router';
 
 const auth = useAuthStore();
@@ -67,6 +88,22 @@ async function handleLogin() {
         router.push(redirect);
     } catch (err) {
         error.value = err.response?.data?.error?.message || 'Invalid credentials. Please try again.';
+    } finally {
+        loading.value = false;
+    }
+}
+
+async function demoLogin(role) {
+    loading.value = true;
+    error.value = '';
+    try {
+        const api = useApi();
+        const { data } = await api.post('/demo/start', { role });
+        auth.user = data.data.user;
+        auth.token = data.data.token;
+        router.push(role === 'doctor' ? '/doctor' : '/profile');
+    } catch (err) {
+        error.value = err.response?.data?.error?.message || 'Demo data not seeded. Run: php artisan db:seed --class=DemoSeeder';
     } finally {
         loading.value = false;
     }
