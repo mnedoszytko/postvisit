@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->statefulApi();
+
+        $middleware->api(prepend: [
+            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Auth;
 
 class DemoController extends Controller
 {
+    public function __construct()
+    {
+        if (! app()->environment('local', 'staging', 'testing')) {
+            abort(403, 'Demo endpoints are only available in local/staging environments.');
+        }
+    }
+
     public function start(Request $request): JsonResponse
     {
         $role = $request->input('role', 'patient');

@@ -26,7 +26,7 @@ Route::prefix('v1')->group(function () {
     // -------------------------------------------------------
     // Auth (public)
     // -------------------------------------------------------
-    Route::prefix('auth')->group(function () {
+    Route::prefix('auth')->middleware('throttle:auth')->group(function () {
         Route::post('register', [AuthController::class, 'register']);
         Route::post('login', [AuthController::class, 'login']);
     });
