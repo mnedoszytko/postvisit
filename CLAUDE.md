@@ -135,6 +135,44 @@ Dla feature'ów dotyczących danych medycznych, promptów AI, lub flow pacjenta 
 
 - Hackathon deadline: **16 lutego 2026, 15:00 EST** — priorytet to działający prototyp, nie perfekcyjna dokumentacja
 
+## Linear (Project Management)
+
+Team **POST** in the `medduties` workspace. API key is available as `$LINEAR_API_KEY` env var.
+
+### Querying issues via GraphQL
+
+```bash
+curl -s -X POST 'https://api.linear.app/graphql' \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -d '{"query":"{ team(id: \"506cce46-72bf-4ee9-80d6-754659668b7b\") { issues(first: 50) { nodes { identifier title state { name } priority priorityLabel assignee { name } } } } }"}'
+```
+
+### Creating / updating issues
+
+```bash
+# Create an issue
+curl -s -X POST 'https://api.linear.app/graphql' \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -d '{"query":"mutation { issueCreate(input: { teamId: \"506cce46-72bf-4ee9-80d6-754659668b7b\", title: \"Issue title\", description: \"Details\" }) { success issue { identifier url } } }"}'
+
+# Update issue state (use stateId from workflow states query)
+curl -s -X POST 'https://api.linear.app/graphql' \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -d '{"query":"mutation { issueUpdate(id: \"<issue-uuid>\", input: { stateId: \"<state-uuid>\" }) { success } }"}'
+```
+
+### Key IDs
+- **Team POST**: `506cce46-72bf-4ee9-80d6-754659668b7b`
+- Use `$LINEAR_API_KEY` env var — never hardcode the token
+
+### Tips
+- Always use GraphQL API (`https://api.linear.app/graphql`) — do not rely on browser automation for Linear
+- Pipe output through `python3 -m json.tool` for readable formatting
+- Linear API docs: https://developers.linear.app/docs/graphql/working-with-the-graphql-api
+
 ## TODO — PRZYPOMNIENIA DLA NEDO
 
 ### BLOKUJĄCE (bez tego demo nie ruszy)
