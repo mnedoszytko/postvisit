@@ -2,39 +2,44 @@
 
 namespace App\Services\AI;
 
+use Anthropic\Client;
 use Generator;
 use Illuminate\Support\Facades\Log;
 
 class AnthropicClient
 {
+    private Client $client;
     private string $defaultModel;
 
     public function __construct()
     {
+        $this->client = new Client(
+            apiKey: config('anthropic.api_key'),
+        );
         $this->defaultModel = config('anthropic.default_model', 'claude-opus-4-6');
     }
 
     /**
      * Send a chat request and return the full response.
-     *
-     * @param string $systemPrompt System-level instructions
-     * @param array $messages Array of message objects [{role: 'user'|'assistant', content: '...'}]
-     * @param array $options Override model, max_tokens, temperature, etc.
-     * @return string The assistant's response text
      */
     public function chat(string $systemPrompt, array $messages, array $options = []): string
     {
         $model = $options['model'] ?? $this->defaultModel;
         $maxTokens = $options['max_tokens'] ?? 4096;
 
-        $response = \Anthropic\Laravel\Facades\Anthropic::messages()->create([
-            'model' => $model,
-            'max_tokens' => $maxTokens,
-            'system' => $systemPrompt,
-            'messages' => $messages,
-        ]);
+        $response = $this->client->messages->create(
+            model: $model,
+            maxTokens: $maxTokens,
+            system: $systemPrompt,
+            messages: $messages,
+        );
 
-        $text = $response->content[0]->text ?? '';
+        $text = '';
+        foreach ($response->content as $block) {
+            if ($block->type === 'text') {
+                $text .= $block->text;
+            }
+        }
 
         Log::channel('ai')->info('Anthropic chat request', [
             'model' => $model,
@@ -48,9 +53,6 @@ class AnthropicClient
     /**
      * Send a streaming chat request and yield tokens.
      *
-     * @param string $systemPrompt System-level instructions
-     * @param array $messages Array of message objects
-     * @param array $options Override model, max_tokens, temperature, etc.
      * @return Generator<string> Yields response text chunks
      */
     public function stream(string $systemPrompt, array $messages, array $options = []): Generator
@@ -58,15 +60,15 @@ class AnthropicClient
         $model = $options['model'] ?? $this->defaultModel;
         $maxTokens = $options['max_tokens'] ?? 4096;
 
-        $stream = \Anthropic\Laravel\Facades\Anthropic::messages()->createStreamed([
-            'model' => $model,
-            'max_tokens' => $maxTokens,
-            'system' => $systemPrompt,
-            'messages' => $messages,
-        ]);
+        $stream = $this->client->messages->createStream(
+            model: $model,
+            maxTokens: $maxTokens,
+            system: $systemPrompt,
+            messages: $messages,
+        );
 
         foreach ($stream as $event) {
-            if (isset($event->delta->text)) {
+            if ($event->type === 'content_block_delta' && $event->delta->type === 'text_delta') {
                 yield $event->delta->text;
             }
         }
