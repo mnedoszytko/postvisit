@@ -7,6 +7,7 @@
         "dev": "vite"
     },
     "devDependencies": {
+        "@tailwindcss/typography": "^0.5.19",
         "@tailwindcss/vite": "^4.0.0",
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
@@ -16,6 +17,7 @@
     },
     "dependencies": {
         "@vitejs/plugin-vue": "^6.0.4",
+        "marked": "^17.0.1",
         "pinia": "^3.0.4",
         "vue": "3",
         "vue-router": "4"

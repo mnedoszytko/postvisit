@@ -67,7 +67,7 @@ onMounted(() => {
             // Auto-redirect to the visit view
             const visitId = visitStore.currentVisit?.id;
             if (visitId) {
-                router.push(`/visit/${visitId}`);
+                router.push(`/visits/${visitId}`);
             } else {
                 // Fallback: redirect to patient profile
                 router.push('/profile');

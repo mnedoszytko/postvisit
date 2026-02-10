@@ -30,10 +30,47 @@
 - [x] POST-12: README.md polish — badges, AI architecture section, Docker setup
 - [x] Resend email integration — installed package, created VisitSummaryMail
 
-### Phase 5: Audit & Report
-- [ ] Test all new functionality via Chrome browser automation
-- [ ] Update Linear issues status
-- [ ] Propose next steps for Feb 11
+### Phase 5: Audit & Report -- DONE
+- [x] Test all new functionality via Chrome browser automation
+- [x] Fix bugs found during testing (see below)
+- [ ] Update Linear issues status (deferred — user may want to do manually)
+- [x] Propose next steps for Feb 11
+
+## Chrome Browser Test Results
+
+### Patient Flow (Alex Johnson, demo patient)
+| Test | Result | Notes |
+|------|--------|-------|
+| Login page renders | PASS | Clean design, demo access buttons |
+| "Sign in as Patient" login | PASS | Redirects to /profile |
+| Patient profile shows name + visits | PASS | Alex Johnson, 1 visit listed |
+| Visit view loads all sections | PASS | 10 SOAP sections with expand/collapse |
+| Chief Complaint expand | PASS | Shows "Heart palpitations..." + "Explain this" link |
+| Medications Prescribed expand | PASS | Propranolol 40mg, dosage + instructions |
+| AI Chat panel opens (? button) | PASS | Slide-in panel with input field |
+| AI Chat sends message + gets response | PASS | Real Opus response about propranolol via SSE streaming |
+| "Explain this" opens chat with context | PASS | Pre-fills "Explain: Chief Complaint" in input |
+| Companion Scribe consent step | PASS | Consent notice + start recording button |
+| Recording step with timer | PASS | Pulsing red circle, timer counting, stop button |
+| Post-recording step | PASS | Shows duration, "Process Visit" link |
+| Processing view animation | PASS | Step-by-step progress indicators |
+
+### Doctor Flow (Dr. Nedo, demo doctor)
+| Test | Result | Notes |
+|------|--------|-------|
+| "Sign in as Doctor" login | PASS | Redirects to /doctor dashboard |
+| Dashboard loads with cards | PASS | Patients/Messages/Alerts cards, sidebar |
+| Patient list shows | PARTIAL | Row visible but missing patient name, shows "?" initials |
+
+### Bugs Found & Fixed
+1. **Processing view redirect wrong URL** — `/visit/${id}` → `/visits/${id}` (plural). Fixed.
+2. **Medication dosage trailing zeros** — "40.0000 mg" → `parseFloat()` to show "40 mg". Fixed.
+3. **Chat markdown not rendered** — AI responses showed raw `**bold**` and `###` headers. Added `marked` library + `@tailwindcss/typography` plugin. Fixed.
+
+### Known Minor Issues (not blocking)
+- Doctor dashboard shows patient count "0" but lists 1 patient row — API response mapping
+- Patient row shows "?" initials instead of name — display_name not mapped in API response
+- Chat panel: markdown `prose` styles may need color tuning for dark-on-light readability
 
 ## Rules
 - Every commit: `herd php artisan test` + `bun run build` must pass
@@ -50,8 +87,18 @@
 6. `046fc0a` (feature/primevue) Add PrimeVue 4 with Aura theme
 7. `bcc4c8c` (feature/voice-chat) Add voice chat: mic button with Whisper STT transcription
 8. `dae7297` (feature/recording-animations) Add 3 recording animation variants
+9. _(pending)_ Fix bugs from Chrome testing: URL fix, dosage formatting, markdown rendering
 
 ## Feature Branches (for user review)
 - `feature/primevue` — PrimeVue 4 + Aura theme, ready to merge
 - `feature/voice-chat` — Mic button + Whisper STT transcription
 - `feature/recording-animations` — 3 animation variants (ripples, waveform, orbit)
+
+## Proposed Next Steps for Feb 11
+1. **Nedo writes transcript + discharge notes** (BLOCKING) — Demo data needed for realistic flow
+2. **Fix doctor dashboard** — Patient name display, correct patient count
+3. **Review & merge feature branches** — PrimeVue, voice chat, recording animations
+4. **Real transcript processing pipeline** — Connect Companion Scribe → Whisper STT → AI processing → Visit creation
+5. **Medical term highlighting** — "Explain this" should appear on medical terms, not just section titles
+6. **Demo mode** — Pre-loaded walkthrough for hackathon judges
+7. **Deployment to Hetzner** via Forge — Get postvisit.ai live

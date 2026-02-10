@@ -27,6 +27,7 @@
           ]"
         >
           <StreamingMessage v-if="msg.streaming" :text="msg.content" />
+          <div v-else-if="msg.role === 'assistant'" class="prose prose-sm max-w-none" v-html="renderMarkdown(msg.content)" />
           <p v-else>{{ msg.content }}</p>
         </div>
       </div>
@@ -60,7 +61,13 @@
 <script setup>
 import { ref, onMounted, nextTick, watch } from 'vue';
 import { useChatStore } from '@/stores/chat';
+import { marked } from 'marked';
 import StreamingMessage from '@/components/StreamingMessage.vue';
+
+marked.setOptions({ breaks: true, gfm: true });
+function renderMarkdown(text) {
+    return marked.parse(text || '');
+}
 
 const props = defineProps({
     visitId: { type: String, required: true },

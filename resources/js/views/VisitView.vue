@@ -80,7 +80,7 @@
           <div v-if="rxExpanded" class="px-4 pb-4 space-y-3">
             <div v-for="rx in visit.prescriptions" :key="rx.id" class="border-b border-gray-100 pb-2 last:border-0">
               <p class="font-medium text-gray-800 text-sm">{{ rx.medication?.display_name || rx.medication?.generic_name }}</p>
-              <p class="text-sm text-gray-600">{{ rx.dose_quantity }} {{ rx.dose_unit }} &middot; {{ rx.frequency_text || rx.frequency }}</p>
+              <p class="text-sm text-gray-600">{{ parseFloat(rx.dose_quantity) }} {{ rx.dose_unit }} &middot; {{ rx.frequency_text || rx.frequency }}</p>
               <p v-if="rx.special_instructions" class="text-xs text-gray-500 mt-1">{{ rx.special_instructions }}</p>
             </div>
           </div>
