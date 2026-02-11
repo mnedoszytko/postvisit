@@ -172,13 +172,30 @@ git tag v0.x-description
 ```
 Use for rollback if merge breaks something.
 
-### PR Discipline (CRITICAL)
+### PR Discipline (CRITICAL — enforced after PRs #68 and #69 were rejected for scope violation)
 - **Every PR must be scoped to ONE topic.** Do not mix unrelated changes (e.g. animation PR must not delete API controllers).
 - **Never delete files unrelated to the PR scope.** If you notice dead code, create a separate cleanup PR.
 - **Never commit changes that "came along for the ride"** from a long-lived branch. Cherry-pick or recreate on a clean branch from `main`.
 - **Before creating a PR, verify `git diff main..HEAD --stat`** — every file in the diff must be justified by the PR description.
 - **If a feature branch has diverged significantly from main** (many unrelated deletions/additions), do NOT merge it directly. Instead: create a fresh branch from main, cherry-pick only the relevant commits, and PR that.
 - **PR title must be under 70 chars**, description must list changed files and explain why each changed.
+
+**MANDATORY WORKFLOW for single-purpose PRs (especially from VPS agents):**
+```bash
+# 1. ALWAYS start from fresh main
+git fetch origin main
+git checkout -b fix/my-specific-fix FETCH_HEAD
+
+# 2. Make ONLY the targeted changes — nothing else
+
+# 3. VERIFY scope before committing
+git diff --stat          # Must show ONLY files relevant to this PR
+git diff                 # Read every line — no surprises
+
+# 4. If you see unexpected files — STOP. You are on a dirty branch.
+#    Delete it and start over from step 1.
+```
+**Why this exists:** PRs #68 and #69 were both rejected because VPS agents branched from long-lived workspace branches instead of fresh `main`. The workspace had accumulated days of unrelated changes that leaked into the PRs (10 files changed instead of 1). See `docs/lessons.md` Lesson 15.
 
 ### Safe Merge Strategy
 1. Always create PRs — never push directly to `main` for non-trivial changes
