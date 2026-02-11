@@ -70,6 +70,7 @@ Route::prefix('v1')->group(function () {
             // Transcript
             Route::post('transcript', [TranscriptController::class, 'store']);
             Route::post('transcript/upload-audio', [TranscriptController::class, 'uploadAudio']);
+            Route::post('transcript/transcribe-chunk', [TranscriptController::class, 'transcribeChunk']);
             Route::get('transcript', [TranscriptController::class, 'show']);
             Route::post('transcript/process', [TranscriptController::class, 'process']);
             Route::get('transcript/status', [TranscriptController::class, 'status']);

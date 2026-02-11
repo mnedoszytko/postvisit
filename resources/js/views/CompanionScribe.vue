@@ -39,7 +39,9 @@
         <ThreeVisualizer />
 
         <p class="text-2xl font-mono text-gray-700 tracking-widest">{{ formattedTime }}</p>
-        <p class="text-xs text-gray-400">Your conversation is being captured securely</p>
+        <p class="text-xs text-gray-400">
+          {{ audioSegments.length > 0 ? `Segment ${audioSegments.length + 1} · ` : '' }}Your conversation is being captured securely
+        </p>
         <button
           class="w-full py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors"
           @click="stopRecording"
@@ -56,15 +58,15 @@
           </svg>
         </div>
         <h2 class="text-lg font-semibold text-gray-800">
-          {{ uploading ? 'Processing audio...' : 'Recording Complete' }}
+          {{ uploading ? uploadStatusText : 'Recording Complete' }}
         </h2>
-        <p class="text-gray-500">{{ formattedTime }} recorded</p>
+        <p class="text-gray-500">{{ formattedTime }} recorded{{ totalSegments > 1 ? ` (${totalSegments} segments)` : '' }}</p>
 
         <div v-if="uploading" class="space-y-3">
           <div class="w-full bg-gray-200 rounded-full h-2">
-            <div class="bg-emerald-600 h-2 rounded-full animate-pulse" style="width: 60%" />
+            <div class="bg-emerald-600 h-2 rounded-full transition-all duration-500" :style="{ width: uploadProgress + '%' }" />
           </div>
-          <p class="text-sm text-gray-400">Transcribing with Whisper AI...</p>
+          <p class="text-sm text-gray-400">{{ uploadDetailText }}</p>
         </div>
 
         <button
@@ -95,6 +97,7 @@ const route = useRoute();
 const api = useApi();
 const auth = useAuthStore();
 
+// Recording state
 const step = ref('consent');
 const seconds = ref(0);
 const starting = ref(false);
@@ -103,11 +106,24 @@ const error = ref('');
 const demoMode = ref(false);
 const demoLoading = ref(false);
 
+// Upload progress
+const uploadProgress = ref(0);
+const uploadStatusText = ref('Processing audio...');
+const uploadDetailText = ref('Transcribing with Whisper AI...');
+
+// Chunking — rotate MediaRecorder every CHUNK_DURATION_SEC to stay under Whisper 25 MB limit
+const CHUNK_DURATION_SEC = 10 * 60; // 10 minutes per segment
+
 demoMode.value = route.query.demo === 'true';
 let timer = null;
+let chunkTimer = null;
 let mediaRecorder = null;
-let audioChunks = [];
-let audioBlob = null;
+let mediaStream = null;
+let currentChunkData = [];
+
+// Completed audio segments (blobs) — one per CHUNK_DURATION_SEC window
+const audioSegments = ref([]);
+const totalSegments = computed(() => audioSegments.value.length);
 
 const formattedTime = computed(() => {
     const m = Math.floor(seconds.value / 60).toString().padStart(2, '0');
@@ -115,33 +131,55 @@ const formattedTime = computed(() => {
     return `${m}:${s}`;
 });
 
+function getMimeType() {
+    return MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : 'audio/webm';
+}
+
+function createRecorder(stream) {
+    currentChunkData = [];
+    const recorder = new MediaRecorder(stream, { mimeType: getMimeType() });
+
+    recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+            currentChunkData.push(event.data);
+        }
+    };
+
+    recorder.onstop = () => {
+        if (currentChunkData.length > 0) {
+            const blob = new Blob(currentChunkData, { type: recorder.mimeType });
+            audioSegments.value.push(blob);
+        }
+    };
+
+    recorder.start(1000);
+    return recorder;
+}
+
+function rotateChunk() {
+    if (!mediaRecorder || mediaRecorder.state !== 'recording' || !mediaStream) return;
+
+    // Stop current recorder — triggers onstop which saves the blob
+    mediaRecorder.stop();
+
+    // Start a new recorder on the same stream
+    mediaRecorder = createRecorder(mediaStream);
+}
+
 async function startRecording() {
     starting.value = true;
     error.value = '';
 
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioSegments.value = [];
+        mediaRecorder = createRecorder(mediaStream);
 
-        audioChunks = [];
-        mediaRecorder = new MediaRecorder(stream, {
-            mimeType: MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-                ? 'audio/webm;codecs=opus'
-                : 'audio/webm',
-        });
+        // Schedule chunk rotation every CHUNK_DURATION_SEC
+        chunkTimer = setInterval(rotateChunk, CHUNK_DURATION_SEC * 1000);
 
-        mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-                audioChunks.push(event.data);
-            }
-        };
-
-        mediaRecorder.onstop = () => {
-            audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType });
-            // Stop all mic tracks
-            stream.getTracks().forEach(track => track.stop());
-        };
-
-        mediaRecorder.start(1000); // collect data every second
         step.value = 'recording';
     } catch (err) {
         error.value = err.name === 'NotAllowedError'
@@ -154,20 +192,31 @@ async function startRecording() {
 
 function stopRecording() {
     clearInterval(timer);
+    clearInterval(chunkTimer);
+
     if (mediaRecorder && mediaRecorder.state === 'recording') {
-        mediaRecorder.stop();
+        mediaRecorder.stop(); // triggers onstop → saves final segment
     }
+
+    // Stop all mic tracks
+    if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream = null;
+    }
+
     step.value = 'done';
 }
 
 async function processVisit() {
-    if (!audioBlob) {
+    const segments = audioSegments.value;
+    if (segments.length === 0) {
         error.value = 'No recording found. Please record again.';
         return;
     }
 
     uploading.value = true;
     error.value = '';
+    uploadProgress.value = 5;
 
     try {
         // 1. Create a new visit
@@ -176,7 +225,6 @@ async function processVisit() {
             throw new Error('Patient profile not found. Please log in again.');
         }
 
-        // Get the first available practitioner (for demo)
         const practitionerId = auth.user?.patient?.visits?.[0]?.practitioner_id
             || await getFirstPractitionerId(patientId);
 
@@ -189,19 +237,68 @@ async function processVisit() {
         });
 
         const visitId = visitRes.data.data.id;
+        uploadProgress.value = 10;
 
-        // 2. Upload audio to the visit
-        const formData = new FormData();
-        const ext = mediaRecorder.mimeType.includes('webm') ? 'webm' : 'm4a';
-        formData.append('audio', audioBlob, `recording.${ext}`);
-        formData.append('source_type', 'ambient_phone');
-        formData.append('patient_consent_given', '1');
+        if (segments.length === 1) {
+            // Single segment — use the existing direct upload endpoint
+            uploadStatusText.value = 'Transcribing audio...';
+            uploadDetailText.value = 'Sending to Whisper AI...';
 
-        await api.post(`/visits/${visitId}/transcript/upload-audio`, formData, {
-            timeout: 120000, // Whisper can take up to 2 minutes
-        });
+            const formData = new FormData();
+            const ext = getMimeType().includes('webm') ? 'webm' : 'm4a';
+            formData.append('audio', segments[0], `recording.${ext}`);
+            formData.append('source_type', 'ambient_phone');
+            formData.append('patient_consent_given', '1');
 
-        // 3. Navigate to processing view
+            await api.post(`/visits/${visitId}/transcript/upload-audio`, formData, {
+                timeout: 300000,
+            });
+
+            uploadProgress.value = 90;
+        } else {
+            // Multiple segments — upload each chunk, collect transcripts, submit combined text
+            const transcriptParts = [];
+            const ext = getMimeType().includes('webm') ? 'webm' : 'm4a';
+
+            for (let i = 0; i < segments.length; i++) {
+                uploadStatusText.value = `Transcribing segment ${i + 1} of ${segments.length}...`;
+                uploadDetailText.value = `Sending segment ${i + 1} to Whisper AI...`;
+
+                const formData = new FormData();
+                formData.append('audio', segments[i], `chunk-${i}.${ext}`);
+                formData.append('chunk_index', String(i));
+                formData.append('total_chunks', String(segments.length));
+
+                const { data } = await api.post(`/visits/${visitId}/transcript/transcribe-chunk`, formData, {
+                    timeout: 300000,
+                });
+
+                transcriptParts.push(data.data.text);
+                uploadProgress.value = 10 + Math.round(((i + 1) / segments.length) * 70);
+            }
+
+            // Combine all chunk transcripts and submit as text
+            uploadStatusText.value = 'Processing combined transcript...';
+            uploadDetailText.value = 'Analyzing with AI...';
+
+            const combinedTranscript = transcriptParts.join('\n\n');
+
+            await api.post(`/visits/${visitId}/transcript`, {
+                raw_transcript: combinedTranscript,
+                source_type: 'ambient_phone',
+                stt_provider: 'whisper',
+                audio_duration_seconds: seconds.value,
+                patient_consent_given: true,
+                process: true,
+            });
+
+            uploadProgress.value = 90;
+        }
+
+        uploadProgress.value = 100;
+        uploadStatusText.value = 'Done!';
+
+        // Navigate to processing view
         router.push({ path: '/processing', query: { visitId } });
     } catch (err) {
         error.value = err.response?.data?.message || err.message || 'Upload failed. Please try again.';
@@ -270,8 +367,12 @@ watch(step, (val) => {
 
 onUnmounted(() => {
     clearInterval(timer);
+    clearInterval(chunkTimer);
     if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
+    }
+    if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
     }
 });
 </script>
