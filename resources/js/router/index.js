@@ -12,6 +12,7 @@ import Feedback from '@/views/Feedback.vue';
 import DoctorDashboard from '@/views/DoctorDashboard.vue';
 import DoctorPatientDetail from '@/views/DoctorPatientDetail.vue';
 import DemoMode from '@/views/DemoMode.vue';
+import AnimationDemo from '@/views/AnimationDemo.vue';
 
 const routes = [
     {
@@ -76,6 +77,11 @@ const routes = [
         path: '/demo',
         name: 'demo-mode',
         component: DemoMode,
+    },
+    {
+        path: '/demo/animations',
+        name: 'animation-demo',
+        component: AnimationDemo,
     },
 ];
 
