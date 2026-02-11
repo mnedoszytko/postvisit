@@ -5,6 +5,7 @@ import Landing from '@/views/Landing.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import PatientProfile from '@/views/PatientProfile.vue';
+import HealthDashboard from '@/views/HealthDashboard.vue';
 import CompanionScribe from '@/views/CompanionScribe.vue';
 import Processing from '@/views/Processing.vue';
 import VisitView from '@/views/VisitView.vue';
@@ -34,6 +35,12 @@ const routes = [
         path: '/profile',
         name: 'patient-profile',
         component: PatientProfile,
+        meta: { requiresAuth: true, role: 'patient' },
+    },
+    {
+        path: '/health',
+        name: 'health-dashboard',
+        component: HealthDashboard,
         meta: { requiresAuth: true, role: 'patient' },
     },
     {

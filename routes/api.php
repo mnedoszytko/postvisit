@@ -50,6 +50,7 @@ Route::prefix('v1')->group(function () {
             Route::get('conditions', [PatientController::class, 'conditions']);
             Route::post('conditions', [PatientController::class, 'addCondition']);
             Route::get('health-record', [PatientController::class, 'healthRecord']);
+            Route::get('observations', [PatientController::class, 'observations']);
             Route::get('documents', [PatientController::class, 'documents']);
             Route::post('documents', [PatientController::class, 'uploadDocument']);
             Route::get('prescriptions', [PrescriptionController::class, 'patientPrescriptions']);

@@ -41,7 +41,13 @@
       </section>
 
       <!-- Quick actions -->
-      <section>
+      <section class="space-y-3">
+        <router-link
+          to="/health"
+          class="block w-full text-center py-3 bg-white text-emerald-700 border border-emerald-200 rounded-xl font-medium hover:bg-emerald-50 transition-colors"
+        >
+          View Health Dashboard
+        </router-link>
         <router-link
           to="/scribe"
           class="block w-full text-center py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors"
