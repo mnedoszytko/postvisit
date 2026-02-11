@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DemoScenarioController extends Controller
 {
@@ -26,6 +27,7 @@ class DemoScenarioController extends Controller
                     if (file_exists($jsonPath)) {
                         $json = json_decode(file_get_contents($jsonPath), true);
                         $demographics = $json['demographics'];
+                        $hasPhoto = file_exists(base_path($s['source_dir'].'/patient-photo.png'));
 
                         return [
                             'key' => $s['key'],
@@ -38,6 +40,8 @@ class DemoScenarioController extends Controller
                             'patient_gender' => $demographics['gender'],
                             'condition' => $json['conditions'][0]['name'] ?? null,
                             'language' => $demographics['preferred_language'],
+                            'bmi' => $demographics['bmi'] ?? null,
+                            'photo_url' => $hasPhoto ? "/api/v1/demo/scenarios/{$s['key']}/photo" : null,
                             'has_audio' => file_exists(base_path($s['source_dir'].'/dialogue-tts.mp3')),
                         ];
                     }
@@ -55,6 +59,8 @@ class DemoScenarioController extends Controller
                     'patient_gender' => $s['patient']['gender'],
                     'condition' => $s['conditions'][0]['code_display'] ?? null,
                     'language' => $s['patient']['preferred_language'] ?? 'en',
+                    'bmi' => null,
+                    'photo_url' => null,
                     'has_audio' => false,
                 ];
             })
@@ -101,6 +107,29 @@ class DemoScenarioController extends Controller
                 'visit' => $visit,
                 'scenario' => $scenarioKey,
             ],
+        ]);
+    }
+
+    /**
+     * Serve patient photo for a scenario.
+     */
+    public function photo(string $scenario): BinaryFileResponse
+    {
+        $scenarios = config('demo-scenarios.scenarios');
+
+        if (! isset($scenarios[$scenario]) || ! isset($scenarios[$scenario]['source_dir'])) {
+            abort(404);
+        }
+
+        $path = base_path($scenarios[$scenario]['source_dir'].'/patient-photo.png');
+
+        if (! file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path, [
+            'Content-Type' => 'image/png',
+            'Cache-Control' => 'public, max-age=86400',
         ]);
     }
 }

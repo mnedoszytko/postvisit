@@ -1,20 +1,19 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-emerald-50 to-white px-4 py-12">
-    <div class="max-w-3xl mx-auto">
-      <div class="text-center mb-10">
-        <router-link to="/" class="text-2xl font-bold text-emerald-700">PostVisit.ai</router-link>
-        <h1 class="text-3xl font-bold text-gray-900 mt-4">Choose a Demo Scenario</h1>
-        <p class="text-gray-500 mt-2">
-          Select a patient profile to explore. Each scenario creates a fresh session with realistic clinical data.
+  <div class="min-h-screen bg-gray-100 px-4 py-10 sm:px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-8">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">PostVisit.ai — Patient Portraits</h1>
+        <p class="text-sm text-gray-500 mt-2 max-w-2xl mx-auto">
+          Select a patient to start a demo session. Each scenario creates a fresh session with realistic clinical data, visit transcript, and AI-generated SOAP notes.
         </p>
       </div>
 
-      <div v-if="loadingScenarios" class="text-center py-16">
+      <div v-if="loadingScenarios" class="text-center py-20">
         <div class="inline-block w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
         <p class="text-gray-500 mt-3">Loading scenarios...</p>
       </div>
 
-      <div v-else-if="fetchError" class="text-center py-16">
+      <div v-else-if="fetchError" class="text-center py-20">
         <p class="text-red-600 mb-4">{{ fetchError }}</p>
         <button
           class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
@@ -24,58 +23,72 @@
         </button>
       </div>
 
-      <div v-else class="grid gap-6 sm:grid-cols-2">
+      <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
         <button
-          v-for="scenario in scenarios"
+          v-for="(scenario, idx) in scenarios"
           :key="scenario.key"
           :disabled="startingScenario !== null"
-          class="text-left bg-white rounded-2xl border-2 p-6 transition-all hover:shadow-lg disabled:opacity-60 disabled:cursor-wait"
-          :class="scenarioBorderClass(scenario)"
+          class="text-left bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 disabled:opacity-60 disabled:cursor-wait group"
           @click="selectScenario(scenario.key)"
         >
-          <div class="flex items-start gap-4">
+          <!-- Photo -->
+          <div class="aspect-square overflow-hidden bg-gray-200 relative">
+            <img
+              v-if="scenario.photo_url"
+              :src="scenario.photo_url"
+              :alt="scenario.patient_name"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+            />
+            <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
+              <svg class="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
+              </svg>
+            </div>
+            <!-- Loading overlay -->
             <div
-              class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-              :class="scenarioIconBgClass(scenario)"
+              v-if="startingScenario === scenario.key"
+              class="absolute inset-0 bg-black/40 flex items-center justify-center"
             >
-              <svg v-if="scenario.icon === 'heart-pulse'" class="w-6 h-6" :class="scenarioIconClass(scenario)" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.343 7.778a4.5 4.5 0 0 1 7.339-1.46L12 7.636l1.318-1.318a4.5 4.5 0 0 1 7.339 1.46c.974 2.14.19 4.652-1.414 6.256L12 21.364l-7.243-7.23C3.153 12.43 2.37 9.918 3.343 7.778Z" />
-              </svg>
-              <svg v-else class="w-6 h-6" :class="scenarioIconClass(scenario)" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h4l3-9 4 18 3-9h4" />
-              </svg>
+              <div class="w-8 h-8 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
             </div>
-            <div class="flex-1 min-w-0">
-              <h3 class="text-lg font-semibold text-gray-900">{{ scenario.name }}</h3>
-              <div class="flex items-center gap-2 mt-1">
-                <span class="text-sm font-medium text-gray-700">{{ scenario.patient_name }}</span>
-                <span class="text-xs text-gray-400">{{ scenario.patient_age }}{{ scenario.patient_gender === 'male' ? 'M' : 'F' }}</span>
-              </div>
-              <p class="text-sm text-gray-500 mt-2 leading-relaxed">{{ scenario.description }}</p>
-              <div v-if="scenario.condition" class="mt-3">
-                <span
-                  class="inline-block text-xs font-medium px-2.5 py-1 rounded-full"
-                  :class="scenarioBadgeClass(scenario)"
-                >
-                  {{ scenario.condition }}
-                </span>
-              </div>
-            </div>
+            <!-- Language badge -->
+            <span
+              v-if="scenario.language"
+              class="absolute top-2 right-2 text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded bg-black/50 text-white"
+            >
+              {{ scenario.language }}
+            </span>
           </div>
 
-          <div v-if="startingScenario === scenario.key" class="mt-4 flex items-center gap-2 text-sm text-gray-500">
-            <div class="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-            Creating your session...
+          <!-- Info -->
+          <div class="px-3 py-2.5 sm:px-4 sm:py-3">
+            <div class="font-bold text-gray-900 text-sm sm:text-base leading-tight">
+              {{ String(idx + 1).padStart(2, '0') }} — {{ scenario.patient_name }}
+            </div>
+            <div class="text-xs sm:text-sm text-gray-500 mt-0.5">
+              {{ scenario.patient_age }}{{ scenario.patient_gender === 'male' ? 'M' : 'F' }}
+              <template v-if="scenario.bmi"> · BMI {{ scenario.bmi }}</template>
+            </div>
+            <div v-if="scenario.condition" class="text-xs sm:text-[13px] text-emerald-600 italic mt-1 line-clamp-2 leading-snug">
+              {{ scenario.description }}
+            </div>
           </div>
         </button>
       </div>
 
-      <div v-if="startError" class="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 text-center">
+      <div v-if="startError" class="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 text-center max-w-lg mx-auto">
         {{ startError }}
       </div>
 
-      <div class="text-center mt-8">
-        <router-link to="/login" class="text-sm text-gray-500 hover:text-emerald-600 transition-colors">
+      <!-- Disclaimer -->
+      <p class="text-center text-[11px] text-gray-400 mt-8 max-w-2xl mx-auto leading-relaxed">
+        All patient photographs are AI-generated (Flux 2 Realism) and do not depict real individuals.
+        Clinical scenarios are based on representative cardiology cases. All names, demographics, and medical data are entirely fictional.
+      </p>
+
+      <div class="text-center mt-4">
+        <router-link to="/login" class="text-sm text-gray-400 hover:text-emerald-600 transition-colors">
           Back to Sign In
         </router-link>
       </div>
@@ -124,26 +137,6 @@ async function selectScenario(key) {
     startError.value = err.response?.data?.error?.message || 'Failed to start scenario. Please try again.';
     startingScenario.value = null;
   }
-}
-
-function scenarioBorderClass(scenario) {
-  return scenario.color === 'rose'
-    ? 'border-rose-200 hover:border-rose-400'
-    : 'border-emerald-200 hover:border-emerald-400';
-}
-
-function scenarioIconBgClass(scenario) {
-  return scenario.color === 'rose' ? 'bg-rose-100' : 'bg-emerald-100';
-}
-
-function scenarioIconClass(scenario) {
-  return scenario.color === 'rose' ? 'text-rose-600' : 'text-emerald-600';
-}
-
-function scenarioBadgeClass(scenario) {
-  return scenario.color === 'rose'
-    ? 'bg-rose-100 text-rose-700'
-    : 'bg-emerald-100 text-emerald-700';
 }
 
 onMounted(loadScenarios);
