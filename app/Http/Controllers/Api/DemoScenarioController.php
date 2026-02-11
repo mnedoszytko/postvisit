@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\Demo\DemoScenarioSeeder;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,7 @@ class DemoScenarioController extends Controller
                 'icon' => $s['icon'],
                 'color' => $s['color'],
                 'patient_name' => $s['patient']['first_name'].' '.$s['patient']['last_name'],
-                'patient_age' => now()->diffInYears($s['patient']['dob']),
+                'patient_age' => Carbon::parse($s['patient']['dob'])->age,
                 'patient_gender' => $s['patient']['gender'],
                 'condition' => $s['conditions'][0]['code_display'] ?? null,
             ])

@@ -202,7 +202,15 @@
                       :key="ki"
                       class="flex items-center justify-between bg-gray-50 rounded-lg px-2.5 py-1.5"
                     >
-                      <span class="text-xs text-gray-500">{{ kv.label }}</span>
+                      <HighlightedText
+                        v-if="matchTermsInText(kv.label).length"
+                        :content="kv.label"
+                        :terms="matchTermsInText(kv.label)"
+                        section-key="attachment_kv"
+                        class="text-xs text-gray-500"
+                        @term-click="(payload) => emit('term-click', payload)"
+                      />
+                      <span v-else class="text-xs text-gray-500">{{ kv.label }}</span>
                       <div class="flex items-center gap-1">
                         <span class="text-sm font-medium" :class="valueStatusColor(kv.status)">
                           {{ kv.value }}<span v-if="kv.unit" class="text-xs font-normal text-gray-400 ml-0.5">{{ kv.unit }}</span>
