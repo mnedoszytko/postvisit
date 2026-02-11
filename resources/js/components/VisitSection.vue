@@ -16,7 +16,7 @@
         :section-key="sectionKey"
         @term-click="(payload) => $emit('term-click', payload)"
       />
-      <p v-else class="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">{{ content }}</p>
+      <div v-else class="prose prose-sm max-w-none text-gray-700" v-html="renderContent(content)" />
       <ExplainButton @click="$emit('explain')" />
     </div>
   </div>
@@ -24,8 +24,16 @@
 
 <script setup>
 import { ref } from 'vue';
+import { marked } from 'marked';
 import ExplainButton from '@/components/ExplainButton.vue';
 import HighlightedText from '@/components/HighlightedText.vue';
+
+marked.setOptions({ breaks: true, gfm: true });
+
+function renderContent(text) {
+    if (!text) return '';
+    return marked.parse(text);
+}
 
 defineProps({
     title: { type: String, required: true },

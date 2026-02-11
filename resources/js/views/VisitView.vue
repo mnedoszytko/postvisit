@@ -98,9 +98,67 @@
             </div>
             <span class="text-gray-400 text-sm">{{ entitiesExpanded ? 'Collapse' : 'Expand' }}</span>
           </button>
-          <div v-if="entitiesExpanded" class="px-4 pb-4 space-y-4">
+          <div v-if="entitiesExpanded" class="px-4 pb-4 space-y-5">
             <div v-for="(items, category) in entities" :key="category">
-              <template v-if="Array.isArray(items) && items.length > 0">
+              <!-- Medications: structured cards -->
+              <template v-if="category === 'medications' && Array.isArray(items) && items.length > 0">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Medications</h4>
+                <div class="space-y-2">
+                  <div
+                    v-for="(med, idx) in items"
+                    :key="idx"
+                    class="flex items-start gap-3 rounded-lg border border-gray-100 p-2.5"
+                  >
+                    <span class="w-2 h-2 rounded-full mt-1.5 shrink-0 bg-blue-500" />
+                    <div class="min-w-0">
+                      <p class="font-medium text-gray-800 text-sm">{{ formatMedName(med) }}</p>
+                      <p v-if="formatMedDetails(med)" class="text-xs text-gray-500 mt-0.5">{{ formatMedDetails(med) }}</p>
+                      <span
+                        v-if="getMedStatus(med)"
+                        :class="medStatusClass(getMedStatus(med))"
+                        class="inline-block text-[10px] font-medium px-1.5 py-0.5 rounded-full mt-1"
+                      >{{ getMedStatus(med) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <!-- Test Results: structured rows -->
+              <template v-else-if="category === 'test_results' && Array.isArray(items) && items.length > 0">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Test Results</h4>
+                <div class="space-y-2">
+                  <div
+                    v-for="(result, idx) in items"
+                    :key="idx"
+                    class="rounded-lg border border-gray-100 p-2.5"
+                  >
+                    <template v-if="parseTestResult(result)">
+                      <div class="flex items-center justify-between">
+                        <span class="font-medium text-gray-800 text-sm">{{ parseTestResult(result).test }}</span>
+                        <span v-if="parseTestResult(result).date" class="text-[10px] text-gray-400">{{ parseTestResult(result).date }}</span>
+                      </div>
+                      <p class="text-sm text-gray-600 mt-0.5">{{ parseTestResult(result).result }}</p>
+                    </template>
+                    <template v-else>
+                      <span class="text-sm text-gray-700">{{ cleanUnclear(formatEntityItem(result)) }}</span>
+                    </template>
+                  </div>
+                </div>
+              </template>
+
+              <!-- Vitals: key-value pairs -->
+              <template v-else-if="typeof items === 'object' && !Array.isArray(items) && Object.keys(items).length > 0">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{{ formatEntityCategory(category) }}</h4>
+                <div class="grid grid-cols-2 gap-2">
+                  <div v-for="(val, key) in items" :key="key" class="rounded-lg border border-gray-100 p-2">
+                    <span class="text-[10px] text-gray-400 uppercase">{{ key }}</span>
+                    <p class="text-sm font-medium text-gray-800">{{ cleanUnclear(String(val)) }}</p>
+                  </div>
+                </div>
+              </template>
+
+              <!-- Generic arrays (symptoms, diagnoses, etc.) -->
+              <template v-else-if="Array.isArray(items) && items.length > 0">
                 <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{{ formatEntityCategory(category) }}</h4>
                 <div class="space-y-1.5">
                   <div
@@ -109,17 +167,7 @@
                     class="flex items-start gap-2 text-sm"
                   >
                     <span class="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" :class="entityDotColor(category)" />
-                    <span class="text-gray-700">{{ formatEntityItem(item) }}</span>
-                  </div>
-                </div>
-              </template>
-              <template v-else-if="typeof items === 'object' && !Array.isArray(items) && Object.keys(items).length > 0">
-                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{{ formatEntityCategory(category) }}</h4>
-                <div class="space-y-1">
-                  <div v-for="(val, key) in items" :key="key" class="flex items-center gap-2 text-sm">
-                    <span class="w-1.5 h-1.5 rounded-full shrink-0" :class="entityDotColor(category)" />
-                    <span class="text-gray-500">{{ key }}:</span>
-                    <span class="text-gray-700">{{ val }}</span>
+                    <span class="text-gray-700">{{ cleanUnclear(formatEntityItem(item)) }}</span>
                   </div>
                 </div>
               </template>
@@ -300,6 +348,54 @@ function entityDotColor(category) {
         procedures: 'bg-indigo-500',
     };
     return colors[category] || 'bg-gray-400';
+}
+
+function cleanUnclear(text) {
+    if (!text) return '';
+    return text.replace(/\[UNCLEAR\]/gi, '').trim() || 'Not specified';
+}
+
+function formatMedName(med) {
+    if (typeof med === 'string') return cleanUnclear(med);
+    return cleanUnclear(med?.name || '');
+}
+
+function formatMedDetails(med) {
+    if (typeof med !== 'object' || !med) return '';
+    const parts = [];
+    if (med.dose && !/^\[UNCLEAR\]$/i.test(med.dose)) parts.push(med.dose);
+    if (med.frequency && !/^\[UNCLEAR\]$/i.test(med.frequency)) parts.push(med.frequency);
+    if (med.route && !/^\[UNCLEAR\]$/i.test(med.route)) parts.push(med.route);
+    return parts.join(' · ');
+}
+
+function getMedStatus(med) {
+    if (typeof med !== 'object' || !med) return '';
+    return med.status || '';
+}
+
+function medStatusClass(status) {
+    const classes = {
+        new: 'bg-green-100 text-green-700',
+        continued: 'bg-blue-100 text-blue-700',
+        changed: 'bg-amber-100 text-amber-700',
+        discontinued: 'bg-gray-200 text-gray-500',
+    };
+    return classes[status] || 'bg-gray-100 text-gray-600';
+}
+
+function parseTestResult(result) {
+    if (typeof result === 'string') {
+        return { test: result, result: '', date: '' };
+    }
+    if (typeof result === 'object' && result !== null) {
+        return {
+            test: result.test || result.name || result.code || '',
+            result: result.result || result.value || '',
+            date: result.date || '',
+        };
+    }
+    return null;
 }
 
 function showTermPopover(payload) {
