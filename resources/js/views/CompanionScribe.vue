@@ -62,53 +62,65 @@
         <p v-if="error" class="text-red-600 text-sm">{{ error }}</p>
       </div>
 
-      <!-- Recording step -->
-      <div v-else-if="step === 'recording'" class="bg-white rounded-2xl border border-gray-200 p-6 text-center space-y-6">
-        <h2 class="text-lg font-semibold text-gray-800">Recording in progress...</h2>
+      <!-- Recording + Processing (seamless transition) -->
+      <div v-else-if="step === 'recording' || step === 'processing'" class="bg-white rounded-2xl border border-gray-200 p-6 text-center space-y-6">
+        <h2 class="text-lg font-semibold text-gray-800 transition-all duration-500">
+          {{ step === 'recording' ? 'Recording in progress...' : uploadStatusText }}
+        </h2>
 
-        <ThreeVisualizer />
+        <!-- Visualizer during recording -->
+        <ThreeVisualizer v-if="step === 'recording'" />
 
-        <p class="text-2xl font-mono text-gray-700 tracking-widest">{{ formattedTime }}</p>
-        <p class="text-xs text-gray-400">
-          {{ audioSegments.length > 0 ? `Segment ${audioSegments.length + 1} · ` : '' }}Your conversation is being captured securely
-        </p>
+        <!-- Sound wave animation during processing -->
+        <div v-else class="flex items-center justify-center gap-[3px] h-[120px]">
+          <div
+            v-for="i in 24"
+            :key="i"
+            class="sound-bar w-[4px] rounded-full"
+            :class="uploading ? 'bg-emerald-500' : 'bg-gray-300'"
+            :style="{
+              animationDelay: `${(i * 0.08) - 0.5}s`,
+              animationDuration: `${0.8 + Math.sin(i * 0.7) * 0.4}s`,
+            }"
+          />
+        </div>
+
+        <div class="space-y-1">
+          <p class="text-2xl font-mono tracking-widest transition-colors duration-500" :class="step === 'recording' ? 'text-gray-700' : 'text-emerald-600'">
+            {{ formattedTime }}
+          </p>
+          <p v-if="step === 'recording'" class="text-xs text-gray-400">
+            {{ audioSegments.length > 0 ? `Segment ${audioSegments.length + 1} · ` : '' }}Your conversation is being captured securely
+          </p>
+          <p v-else-if="uploading" class="text-xs text-gray-400">
+            {{ uploadDetailText }}
+          </p>
+        </div>
+
+        <!-- Progress bar (processing only) -->
+        <div v-if="step === 'processing' && uploading" class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+          <div class="bg-emerald-500 h-full rounded-full transition-all duration-700 ease-out" :style="{ width: uploadProgress + '%' }" />
+        </div>
+
+        <!-- Stop button (recording) -->
         <button
+          v-if="step === 'recording'"
           class="w-full py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors"
           @click="stopRecording"
         >
           Stop Recording
         </button>
-      </div>
 
-      <!-- Post-recording / uploading step -->
-      <div v-else class="bg-white rounded-2xl border border-gray-200 p-6 text-center space-y-4">
-        <div v-if="!uploading" class="w-16 h-16 mx-auto bg-emerald-100 rounded-full flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-emerald-600">
-            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
-          </svg>
+        <!-- Error + retry (processing) -->
+        <div v-if="step === 'processing' && error" class="space-y-3">
+          <p class="text-red-600 text-sm">{{ error }}</p>
+          <button
+            class="w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors"
+            @click="processVisit"
+          >
+            Retry
+          </button>
         </div>
-        <h2 class="text-lg font-semibold text-gray-800">
-          {{ uploading ? uploadStatusText : 'Recording Complete' }}
-        </h2>
-        <p class="text-gray-500">{{ formattedTime }} recorded{{ totalSegments > 1 ? ` (${totalSegments} segments)` : '' }}</p>
-
-        <div v-if="uploading" class="space-y-3">
-          <div class="w-full bg-gray-200 rounded-full h-2">
-            <div class="bg-emerald-600 h-2 rounded-full transition-all duration-500" :style="{ width: uploadProgress + '%' }" />
-          </div>
-          <p class="text-sm text-gray-400">{{ uploadDetailText }}</p>
-        </div>
-
-        <button
-          v-else
-          class="block w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
-          :disabled="uploading"
-          @click="processVisit"
-        >
-          Process Visit
-        </button>
-
-        <p v-if="error" class="text-red-600 text-sm">{{ error }}</p>
       </div>
     </div>
   </PatientLayout>
@@ -273,7 +285,8 @@ async function stopRecording() {
         mediaStream = null;
     }
 
-    step.value = 'done';
+    step.value = 'processing';
+    processVisit();
 }
 
 async function processVisit() {
@@ -452,7 +465,7 @@ async function getFirstPractitionerId(patientId) {
 
 // Warn user before closing/navigating away during recording or upload
 function onBeforeUnload(e) {
-    if (step.value === 'recording' || uploading.value) {
+    if (step.value === 'recording' || step.value === 'processing' || uploading.value) {
         e.preventDefault();
         e.returnValue = '';
     }
@@ -507,3 +520,24 @@ onUnmounted(() => {
     }
 });
 </script>
+
+<style scoped>
+.sound-bar {
+    height: 12px;
+    animation: sound-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes sound-pulse {
+    0% {
+        height: 8px;
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 0.7;
+    }
+    100% {
+        height: 64px;
+        opacity: 1;
+    }
+}
+</style>

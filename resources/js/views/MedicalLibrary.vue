@@ -288,6 +288,19 @@
 
       <!-- Tab: Search -->
       <div v-if="activeTab === 'search'" class="space-y-4">
+        <!-- Quick search suggestions -->
+        <div v-if="!searchSearched && suggestedSearches.length" class="flex flex-wrap gap-2">
+          <span class="text-xs text-gray-400 self-center">Try:</span>
+          <button
+            v-for="(s, i) in suggestedSearches"
+            :key="i"
+            class="text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-colors"
+            @click="searchQuery = s.query; searchType = s.type; runSearch()"
+          >
+            {{ s.label }}
+          </button>
+        </div>
+
         <!-- Search input -->
         <div class="bg-white rounded-2xl border border-gray-200 p-4">
           <form class="flex gap-2" @submit.prevent="runSearch">
@@ -524,6 +537,28 @@ const searchLoading = ref(false);
 const searchResults = ref([]);
 const searchDrugLabelResult = ref(null);
 const searchSearched = ref(false);
+
+const suggestedSearches = computed(() => {
+    const suggestions = [];
+    for (const cond of conditions.value) {
+        suggestions.push({ label: cond.code_display, query: cond.code_display, type: 'conditions' });
+    }
+    for (const rx of medications.value) {
+        const name = rx.medication?.generic_name || rx.medication?.display_name;
+        if (name) {
+            suggestions.push({ label: name, query: name, type: 'drugs' });
+            suggestions.push({ label: `${name} (label)`, query: name, type: 'drug-label' });
+        }
+    }
+    if (!suggestions.length) {
+        suggestions.push(
+            { label: 'Hypertension', query: 'hypertension', type: 'conditions' },
+            { label: 'Propranolol', query: 'propranolol', type: 'drugs' },
+            { label: 'Diabetes', query: 'diabetes', type: 'conditions' },
+        );
+    }
+    return suggestions;
+});
 
 const searchSourceLabel = computed(() => ({
     conditions: 'NIH Clinical Tables (ICD-10)',
