@@ -8,6 +8,7 @@ use App\Models\Transcript;
 use App\Models\Visit;
 use App\Models\VisitNote;
 use App\Services\AI\ScribeProcessor;
+use App\Services\AI\TermExtractor;
 use App\Services\Stt\SpeechToTextProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -181,6 +182,19 @@ class TranscriptController extends Controller
                         'physical_exam' => $soap['objective'] ?? null,
                     ]
                 );
+
+                // Extract medical terms for highlighting
+                $visitNote = VisitNote::where('visit_id', $transcript->visit_id)->first();
+                if ($visitNote) {
+                    try {
+                        app(TermExtractor::class)->extract($visitNote);
+                    } catch (\Throwable $e) {
+                        Log::warning('Term extraction failed (non-fatal)', [
+                            'visit_id' => $transcript->visit_id,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
 
                 return response()->json([
                     'data' => $transcript->fresh(),
