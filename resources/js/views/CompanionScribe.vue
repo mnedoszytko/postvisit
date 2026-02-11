@@ -7,15 +7,19 @@
         <p class="text-gray-600">
           Record your doctor's visit to get a complete, understandable summary afterwards.
         </p>
-        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
-          Both the provider and the patient consent to this recording.
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 text-left space-y-2">
+          <p class="font-medium">Both parties must consent</p>
+          <p>By pressing the button below, you confirm that both the healthcare provider and the patient have agreed to record this visit.</p>
+          <p>
+            <a href="/privacy-policy" target="_blank" class="text-amber-700 underline hover:text-amber-900">Privacy Policy</a>
+          </p>
         </div>
         <button
           class="w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
           :disabled="starting"
           @click="startRecording"
         >
-          {{ starting ? 'Requesting microphone...' : 'I Consent — Start Recording' }}
+          {{ starting ? 'Requesting microphone...' : 'Both Parties Consent — Start Recording' }}
         </button>
         <p v-if="error" class="text-red-600 text-sm">{{ error }}</p>
       </div>
