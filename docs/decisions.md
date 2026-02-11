@@ -92,7 +92,10 @@ Użytkownik wklei 2 scenariusze filmiku. Czekamy na dane.
 - **Special prizes:** "Most Creative Opus 4.6 Exploration" i "The Keep Thinking Prize"
 - **Sędziowie:** 6 osób z Anthropic (Boris Cherny, Cat Wu, Thariq Shihpar, Lydia Hallie, Ado Kukic, Jason Bigman)
 - **Winners showcase:** 21 lutego w SF
-- **Submission:** GitHub repo + demo video (1-5 min) + opis projektu (limit słów: sprawdzić na portalu — prawdopodobnie 200)
+- **Submission:** GitHub repo (public) + demo video (**max 3 min**) + written summary (**100–200 words**) via CV platform
+- **Judging Stage 1:** Async, Feb 16–17 (all submissions)
+- **Judging Stage 2:** Live, Feb 18 12:00 PM EST (top 6 only) → winners at 1:30 PM
+- **Full rules:** `docs/hackathon-rules.md`
 
 ### Decyzja 10: Model policy — Sonnet OK do testów
 **Status:** Przyjęte

@@ -37,7 +37,7 @@ class VisitStructurer
                     json_encode($visit->transcript->soap_note, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
             }
             $inputParts[] = "Clean Transcript:\n" .
-                ($visit->transcript->clean_text ?? $visit->transcript->raw_text ?? '');
+                ($visit->transcript->raw_transcript ?? '');
         }
 
         // Discharge notes

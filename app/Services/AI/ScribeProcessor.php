@@ -34,7 +34,7 @@ class ScribeProcessor
                 'role' => 'user',
                 'content' => "Process the following visit transcript.\n\n" .
                     "Visit Metadata:\n" . json_encode($metadata, JSON_PRETTY_PRINT) . "\n\n" .
-                    "Raw Transcript:\n" . ($transcript->raw_text ?? ''),
+                    "Raw Transcript:\n" . ($transcript->raw_transcript ?? ''),
             ],
         ];
 

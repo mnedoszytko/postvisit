@@ -85,6 +85,60 @@
             </div>
           </div>
         </div>
+
+        <!-- AI-Extracted Entities (from transcript analysis) -->
+        <div v-if="entities && Object.keys(entities).length" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <button class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors" @click="entitiesExpanded = !entitiesExpanded">
+            <div class="flex items-center gap-2">
+              <h3 class="font-semibold text-gray-800">AI-Extracted Clinical Entities</h3>
+              <span class="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">AI</span>
+            </div>
+            <span class="text-gray-400 text-sm">{{ entitiesExpanded ? 'Collapse' : 'Expand' }}</span>
+          </button>
+          <div v-if="entitiesExpanded" class="px-4 pb-4 space-y-4">
+            <div v-for="(items, category) in entities" :key="category">
+              <template v-if="Array.isArray(items) && items.length > 0">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{{ formatEntityCategory(category) }}</h4>
+                <div class="space-y-1.5">
+                  <div
+                    v-for="(item, idx) in items"
+                    :key="idx"
+                    class="flex items-start gap-2 text-sm"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" :class="entityDotColor(category)" />
+                    <span class="text-gray-700">{{ formatEntityItem(item) }}</span>
+                  </div>
+                </div>
+              </template>
+              <template v-else-if="typeof items === 'object' && !Array.isArray(items) && Object.keys(items).length > 0">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{{ formatEntityCategory(category) }}</h4>
+                <div class="space-y-1">
+                  <div v-for="(val, key) in items" :key="key" class="flex items-center gap-2 text-sm">
+                    <span class="w-1.5 h-1.5 rounded-full shrink-0" :class="entityDotColor(category)" />
+                    <span class="text-gray-500">{{ key }}:</span>
+                    <span class="text-gray-700">{{ val }}</span>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Raw Transcript -->
+        <div v-if="visit.transcript?.raw_transcript" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <button class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors" @click="transcriptExpanded = !transcriptExpanded">
+            <div class="flex items-center gap-2">
+              <h3 class="font-semibold text-gray-800">Visit Transcript</h3>
+              <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                {{ visit.transcript.processing_status }}
+              </span>
+            </div>
+            <span class="text-gray-400 text-sm">{{ transcriptExpanded ? 'Collapse' : 'Expand' }}</span>
+          </button>
+          <div v-if="transcriptExpanded" class="px-4 pb-4">
+            <p class="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto">{{ visit.transcript.raw_transcript }}</p>
+          </div>
+        </div>
       </div>
 
       <!-- Chat Panel -->
@@ -122,8 +176,12 @@ const chatContext = ref('');
 const obsExpanded = ref(false);
 const condExpanded = ref(false);
 const rxExpanded = ref(false);
+const entitiesExpanded = ref(false);
+const transcriptExpanded = ref(false);
 
 const visit = computed(() => visitStore.currentVisit);
+
+const entities = computed(() => visit.value?.transcript?.entities_extracted || null);
 
 const soapSections = computed(() => {
     const note = visit.value?.visit_note;
@@ -149,6 +207,53 @@ function interpretationClass(interp) {
     if (interp === 'H') return 'bg-red-100 text-red-700';
     if (interp === 'L') return 'bg-blue-100 text-blue-700';
     return 'bg-gray-100 text-gray-600';
+}
+
+const entityCategoryLabels = {
+    symptoms: 'Symptoms',
+    diagnoses: 'Diagnoses',
+    medications: 'Medications',
+    tests_ordered: 'Tests Ordered',
+    test_results: 'Test Results',
+    vitals: 'Vitals',
+    allergies: 'Allergies',
+    procedures: 'Procedures',
+};
+
+function formatEntityCategory(key) {
+    return entityCategoryLabels[key] || key.replace(/_/g, ' ');
+}
+
+function formatEntityItem(item) {
+    if (typeof item === 'string') return item;
+    if (typeof item === 'object' && item !== null) {
+        // Medications have name, dose, frequency, etc.
+        if (item.name) {
+            const parts = [item.name];
+            if (item.dose) parts.push(item.dose);
+            if (item.frequency) parts.push(item.frequency);
+            if (item.route) parts.push(`(${item.route})`);
+            if (item.status) parts.push(`[${item.status}]`);
+            return parts.join(' — ');
+        }
+        if (item.description) return item.description;
+        return JSON.stringify(item);
+    }
+    return String(item);
+}
+
+function entityDotColor(category) {
+    const colors = {
+        symptoms: 'bg-red-400',
+        diagnoses: 'bg-amber-500',
+        medications: 'bg-blue-500',
+        tests_ordered: 'bg-purple-500',
+        test_results: 'bg-purple-400',
+        vitals: 'bg-emerald-500',
+        allergies: 'bg-orange-500',
+        procedures: 'bg-indigo-500',
+    };
+    return colors[category] || 'bg-gray-400';
 }
 
 function openChat(context = '') {

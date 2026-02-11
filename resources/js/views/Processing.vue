@@ -4,7 +4,9 @@
       <LoadingParticles />
 
       <div class="space-y-2">
-        <h1 class="text-2xl font-semibold text-gray-800">Analyzing your visit...</h1>
+        <h1 class="text-2xl font-semibold text-gray-800">
+          {{ failed ? 'Processing failed' : 'Analyzing your visit...' }}
+        </h1>
         <p class="text-gray-500 text-sm">{{ currentStep.label }}</p>
       </div>
 
@@ -23,7 +25,8 @@
             <svg v-if="i < activeStep" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-emerald-500">
               <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
             </svg>
-            <div v-else-if="i === activeStep" class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+            <div v-else-if="i === activeStep && !failed" class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+            <div v-else-if="failed && i === activeStep" class="w-3 h-3 rounded-full bg-red-500" />
             <div v-else class="w-2 h-2 rounded-full bg-gray-300" />
           </div>
           <span :class="['text-sm', i <= activeStep ? 'text-gray-700 font-medium' : 'text-gray-400']">
@@ -31,18 +34,30 @@
           </span>
         </div>
       </div>
+
+      <!-- Error state -->
+      <div v-if="failed" class="space-y-3">
+        <p class="text-sm text-red-600">Something went wrong while processing your visit. Please try again.</p>
+        <button
+          class="px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors"
+          @click="router.push('/scribe')"
+        >
+          Try Again
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useVisitStore } from '@/stores/visit';
+import { useRouter, useRoute } from 'vue-router';
+import { useApi } from '@/composables/useApi';
 import LoadingParticles from '@/components/LoadingParticles.vue';
 
 const router = useRouter();
-const visitStore = useVisitStore();
+const route = useRoute();
+const api = useApi();
 
 const steps = [
     { label: 'Transcribing audio...' },
@@ -53,30 +68,87 @@ const steps = [
 ];
 
 const activeStep = ref(0);
-let interval = null;
+const failed = ref(false);
+let pollInterval = null;
+let progressInterval = null;
 
 const currentStep = computed(() => steps[activeStep.value] || steps[steps.length - 1]);
 
-onMounted(() => {
-    // Simulate processing steps (in production, poll /api/v1/transcripts/{id}/status)
-    interval = setInterval(() => {
-        if (activeStep.value < steps.length - 1) {
+function startProgressAnimation() {
+    // Slowly advance visual steps while waiting for API
+    progressInterval = setInterval(() => {
+        if (activeStep.value < 3) {
             activeStep.value++;
+        }
+    }, 4000);
+}
+
+async function pollStatus() {
+    const visitId = route.query.visitId;
+    if (!visitId) {
+        // No visit ID — fall back to simulation mode for demo
+        startSimulation();
+        return;
+    }
+
+    startProgressAnimation();
+
+    pollInterval = setInterval(async () => {
+        try {
+            const { data } = await api.get(`/visits/${visitId}/transcript/status`, {
+                skipErrorToast: true,
+            });
+
+            const status = data.data?.processing_status;
+
+            if (status === 'completed') {
+                clearInterval(pollInterval);
+                clearInterval(progressInterval);
+                // Mark all steps as complete
+                activeStep.value = steps.length;
+                // Short delay to show all checkmarks before redirect
+                setTimeout(() => {
+                    router.push(`/visits/${visitId}`);
+                }, 1000);
+            } else if (status === 'failed') {
+                clearInterval(pollInterval);
+                clearInterval(progressInterval);
+                failed.value = true;
+            }
+            // 'pending' or 'processing' — keep polling
+        } catch {
+            // Network error — keep polling silently
+        }
+    }, 3000);
+}
+
+function startSimulation() {
+    // Fallback: simulate processing steps (for demo without real visitId)
+    let step = 0;
+    const interval = setInterval(() => {
+        if (step < steps.length - 1) {
+            step++;
+            activeStep.value = step;
         } else {
             clearInterval(interval);
-            // Auto-redirect to the visit view
-            const visitId = visitStore.currentVisit?.id;
+            // Try to find the visit from the store
+            const visitId = route.query.visitId;
             if (visitId) {
                 router.push(`/visits/${visitId}`);
             } else {
-                // Fallback: redirect to patient profile
                 router.push('/profile');
             }
         }
     }, 2000);
+    pollInterval = interval; // store for cleanup
+}
+
+onMounted(() => {
+    pollStatus();
 });
 
 onUnmounted(() => {
-    clearInterval(interval);
+    clearInterval(pollInterval);
+    clearInterval(progressInterval);
 });
 </script>

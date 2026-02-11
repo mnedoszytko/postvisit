@@ -94,11 +94,43 @@
 - `feature/voice-chat` — Mic button + Whisper STT transcription
 - `feature/recording-animations` — 3 animation variants (ripples, waveform, orbit)
 
-## Proposed Next Steps for Feb 11
-1. **Nedo writes transcript + discharge notes** (BLOCKING) — Demo data needed for realistic flow
-2. **Fix doctor dashboard** — Patient name display, correct patient count
-3. **Review & merge feature branches** — PrimeVue, voice chat, recording animations
-4. **Real transcript processing pipeline** — Connect Companion Scribe → Whisper STT → AI processing → Visit creation
-5. **Medical term highlighting** — "Explain this" should appear on medical terms, not just section titles
-6. **Demo mode** — Pre-loaded walkthrough for hackathon judges
-7. **Deployment to Hetzner** via Forge — Get postvisit.ai live
+## Feb 11 — Reverse AI Scribe Pipeline (DONE)
+
+### Pipeline Components Built
+- [x] Whisper STT tested on real audio (1,253 words from Polish m4a → English)
+- [x] `ProcessTranscriptJob` — async job: ScribeProcessor → SOAP note → VisitNote
+- [x] Full pipeline tested end-to-end (59.4s, real Anthropic API call)
+- [x] `POST /visits/{id}/transcript/upload-audio` — audio upload → Whisper → AI processing
+- [x] `CompanionScribe.vue` — real MediaRecorder + audio upload to API
+- [x] `Processing.vue` — real API polling (3s interval) with fallback simulation
+- [x] `VisitView.vue` — AI-Extracted Clinical Entities section + Raw Transcript section
+
+### Pipeline Test Results
+- **SOAP Note**: 4 sections populated (Subjective, Objective, Assessment, Plan)
+- **Entities**: 2 symptoms, 3 diagnoses, 2 medications, 2 tests, 3 vitals, 2 procedures
+- **Processing time**: 59.4s (Anthropic API)
+
+### New Files
+- `app/Jobs/ProcessTranscriptJob.php`
+- `app/Console/Commands/TranscribeSampleCommand.php`
+- `app/Console/Commands/ProcessSampleVisitCommand.php`
+
+### End-to-End Flow
+1. Patient consents → mic permission → MediaRecorder starts
+2. Stop recording → audio blob ready
+3. "Process Visit" → creates visit → uploads audio → Whisper STT (~10-30s)
+4. Redirect to Processing → polls transcript status every 3s
+5. Queue worker runs ProcessTranscriptJob → ScribeProcessor (Claude) → SOAP note
+6. Processing detects completed → redirect to visit view with full results
+
+### Prerequisite for live recording flow
+```bash
+herd php artisan queue:work   # must be running for async AI processing
+```
+
+## Remaining Next Steps
+1. **Fix doctor dashboard** — Patient name display, correct patient count
+2. **Review & merge feature branches** — PrimeVue, voice chat, recording animations
+3. **Medical term highlighting** — "Explain this" on medical terms, not just section titles
+4. **Demo mode** — Pre-loaded walkthrough for hackathon judges
+5. **Deployment to Hetzner** via Forge — Get postvisit.ai live
