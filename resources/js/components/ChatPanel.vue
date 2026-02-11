@@ -173,7 +173,24 @@
                 <span class="text-[10px] text-gray-400 font-mono shrink-0">{{ src.tokens }}</span>
               </label>
             </div>
-            <div class="mt-2 pt-2 border-t border-gray-100 flex justify-between">
+            <!-- Token usage bar -->
+            <div class="mt-2.5 pt-2 border-t border-gray-100">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[10px] text-gray-500">Context loaded</span>
+                <span class="text-[10px] font-mono font-medium" :class="contextPercentage > 50 ? 'text-emerald-600' : 'text-gray-400'">
+                  {{ contextTokenEstimate }} / 1M tokens
+                </span>
+              </div>
+              <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  class="h-full rounded-full transition-all duration-500 ease-out"
+                  :class="contextPercentage > 50 ? 'bg-emerald-500' : 'bg-emerald-400'"
+                  :style="{ width: Math.max(contextPercentage, 1) + '%' }"
+                ></div>
+              </div>
+              <p class="text-[9px] text-gray-400 mt-1">Powered by Claude Opus 4.6 — 1M token context window</p>
+            </div>
+            <div class="mt-2 flex justify-between">
               <button
                 type="button"
                 class="text-[11px] text-emerald-600 hover:text-emerald-700 font-medium"
@@ -272,13 +289,21 @@ const contextSources = reactive([
 
 const selectedSources = computed(() => contextSources.filter(s => s.selected));
 
-const contextTokenEstimate = computed(() => {
-    const total = selectedSources.value.reduce((sum, s) => {
+const contextTokensRaw = computed(() => {
+    return selectedSources.value.reduce((sum, s) => {
         const num = parseInt(s.tokens.replace(/[^0-9]/g, ''));
         return sum + (num * 1000);
     }, 0);
-    if (total >= 1000000) return `~${(total / 1000000).toFixed(1)}M tokens`;
-    return `~${Math.round(total / 1000)}K tokens`;
+});
+
+const contextTokenEstimate = computed(() => {
+    const total = contextTokensRaw.value;
+    if (total >= 1000000) return `${(total / 1000000).toFixed(1)}M`;
+    return `${Math.round(total / 1000)}K`;
+});
+
+const contextPercentage = computed(() => {
+    return (contextTokensRaw.value / 1000000) * 100;
 });
 
 function selectAllSources() {
