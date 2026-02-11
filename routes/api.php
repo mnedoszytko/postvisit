@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\ExplainController;
 use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\MedicalLookupController;
+use App\Http\Controllers\Api\ReferenceController;
 use App\Http\Controllers\Api\MedicationController;
 use App\Http\Controllers\Api\ObservationController;
 use App\Http\Controllers\Api\PatientController;
@@ -124,6 +125,14 @@ Route::prefix('v1')->group(function () {
             Route::get('drugs', [MedicalLookupController::class, 'searchDrugs']);
             Route::get('procedures', [MedicalLookupController::class, 'searchProcedures']);
             Route::get('drug-label', [MedicalLookupController::class, 'drugLabel']);
+        });
+
+        // ----- Module 9: Medical References -----
+        Route::prefix('references')->group(function () {
+            Route::get('/', [ReferenceController::class, 'index']);
+            Route::get('{reference}', [ReferenceController::class, 'show']);
+            Route::post('{reference}/verify', [ReferenceController::class, 'verify']);
+            Route::post('verify-pmid', [ReferenceController::class, 'verifyPmid']);
         });
 
         // ----- Module 7: Doctor Dashboard (doctor role required) -----

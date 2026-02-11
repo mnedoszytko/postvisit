@@ -5,6 +5,7 @@ All notable changes to PostVisit.ai are documented here in reverse chronological
 ## 2026-02-11
 
 ### Added
+- **Medical Reference Verification (POST-45)** — New `MedicalReference` model with PMID/DOI tracking, PubMed E-utilities integration for runtime verification, and 8 seeded cardiology references from ESC/AHA/ACC guidelines. API endpoints for listing, filtering, and verifying references.
 - **Medical Lookup API (POST-21)** — New `/api/v1/lookup/` endpoints exposing NIH Clinical Tables and DailyMed APIs for ICD-10 conditions, drugs, procedures, and drug labels. Includes validation, auth guards, and graceful error handling for external API failures.
 - **Registration form (POST-19)** — Full registration flow with role selection (patient/doctor), password confirmation, field validation with server-side error display, and "Sign up" link from login page. Auto-authenticates on successful registration.
 - **Medical term highlighting (tap-to-explain)** — Medical terms in SOAP notes are now highlighted and clickable. Tapping a term opens the ChatPanel with "Explain: {term}" pre-filled, triggering a contextual AI explanation. Implements PRD user story P3.

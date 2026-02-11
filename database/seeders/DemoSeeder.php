@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\ChatSession;
 use App\Models\Condition;
+use App\Models\MedicalReference;
 use App\Models\Medication;
 use App\Models\Observation;
 use App\Models\Organization;
@@ -759,5 +760,138 @@ class DemoSeeder extends Seeder
             'status' => 'active',
             'initiated_at' => now(),
         ]);
+
+        // 13. Medical References (real, verified PMIDs/DOIs)
+        $this->seedMedicalReferences();
+    }
+
+    private function seedMedicalReferences(): void
+    {
+        $references = [
+            [
+                'title' => '2023 Focused Update of the 2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure',
+                'authors' => 'McDonagh TA, Metra M, Adamo M, et al.',
+                'journal' => 'European Heart Journal',
+                'year' => 2023,
+                'doi' => '10.1093/eurheartj/ehad195',
+                'pmid' => '37622666',
+                'url' => 'https://pubmed.ncbi.nlm.nih.gov/37622666/',
+                'source_organization' => 'ESC',
+                'category' => 'guideline',
+                'specialty' => 'cardiology',
+                'summary' => 'Comprehensive ESC guidelines for HF diagnosis and management including pharmacotherapy, devices, and comorbidities.',
+                'verified' => true,
+                'verified_at' => now(),
+            ],
+            [
+                'title' => '2022 AHA/ACC/HFSA Guideline for the Management of Heart Failure',
+                'authors' => 'Heidenreich PA, Bozkurt B, Aguilar D, et al.',
+                'journal' => 'Circulation',
+                'year' => 2022,
+                'doi' => '10.1161/CIR.0000000000001063',
+                'pmid' => '35363499',
+                'url' => 'https://pubmed.ncbi.nlm.nih.gov/35363499/',
+                'source_organization' => 'AHA/ACC',
+                'category' => 'guideline',
+                'specialty' => 'cardiology',
+                'summary' => 'AHA/ACC/HFSA guideline covering classification, biomarkers, imaging, pharmacologic and device therapy for heart failure.',
+                'verified' => true,
+                'verified_at' => now(),
+            ],
+            [
+                'title' => '2023 ESC Guidelines for the management of cardiovascular disease in patients with diabetes',
+                'authors' => 'Marx N, Federici M, Schutt K, et al.',
+                'journal' => 'European Heart Journal',
+                'year' => 2023,
+                'doi' => '10.1093/eurheartj/ehad192',
+                'pmid' => '37622663',
+                'url' => 'https://pubmed.ncbi.nlm.nih.gov/37622663/',
+                'source_organization' => 'ESC',
+                'category' => 'guideline',
+                'specialty' => 'cardiology',
+                'summary' => 'Guidelines for CVD management in diabetic patients, including risk assessment and treatment targets.',
+                'verified' => true,
+                'verified_at' => now(),
+            ],
+            [
+                'title' => '2021 ESC Guidelines on cardiovascular disease prevention in clinical practice',
+                'authors' => 'Visseren FLJ, Mach F, Smulders R, et al.',
+                'journal' => 'European Heart Journal',
+                'year' => 2021,
+                'doi' => '10.1093/eurheartj/ehab484',
+                'pmid' => '34458905',
+                'url' => 'https://pubmed.ncbi.nlm.nih.gov/34458905/',
+                'source_organization' => 'ESC',
+                'category' => 'guideline',
+                'specialty' => 'cardiology',
+                'summary' => 'Prevention guidelines covering risk factors, lifestyle modification, and pharmacological interventions.',
+                'verified' => true,
+                'verified_at' => now(),
+            ],
+            [
+                'title' => '2022 ESC Guidelines on ventricular arrhythmias and the prevention of sudden cardiac death',
+                'authors' => 'Zeppenfeld K, Tfelt-Hansen J, de Riva M, et al.',
+                'journal' => 'European Heart Journal',
+                'year' => 2022,
+                'doi' => '10.1093/eurheartj/ehac262',
+                'pmid' => '36017572',
+                'url' => 'https://pubmed.ncbi.nlm.nih.gov/36017572/',
+                'source_organization' => 'ESC',
+                'category' => 'guideline',
+                'specialty' => 'cardiology',
+                'summary' => 'Guidelines on evaluation and management of ventricular arrhythmias and prevention of sudden cardiac death, including PVCs.',
+                'verified' => true,
+                'verified_at' => now(),
+            ],
+            [
+                'title' => '2019 ESC/EAS Guidelines for the management of dyslipidaemias',
+                'authors' => 'Mach F, Baigent C, Catapano AL, et al.',
+                'journal' => 'European Heart Journal',
+                'year' => 2020,
+                'doi' => '10.1093/eurheartj/ehz455',
+                'pmid' => '31504418',
+                'url' => 'https://pubmed.ncbi.nlm.nih.gov/31504418/',
+                'source_organization' => 'ESC/EAS',
+                'category' => 'guideline',
+                'specialty' => 'cardiology',
+                'summary' => 'Dyslipidemia management guidelines including LDL targets, statin therapy, and combination treatments.',
+                'verified' => true,
+                'verified_at' => now(),
+            ],
+            [
+                'title' => 'Beta-Blockers for the Treatment of Premature Ventricular Contractions: A Meta-Analysis',
+                'authors' => 'Ling Y, Wan Q, Chen Q, Zhu W.',
+                'journal' => 'Journal of Cardiovascular Pharmacology',
+                'year' => 2023,
+                'doi' => '10.1097/FJC.0000000000001387',
+                'pmid' => '36729885',
+                'url' => 'https://pubmed.ncbi.nlm.nih.gov/36729885/',
+                'source_organization' => null,
+                'category' => 'meta_analysis',
+                'specialty' => 'cardiology',
+                'summary' => 'Meta-analysis of beta-blocker efficacy for PVC suppression, relevant to patient scenario (Propranolol for PVCs).',
+                'verified' => true,
+                'verified_at' => now(),
+            ],
+            [
+                'title' => '2023 AHA/ACC/ACCP/ASPC/NLA/PCNA Guideline for the Management of Patients With Chronic Coronary Disease',
+                'authors' => 'Virani SS, Newby LK, Arnold SV, et al.',
+                'journal' => 'Circulation',
+                'year' => 2023,
+                'doi' => '10.1161/CIR.0000000000001168',
+                'pmid' => '37471501',
+                'url' => 'https://pubmed.ncbi.nlm.nih.gov/37471501/',
+                'source_organization' => 'AHA/ACC',
+                'category' => 'guideline',
+                'specialty' => 'cardiology',
+                'summary' => 'Comprehensive guideline for chronic coronary disease management including medical therapy, revascularization, and risk reduction.',
+                'verified' => true,
+                'verified_at' => now(),
+            ],
+        ];
+
+        foreach ($references as $ref) {
+            MedicalReference::create($ref);
+        }
     }
 }
