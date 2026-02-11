@@ -146,11 +146,10 @@ System prompts in `prompts/` are versioned and reviewable. Never hardcode prompt
 PRs are disabled for hackathon speed. All work goes directly to `main` with discipline.
 
 ### Worktree Setup
-Two worktrees only — keep it simple:
 - `/postvisit` — primary worktree (human + main agent), on `main`
-- `/postvisit-agent2` — second agent, on own branch
+- `/postvisit-agent2` through `/postvisit-agent5` — agent worktrees, each on own branch
 
-**Never create more than 2 worktrees.** Extra worktrees accumulate stale branches that cause merge overwrites.
+Each agent worktree gets its own branch (`agentN-workspace`). **Never delete another agent's worktree** — other Claude Code sessions may be using it.
 
 ### Commit Rules
 - **Every commit must**: pass `herd php artisan test` AND `bun run build`
