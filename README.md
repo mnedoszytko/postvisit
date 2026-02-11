@@ -211,6 +211,10 @@ PostVisit.ai addresses all three hackathon tracks:
 2. **Break the Barriers** -- AI translates expert medical knowledge into accessible language for any patient, regardless of health literacy
 3. **Amplify Human Judgment** -- Doctor-in-the-loop design: the system helps patients understand clinical decisions, never replaces them
 
+## Disclaimer
+
+All clinical scenarios, patient profiles, medical records, and health data displayed in this application are entirely fictional, created for demonstration purposes only, and do not depict any real person or actual medical encounter.
+
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details.

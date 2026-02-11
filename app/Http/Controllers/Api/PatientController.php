@@ -56,6 +56,25 @@ class PatientController extends Controller
         return response()->json(['data' => $patient]);
     }
 
+    public function observations(Request $request, Patient $patient): JsonResponse
+    {
+        $query = $patient->observations()->orderByDesc('effective_date');
+
+        if ($request->has('code')) {
+            $query->where('code', $request->input('code'));
+        }
+
+        if ($request->has('category')) {
+            $query->where('category', $request->input('category'));
+        }
+
+        if ($request->has('limit')) {
+            $query->limit((int) $request->input('limit'));
+        }
+
+        return response()->json(['data' => $query->get()]);
+    }
+
     public function documents(Patient $patient): JsonResponse
     {
         $documents = $patient->documents()->orderByDesc('document_date')->get();

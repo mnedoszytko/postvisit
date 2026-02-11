@@ -292,7 +292,7 @@ class DemoSeeder extends Seeder
 
         // 6h. BNP (Brain Natriuretic Peptide) — elevated in heart failure
         Observation::create([
-            'fhir_observation_id' => 'obs-bnp-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-bnp-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -320,7 +320,7 @@ class DemoSeeder extends Seeder
 
         // 6i. NT-proBNP — more sensitive HF biomarker
         Observation::create([
-            'fhir_observation_id' => 'obs-ntprobnp-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-ntprobnp-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -347,7 +347,7 @@ class DemoSeeder extends Seeder
 
         // 6j. Creatinine — renal function monitoring in HF
         Observation::create([
-            'fhir_observation_id' => 'obs-creat-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-creat-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -374,7 +374,7 @@ class DemoSeeder extends Seeder
 
         // 6k. BUN (Blood Urea Nitrogen) — renal monitoring
         Observation::create([
-            'fhir_observation_id' => 'obs-bun-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-bun-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -397,7 +397,7 @@ class DemoSeeder extends Seeder
 
         // 6l. Sodium — electrolyte monitoring in HF
         Observation::create([
-            'fhir_observation_id' => 'obs-na-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-na-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -423,7 +423,7 @@ class DemoSeeder extends Seeder
 
         // 6m. LDL Cholesterol
         Observation::create([
-            'fhir_observation_id' => 'obs-ldl-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-ldl-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -446,7 +446,7 @@ class DemoSeeder extends Seeder
 
         // 6n. HDL Cholesterol
         Observation::create([
-            'fhir_observation_id' => 'obs-hdl-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-hdl-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -469,7 +469,7 @@ class DemoSeeder extends Seeder
 
         // 6o. Triglycerides
         Observation::create([
-            'fhir_observation_id' => 'obs-trig-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-trig-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -492,7 +492,7 @@ class DemoSeeder extends Seeder
 
         // 6p. Hemoglobin — anemia screening in HF
         Observation::create([
-            'fhir_observation_id' => 'obs-hgb-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-hgb-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -575,7 +575,7 @@ class DemoSeeder extends Seeder
 
         foreach ($bpSeries as $bp) {
             Observation::create([
-                'fhir_observation_id' => 'obs-bp-' . Str::uuid(),
+                'fhir_observation_id' => 'obs-bp-'.Str::uuid(),
                 'patient_id' => $patient->id,
                 'visit_id' => $visit->id,
                 'practitioner_id' => $practitioner->id,
@@ -761,8 +761,420 @@ class DemoSeeder extends Seeder
             'initiated_at' => now(),
         ]);
 
-        // 13. Medical References (real, verified PMIDs/DOIs)
+        // 13. Longitudinal vitals for Alex (home readings over 2 weeks)
+        $this->seedAlexLongitudinalVitals($patient, $practitioner, $doctorUser);
+
+        // 14. Medical References (real, verified PMIDs/DOIs)
         $this->seedMedicalReferences();
+
+        // ====================================================================
+        // SCENARIO 2: Heart Failure — Maria Santos
+        // ====================================================================
+        $this->seedHeartFailureScenario($org, $practitioner, $doctorUser);
+
+        // ====================================================================
+        // SCENARIO 3: Hypertension — James Williams
+        // ====================================================================
+        $this->seedHypertensionScenario($org, $practitioner, $doctorUser);
+    }
+
+    /**
+     * Alex Johnson: home BP and HR readings over 14 days (post-propranolol start).
+     */
+    private function seedAlexLongitudinalVitals(Patient $patient, Practitioner $practitioner, User $doctor): void
+    {
+        $baseDate = now()->subDays(14);
+
+        $readings = [
+            ['day' => 0, 'hr' => 82, 'sys' => 130, 'dia' => 84],
+            ['day' => 1, 'hr' => 80, 'sys' => 128, 'dia' => 82],
+            ['day' => 2, 'hr' => 78, 'sys' => 126, 'dia' => 80],
+            ['day' => 3, 'hr' => 76, 'sys' => 125, 'dia' => 79],
+            ['day' => 5, 'hr' => 74, 'sys' => 124, 'dia' => 78],
+            ['day' => 7, 'hr' => 72, 'sys' => 122, 'dia' => 76],
+            ['day' => 9, 'hr' => 70, 'sys' => 120, 'dia' => 75],
+            ['day' => 11, 'hr' => 68, 'sys' => 118, 'dia' => 74],
+            ['day' => 13, 'hr' => 66, 'sys' => 116, 'dia' => 72],
+        ];
+
+        foreach ($readings as $r) {
+            $date = $baseDate->copy()->addDays($r['day']);
+
+            Observation::create([
+                'fhir_observation_id' => 'obs-hr-home-'.Str::uuid(),
+                'patient_id' => $patient->id,
+                'practitioner_id' => $practitioner->id,
+                'code_system' => 'LOINC',
+                'code' => '8867-4',
+                'code_display' => 'Heart rate',
+                'category' => 'vital-signs',
+                'status' => 'final',
+                'value_type' => 'quantity',
+                'value_quantity' => $r['hr'],
+                'value_unit' => 'bpm',
+                'reference_range_low' => 60,
+                'reference_range_high' => 100,
+                'interpretation' => 'N',
+                'effective_date' => $date->toDateString(),
+                'issued_at' => $date,
+                'specialty_data' => ['source' => 'apple_watch', 'context' => 'resting'],
+                'created_by' => $doctor->id,
+            ]);
+
+            Observation::create([
+                'fhir_observation_id' => 'obs-bp-home-'.Str::uuid(),
+                'patient_id' => $patient->id,
+                'practitioner_id' => $practitioner->id,
+                'code_system' => 'LOINC',
+                'code' => '85354-9',
+                'code_display' => 'Blood pressure panel',
+                'category' => 'vital-signs',
+                'status' => 'final',
+                'value_type' => 'string',
+                'value_string' => $r['sys'].'/'.$r['dia'].' mmHg',
+                'interpretation' => $r['sys'] > 130 ? 'H' : 'N',
+                'effective_date' => $date->toDateString(),
+                'issued_at' => $date,
+                'specialty_data' => [
+                    'systolic' => ['value' => $r['sys'], 'unit' => 'mmHg'],
+                    'diastolic' => ['value' => $r['dia'], 'unit' => 'mmHg'],
+                    'source' => 'home_monitor',
+                ],
+                'created_by' => $doctor->id,
+            ]);
+        }
+    }
+
+    /**
+     * Scenario 2: Heart failure patient — Maria Santos (HFrEF).
+     */
+    private function seedHeartFailureScenario(Organization $org, Practitioner $practitioner, User $doctor): void
+    {
+        $patient = Patient::create([
+            'fhir_patient_id' => 'patient-'.Str::uuid(),
+            'first_name' => 'Maria',
+            'last_name' => 'Santos',
+            'dob' => '1958-11-22',
+            'gender' => 'female',
+            'email' => 'maria@demo.postvisit.ai',
+            'phone' => '+1-555-0456',
+            'preferred_language' => 'en',
+            'timezone' => 'America/New_York',
+            'mrn' => 'MRN-002',
+            'consent_given' => true,
+            'consent_date' => now(),
+            'data_sharing_consent' => true,
+        ]);
+
+        User::create([
+            'name' => 'Maria Santos',
+            'email' => 'maria@demo.postvisit.ai',
+            'password' => 'password',
+            'role' => 'patient',
+            'patient_id' => $patient->id,
+            'is_active' => true,
+        ]);
+
+        $visitStart = now()->subDays(3);
+        $visit = Visit::create([
+            'fhir_encounter_id' => 'encounter-'.Str::uuid(),
+            'patient_id' => $patient->id,
+            'practitioner_id' => $practitioner->id,
+            'organization_id' => $org->id,
+            'visit_type' => 'office_visit',
+            'class' => 'AMB',
+            'visit_status' => 'completed',
+            'service_type' => 'cardiology_consultation',
+            'reason_for_visit' => 'Heart failure follow-up — worsening shortness of breath and weight gain',
+            'summary' => 'HFrEF patient with recent decompensation. Weight up 4 kg in 2 weeks. Adjusted diuretics, added SGLT2i.',
+            'started_at' => $visitStart,
+            'ended_at' => $visitStart->copy()->addMinutes(35),
+            'duration_minutes' => 35,
+            'created_by' => $doctor->id,
+        ]);
+
+        Condition::create([
+            'fhir_condition_id' => 'condition-'.Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'code_system' => 'ICD-10-CM',
+            'code' => 'I50.22',
+            'code_display' => 'Chronic systolic heart failure',
+            'category' => 'encounter-diagnosis',
+            'clinical_status' => 'active',
+            'verification_status' => 'confirmed',
+            'severity' => 'moderate',
+            'onset_date' => now()->subYears(2)->toDateString(),
+            'clinical_notes' => 'HFrEF with LVEF 35%. Recent decompensation with fluid overload.',
+            'created_by' => $doctor->id,
+        ]);
+
+        Condition::create([
+            'fhir_condition_id' => 'condition-'.Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'code_system' => 'ICD-10-CM',
+            'code' => 'I10',
+            'code_display' => 'Essential hypertension',
+            'category' => 'encounter-diagnosis',
+            'clinical_status' => 'active',
+            'verification_status' => 'confirmed',
+            'severity' => 'mild',
+            'onset_date' => now()->subYears(10)->toDateString(),
+            'created_by' => $doctor->id,
+        ]);
+
+        $furosemide = Medication::firstOrCreate(['rxnorm_code' => '4603'], [
+            'generic_name' => 'Furosemide', 'display_name' => 'Furosemide 40mg tablet',
+            'form' => 'tablet', 'strength_value' => 40, 'strength_unit' => 'mg', 'source' => 'rxnorm', 'is_active' => true,
+        ]);
+        $lisinopril = Medication::firstOrCreate(['rxnorm_code' => '29046'], [
+            'generic_name' => 'Lisinopril', 'display_name' => 'Lisinopril 20mg tablet',
+            'form' => 'tablet', 'strength_value' => 20, 'strength_unit' => 'mg', 'source' => 'rxnorm', 'is_active' => true,
+        ]);
+        $carvedilol = Medication::firstOrCreate(['rxnorm_code' => '20352'], [
+            'generic_name' => 'Carvedilol', 'display_name' => 'Carvedilol 25mg tablet',
+            'form' => 'tablet', 'strength_value' => 25, 'strength_unit' => 'mg', 'source' => 'rxnorm', 'is_active' => true,
+        ]);
+        $dapagliflozin = Medication::firstOrCreate(['rxnorm_code' => '1488564'], [
+            'generic_name' => 'Dapagliflozin', 'display_name' => 'Dapagliflozin 10mg tablet',
+            'form' => 'tablet', 'strength_value' => 10, 'strength_unit' => 'mg', 'source' => 'rxnorm', 'is_active' => true,
+        ]);
+
+        foreach ([
+            [$furosemide, 40, 'BID', 'Increase from 20mg QD due to fluid overload'],
+            [$lisinopril, 20, 'QD', 'Continued — titrated to max tolerated dose'],
+            [$carvedilol, 25, 'BID', 'Continued — stable on current dose'],
+            [$dapagliflozin, 10, 'QD', 'NEW — added for HFrEF mortality benefit per ESC 2023'],
+        ] as [$med, $dose, $freq, $note]) {
+            Prescription::create([
+                'fhir_medication_request_id' => 'rx-'.Str::uuid(),
+                'patient_id' => $patient->id,
+                'practitioner_id' => $practitioner->id,
+                'visit_id' => $visit->id,
+                'medication_id' => $med->id,
+                'status' => 'active',
+                'intent' => 'order',
+                'dose_quantity' => $dose,
+                'dose_unit' => 'mg',
+                'frequency' => $freq,
+                'route' => 'oral',
+                'start_date' => now()->toDateString(),
+                'special_instructions' => $note,
+                'created_by' => $doctor->id,
+            ]);
+        }
+
+        VisitNote::create([
+            'visit_id' => $visit->id,
+            'patient_id' => $patient->id,
+            'author_practitioner_id' => $practitioner->id,
+            'composition_type' => 'progress_note',
+            'status' => 'final',
+            'chief_complaint' => 'Worsening shortness of breath and weight gain over the past 2 weeks',
+            'history_of_present_illness' => 'Mrs. Santos is a 67-year-old female with known HFrEF (LVEF 35%) presenting with progressive dyspnea on exertion and 4 kg weight gain over 2 weeks.',
+            'physical_exam' => "General: Alert, mildly dyspneic at rest. Vitals: HR 88, BP 142/88, RR 22, SpO2 94% on RA, Weight 78 kg.\nCardiovascular: S3 gallop present, JVP elevated to 12 cm.\nLungs: Bibasilar crackles.\nExtremities: 2+ pitting edema bilaterally.",
+            'assessment' => 'Acute-on-chronic heart failure decompensation (HFrEF, LVEF 35%) — NYHA Class III. Precipitated by dietary sodium indiscretion.',
+            'plan' => "1. Increase Furosemide to 40mg BID\n2. Add Dapagliflozin 10mg QD (DAPA-HF trial)\n3. Continue Lisinopril 20mg QD and Carvedilol 25mg BID\n4. Daily weight monitoring\n5. Strict 1.5L/day fluid restriction\n6. Recheck labs in 1 week\n7. Follow-up in 2 weeks",
+            'follow_up' => '2 weeks for volume status reassessment.',
+            'follow_up_timeframe' => '2 weeks',
+            'is_signed' => true,
+            'signed_at' => now()->subDays(3),
+        ]);
+
+        // Weight data (trending up — red flag)
+        $weights = [
+            ['day' => -28, 'kg' => 73.5], ['day' => -25, 'kg' => 73.8], ['day' => -21, 'kg' => 74.0],
+            ['day' => -18, 'kg' => 74.2], ['day' => -14, 'kg' => 74.5], ['day' => -11, 'kg' => 75.2],
+            ['day' => -8, 'kg' => 76.0], ['day' => -6, 'kg' => 76.8], ['day' => -4, 'kg' => 77.5],
+            ['day' => -3, 'kg' => 78.0], ['day' => -2, 'kg' => 77.2], ['day' => -1, 'kg' => 76.5],
+            ['day' => 0, 'kg' => 75.8],
+        ];
+
+        foreach ($weights as $w) {
+            $date = now()->addDays($w['day']);
+            Observation::create([
+                'fhir_observation_id' => 'obs-wt-'.Str::uuid(),
+                'patient_id' => $patient->id,
+                'practitioner_id' => $practitioner->id,
+                'code_system' => 'LOINC',
+                'code' => '29463-7',
+                'code_display' => 'Body weight',
+                'category' => 'vital-signs',
+                'status' => 'final',
+                'value_type' => 'quantity',
+                'value_quantity' => $w['kg'],
+                'value_unit' => 'kg',
+                'interpretation' => $w['kg'] > 76 ? 'H' : 'N',
+                'effective_date' => $date->toDateString(),
+                'issued_at' => $date,
+                'specialty_data' => ['source' => 'home_scale', 'dry_weight_target' => 73.0],
+                'created_by' => $doctor->id,
+            ]);
+        }
+
+        // BNP + Creatinine at visit
+        Observation::create([
+            'fhir_observation_id' => 'obs-bnp-maria-'.Str::uuid(),
+            'patient_id' => $patient->id, 'visit_id' => $visit->id, 'practitioner_id' => $practitioner->id,
+            'code_system' => 'LOINC', 'code' => '30934-4', 'code_display' => 'BNP',
+            'category' => 'laboratory', 'status' => 'final', 'value_type' => 'quantity',
+            'value_quantity' => 820, 'value_unit' => 'pg/mL',
+            'reference_range_low' => 0, 'reference_range_high' => 100,
+            'interpretation' => 'H', 'effective_date' => now()->subDays(3)->toDateString(),
+            'issued_at' => now()->subDays(3), 'created_by' => $doctor->id,
+        ]);
+
+        Observation::create([
+            'fhir_observation_id' => 'obs-creat-maria-'.Str::uuid(),
+            'patient_id' => $patient->id, 'visit_id' => $visit->id, 'practitioner_id' => $practitioner->id,
+            'code_system' => 'LOINC', 'code' => '2160-0', 'code_display' => 'Creatinine',
+            'category' => 'laboratory', 'status' => 'final', 'value_type' => 'quantity',
+            'value_quantity' => 1.6, 'value_unit' => 'mg/dL',
+            'reference_range_low' => 0.6, 'reference_range_high' => 1.1,
+            'interpretation' => 'H', 'effective_date' => now()->subDays(3)->toDateString(),
+            'issued_at' => now()->subDays(3), 'created_by' => $doctor->id,
+        ]);
+
+        ChatSession::create([
+            'patient_id' => $patient->id, 'visit_id' => $visit->id,
+            'topic' => 'Post-visit follow-up: Heart failure management',
+            'status' => 'active', 'initiated_at' => now(),
+        ]);
+    }
+
+    /**
+     * Scenario 3: Hypertension patient — James Williams.
+     */
+    private function seedHypertensionScenario(Organization $org, Practitioner $practitioner, User $doctor): void
+    {
+        $patient = Patient::create([
+            'fhir_patient_id' => 'patient-'.Str::uuid(),
+            'first_name' => 'James', 'last_name' => 'Williams',
+            'dob' => '1972-06-08', 'gender' => 'male',
+            'email' => 'james@demo.postvisit.ai', 'phone' => '+1-555-0789',
+            'preferred_language' => 'en', 'timezone' => 'America/New_York',
+            'mrn' => 'MRN-003', 'consent_given' => true, 'consent_date' => now(), 'data_sharing_consent' => true,
+        ]);
+
+        User::create([
+            'name' => 'James Williams', 'email' => 'james@demo.postvisit.ai',
+            'password' => 'password', 'role' => 'patient', 'patient_id' => $patient->id, 'is_active' => true,
+        ]);
+
+        $visitStart = now()->subDays(5);
+        $visit = Visit::create([
+            'fhir_encounter_id' => 'encounter-'.Str::uuid(),
+            'patient_id' => $patient->id, 'practitioner_id' => $practitioner->id,
+            'organization_id' => $org->id, 'visit_type' => 'office_visit', 'class' => 'AMB',
+            'visit_status' => 'completed', 'service_type' => 'cardiology_consultation',
+            'reason_for_visit' => 'Hypertension follow-up — blood pressure not at target despite medication',
+            'summary' => 'Stage 2 hypertension, inadequately controlled on amlodipine 5mg. Adding HCTZ, uptitrating amlodipine to 10mg.',
+            'started_at' => $visitStart, 'ended_at' => $visitStart->copy()->addMinutes(25),
+            'duration_minutes' => 25, 'created_by' => $doctor->id,
+        ]);
+
+        Condition::create([
+            'fhir_condition_id' => 'condition-'.Str::uuid(),
+            'patient_id' => $patient->id, 'visit_id' => $visit->id,
+            'code_system' => 'ICD-10-CM', 'code' => 'I11.9',
+            'code_display' => 'Hypertensive heart disease without heart failure',
+            'category' => 'encounter-diagnosis', 'clinical_status' => 'active',
+            'verification_status' => 'confirmed', 'severity' => 'moderate',
+            'onset_date' => now()->subYears(5)->toDateString(),
+            'clinical_notes' => 'Stage 2 hypertension. Target organ assessment negative.',
+            'created_by' => $doctor->id,
+        ]);
+
+        $amlodipine = Medication::firstOrCreate(['rxnorm_code' => '17767'], [
+            'generic_name' => 'Amlodipine', 'display_name' => 'Amlodipine 10mg tablet',
+            'form' => 'tablet', 'strength_value' => 10, 'strength_unit' => 'mg', 'source' => 'rxnorm', 'is_active' => true,
+        ]);
+        $hctz = Medication::firstOrCreate(['rxnorm_code' => '5487'], [
+            'generic_name' => 'Hydrochlorothiazide', 'display_name' => 'Hydrochlorothiazide 25mg tablet',
+            'form' => 'tablet', 'strength_value' => 25, 'strength_unit' => 'mg', 'source' => 'rxnorm', 'is_active' => true,
+        ]);
+
+        foreach ([
+            [$amlodipine, 10, 'QD', 'Uptitrated from 5mg to 10mg for better BP control.'],
+            [$hctz, 25, 'QD', 'NEW — added for combination therapy. Monitor potassium.'],
+        ] as [$med, $dose, $freq, $note]) {
+            Prescription::create([
+                'fhir_medication_request_id' => 'rx-'.Str::uuid(),
+                'patient_id' => $patient->id, 'practitioner_id' => $practitioner->id,
+                'visit_id' => $visit->id, 'medication_id' => $med->id,
+                'status' => 'active', 'intent' => 'order',
+                'dose_quantity' => $dose, 'dose_unit' => 'mg', 'frequency' => $freq,
+                'route' => 'oral', 'start_date' => now()->toDateString(),
+                'special_instructions' => $note, 'created_by' => $doctor->id,
+            ]);
+        }
+
+        VisitNote::create([
+            'visit_id' => $visit->id, 'patient_id' => $patient->id,
+            'author_practitioner_id' => $practitioner->id,
+            'composition_type' => 'progress_note', 'status' => 'final',
+            'chief_complaint' => 'Elevated blood pressure readings at home despite medication',
+            'history_of_present_illness' => 'Mr. Williams is a 53-year-old male with a 5-year history of essential hypertension. Home BP readings consistently 150-160/95-100 mmHg despite Amlodipine 5mg daily for 3 months.',
+            'physical_exam' => "General: Well-appearing. Vitals: HR 76, BP 156/98, RR 14, SpO2 99% on RA.\nCardiovascular: Regular rate and rhythm, no murmurs.\nExtremities: No edema.",
+            'assessment' => 'Stage 2 hypertension, inadequately controlled on monotherapy. No target organ damage.',
+            'plan' => "1. Uptitrate Amlodipine to 10mg QD\n2. Add HCTZ 25mg QD\n3. Continue home BP monitoring\n4. Target: <130/80 mmHg\n5. Check BMP in 2 weeks\n6. Follow-up in 4 weeks",
+            'follow_up' => '4 weeks for BP reassessment on dual therapy.',
+            'follow_up_timeframe' => '4 weeks',
+            'is_signed' => true, 'signed_at' => now()->subDays(5),
+        ]);
+
+        // Longitudinal BP: before and after medication change
+        $bpReadings = [
+            ['day' => -21, 'sys' => 158, 'dia' => 98, 'hr' => 78],
+            ['day' => -18, 'sys' => 152, 'dia' => 96, 'hr' => 76],
+            ['day' => -15, 'sys' => 160, 'dia' => 100, 'hr' => 80],
+            ['day' => -12, 'sys' => 155, 'dia' => 97, 'hr' => 74],
+            ['day' => -9, 'sys' => 162, 'dia' => 102, 'hr' => 78],
+            ['day' => -7, 'sys' => 158, 'dia' => 98, 'hr' => 76],
+            ['day' => -5, 'sys' => 156, 'dia' => 98, 'hr' => 76],
+            ['day' => -4, 'sys' => 150, 'dia' => 94, 'hr' => 74],
+            ['day' => -3, 'sys' => 146, 'dia' => 92, 'hr' => 72],
+            ['day' => -2, 'sys' => 142, 'dia' => 88, 'hr' => 74],
+            ['day' => -1, 'sys' => 138, 'dia' => 86, 'hr' => 72],
+            ['day' => 0, 'sys' => 134, 'dia' => 84, 'hr' => 70],
+        ];
+
+        foreach ($bpReadings as $r) {
+            $date = now()->addDays($r['day']);
+            Observation::create([
+                'fhir_observation_id' => 'obs-bp-james-'.Str::uuid(),
+                'patient_id' => $patient->id, 'practitioner_id' => $practitioner->id,
+                'code_system' => 'LOINC', 'code' => '85354-9', 'code_display' => 'Blood pressure panel',
+                'category' => 'vital-signs', 'status' => 'final', 'value_type' => 'string',
+                'value_string' => $r['sys'].'/'.$r['dia'].' mmHg',
+                'interpretation' => $r['sys'] > 140 ? 'H' : 'N',
+                'effective_date' => $date->toDateString(), 'issued_at' => $date,
+                'specialty_data' => [
+                    'systolic' => ['value' => $r['sys'], 'unit' => 'mmHg'],
+                    'diastolic' => ['value' => $r['dia'], 'unit' => 'mmHg'],
+                    'source' => 'home_monitor',
+                ],
+                'created_by' => $doctor->id,
+            ]);
+            Observation::create([
+                'fhir_observation_id' => 'obs-hr-james-'.Str::uuid(),
+                'patient_id' => $patient->id, 'practitioner_id' => $practitioner->id,
+                'code_system' => 'LOINC', 'code' => '8867-4', 'code_display' => 'Heart rate',
+                'category' => 'vital-signs', 'status' => 'final', 'value_type' => 'quantity',
+                'value_quantity' => $r['hr'], 'value_unit' => 'bpm',
+                'reference_range_low' => 60, 'reference_range_high' => 100,
+                'interpretation' => 'N', 'effective_date' => $date->toDateString(),
+                'issued_at' => $date, 'specialty_data' => ['source' => 'home_monitor'],
+                'created_by' => $doctor->id,
+            ]);
+        }
+
+        ChatSession::create([
+            'patient_id' => $patient->id, 'visit_id' => $visit->id,
+            'topic' => 'Post-visit follow-up: Blood pressure management',
+            'status' => 'active', 'initiated_at' => now(),
+        ]);
     }
 
     private function seedMedicalReferences(): void

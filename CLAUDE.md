@@ -302,6 +302,15 @@ Dla feature'ów dotyczących danych medycznych, promptów AI, lub flow pacjenta 
 
 - Hackathon deadline: **16 lutego 2026, 15:00 EST** — priorytet to działający prototyp, nie perfekcyjna dokumentacja
 
+## Agent Teams Policy
+
+For **medium or large complexity tasks**, always use agent teams (Task tool with `TeamCreate` + multiple teammates). This includes:
+- Multi-file features (3+ files)
+- Tasks with independent sub-tasks that can run in parallel
+- Complex merges, large refactors, multi-endpoint implementations
+
+For **small/simple tasks** (single file edit, quick fix, one endpoint), work directly without spawning a team.
+
 ## Linear (Project Management)
 
 Team **POST** in the `medduties` workspace. API key is available as `$LINEAR_API_KEY` env var.

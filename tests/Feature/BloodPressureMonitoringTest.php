@@ -102,8 +102,8 @@ class BloodPressureMonitoringTest extends TestCase
             ->where('code', '85354-9')
             ->get();
 
-        // 1 original + 9 series = 10 total
-        $this->assertEquals(10, $bpReadings->count());
+        // 1 original + 9 series + 9 home readings = 19 total
+        $this->assertEquals(19, $bpReadings->count());
 
         // Check all have specialty_data with systolic/diastolic
         foreach ($bpReadings as $bp) {

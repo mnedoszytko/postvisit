@@ -1,0 +1,77 @@
+{
+  "device": {
+    "type": "Apple Watch Series 9",
+    "os": "watchOS 11.2",
+    "paired_phone": "iPhone 15 Pro",
+    "patient_id": "alex-johnson",
+    "last_sync": "2026-02-10T22:30:00Z"
+  },
+  "heart_rate": {
+    "resting_average_bpm": 72,
+    "readings": [
+      { "timestamp": "2026-02-10T08:00:00Z", "bpm": 68, "context": "resting" },
+      { "timestamp": "2026-02-10T09:15:00Z", "bpm": 74, "context": "walking" },
+      { "timestamp": "2026-02-10T10:30:00Z", "bpm": 82, "context": "work_stress" },
+      { "timestamp": "2026-02-10T12:00:00Z", "bpm": 71, "context": "resting" },
+      { "timestamp": "2026-02-10T14:20:00Z", "bpm": 88, "context": "light_exercise" },
+      { "timestamp": "2026-02-10T16:45:00Z", "bpm": 76, "context": "walking" },
+      { "timestamp": "2026-02-10T19:00:00Z", "bpm": 70, "context": "resting" },
+      { "timestamp": "2026-02-10T21:30:00Z", "bpm": 64, "context": "sleep_onset" },
+      { "timestamp": "2026-02-09T08:00:00Z", "bpm": 72, "context": "resting" },
+      { "timestamp": "2026-02-09T11:00:00Z", "bpm": 79, "context": "walking" },
+      { "timestamp": "2026-02-09T14:00:00Z", "bpm": 91, "context": "exercise" },
+      { "timestamp": "2026-02-09T18:00:00Z", "bpm": 73, "context": "resting" },
+      { "timestamp": "2026-02-09T22:00:00Z", "bpm": 62, "context": "sleep_onset" }
+    ]
+  },
+  "irregular_rhythm_events": [
+    {
+      "timestamp": "2026-02-10T10:32:00Z",
+      "type": "premature_ventricular_contraction",
+      "duration_seconds": 2,
+      "heart_rate_at_event": 84
+    },
+    {
+      "timestamp": "2026-02-10T14:25:00Z",
+      "type": "premature_ventricular_contraction",
+      "duration_seconds": 1,
+      "heart_rate_at_event": 90
+    },
+    {
+      "timestamp": "2026-02-09T09:45:00Z",
+      "type": "premature_ventricular_contraction",
+      "duration_seconds": 3,
+      "heart_rate_at_event": 78
+    },
+    {
+      "timestamp": "2026-02-09T15:10:00Z",
+      "type": "premature_ventricular_contraction",
+      "duration_seconds": 1,
+      "heart_rate_at_event": 85
+    },
+    {
+      "timestamp": "2026-02-08T11:22:00Z",
+      "type": "premature_ventricular_contraction",
+      "duration_seconds": 2,
+      "heart_rate_at_event": 80
+    }
+  ],
+  "activity": {
+    "daily_steps": [
+      { "date": "2026-02-10", "steps": 8420, "distance_km": 6.1, "active_minutes": 42 },
+      { "date": "2026-02-09", "steps": 6850, "distance_km": 4.9, "active_minutes": 35 },
+      { "date": "2026-02-08", "steps": 10230, "distance_km": 7.4, "active_minutes": 58 },
+      { "date": "2026-02-07", "steps": 5100, "distance_km": 3.7, "active_minutes": 22 },
+      { "date": "2026-02-06", "steps": 7920, "distance_km": 5.7, "active_minutes": 40 },
+      { "date": "2026-02-05", "steps": 9150, "distance_km": 6.6, "active_minutes": 48 },
+      { "date": "2026-02-04", "steps": 4200, "distance_km": 3.0, "active_minutes": 18 }
+    ]
+  },
+  "blood_oxygen": {
+    "readings": [
+      { "timestamp": "2026-02-10T23:00:00Z", "spo2_percent": 98 },
+      { "timestamp": "2026-02-09T23:00:00Z", "spo2_percent": 97 },
+      { "timestamp": "2026-02-08T23:00:00Z", "spo2_percent": 99 }
+    ]
+  }
+}

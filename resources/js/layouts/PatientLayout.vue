@@ -18,6 +18,12 @@
             to="/profile"
             class="text-sm text-gray-600 hover:text-emerald-700 transition-colors"
           >
+            Profile
+          </router-link>
+          <router-link
+            to="/health"
+            class="text-sm text-gray-600 hover:text-emerald-700 transition-colors"
+          >
             My Health
           </router-link>
           <router-link
@@ -75,6 +81,13 @@
             class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
             @click="mobileOpen = false"
           >
+            Profile
+          </router-link>
+          <router-link
+            to="/health"
+            class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            @click="mobileOpen = false"
+          >
             My Health
           </router-link>
           <router-link
@@ -102,6 +115,14 @@
     <main class="max-w-4xl mx-auto px-4 py-6">
       <slot />
     </main>
+
+    <!-- Disclaimer footer -->
+    <footer class="max-w-4xl mx-auto px-4 py-4 text-center">
+      <p class="text-xs text-gray-400 leading-relaxed">
+        All clinical scenarios, patient data, and medical records displayed in this application are entirely fictional,
+        created for demonstration purposes only, and do not depict any real person or actual medical encounter.
+      </p>
+    </footer>
   </div>
 </template>
 
