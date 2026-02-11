@@ -76,3 +76,8 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
 - **Bug:** DoctorPatientDetail.vue used `patient.name` (doesn't exist), `patient.conditions.join()` (conditions are objects, not strings → `[object Object]`), `patient.age` (doesn't exist), `visit.visit_date` (doesn't exist). Also `visit.visit_type` showed raw enum `office_visit`.
 - **Fix:** Changed to `patient.first_name`/`patient.last_name`, computed `patientAge` from `patient.dob`, mapped `conditions` to `code_display`, formatted `visit.visit_type` → "Office Visit", used `visit.started_at` for date.
 - **Takeaway:** Same lesson as #13 repeating. When any view renders model data, ALWAYS check the actual model fields (migration or `$fillable`) and the controller response. This error pattern is systematic — every new view needs a field audit.
+
+### Lesson 15: VPS agents mix unrelated changes into PRs
+- **Bug:** PR #68 was supposed to be "1-line CI fix (add id-token: write)". Instead the VPS agent added DemoSeeder renames (Dr. Nedo → Dr. Sarah Chen), auth interceptor fixes, DoctorDashboard field fixes, Pint formatting, new lessons.md entries, and CLAUDE.md TODO updates — 10 files changed instead of 1.
+- **Fix:** Closed PR #68, recreated as clean single-file PR from main.
+- **Takeaway:** VPS agents working on long-lived branches accumulate drift. When creating a PR for a specific fix, ALWAYS branch from fresh `main` and change ONLY the files relevant to the PR scope. Before pushing, verify with `git diff main..HEAD --stat` that every file in the diff is justified. This is already in CLAUDE.md (PR Discipline section) but agents ignore it — needs stronger enforcement.
