@@ -38,6 +38,12 @@ PROMPT_PREFIX = (
 )
 
 PATIENTS = {
+    "00": {
+        "dir": "visit-00-pvcs-palpitations",
+        "prompt": "Alex, a 40-year-old Black African American man with short cropped dark hair, "
+                  "clean-shaven, athletic medium build, calm but slightly concerned expression, "
+                  "wearing a casual light gray henley shirt.",
+    },
     "01": {
         "dir": "visit-01-coronarography-stenosis",
         "prompt": "Marie, a 72-year-old European woman with silver-gray chin-length hair, "

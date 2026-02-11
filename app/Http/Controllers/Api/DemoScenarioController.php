@@ -48,6 +48,9 @@ class DemoScenarioController extends Controller
                 }
 
                 // Existing inline format
+                $photoDir = $s['photo_dir'] ?? null;
+                $hasPhoto = $photoDir && file_exists(base_path($photoDir.'/patient-photo.png'));
+
                 return [
                     'key' => $s['key'],
                     'name' => $s['name'],
@@ -59,8 +62,8 @@ class DemoScenarioController extends Controller
                     'patient_gender' => $s['patient']['gender'],
                     'condition' => $s['conditions'][0]['code_display'] ?? null,
                     'language' => $s['patient']['preferred_language'] ?? 'en',
-                    'bmi' => null,
-                    'photo_url' => null,
+                    'bmi' => $s['patient']['bmi'] ?? null,
+                    'photo_url' => $hasPhoto ? "/api/v1/demo/scenarios/{$s['key']}/photo" : null,
                     'has_audio' => false,
                 ];
             })
@@ -117,11 +120,18 @@ class DemoScenarioController extends Controller
     {
         $scenarios = config('demo-scenarios.scenarios');
 
-        if (! isset($scenarios[$scenario]) || ! isset($scenarios[$scenario]['source_dir'])) {
+        if (! isset($scenarios[$scenario])) {
             abort(404);
         }
 
-        $path = base_path($scenarios[$scenario]['source_dir'].'/patient-photo.png');
+        $s = $scenarios[$scenario];
+        $dir = $s['source_dir'] ?? $s['photo_dir'] ?? null;
+
+        if (! $dir) {
+            abort(404);
+        }
+
+        $path = base_path($dir.'/patient-photo.png');
 
         if (! file_exists($path)) {
             abort(404);

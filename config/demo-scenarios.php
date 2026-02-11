@@ -41,6 +41,7 @@ return [
             'description' => 'Heart palpitations and irregular heartbeat for 3 weeks. EKG shows PVCs. Started on Propranolol.',
             'icon' => 'heart-pulse',
             'color' => 'emerald',
+            'photo_dir' => 'demo/visits/visit-00-pvcs-palpitations',
 
             'patient' => [
                 'first_name' => 'Alex',
@@ -53,6 +54,7 @@ return [
                 'mrn' => 'MRN-001',
                 'height_cm' => 180.3,
                 'weight_kg' => 82.0,
+                'bmi' => 25.2,
                 'blood_type' => 'A+',
                 'allergies' => [
                     ['name' => 'Penicillin', 'severity' => 'severe', 'reaction' => 'Anaphylaxis'],
