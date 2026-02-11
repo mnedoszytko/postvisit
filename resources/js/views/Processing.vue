@@ -70,18 +70,8 @@ const steps = [
 const activeStep = ref(0);
 const failed = ref(false);
 let pollInterval = null;
-let progressInterval = null;
 
 const currentStep = computed(() => steps[activeStep.value] || steps[steps.length - 1]);
-
-function startProgressAnimation() {
-    // Slowly advance visual steps while waiting for API
-    progressInterval = setInterval(() => {
-        if (activeStep.value < 3) {
-            activeStep.value++;
-        }
-    }, 4000);
-}
 
 async function pollStatus() {
     const visitId = route.query.visitId;
@@ -91,8 +81,6 @@ async function pollStatus() {
         return;
     }
 
-    startProgressAnimation();
-
     pollInterval = setInterval(async () => {
         try {
             const { data } = await api.get(`/visits/${visitId}/transcript/status`, {
@@ -100,10 +88,11 @@ async function pollStatus() {
             });
 
             const status = data.data?.processing_status;
+            const hasEntities = data.data?.has_entities;
+            const hasSoapNote = data.data?.has_soap_note;
 
             if (status === 'completed') {
                 clearInterval(pollInterval);
-                clearInterval(progressInterval);
                 // Mark all steps as complete
                 activeStep.value = steps.length;
                 // Short delay to show all checkmarks before redirect
@@ -112,10 +101,18 @@ async function pollStatus() {
                 }, 1000);
             } else if (status === 'failed') {
                 clearInterval(pollInterval);
-                clearInterval(progressInterval);
                 failed.value = true;
+            } else if (hasSoapNote) {
+                // SOAP note built — checking medications
+                activeStep.value = 3;
+            } else if (hasEntities) {
+                // Entities extracted — building SOAP note
+                activeStep.value = 2;
+            } else if (status === 'processing') {
+                // Processing started but no structured data yet — transcribing/extracting
+                activeStep.value = Math.max(activeStep.value, 1);
             }
-            // 'pending' or 'processing' — keep polling
+            // 'pending' — stay at step 0
         } catch {
             // Network error — keep polling silently
         }
@@ -149,6 +146,5 @@ onMounted(() => {
 
 onUnmounted(() => {
     clearInterval(pollInterval);
-    clearInterval(progressInterval);
 });
 </script>

@@ -13,7 +13,7 @@
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <router-link
-          to="/demo"
+          to="/login"
           class="px-8 py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors text-lg"
         >
           Try Demo

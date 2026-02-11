@@ -9,6 +9,7 @@ use App\Models\Transcript;
 use App\Models\User;
 use App\Models\Visit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class TranscriptTest extends TestCase
@@ -70,6 +71,8 @@ class TranscriptTest extends TestCase
 
     public function test_can_process_transcript(): void
     {
+        Queue::fake();
+
         Transcript::factory()->create([
             'visit_id' => $this->visit->id,
             'patient_id' => $this->visit->patient_id,

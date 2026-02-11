@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ProcessTranscriptJob;
 use App\Models\Transcript;
 use App\Models\Visit;
+use App\Models\VisitNote;
+use App\Services\AI\ScribeProcessor;
 use App\Services\Stt\SpeechToTextProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -92,7 +94,7 @@ class TranscriptController extends Controller
         return response()->json(['data' => $transcript]);
     }
 
-    public function process(Visit $visit): JsonResponse
+    public function process(Request $request, Visit $visit, ScribeProcessor $scribeProcessor): JsonResponse
     {
         $transcript = $visit->transcript;
 
@@ -104,8 +106,51 @@ class TranscriptController extends Controller
             return response()->json(['data' => $transcript, 'message' => 'Transcript already processed']);
         }
 
-        // Mark as processing — AI processing will be handled asynchronously
         $transcript->update(['processing_status' => 'processing']);
+
+        $sync = $request->boolean('sync', false);
+
+        if ($sync) {
+            // Synchronous processing for demo — calls ScribeProcessor directly
+            try {
+                $scribeResult = $scribeProcessor->process($transcript);
+
+                $transcript->update([
+                    'entities_extracted' => $scribeResult['extracted_entities'] ?? [],
+                    'soap_note' => $scribeResult['soap_note'] ?? [],
+                    'processing_status' => 'completed',
+                ]);
+
+                $soap = $scribeResult['soap_note'] ?? [];
+
+                VisitNote::updateOrCreate(
+                    ['visit_id' => $transcript->visit_id],
+                    [
+                        'patient_id' => $transcript->patient_id,
+                        'author_practitioner_id' => $transcript->visit->practitioner_id,
+                        'composition_type' => 'progress_note',
+                        'status' => 'preliminary',
+                        'chief_complaint' => $soap['subjective'] ?? null,
+                        'history_of_present_illness' => $soap['subjective'] ?? null,
+                        'assessment' => $soap['assessment'] ?? null,
+                        'plan' => $soap['plan'] ?? null,
+                        'review_of_systems' => $soap['objective'] ?? null,
+                        'physical_exam' => $soap['objective'] ?? null,
+                    ]
+                );
+
+                return response()->json([
+                    'data' => $transcript->fresh(),
+                    'message' => 'Transcript processed successfully',
+                ]);
+            } catch (\Throwable $e) {
+                $transcript->update(['processing_status' => 'failed']);
+
+                return response()->json([
+                    'error' => ['message' => 'Processing failed: ' . $e->getMessage()],
+                ], 500);
+            }
+        }
 
         ProcessTranscriptJob::dispatch($transcript);
 

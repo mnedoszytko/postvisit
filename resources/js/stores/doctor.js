@@ -17,7 +17,12 @@ export const useDoctorStore = defineStore('doctor', {
             try {
                 const api = useApi();
                 const { data } = await api.get('/doctor/dashboard');
-                this.dashboard = data.data;
+                this.dashboard = {
+                    patient_count: data.data.stats.total_patients,
+                    unread_messages: data.data.stats.unread_notifications,
+                    alert_count: 0, // no alerts system yet
+                    recent_visits: data.data.recent_visits,
+                };
             } catch (err) {
                 this.error = err.response?.data?.error?.message || 'Failed to load dashboard';
             } finally {
@@ -32,7 +37,10 @@ export const useDoctorStore = defineStore('doctor', {
                 const api = useApi();
                 const params = search ? { search } : {};
                 const { data } = await api.get('/doctor/patients', { params });
-                this.patients = data.data;
+                this.patients = (data.data || []).map(p => ({
+                    ...p,
+                    name: `${p.first_name} ${p.last_name}`,
+                }));
             } catch (err) {
                 this.error = err.response?.data?.error?.message || 'Failed to load patients';
             } finally {

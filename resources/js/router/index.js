@@ -11,7 +11,6 @@ import MedsDetail from '@/views/MedsDetail.vue';
 import Feedback from '@/views/Feedback.vue';
 import DoctorDashboard from '@/views/DoctorDashboard.vue';
 import DoctorPatientDetail from '@/views/DoctorPatientDetail.vue';
-import DemoMode from '@/views/DemoMode.vue';
 
 const routes = [
     {
@@ -71,11 +70,6 @@ const routes = [
         name: 'doctor-patient-detail',
         component: DoctorPatientDetail,
         meta: { requiresAuth: true, role: 'doctor' },
-    },
-    {
-        path: '/demo',
-        name: 'demo-mode',
-        component: DemoMode,
     },
 ];
 
