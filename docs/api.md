@@ -164,8 +164,12 @@ Upload a transcript for a visit.
 | stt_provider | string | no | defaults to `none` |
 | audio_duration_seconds | integer | no | defaults to `0` |
 | patient_consent_given | boolean | yes | must be true |
+| process | boolean | no | If true, immediately dispatches processing job |
+| use_demo_transcript | boolean | no | If true, loads real demo transcript from server (ignores raw_transcript) |
 
 **Response:** `201` `{ data: { id, processing_status: "pending" } }`
+
+When `process: true` is set, `processing_status` will be `"processing"` in the response.
 
 ### GET /visits/{visit}/transcript
 View the transcript for a visit.
@@ -175,7 +179,17 @@ View the transcript for a visit.
 ### POST /visits/{visit}/transcript/process
 Trigger AI processing of the transcript.
 
-**Response:** `200` `{ data: { processing_status: "processing", transcript_id } }`
+**Body:**
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| sync | boolean | no | If true, processes synchronously (for demo). Default: false |
+
+**Response:**
+- **Async (default):** `200` `{ data: { processing_status: "processing", transcript_id }, message: "Transcript processing started" }`
+- **Sync (sync=true):** `200` `{ data: { full transcript object with soap_note and entities }, message: "Transcript processed successfully" }`
+- Returns `200` with message `"Transcript already processed"` if already completed
+- Returns `404` if no transcript found
+- Returns `500` with error message if sync processing fails
 
 ### GET /visits/{visit}/transcript/status
 Check transcript processing status.
