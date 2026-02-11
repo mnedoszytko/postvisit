@@ -13,7 +13,7 @@
           </template>
         </li>
       </ul>
-      <p v-else class="my-2 leading-relaxed">
+      <p v-else class="my-2 leading-relaxed whitespace-pre-line">
         <template v-for="(seg, si) in block.segments" :key="si">
           <span
             v-if="seg.isTerm"
