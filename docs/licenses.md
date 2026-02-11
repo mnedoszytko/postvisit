@@ -1,171 +1,171 @@
 # Licenses & Hackathon Compliance Tracker
 
-> Żywy dokument — aktualizowany przy każdej zmianie stacku.
-> Ostatnia aktualizacja: 2026-02-10
+> Living document -- updated with every stack change.
+> Last updated: 2026-02-11
 
-## Zasady hackathonu (przypomnienie)
+## Hackathon Rules (Reminder)
 
-1. **Open Source** — wszystko pokazane w demo musi być open source (backend, frontend, modele, inne komponenty)
-2. **New Work Only** — projekt od zera w trakcie hackathonu
-3. **Team Size** — do 2 osób
-4. **Banned** — dyskwalifikacja za: naruszenie prawa/etyki/policies platform, użycie kodu/danych/assetów bez praw
+1. **Open Source** -- everything shown in the demo must be open source (backend, frontend, models, other components)
+2. **New Work Only** -- project built from scratch during the hackathon
+3. **Team Size** -- up to 2 people
+4. **Banned** -- disqualification for: violating law/ethics/platform policies, using code/data/assets without rights
 
-## Nasz kod
+## Our Code
 
-| Komponent | Licencja | Status |
-|-----------|----------|--------|
-| Backend (Laravel app) | MIT (nasze) | ✅ OK |
-| Frontend (Vue app) | MIT (nasze) | ✅ OK |
-| System prompts (`prompts/`) | MIT (nasze) | ✅ OK |
-| Demo data (`demo/`) | MIT (nasze, napisane przez lekarza) | ✅ OK |
+| Component | License | Status |
+|-----------|---------|--------|
+| Backend (Laravel app) | MIT (ours) | OK |
+| Frontend (Vue app) | MIT (ours) | OK |
+| System prompts (`prompts/`) | MIT (ours) | OK |
+| Demo data (`demo/`) | MIT (ours, written by a physician) | OK |
 
-## Frameworki i biblioteki
+## Frameworks & Libraries
 
-| Dependencja | Licencja | Typ | Status |
-|-------------|----------|-----|--------|
-| Laravel 12 | MIT | Backend framework | ✅ OK |
-| Vue 3 | MIT | Frontend framework | ✅ OK |
-| Vue Router 4 | MIT | Client-side routing | ✅ OK |
-| Pinia | MIT | State management | ✅ OK |
-| Vite | MIT | Build tool | ✅ OK |
-| Tailwind CSS v4 | MIT | CSS framework | ✅ OK |
-| Axios | MIT | HTTP client | ✅ OK |
-| qrcode.vue | MIT | QR code generation (Vue 3) | ✅ OK |
-| Laravel Sanctum | MIT | SPA authentication | ✅ OK |
-| Anthropic PHP SDK (`anthropic-ai/laravel`) | MIT | AI API client | ✅ OK |
-| Bun | MIT | Package manager / runtime | ✅ OK |
+| Dependency | License | Type | Status |
+|------------|---------|------|--------|
+| Laravel 12 | MIT | Backend framework | OK |
+| Vue 3 | MIT | Frontend framework | OK |
+| Vue Router 4 | MIT | Client-side routing | OK |
+| Pinia | MIT | State management | OK |
+| Vite | MIT | Build tool | OK |
+| Tailwind CSS v4 | MIT | CSS framework | OK |
+| Axios | MIT | HTTP client | OK |
+| qrcode.vue | MIT | QR code generation (Vue 3) | OK |
+| Laravel Sanctum | MIT | SPA authentication | OK |
+| Anthropic PHP SDK (`anthropic-ai/laravel`) | MIT | AI API client | OK |
+| Bun | MIT | Package manager / runtime | OK |
 
-## Model AI
+## AI Model
 
-| Model | Licencja | Uwagi | Status |
-|-------|----------|-------|--------|
-| Claude Opus 4.6 | Proprietary (Anthropic API) | Hackathon organizowany przez Anthropic — użycie Opus jest oczekiwane. Nasz kod integracyjny jest open source. | ✅ OK |
+| Model | License | Notes | Status |
+|-------|---------|-------|--------|
+| Claude Opus 4.6 | Proprietary (Anthropic API) | Hackathon organized by Anthropic -- Opus usage is expected. Our integration code is open source. | OK |
 
 ## STT (Speech-to-Text)
 
-| Serwis | Licencja | Rola | Status |
-|--------|----------|------|--------|
-| Whisper (OpenAI) | MIT | Primary — na demo | ✅ OK |
-| whisper.cpp | MIT | Alternatywa (szybsza) | ✅ OK |
-| WhisperX | BSD-4 | Alternatywa (z diaryzacją) | ✅ OK |
-| Google Cloud STT | Proprietary API | Cloud option — nasz adapter open source | ⚠️ Serwis zewnętrzny, nie komponent demo |
-| iOS Speech Framework | Apple proprietary | On-device option — platformowe API | ⚠️ Serwis platformowy, nie komponent demo |
-| Deepgram Nova-3 | Proprietary API | Fallback (medical) — nie na demo | ⚠️ Tylko fallback |
+| Service | License | Role | Status |
+|---------|---------|------|--------|
+| Whisper (OpenAI) | MIT | Primary -- used in demo | OK |
+| whisper.cpp | MIT | Alternative (faster) | OK |
+| WhisperX | BSD-4 | Alternative (with diarization) | OK |
+| Google Cloud STT | Proprietary API | Cloud option -- our adapter is open source | External service, not a demo component |
+| iOS Speech Framework | Apple proprietary | On-device option -- platform API | Platform service, not a demo component |
+| Deepgram Nova-3 | Proprietary API | Fallback (medical) -- not in demo | Fallback only |
 
-**Na demo video:** Whisper (MIT, open source, bezsprzeczne).
+**Demo video uses:** Whisper (MIT, open source, unambiguous).
 
-## Dane kliniczne — bundlowane w repo
+## Clinical Data -- Bundled in Repo
 
-| Zasób | Licencja | Czy można w repo? | Status |
-|-------|----------|-------------------|--------|
-| WHO guidelines | CC-BY 3.0 IGO | ✅ z atrybucją | ✅ OK |
-| RxNorm data | Public domain (NLM) | ✅ | ✅ OK |
-| OpenFDA data | Public domain | ✅ | ✅ OK |
-| DailyMed data | Public domain | ✅ | ✅ OK |
-| ICD-11 data | CC-BY-ND 3.0 IGO | ✅ z atrybucją, bez modyfikacji | ✅ OK |
+| Resource | License | Bundled in Repo? | Status |
+|----------|---------|------------------|--------|
+| WHO guidelines | CC-BY 3.0 IGO | Yes, with attribution | OK |
+| RxNorm data | Public domain (NLM) | Yes | OK |
+| OpenFDA data | Public domain | Yes | OK |
+| DailyMed data | Public domain | Yes | OK |
+| ICD-11 data | CC-BY-ND 3.0 IGO | Yes, with attribution, no modifications | OK |
 
-### NIE wrzucać do repo
+### Do NOT Bundle in Repo
 
-| Zasób | Licencja | Dlaczego nie | Status |
-|-------|----------|--------------|--------|
-| UpToDate content | Proprietary | Subscription, copyright | ❌ NIE |
-| DynaMed content | Proprietary | Subscription, copyright | ❌ NIE |
-| BMJ Best Practice | Proprietary | Subscription, copyright | ❌ NIE |
-| Cochrane reviews | Proprietary (Wiley) | Subscription | ❌ NIE |
+| Resource | License | Reason | Status |
+|----------|---------|--------|--------|
+| UpToDate content | Proprietary | Subscription, copyright | NO |
+| DynaMed content | Proprietary | Subscription, copyright | NO |
+| BMJ Best Practice | Proprietary | Subscription, copyright | NO |
+| Cochrane reviews | Proprietary (Wiley) | Subscription | NO |
 
-## Zewnętrzne API (serwisy, nie komponenty)
+## External APIs (Services, Not Components)
 
-Serwisy wywoływane przez nasz open source kod. Nie są "komponentami demo" — to infrastruktura.
+Services called by our open source code. They are not "demo components" -- they are infrastructure.
 
-| API | Licencja danych | Auth | Koszt | Status |
-|-----|----------------|------|-------|--------|
-| PubMed E-utilities | Public (NLM) | Free API key | Free | ✅ OK |
-| Europe PMC | Varies (per article) | None | Free | ✅ OK |
-| ClinicalTrials.gov v2.0 | Public | None | Free | ✅ OK |
-| OpenAlex | CC0 (metadata) | Free API key | Free | ✅ OK |
-| OpenFDA | Public domain | None | Free | ✅ OK |
-| RxNorm (RxNav) | Public domain (NLM) | None | Free | ✅ OK |
-| ICD-11 API (WHO) | CC-BY-ND 3.0 IGO | None | Free | ✅ OK |
-| NIH Clinical Tables | Public | None | Free | ✅ OK |
-| Semantic Scholar | Free tier | Free API key | Free | ✅ OK |
-| DrugBank | Proprietary (free tier) | API key | Free tier | ⚠️ sprawdzić ToS |
-| OpenEvidence | Proprietary (free tier) | NPI verification | Free | ⚠️ wymaga NPI |
+| API | Data License | Auth | Cost | Status |
+|-----|-------------|------|------|--------|
+| PubMed E-utilities | Public (NLM) | Free API key | Free | OK |
+| Europe PMC | Varies (per article) | None | Free | OK |
+| ClinicalTrials.gov v2.0 | Public | None | Free | OK |
+| OpenAlex | CC0 (metadata) | Free API key | Free | OK |
+| OpenFDA | Public domain | None | Free | OK |
+| RxNorm (RxNav) | Public domain (NLM) | None | Free | OK |
+| ICD-11 API (WHO) | CC-BY-ND 3.0 IGO | None | Free | OK |
+| NIH Clinical Tables | Public | None | Free | OK |
+| Semantic Scholar | Free tier | Free API key | Free | OK |
+| DrugBank | Proprietary (free tier) | API key | Free tier | Check ToS |
+| OpenEvidence | Proprietary (free tier) | NPI verification | Free | Requires NPI |
 
-## Infrastruktura (nie dotyczy reguł)
+## Infrastructure (Not Subject to Rules)
 
-| Serwis | Cel | Uwagi |
-|--------|-----|-------|
-| Laravel Forge | Deploy | Narzędzie, nie komponent |
-| Hetzner | Hosting | Serwer, nie komponent |
+| Service | Purpose | Notes |
+|---------|---------|-------|
+| Laravel Forge | Deploy | Tool, not a component |
+| Hetzner | Hosting | Server, not a component |
 | Let's Encrypt | TLS | Free, open source CA |
-| GitHub | Repo | Wymagane przez hackathon |
+| GitHub | Repo | Required by hackathon |
 
-## Licencja projektu
+## Project License
 
-**MIT** — najprostsza, najszerzej akceptowana. Kompatybilna ze wszystkimi dependencjami.
+**MIT** -- simplest, most widely accepted. Compatible with all dependencies.
 
-Plik `LICENSE` w root repo.
+`LICENSE` file in repo root.
 
-## Checklist przed submission
+## Pre-Submission Checklist
 
 > Full rules & judging criteria: `docs/hackathon-rules.md`
 > Deadline: **Mon Feb 16, 3:00 PM EST**
 
-### Submission (wymagane na platformie CV)
-- [ ] Demo video uploaded (YouTube/Loom) — **max 3 minuty**
-- [ ] GitHub repo link — **public**
-- [ ] Written summary — **100–200 words**, po angielsku
+### Submission (Required on CV Platform)
+- [ ] Demo video uploaded (YouTube/Loom) -- **max 3 minutes**
+- [ ] GitHub repo link -- **public**
+- [ ] Written summary -- **100-200 words**, in English
 
-### Repo & Licencje
-- [ ] `LICENSE` file w root (MIT)
-- [ ] Cały nasz kod pod MIT license
-- [ ] `ATTRIBUTION.md` z atrybucjami dla bundlowanych guidelines (ESC, AHA, WHO, RxNorm)
-- [ ] Żadne proprietary data w repo (NICE, UpToDate, Cochrane — NIE)
-- [ ] `docs/licenses.md` aktualny — wszystkie deps, API, data sources
+### Repo & Licenses
+- [ ] `LICENSE` file in root (MIT)
+- [ ] All our code under MIT license
+- [ ] `ATTRIBUTION.md` with attributions for bundled guidelines (WikiDoc, DailyMed, etc.)
+- [ ] No proprietary data in repo (NICE, UpToDate, Cochrane -- NO)
+- [ ] `docs/licenses.md` up to date -- all deps, APIs, data sources
 
 ### Secrets & Security
-- [ ] `.env.example` z wszystkimi wymaganymi kluczami (bez wartości!)
-- [ ] `.env` w `.gitignore` (nigdy w repo)
-- [ ] Żadne API keys / tokeny / hasła w kodzie ani w git history
-- [ ] Anthropic API key tylko w `.env`
+- [ ] `.env.example` with all required keys (no values!)
+- [ ] `.env` in `.gitignore` (never in repo)
+- [ ] No API keys / tokens / passwords in code or git history
+- [ ] Anthropic API key only in `.env`
 
-### Kod & Testy
-- [ ] `herd php artisan test` — wszystkie testy przechodzą
-- [ ] `bun run build` — frontend kompiluje bez błędów
-- [ ] `vendor/bin/pint --dirty` — code style OK
-- [ ] Brak `dd()`, `dump()`, `console.log()` debug statements
+### Code & Tests
+- [ ] `herd php artisan test` -- all tests pass
+- [ ] `bun run build` -- frontend compiles without errors
+- [ ] `vendor/bin/pint --dirty` -- code style OK
+- [ ] No `dd()`, `dump()`, `console.log()` debug statements
 
-### Dokumentacja (hackathon judging criterion — Depth & Execution 20%)
-- [ ] `README.md` — project overview, setup, architecture, demo guide (English!)
-- [ ] `docs/api.md` — endpointy z examples
-- [ ] `docs/architecture.md` — system architecture, data flow, AI pipeline
-- [ ] `docs/ai-prompts.md` — każdy prompt udokumentowany
-- [ ] `CHANGELOG.md` — feature changelog
-- [ ] Wszystkie docs przetłumaczone na **English**
+### Documentation (Hackathon Judging Criterion -- Depth & Execution 20%)
+- [ ] `README.md` -- project overview, setup, architecture, demo guide (English!)
+- [ ] `docs/api.md` -- endpoints with examples
+- [ ] `docs/architecture.md` -- system architecture, data flow, AI pipeline
+- [ ] `docs/ai-prompts.md` -- every prompt documented
+- [ ] `CHANGELOG.md` -- feature changelog
+- [ ] All docs translated to **English**
 
-### Demo Video (30% of score — najważniejsza kategoria!)
-- [ ] Wszystkie must-have features działają na żywo
-- [ ] Screen recordings w 16:9
-- [ ] Napisy burned-in
-- [ ] Storytelling: problem → solution → wow moment
-- [ ] Pokazuje Opus 4.6 capabilities (1M context, extended thinking)
-- [ ] Max 3 minuty — ani sekundy więcej
+### Demo Video (30% of Score -- Most Important Category!)
+- [ ] All must-have features work live
+- [ ] Screen recordings in 16:9
+- [ ] Burned-in subtitles
+- [ ] Storytelling: problem -> solution -> wow moment
+- [ ] Shows Opus 4.6 capabilities (1M context, extended thinking)
+- [ ] Max 3 minutes -- not a second more
 
-### Opus 4.6 Use (25% of score)
-- [ ] 1M context window wyraźnie wykorzystany (visit + guidelines + patient history w jednym prompcie)
-- [ ] Extended thinking widoczne w demo
-- [ ] Prompt caching na guidelines (90% savings)
-- [ ] Coś zaskakującego — "capabilities that surprised even us"
+### Opus 4.6 Use (25% of Score)
+- [ ] 1M context window clearly utilized (visit + guidelines + patient history in one prompt)
+- [ ] Extended thinking visible in demo
+- [ ] Prompt caching on guidelines (90% savings)
+- [ ] Something surprising -- "capabilities that surprised even us"
 
-### Impact (25% of score)
-- [ ] README jasno opisuje problem i kto korzysta
-- [ ] Disclaimer: "Prototype — not for clinical use"
-- [ ] Mapowanie na problem statements (all 3 tracks)
+### Impact (25% of Score)
+- [ ] README clearly describes the problem and who benefits
+- [ ] Disclaimer: "Prototype -- not for clinical use"
+- [ ] Mapping to problem statements (all 3 tracks)
 
-### Self-evaluation (przed submitem)
-- [ ] Puścić Opusa jako "judge" na nasze repo — ocena wg 4 kryteriów
-- [ ] Poprawić najsłabsze punkty
-- [ ] Sprawdzić czy README/video odpowiadają na pytania sędziów
+### Self-Evaluation (Before Submission)
+- [ ] Run Opus as "judge" on our repo -- score per 4 criteria
+- [ ] Fix weakest points
+- [ ] Verify README/video answer judges' questions
 
 ## Clinical Guidelines Knowledge Base
 
@@ -181,10 +181,10 @@ This forced us to design a 3-layer compliance-first architecture:
 
 | Source | License | Usage | Bundled in Repo? |
 |--------|---------|-------|-----------------|
-| WikiDoc | CC-BY-SA 3.0 | Cardiology reference articles | Yes — `demo/guidelines/wikidoc/` |
-| DailyMed (NLM) | Public Domain (US Gov) | Drug label summaries | Yes — `demo/guidelines/dailymed/` |
-| PMC Open Access (NLM) | CC-BY / CC-BY-NC per article | Runtime guideline RAG via BioC API | No — fetched at runtime, cached 24h |
+| WikiDoc | CC-BY-SA 3.0 | Cardiology reference articles | Yes -- `demo/guidelines/wikidoc/` |
+| DailyMed (NLM) | Public Domain (US Gov) | Drug label summaries | Yes -- `demo/guidelines/dailymed/` |
+| PMC Open Access (NLM) | CC-BY / CC-BY-NC per article | Runtime guideline RAG via BioC API | No -- fetched at runtime, cached 24h |
 | Own clinical summaries | Original work | Derivative summaries in `prompts/guidelines/` | Yes |
 | ESC Guidelines | Copyrighted + EU AI opt-out | **NOT USED** | No |
-| AHA/ACC Guidelines | Copyrighted | **NOT USED** directly — PMC OA versions fetched at runtime only | No |
+| AHA/ACC Guidelines | Copyrighted | **NOT USED** directly -- PMC OA versions fetched at runtime only | No |
 | NICE Guidelines | Requires written AI license | **NOT USED** | No |

@@ -1,31 +1,31 @@
-# Lessons Learned — log poprawek i błędów
+# Lessons Learned — Bug Fixes and Corrections Log
 
-Ten plik rejestruje błędy popełnione przez Claude i korekty od użytkownika.
-Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md.
+This file records mistakes made by Claude and corrections from the user.
+Every 3-5 iterations, we review and promote the most important takeaways to CLAUDE.md.
 
 **Last promotion:** 2026-02-11 — 16 lessons promoted to CLAUDE.md (Field Audit Rule, Ephemeral Data Protection, AI Output Validation, Demo Seeder Completeness, Axios Interceptor Safety).
 
 ## 2026-02-10
 
-### Lesson 1: Nazwa projektu MedDuties
-- **Błąd:** Claude szukał projektu "MedNutis" — błędna nazwa
-- **Korekta:** Projekt nazywa się **MedDuties** (katalog `../dyzury`)
-- **Wniosek:** Gdy user podaje nazwę projektu, dopytaj jeśli nie znajdziesz — nie zgaduj
+### Lesson 1: Project Name MedDuties
+- **Bug:** Claude searched for project "MedNutis" — wrong name
+- **Fix:** The project is called **MedDuties** (directory `../dyzury`)
+- **Takeaway:** When the user gives a project name, ask for clarification if not found — don't guess
 
-### Lesson 2: Nie przenoś założeń z innych projektów
-- **Błąd:** CLAUDE.md zawierał "MySQL, Redis, PHP 8.2+" — skopiowane z PreVisit bez pytania
-- **Korekta:** PHP 8.4 (bez dyskusji), baza danych i cache do ustalenia
-- **Wniosek:** Każdy projekt ma własne założenia. Nie kopiuj stacku z siostrzanych projektów — pytaj albo oznacz jako TBD
+### Lesson 2: Don't Carry Assumptions from Other Projects
+- **Bug:** CLAUDE.md contained "MySQL, Redis, PHP 8.2+" — copied from PreVisit without asking
+- **Fix:** PHP 8.4 (no discussion needed), database and cache to be decided
+- **Takeaway:** Each project has its own assumptions. Don't copy the stack from sibling projects — ask or mark as TBD
 
-### Lesson 3: Informuj o postępie
-- **Błąd:** Nie podawałem numeru sekcji w kontekście całości (np. "sekcja 4" bez "z 11")
-- **Korekta:** Zawsze mów "sekcja X z Y" żeby user wiedział na jakim etapie jest
-- **Wniosek:** Przy iteracyjnej pracy sekcja po sekcji, zawsze dawaj kontekst postępu
+### Lesson 3: Report Progress Context
+- **Bug:** Did not provide section numbers in context of the whole (e.g. "section 4" without "of 11")
+- **Fix:** Always say "section X of Y" so the user knows what stage they're at
+- **Takeaway:** When working iteratively section by section, always provide progress context
 
-### Lesson 4: Mniejsze porcje do review
-- **Błąd:** Sekcja 11 (Out of Scope) przedstawiona jako wielki blok tekstu — user nie był w stanie tego przeczytać
-- **Korekta:** Prezentuj mniejszymi cząstkami, daj czas na przeczytanie każdej
-- **Wniosek:** Przy prezentowaniu treści do review — max 1 tabelka lub 5-8 punktów na raz. Lepiej 3 krótkie wiadomości niż 1 ściana tekstu
+### Lesson 4: Smaller Chunks for Review
+- **Bug:** Section 11 (Out of Scope) presented as a large block of text — user couldn't process it
+- **Fix:** Present in smaller portions, give time to read each one
+- **Takeaway:** When presenting content for review — max 1 table or 5-8 bullet points at a time. Better 3 short messages than 1 wall of text
 
 ### Lesson 9: Sanctum TransientToken has no delete() method
 - **Bug:** `AuthController::logout()` called `$request->user()->currentAccessToken()->delete()` which crashes with cookie-based SPA auth because Sanctum returns a `TransientToken` (not a `PersonalAccessToken`)
