@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Practitioner;
 use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,10 +21,14 @@ class VisitController extends Controller
             'started_at' => ['required', 'date'],
         ]);
 
-        $validated['fhir_encounter_id'] = 'Encounter/' . \Illuminate\Support\Str::uuid();
+        $validated['fhir_encounter_id'] = 'Encounter/'.\Illuminate\Support\Str::uuid();
         $validated['visit_status'] = 'in_progress';
         $validated['class'] = $validated['class'] ?? 'AMB';
         $validated['created_by'] = $request->user()->id;
+
+        if (empty($validated['organization_id'])) {
+            $validated['organization_id'] = Practitioner::find($validated['practitioner_id'])?->organization_id;
+        }
 
         $visit = Visit::create($validated);
         $visit->load(['patient', 'practitioner', 'organization']);
