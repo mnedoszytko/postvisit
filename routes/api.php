@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\PrescriptionController;
 use App\Http\Controllers\Api\ReferenceController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\TranscriptController;
+use App\Http\Controllers\Api\UploadTokenController;
 use App\Http\Controllers\Api\VisitController;
 use Illuminate\Support\Facades\Route;
 
@@ -107,6 +108,9 @@ Route::prefix('v1')->group(function () {
             Route::get('documents', [DocumentController::class, 'visitDocuments']);
             Route::post('documents', [DocumentController::class, 'store']);
 
+            // Upload tokens (QR code mobile upload)
+            Route::post('upload-tokens', [UploadTokenController::class, 'store']);
+
             // Feedback / Messages
             Route::post('messages', [FeedbackController::class, 'store']);
             Route::get('messages', [FeedbackController::class, 'index']);
@@ -160,6 +164,9 @@ Route::prefix('v1')->group(function () {
             Route::get('ai-tier', [SettingsController::class, 'getAiTier']);
             Route::put('ai-tier', [SettingsController::class, 'setAiTier']);
         });
+
+        // Upload token status (polling from desktop)
+        Route::get('upload-tokens/{token}/status', [UploadTokenController::class, 'status']);
     });
 
     // -------------------------------------------------------

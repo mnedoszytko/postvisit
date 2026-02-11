@@ -20,6 +20,7 @@
         "chart.js": "^4.5.1",
         "marked": "^17.0.1",
         "pinia": "^3.0.4",
+        "qrcode.vue": "^3.8.0",
         "three": "^0.182.0",
         "vue": "3",
         "vue-chartjs": "^5.3.3",

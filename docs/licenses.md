@@ -30,6 +30,7 @@
 | Vite | MIT | Build tool | ✅ OK |
 | Tailwind CSS v4 | MIT | CSS framework | ✅ OK |
 | Axios | MIT | HTTP client | ✅ OK |
+| qrcode.vue | MIT | QR code generation (Vue 3) | ✅ OK |
 | Laravel Sanctum | MIT | SPA authentication | ✅ OK |
 | Anthropic PHP SDK (`anthropic-ai/laravel`) | MIT | AI API client | ✅ OK |
 | Bun | MIT | Package manager / runtime | ✅ OK |

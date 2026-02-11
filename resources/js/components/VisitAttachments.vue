@@ -209,17 +209,76 @@
         </div>
       </div>
 
+      <!-- Upload from phone button -->
+      <button
+        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-dashed border-gray-300 rounded-xl text-sm text-gray-600 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
+        @click="startQrUpload"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+        </svg>
+        Upload from phone
+      </button>
+
       <!-- Empty state -->
-      <p v-else-if="!pendingFiles.length" class="text-sm text-gray-400 text-center py-2">
+      <p v-if="!pendingFiles.length && !documents.length" class="text-sm text-gray-400 text-center py-2">
         No attachments yet. Upload your ECG, imaging, or lab results.
       </p>
     </div>
+
+    <!-- QR Code Modal -->
+    <Teleport to="body">
+      <div v-if="qrModal.show" class="fixed inset-0 z-50 flex items-center justify-center p-4" @click.self="closeQrModal">
+        <div class="fixed inset-0 bg-black/40" @click="closeQrModal"></div>
+        <div class="relative bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 space-y-4 z-10">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-800">Scan with your phone</h3>
+            <button class="text-gray-400 hover:text-gray-600 transition-colors" @click="closeQrModal">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div v-if="qrModal.loading" class="flex items-center justify-center py-12">
+            <svg class="w-8 h-8 animate-spin text-emerald-600" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          </div>
+
+          <div v-else-if="qrModal.url" class="space-y-4">
+            <div class="flex justify-center">
+              <QrcodeVue :value="qrModal.url" :size="220" level="M" />
+            </div>
+            <p class="text-sm text-gray-500 text-center">
+              Point your phone camera at the QR code to open the upload page.
+            </p>
+            <div v-if="qrModal.status === 'completed'" class="flex items-center justify-center gap-2 text-emerald-600">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="text-sm font-medium">Photo received!</span>
+            </div>
+            <div v-else class="flex items-center justify-center gap-2 text-gray-400">
+              <div class="w-2 h-2 bg-gray-300 rounded-full animate-pulse"></div>
+              <span class="text-xs">Waiting for photo...</span>
+            </div>
+          </div>
+
+          <div v-if="qrModal.error" class="text-sm text-red-500 text-center">
+            {{ qrModal.error }}
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, onMounted, onUnmounted } from 'vue';
 import { useApi } from '@/composables/useApi';
+import QrcodeVue from 'qrcode.vue';
 
 const props = defineProps({
     visitId: { type: String, required: true },
@@ -233,6 +292,17 @@ const dragOver = ref(false);
 const fileInput = ref(null);
 const pendingFiles = ref([]);
 const pollTimers = ref({});
+
+const qrModal = reactive({
+    show: false,
+    loading: false,
+    url: null,
+    token: null,
+    status: 'pending',
+    error: null,
+    pollTimer: null,
+    expiryTimer: null,
+});
 
 function triggerFileInput() {
     if (!uploading.value) {
@@ -395,6 +465,70 @@ function formatDate(dateStr) {
     return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+async function startQrUpload() {
+    qrModal.show = true;
+    qrModal.loading = true;
+    qrModal.url = null;
+    qrModal.token = null;
+    qrModal.status = 'pending';
+    qrModal.error = null;
+
+    try {
+        const { data } = await api.post(`/visits/${props.visitId}/upload-tokens`);
+        qrModal.url = data.data.url;
+        qrModal.token = data.data.token;
+        qrModal.loading = false;
+
+        // Start polling for upload completion
+        qrModal.pollTimer = setInterval(() => pollQrStatus(), 3000);
+
+        // Auto-close after 15 minutes (token expiry)
+        qrModal.expiryTimer = setTimeout(() => closeQrModal(), 15 * 60 * 1000);
+    } catch {
+        qrModal.loading = false;
+        qrModal.error = 'Failed to create upload link. Please try again.';
+    }
+}
+
+async function pollQrStatus() {
+    if (!qrModal.token) return;
+
+    try {
+        const { data } = await api.get(`/upload-tokens/${qrModal.token}/status`);
+        const result = data.data;
+
+        if (result.status === 'completed') {
+            qrModal.status = 'completed';
+            clearInterval(qrModal.pollTimer);
+            qrModal.pollTimer = null;
+
+            // Refresh documents list
+            await fetchDocuments();
+
+            // Auto-close after showing success briefly
+            setTimeout(() => closeQrModal(), 2000);
+        } else if (result.status === 'expired') {
+            qrModal.error = 'Upload link expired. Please try again.';
+            clearInterval(qrModal.pollTimer);
+            qrModal.pollTimer = null;
+        }
+    } catch {
+        // Silent — will retry on next poll
+    }
+}
+
+function closeQrModal() {
+    qrModal.show = false;
+    if (qrModal.pollTimer) {
+        clearInterval(qrModal.pollTimer);
+        qrModal.pollTimer = null;
+    }
+    if (qrModal.expiryTimer) {
+        clearTimeout(qrModal.expiryTimer);
+        qrModal.expiryTimer = null;
+    }
+}
+
 async function fetchDocuments() {
     try {
         const { data } = await api.get(`/visits/${props.visitId}/documents`);
@@ -424,5 +558,6 @@ onMounted(fetchDocuments);
 
 onUnmounted(() => {
     Object.keys(pollTimers.value).forEach(stopPolling);
+    closeQrModal();
 });
 </script>

@@ -61,3 +61,23 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
 - **Bug:** No test timeout configured — a single slow test could block the entire suite indefinitely with no feedback.
 - **Fix:** Added `enforceTimeLimit="true"` with `timeoutForSmallTests="10"` / `timeoutForMediumTests="20"` / `timeoutForLargeTests="30"` to phpunit.xml.
 - **Takeaway:** Always set PHPUnit time limits. 30 seconds max per test is the hard rule. Any test exceeding this is bad craftsmanship and must be rewritten.
+
+### Lesson 24: Testing mobile features with Herd Expose (QR code upload, etc.)
+- **Context:** QR code mobile upload bridge generates URLs pointing to `postvisit-agent2.test` — phones can't reach local `.test` domains. Need a public tunnel.
+- **What works:** Herd has built-in **Expose** integration (free tier, no account needed beyond token in Herd settings).
+- **Steps:**
+  1. Open Herd → Settings → Expose → verify token is set (free tier OK)
+  2. Temporarily change `APP_URL` in `.env` to the Expose public URL (so `url()` helper generates correct QR code URLs):
+     ```
+     APP_URL=https://RANDOM.sharedwithexpose.com
+     ```
+  3. Clear config cache: `herd php artisan config:clear`
+  4. Start tunnel: `herd share` (from project directory)
+  5. Expose prints public URL like `https://zwbybky2rz.sharedwithexpose.com`
+  6. Test on phone — scan QR, upload photo, verify it appears on desktop
+  7. **After testing — revert `APP_URL`** back to `http://postvisit-agent2.test` and clear cache again
+- **What didn't work:**
+  - `cloudflared tunnel` — Herd returned 404 because it didn't recognize the cloudflare Host header. `--http-host-header` flag fixed routing but Sanctum cookies broke ("session expired") because the cookie domain didn't match.
+  - `herd share` via Expose works because Expose is designed for Herd — it handles Host headers and SSL correctly.
+- **Free tier limits:** 60 minutes per session, random subdomain (no custom), EU Frankfurt server.
+- **Takeaway:** For testing any feature that requires phone access (QR codes, mobile pages, push notifications), use `herd share`. Remember to update and revert `APP_URL` — otherwise QR code URLs will point to the wrong domain.

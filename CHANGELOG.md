@@ -5,6 +5,13 @@ All notable changes to PostVisit.ai are documented here in reverse chronological
 ## 2026-02-11
 
 ### Added
+- **QR Code Mobile Photo Upload Bridge** — Desktop users can generate a QR code to upload photos (medication boxes, lab results, ECG printouts) from their phone directly to a visit. Short-lived tokens (15 min, single-use), standalone Blade mobile page with camera input, real-time polling on desktop detects uploaded photos. Pattern: WhatsApp Web-style bridge.
+  - `upload_tokens` table with UUID tokens, visit scoping, expiry, and single-use enforcement
+  - `UploadTokenController` (API) for token creation and status polling
+  - `MobileUploadController` (web) for standalone mobile upload page
+  - `upload.blade.php` — lightweight standalone mobile page with camera capture, upload progress, and success/error states
+  - QR code modal in `VisitAttachments.vue` using `qrcode.vue` (MIT)
+  - 11 feature tests covering full token lifecycle
 - **Medical Reference Verification (POST-45)** — New `MedicalReference` model with PMID/DOI tracking, PubMed E-utilities integration for runtime verification, and 8 seeded cardiology references from ESC/AHA/ACC guidelines. API endpoints for listing, filtering, and verifying references.
 - **Medical Lookup API (POST-21)** — New `/api/v1/lookup/` endpoints exposing NIH Clinical Tables and DailyMed APIs for ICD-10 conditions, drugs, procedures, and drug labels. Includes validation, auth guards, and graceful error handling for external API failures.
 - **Registration form (POST-19)** — Full registration flow with role selection (patient/doctor), password confirmation, field validation with server-side error display, and "Sign up" link from login page. Auto-authenticates on successful registration.
