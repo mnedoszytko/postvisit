@@ -2,17 +2,49 @@
   <div class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white border-l border-gray-200 shadow-xl z-50 flex flex-col">
     <!-- Header -->
     <div class="h-16 border-b border-gray-200 flex items-center justify-between px-4 shrink-0">
-      <h3 class="font-semibold text-gray-800">AI Assistant</h3>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+          <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="font-semibold text-gray-800 text-sm">PostVisit AI</h3>
+          <p v-if="chatStore.loading" class="text-[10px] text-emerald-600 font-medium">Reviewing your visit...</p>
+          <p v-else class="text-[10px] text-gray-400">Ask anything about your visit</p>
+        </div>
+      </div>
       <button
-        class="text-gray-400 hover:text-gray-600 transition-colors text-xl"
+        class="text-gray-400 hover:text-gray-600 transition-colors text-xl leading-none"
         @click="$emit('close')"
       >
         &times;
       </button>
     </div>
 
+    <!-- Welcome message when empty -->
+    <div v-if="!chatStore.messages.length && !chatStore.loading" class="flex-1 flex flex-col items-center justify-center p-6 text-center">
+      <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-8 h-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+        </svg>
+      </div>
+      <h4 class="font-semibold text-gray-800 mb-1">Your visit assistant</h4>
+      <p class="text-sm text-gray-500 mb-6 max-w-[240px]">I have the full context of your visit. Ask me anything about your diagnosis, medications, or next steps.</p>
+      <div class="space-y-2 w-full">
+        <button
+          v-for="q in suggestedQuestions"
+          :key="q"
+          class="w-full text-left text-sm px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all"
+          @click="sendQuestion(q)"
+        >
+          {{ q }}
+        </button>
+      </div>
+    </div>
+
     <!-- Messages -->
-    <div ref="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
+    <div v-else ref="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
       <div
         v-for="(msg, i) in chatStore.messages"
         :key="i"
@@ -26,16 +58,18 @@
               : 'bg-gray-100 text-gray-800'
           ]"
         >
-          <StreamingMessage v-if="msg.streaming" :text="msg.content" />
-          <div v-else-if="msg.role === 'assistant'" class="prose prose-sm max-w-none" v-html="renderMarkdown(msg.content)" />
+          <!-- Streaming with no content yet = thinking -->
+          <ThinkingIndicator v-if="msg.streaming && !msg.content" :query="lastUserMessage" />
+          <StreamingMessage v-else-if="msg.streaming" :text="stripSources(msg.content)" />
+          <div v-else-if="msg.role === 'assistant'" class="prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
           <p v-else>{{ msg.content }}</p>
         </div>
-      </div>
-
-      <div v-if="chatStore.loading" class="mr-8">
-        <div class="bg-gray-100 rounded-2xl px-4 py-3 text-sm text-gray-400 animate-pulse">
-          Thinking...
-        </div>
+        <!-- Source chips for completed assistant messages -->
+        <SourceChips
+          v-if="msg.role === 'assistant' && !msg.streaming && parseSources(msg.content).length"
+          :sources="parseSources(msg.content)"
+          class="mt-1.5"
+        />
       </div>
     </div>
 
@@ -46,27 +80,53 @@
         type="text"
         placeholder="Ask about your visit..."
         class="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+        :disabled="chatStore.loading"
       />
       <button
         type="submit"
         :disabled="!message.trim() || chatStore.loading"
-        class="px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
+        class="px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Send
+        <svg v-if="chatStore.loading" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+        <span v-else>Send</span>
       </button>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch } from 'vue';
+import { ref, computed, onMounted, nextTick, watch } from 'vue';
 import { useChatStore } from '@/stores/chat';
 import { marked } from 'marked';
 import StreamingMessage from '@/components/StreamingMessage.vue';
+import ThinkingIndicator from '@/components/ThinkingIndicator.vue';
+import SourceChips from '@/components/SourceChips.vue';
 
 marked.setOptions({ breaks: true, gfm: true });
 function renderMarkdown(text) {
     return marked.parse(text || '');
+}
+
+function stripSources(text) {
+    if (!text) return '';
+    return text.replace(/\[sources\][\s\S]*?\[\/sources\]/g, '').trim();
+}
+
+function parseSources(text) {
+    if (!text) return [];
+    const match = text.match(/\[sources\]([\s\S]*?)\[\/sources\]/);
+    if (!match) return [];
+    return match[1]
+        .split('\n')
+        .map(line => line.trim().replace(/^-\s*/, ''))
+        .filter(line => line.includes('|'))
+        .map(line => {
+            const [label, key] = line.split('|').map(s => s.trim());
+            return { label, key };
+        });
 }
 
 const props = defineProps({
@@ -79,6 +139,23 @@ defineEmits(['close']);
 const chatStore = useChatStore();
 const message = ref('');
 const messagesContainer = ref(null);
+
+const lastUserMessage = computed(() => {
+    const userMsgs = chatStore.messages.filter(m => m.role === 'user');
+    return userMsgs.length ? userMsgs[userMsgs.length - 1].content : '';
+});
+
+const suggestedQuestions = [
+    'What does my diagnosis mean in simple terms?',
+    'Explain my medication and side effects',
+    'What should I watch out for at home?',
+    'When should I call my doctor?',
+];
+
+function sendQuestion(q) {
+    message.value = q;
+    send();
+}
 
 async function send() {
     if (!message.value.trim()) return;
@@ -96,7 +173,7 @@ function scrollToBottom() {
     });
 }
 
-watch(() => chatStore.messages.length, scrollToBottom);
+watch(() => chatStore.messages, scrollToBottom, { deep: true });
 
 onMounted(() => {
     chatStore.clearMessages();
