@@ -33,10 +33,25 @@ class ProcessTranscriptJob implements ShouldQueue
             $this->transcript->update([
                 'entities_extracted' => $scribeResult['extracted_entities'] ?? [],
                 'soap_note' => $scribeResult['soap_note'] ?? [],
+                'diarized_transcript' => [
+                    'clean_text' => $scribeResult['clean_transcript'] ?? null,
+                    'speakers' => $scribeResult['speakers'] ?? [],
+                ],
                 'processing_status' => 'completed',
             ]);
 
+            // Update visit reason from chief complaint if still default
+            $visit = $this->transcript->visit;
             $soap = $scribeResult['soap_note'] ?? [];
+            $chiefComplaint = $soap['subjective'] ?? null;
+            if ($visit && $chiefComplaint && str_contains($visit->reason_for_visit ?? '', 'Companion Scribe')) {
+                // Extract first sentence as a concise reason
+                $reason = strtok(trim($chiefComplaint), "\n");
+                if (strlen($reason) > 120) {
+                    $reason = substr($reason, 0, 117).'...';
+                }
+                $visit->update(['reason_for_visit' => $reason]);
+            }
 
             VisitNote::updateOrCreate(
                 ['visit_id' => $this->transcript->visit_id],
