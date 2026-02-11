@@ -19,6 +19,7 @@
         "@vitejs/plugin-vue": "^6.0.4",
         "marked": "^17.0.1",
         "pinia": "^3.0.4",
+        "three": "^0.182.0",
         "vue": "3",
         "vue-router": "4"
     }
