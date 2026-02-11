@@ -9,6 +9,26 @@
         </p>
       </div>
 
+      <!-- OpenEvidence integration banner -->
+      <div class="bg-gradient-to-r from-indigo-50 to-violet-50 rounded-2xl border border-indigo-100 p-4">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-xl bg-white border border-indigo-100 flex items-center justify-center shrink-0 shadow-sm">
+            <svg class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+            </svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-indigo-900 text-sm">OpenEvidence Integration</p>
+              <span class="text-[10px] font-medium bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded-full uppercase tracking-wide">Coming soon</span>
+            </div>
+            <p class="text-xs text-indigo-700/70 mt-0.5 leading-relaxed">
+              AI-powered evidence-based answers cross-referenced with your visit context. Ask clinical questions and get responses grounded in peer-reviewed research.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <!-- Tab navigation -->
       <div class="flex gap-1 bg-gray-100 rounded-xl p-1">
         <button
@@ -168,6 +188,104 @@
         </template>
       </div>
 
+      <!-- Tab: Ask AI (EBM) — OpenEvidence mockup -->
+      <div v-if="activeTab === 'ask'" class="space-y-4">
+        <!-- OpenEvidence powered search -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-4">
+          <form class="space-y-3" @submit.prevent="askOpenEvidence">
+            <div class="relative">
+              <svg class="absolute left-3 top-3 w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+              </svg>
+              <input
+                v-model="oeQuery"
+                type="text"
+                placeholder="Ask a clinical question..."
+                class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-shadow"
+              />
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-[11px] text-gray-400">Answers cross-referenced with your visit context and EBM sources</p>
+              <button
+                type="submit"
+                :disabled="oeLoading || !oeQuery?.trim()"
+                class="px-5 py-2 bg-indigo-600 text-white text-sm rounded-xl font-medium hover:bg-indigo-700 transition-colors disabled:opacity-40 shrink-0"
+              >
+                {{ oeLoading ? 'Searching...' : 'Ask' }}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Suggested questions from visit context -->
+        <div v-if="!oeResult && !oeLoading" class="space-y-3">
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide px-1">Suggested from your visit</p>
+          <button
+            v-for="(sq, i) in suggestedQuestions"
+            :key="i"
+            class="w-full text-left bg-white rounded-xl border border-gray-200 p-3.5 hover:border-indigo-200 hover:bg-indigo-50/30 transition-colors group"
+            @click="oeQuery = sq.question; askOpenEvidence()"
+          >
+            <p class="text-sm font-medium text-gray-800 group-hover:text-indigo-900">{{ sq.question }}</p>
+            <p class="text-xs text-gray-400 mt-0.5">{{ sq.context }}</p>
+          </button>
+        </div>
+
+        <!-- Loading state -->
+        <div v-if="oeLoading" class="bg-white rounded-2xl border border-gray-200 p-6 text-center space-y-3">
+          <div class="w-8 h-8 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto" />
+          <p class="text-sm text-gray-500">Searching evidence-based sources...</p>
+          <p class="text-xs text-gray-400">Cross-referencing PubMed, Cochrane, and clinical guidelines</p>
+        </div>
+
+        <!-- Mock result -->
+        <div v-if="oeResult" class="space-y-4">
+          <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+            <div class="p-4 border-b border-gray-100 bg-gradient-to-r from-indigo-50/50 to-transparent">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                </svg>
+                <p class="text-sm font-semibold text-indigo-900">Evidence-Based Answer</p>
+              </div>
+            </div>
+            <div class="p-4 space-y-3">
+              <p class="text-sm text-gray-800 leading-relaxed">{{ oeResult.answer }}</p>
+
+              <div v-if="oeResult.confidence" class="flex items-center gap-2">
+                <span class="text-xs font-medium text-gray-500">Evidence strength:</span>
+                <div class="flex gap-0.5">
+                  <div v-for="n in 5" :key="n" class="w-4 h-1.5 rounded-full" :class="n <= oeResult.confidence ? 'bg-indigo-500' : 'bg-gray-200'" />
+                </div>
+                <span class="text-xs text-gray-400">{{ oeResult.evidenceLevel }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sources -->
+          <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+            <div class="p-3 border-b border-gray-100">
+              <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Sources ({{ oeResult.sources.length }})</p>
+            </div>
+            <div class="divide-y divide-gray-100">
+              <div v-for="(src, i) in oeResult.sources" :key="i" class="p-3 flex items-start gap-2">
+                <span class="shrink-0 w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] font-bold mt-0.5">{{ i + 1 }}</span>
+                <div class="min-w-0">
+                  <p class="text-xs font-medium text-gray-800">{{ src.title }}</p>
+                  <p class="text-[11px] text-gray-500 mt-0.5">{{ src.journal }} ({{ src.year }})</p>
+                  <span v-if="src.type" class="inline-block mt-1 text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">{{ src.type }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disclaimer -->
+          <p class="text-[11px] text-gray-400 text-center px-4">
+            Powered by OpenEvidence. Answers are generated from peer-reviewed literature and clinical guidelines. Always verify with your healthcare provider.
+          </p>
+        </div>
+      </div>
+
       <!-- Tab: Search -->
       <div v-if="activeTab === 'search'" class="space-y-4">
         <!-- Search input -->
@@ -265,6 +383,7 @@ const auth = useAuthStore();
 
 const tabs = [
     { id: 'relevant', label: 'Relevant for You' },
+    { id: 'ask', label: 'Ask AI (EBM)' },
     { id: 'search', label: 'Search Databases' },
 ];
 const activeTab = ref('relevant');
@@ -327,6 +446,75 @@ async function lookupDrugLabel(rx) {
     } catch {
         drugLabels[rx.id] = { loading: false, result: null };
     }
+}
+
+// --- Ask AI (OpenEvidence mockup) ---
+const oeQuery = ref('');
+const oeLoading = ref(false);
+const oeResult = ref(null);
+
+const suggestedQuestions = computed(() => {
+    const questions = [];
+    if (conditions.value.length) {
+        const cond = conditions.value[0];
+        questions.push({
+            question: `What are the latest guidelines for managing ${cond.code_display}?`,
+            context: `Based on your diagnosis`,
+        });
+    }
+    if (medications.value.length) {
+        const rx = medications.value[0];
+        const name = rx.medication?.display_name || rx.medication?.generic_name;
+        questions.push({
+            question: `What are the common side effects of ${name} I should watch for?`,
+            context: `Based on your current medication`,
+        });
+        if (conditions.value.length) {
+            questions.push({
+                question: `Is ${name} first-line therapy for ${conditions.value[0].code_display}?`,
+                context: `Cross-referencing your medication and diagnosis`,
+            });
+        }
+    }
+    if (!questions.length) {
+        questions.push(
+            { question: 'What lifestyle changes help manage premature ventricular contractions?', context: 'Common cardiology question' },
+            { question: 'When should I seek emergency care for heart palpitations?', context: 'Safety information' },
+            { question: 'How does propranolol work for PVCs?', context: 'Medication mechanism' },
+        );
+    }
+    return questions;
+});
+
+const mockAnswers = {
+    default: {
+        answer: 'Based on current clinical evidence, beta-blockers such as propranolol are considered first-line therapy for symptomatic premature ventricular contractions (PVCs). The ACC/AHA 2024 guidelines recommend a starting dose of 10-40mg two to three times daily, titrated to symptom control. Lifestyle modifications including caffeine reduction, stress management, and adequate sleep are also strongly recommended as adjunctive measures. If PVC burden exceeds 15-20% on Holter monitoring, catheter ablation should be discussed.',
+        confidence: 4,
+        evidenceLevel: 'Level A — Strong',
+        sources: [
+            { title: 'ACC/AHA Guideline for Management of Ventricular Arrhythmias', journal: 'Circulation', year: '2024', type: 'Clinical Guideline' },
+            { title: 'Beta-blocker therapy for premature ventricular complexes: systematic review', journal: 'Heart Rhythm', year: '2023', type: 'Systematic Review' },
+            { title: 'PVC burden and cardiomyopathy risk: a prospective cohort study', journal: 'JACC', year: '2023', type: 'Cohort Study' },
+            { title: 'Lifestyle interventions for arrhythmia management', journal: 'European Heart Journal', year: '2024', type: 'Review Article' },
+        ],
+    },
+};
+
+async function askOpenEvidence() {
+    if (!oeQuery.value?.trim()) return;
+    oeLoading.value = true;
+    oeResult.value = null;
+
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 2500));
+
+    oeResult.value = {
+        answer: mockAnswers.default.answer,
+        confidence: mockAnswers.default.confidence,
+        evidenceLevel: mockAnswers.default.evidenceLevel,
+        sources: mockAnswers.default.sources,
+    };
+    oeLoading.value = false;
 }
 
 // --- Search tab ---
