@@ -118,19 +118,6 @@
       </div>
     </div>
 
-    <!-- Context sources pills -->
-    <div v-if="selectedSources.length && selectedSources.length < contextSources.length" class="border-t border-gray-100 px-4 pt-2 pb-0 flex flex-wrap gap-1.5 shrink-0">
-      <span
-        v-for="src in selectedSources"
-        :key="src.id"
-        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200"
-      >
-        <span>{{ src.icon }}</span>
-        <span>{{ src.shortLabel }}</span>
-      </span>
-      <span class="text-[10px] text-gray-400 self-center ml-1">{{ contextTokenEstimate }}</span>
-    </div>
-
     <!-- Input -->
     <form class="border-t border-gray-200 p-3 flex items-end gap-2 shrink-0" @submit.prevent="send">
       <!-- Context selector (+) button -->
