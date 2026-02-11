@@ -37,11 +37,11 @@
       <div v-if="!editing" class="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
         <div>
           <p class="text-gray-400 text-xs">Full Name</p>
-          <p class="text-gray-900 font-medium">{{ patient?.user?.name || patient?.name || '\u2014' }}</p>
+          <p class="text-gray-900 font-medium">{{ patientFullName || '\u2014' }}</p>
         </div>
         <div>
           <p class="text-gray-400 text-xs">Date of Birth</p>
-          <p class="text-gray-900 font-medium">{{ formatDate(patient?.date_of_birth) || '\u2014' }}</p>
+          <p class="text-gray-900 font-medium">{{ formatDate(patient?.dob) || '\u2014' }}</p>
         </div>
         <div>
           <p class="text-gray-400 text-xs">Gender</p>
@@ -53,7 +53,7 @@
         </div>
         <div>
           <p class="text-gray-400 text-xs">Email</p>
-          <p class="text-gray-900 font-medium">{{ patient?.user?.email || '\u2014' }}</p>
+          <p class="text-gray-900 font-medium">{{ patient?.email || '\u2014' }}</p>
         </div>
         <div>
           <p class="text-gray-400 text-xs">MRN</p>
@@ -76,7 +76,7 @@
         </div>
         <div>
           <label class="text-xs text-gray-500">Date of Birth</label>
-          <input v-model="form.date_of_birth" type="date" class="mt-1 w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" />
+          <input v-model="form.dob" type="date" class="mt-1 w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" />
         </div>
       </div>
     </div>
@@ -188,13 +188,20 @@ const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 const form = reactive({
     phone: '',
     gender: '',
-    date_of_birth: '',
+    dob: '',
     height_cm: null,
     weight_kg: null,
     blood_type: '',
     emergency_contact_name: '',
     emergency_contact_relationship: '',
     emergency_contact_phone: '',
+});
+
+const patientFullName = computed(() => {
+    const first = props.patient?.first_name;
+    const last = props.patient?.last_name;
+    if (!first && !last) return '';
+    return [first, last].filter(Boolean).join(' ');
 });
 
 const bmi = computed(() => {
@@ -226,7 +233,7 @@ function formatDate(d) {
 function startEdit() {
     form.phone = props.patient?.phone || '';
     form.gender = props.patient?.gender || '';
-    form.date_of_birth = props.patient?.date_of_birth || '';
+    form.dob = props.patient?.dob || '';
     form.height_cm = props.patient?.height_cm || null;
     form.weight_kg = props.patient?.weight_kg || null;
     form.blood_type = props.patient?.blood_type || '';
