@@ -153,6 +153,21 @@ const uploadDetailText = ref('Transcribing with Whisper AI...');
 // Persisted visit ID — allows retry without creating a new visit, or reuse from existing visit
 let createdVisitId = route.query.visitId || null;
 
+// Retry wrapper for transient server errors (502, 503, network timeouts)
+async function withRetry(fn, { maxRetries = 3, delayMs = 2000, onRetry = null } = {}) {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            return await fn();
+        } catch (err) {
+            const status = err.response?.status;
+            const isRetryable = status === 502 || status === 503 || status === 504 || !err.response;
+            if (!isRetryable || attempt === maxRetries) throw err;
+            if (onRetry) onRetry(attempt, maxRetries);
+            await new Promise(r => setTimeout(r, delayMs * attempt));
+        }
+    }
+}
+
 // Chunking — rotate MediaRecorder every CHUNK_DURATION_SEC to stay under Whisper 25 MB limit
 const CHUNK_DURATION_SEC = 10 * 60; // 10 minutes per segment
 
@@ -309,9 +324,9 @@ async function processVisit() {
             saveForm.append('audio', segments[i], segments.length === 1 ? `recording.${ext}` : `chunk-${i}.${ext}`);
             saveForm.append('chunk_index', String(i));
 
-            await api.post(`/visits/${visitId}/transcript/save-chunk`, saveForm, {
-                timeout: 120000,
-            });
+            await withRetry(() => api.post(`/visits/${visitId}/transcript/save-chunk`, saveForm, {
+                timeout: 120000, skipErrorToast: true,
+            }), { onRetry: (a) => { uploadDetailText.value = `Retry ${a}/3...`; } });
 
             uploadProgress.value = 10 + Math.round(((i + 1) / segments.length) * 25);
         }
@@ -327,9 +342,9 @@ async function processVisit() {
             formData.append('source_type', 'ambient_phone');
             formData.append('patient_consent_given', '1');
 
-            await api.post(`/visits/${visitId}/transcript/upload-audio`, formData, {
-                timeout: 300000,
-            });
+            await withRetry(() => api.post(`/visits/${visitId}/transcript/upload-audio`, formData, {
+                timeout: 300000, skipErrorToast: true,
+            }), { onRetry: (a) => { uploadDetailText.value = `Upload failed, retry ${a}/3...`; } });
 
             uploadProgress.value = 90;
         } else {
@@ -345,9 +360,9 @@ async function processVisit() {
                 formData.append('chunk_index', String(i));
                 formData.append('total_chunks', String(segments.length));
 
-                const { data } = await api.post(`/visits/${visitId}/transcript/transcribe-chunk`, formData, {
-                    timeout: 300000,
-                });
+                const { data } = await withRetry(() => api.post(`/visits/${visitId}/transcript/transcribe-chunk`, formData, {
+                    timeout: 300000, skipErrorToast: true,
+                }), { onRetry: (a) => { uploadDetailText.value = `Transcription retry ${a}/3...`; } });
 
                 transcriptParts.push(data.data.text);
                 uploadProgress.value = 35 + Math.round(((i + 1) / segments.length) * 45);
@@ -359,14 +374,14 @@ async function processVisit() {
 
             const combinedTranscript = transcriptParts.join('\n\n');
 
-            await api.post(`/visits/${visitId}/transcript`, {
+            await withRetry(() => api.post(`/visits/${visitId}/transcript`, {
                 raw_transcript: combinedTranscript,
                 source_type: 'ambient_phone',
                 stt_provider: 'whisper',
                 audio_duration_seconds: seconds.value,
                 patient_consent_given: true,
                 process: true,
-            });
+            }, { skipErrorToast: true }), { onRetry: (a) => { uploadDetailText.value = `Processing retry ${a}/3...`; } });
 
             uploadProgress.value = 90;
         }
@@ -406,13 +421,13 @@ async function useDemoTranscript() {
 
         const visitId = visitRes.data.data.id;
 
-        await api.post(`/visits/${visitId}/transcript`, {
+        await withRetry(() => api.post(`/visits/${visitId}/transcript`, {
             use_demo_transcript: true,
             raw_transcript: 'demo',
             source_type: 'ambient_device',
             patient_consent_given: true,
             process: true,
-        });
+        }, { skipErrorToast: true }));
 
         router.push({ path: '/processing', query: { visitId } });
     } catch (err) {

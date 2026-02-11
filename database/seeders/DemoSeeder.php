@@ -15,7 +15,9 @@ use App\Models\Transcript;
 use App\Models\User;
 use App\Models\Visit;
 use App\Models\VisitNote;
+use App\Services\AI\TermExtractor;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DemoSeeder extends Seeder
@@ -786,6 +788,41 @@ class DemoSeeder extends Seeder
         // SCENARIO 3: Hypertension — James Williams
         // ====================================================================
         $this->seedHypertensionScenario($org, $practitioner, $doctorUser);
+
+        // Extract medical terms for visit notes that don't have them yet
+        // (PVC visit has hardcoded terms; HF and HTN need AI extraction)
+        $this->extractMissingMedicalTerms();
+    }
+
+    /**
+     * Run TermExtractor on visit notes that have SOAP content but no medical_terms.
+     */
+    private function extractMissingMedicalTerms(): void
+    {
+        $notes = VisitNote::where(function ($q) {
+            $q->whereNull('medical_terms')
+                ->orWhere('medical_terms', '[]')
+                ->orWhere('medical_terms', '{}');
+        })->whereNotNull('chief_complaint')->get();
+
+        if ($notes->isEmpty()) {
+            return;
+        }
+
+        $extractor = app(TermExtractor::class);
+
+        foreach ($notes as $note) {
+            try {
+                $result = $extractor->extract($note);
+                $count = collect($result)->flatten(1)->count();
+                Log::info("DemoSeeder: extracted {$count} medical terms", ['visit_id' => $note->visit_id]);
+            } catch (\Throwable $e) {
+                Log::warning('DemoSeeder: term extraction failed (non-fatal)', [
+                    'visit_id' => $note->visit_id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 
     /**
