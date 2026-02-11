@@ -28,7 +28,7 @@ class WhisperProvider implements SpeechToTextProvider
             throw new RuntimeException("Audio file not found: {$audioPath}");
         }
 
-        $response = Http::timeout(120)
+        $response = Http::timeout(300)
             ->withToken($this->apiKey)
             ->attach('file', file_get_contents($audioPath), basename($audioPath))
             ->post($this->apiUrl, [

@@ -58,7 +58,7 @@ class TranscriptController extends Controller
     public function uploadAudio(Request $request, Visit $visit, SpeechToTextProvider $stt): JsonResponse
     {
         $validated = $request->validate([
-            'audio' => ['required', 'file', 'mimes:mp3,mp4,m4a,wav,webm,ogg', 'max:25600'],
+            'audio' => ['required', 'file', 'mimes:mp3,mp4,m4a,wav,webm,ogg', 'max:102400'],
             'source_type' => ['required', 'in:ambient_phone,ambient_device,manual_upload'],
             'patient_consent_given' => ['required', 'boolean'],
         ]);

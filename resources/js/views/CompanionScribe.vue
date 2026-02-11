@@ -198,7 +198,7 @@ async function processVisit() {
         formData.append('patient_consent_given', '1');
 
         await api.post(`/visits/${visitId}/transcript/upload-audio`, formData, {
-            timeout: 120000, // Whisper can take up to 2 minutes
+            timeout: 300000, // Whisper can take up to 5 minutes for long recordings
         });
 
         // 3. Navigate to processing view
