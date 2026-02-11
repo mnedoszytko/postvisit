@@ -12,6 +12,7 @@ use App\Models\Visit;
 use App\Services\Guidelines\GuidelinesRepository;
 use App\Services\Guidelines\PmcClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class GuidelinesRepositoryTest extends TestCase
@@ -177,5 +178,83 @@ class GuidelinesRepositoryTest extends TestCase
         $result = $this->repository->getRelevantGuidelines($this->visit->fresh());
 
         $this->assertStringContainsString('Heart Failure', $result);
+    }
+
+    public function test_loads_pmc_articles_for_pvc_condition(): void
+    {
+        Http::fake([
+            '*/BioC_json/PMC7880852/unicode' => Http::response([
+                'documents' => [
+                    [
+                        'passages' => [
+                            ['text' => 'PVC management consensus statement: Premature ventricular complexes are common.'],
+                            ['text' => 'Treatment with beta-blockers is recommended for symptomatic PVCs.'],
+                        ],
+                    ],
+                ],
+            ]),
+        ]);
+
+        Condition::factory()->create([
+            'visit_id' => $this->visit->id,
+            'patient_id' => $this->patient->id,
+            'code' => 'I49.3',
+            'code_display' => 'Premature ventricular contractions',
+        ]);
+
+        $result = $this->repository->getRelevantGuidelines($this->visit->fresh());
+
+        $this->assertStringContainsString('PMC Open Access', $result);
+        $this->assertStringContainsString('PMC7880852', $result);
+        $this->assertStringContainsString('PVC management consensus', $result);
+    }
+
+    public function test_continues_without_pmc_on_fetch_failure(): void
+    {
+        Http::fake([
+            '*/BioC_json/PMC7880852/unicode' => Http::response([], 500),
+        ]);
+
+        Condition::factory()->create([
+            'visit_id' => $this->visit->id,
+            'patient_id' => $this->patient->id,
+            'code' => 'I49.3',
+            'code_display' => 'Premature ventricular contractions',
+        ]);
+
+        $result = $this->repository->getRelevantGuidelines($this->visit->fresh());
+
+        // Should still have WikiDoc content even though PMC failed
+        $this->assertStringContainsString('CLINICAL GUIDELINES CONTEXT', $result);
+        $this->assertStringContainsString('Premature Ventricular Contractions', $result);
+        // Should NOT contain PMC article content (only attribution line mentions PMC)
+        $this->assertStringNotContainsString('PMC Open Access Article', $result);
+        $this->assertStringContainsString('0 from PMC Open Access', $result);
+    }
+
+    public function test_source_attribution_includes_pmc_count(): void
+    {
+        Http::fake([
+            '*/BioC_json/PMC7880852/unicode' => Http::response([
+                'documents' => [
+                    [
+                        'passages' => [
+                            ['text' => 'PVC guideline content from PMC.'],
+                        ],
+                    ],
+                ],
+            ]),
+        ]);
+
+        Condition::factory()->create([
+            'visit_id' => $this->visit->id,
+            'patient_id' => $this->patient->id,
+            'code' => 'I49.3',
+            'code_display' => 'Premature ventricular contractions',
+        ]);
+
+        $result = $this->repository->getRelevantGuidelines($this->visit->fresh());
+
+        $this->assertStringContainsString('1 from PMC Open Access', $result);
     }
 }

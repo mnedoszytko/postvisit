@@ -15,7 +15,7 @@ class PmcClient
         'pvc_2020' => 'PMC7880852',  // PVC management consensus
     ];
 
-    private const MAX_WORDS = 4000;
+    private const MAX_WORDS = 50000;
 
     private string $baseUrl;
 

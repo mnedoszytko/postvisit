@@ -73,8 +73,8 @@ class PmcClientTest extends TestCase
 
     public function test_fetch_article_truncates_long_text(): void
     {
-        // Generate text with more than 4000 words
-        $longText = implode(' ', array_fill(0, 5000, 'word'));
+        // Generate text with more than 50000 words
+        $longText = implode(' ', array_fill(0, 55000, 'word'));
 
         Http::fake([
             '*/BioC_json/PMC9999999/unicode' => Http::response([
@@ -92,9 +92,9 @@ class PmcClientTest extends TestCase
 
         $this->assertNotNull($result);
         $this->assertStringContainsString('[Truncated', $result);
-        // Should be approximately 4000 words + truncation notice
+        // Should be approximately 50000 words + truncation notice
         $wordCount = str_word_count(preg_replace('/\[Truncated.*\]/', '', $result));
-        $this->assertLessThanOrEqual(4001, $wordCount);
+        $this->assertLessThanOrEqual(50001, $wordCount);
     }
 
     public function test_search_guidelines_parses_eutils_response(): void

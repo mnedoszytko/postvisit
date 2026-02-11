@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Log;
 /**
  * Loads relevant clinical guidelines for a visit based on conditions and medications.
  *
- * Sources: WikiDoc (CC-BY-SA 3.0), DailyMed (public domain).
- * Optional runtime enrichment via PMC BioC API for PubMed Central articles.
+ * Sources: WikiDoc (CC-BY-SA 3.0), DailyMed (public domain),
+ * PMC Open Access (runtime fetch via BioC API, cached 24h).
  *
  * Architecture note: ESC guidelines have an explicit AI/TDM opt-out under
  * EU Directive 2019/790 Article 4(3). AHA/ACC guidelines are fully copyrighted.
@@ -33,6 +33,13 @@ class GuidelinesRepository
         'I11' => ['hypertension'],
         'I12' => ['hypertension'],
         'I13' => ['hypertension'],
+    ];
+
+    /** Map WikiDoc condition article names to PMC guideline keys */
+    private const CONDITION_PMC_MAP = [
+        'premature-ventricular-contraction' => 'pvc_2020',
+        'heart-failure' => 'hf_2022',
+        'hypertension' => 'htn_2017',
     ];
 
     /** Map generic drug names (lowercase) to DailyMed label filenames */
@@ -117,19 +124,37 @@ class GuidelinesRepository
             }
         }
 
+        // Load PMC Open Access articles for matched conditions (runtime fetch, cached 24h)
+        $pmcArticles = $this->loadPmcArticles($conditionArticles);
+        foreach ($pmcArticles as $key => $content) {
+            $parts[] = $content;
+            $loadedFiles[$key] = true;
+        }
+
         if (empty($parts)) {
             return '';
         }
 
+        $pmcCount = count($pmcArticles);
+        $localCount = count($parts) - $pmcCount;
         $sourceSummary = sprintf(
-            'Loaded %d clinical reference documents from WikiDoc (CC-BY-SA 3.0) and DailyMed (public domain).',
-            count($parts)
+            'Loaded %d clinical reference documents: %d from WikiDoc (CC-BY-SA 3.0) / DailyMed (public domain), %d from PMC Open Access (runtime fetch).',
+            count($parts),
+            $localCount,
+            $pmcCount,
         );
+
+        // Token estimation: ~4 chars per token (conservative estimate)
+        $totalChars = array_sum(array_map('strlen', $parts));
+        $estimatedTokens = (int) ceil($totalChars / 4);
 
         Log::info('Guidelines context assembled', [
             'visit_id' => $visit->id,
             'documents_loaded' => count($parts),
+            'pmc_articles_loaded' => $pmcCount,
             'files' => array_keys($loadedFiles),
+            'total_chars' => $totalChars,
+            'estimated_tokens' => $estimatedTokens,
         ]);
 
         return implode("\n\n", [
@@ -218,6 +243,41 @@ class GuidelinesRepository
             array_values(array_unique($classArticles)),
             array_values(array_unique($labels)),
         ];
+    }
+
+    /**
+     * Load PMC Open Access articles for the matched condition articles.
+     *
+     * @param  list<string>  $conditionArticles  WikiDoc article filenames matched for this visit
+     * @return array<string, string> Map of PMC keys to article content
+     */
+    private function loadPmcArticles(array $conditionArticles): array
+    {
+        $articles = [];
+        $loadedKeys = [];
+
+        foreach ($conditionArticles as $articleName) {
+            $pmcKey = self::CONDITION_PMC_MAP[$articleName] ?? null;
+            if ($pmcKey === null || isset($loadedKeys[$pmcKey])) {
+                continue;
+            }
+            $loadedKeys[$pmcKey] = true;
+
+            try {
+                $content = $this->pmcClient->getGuideline($pmcKey);
+                if ($content) {
+                    $pmcId = PmcClient::GUIDELINE_IDS[$pmcKey] ?? $pmcKey;
+                    $articles["pmc_{$pmcKey}"] = "--- PMC Open Access Article ({$pmcId}) ---\n{$content}";
+                }
+            } catch (\Throwable $e) {
+                Log::warning('PMC article load failed, continuing with local guidelines', [
+                    'pmc_key' => $pmcKey,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return $articles;
     }
 
     private function loadWikidocArticle(string $filename): ?string
