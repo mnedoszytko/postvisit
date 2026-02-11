@@ -86,6 +86,12 @@ const routes = [
         meta: { requiresAuth: true, role: 'doctor' },
     },
     {
+        path: '/settings',
+        name: 'settings',
+        component: () => import('@/views/Settings.vue'),
+        meta: { requiresAuth: true, role: 'patient' },
+    },
+    {
         path: '/demo',
         name: 'demo-mode',
         component: DemoMode,

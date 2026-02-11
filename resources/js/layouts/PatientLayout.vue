@@ -10,7 +10,6 @@
           <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
             Patient Panel
           </span>
-          <AiTierBadge />
         </div>
 
         <!-- Desktop nav -->
@@ -37,18 +36,38 @@
             </span>
             Record Visit
           </router-link>
-          <div v-if="auth.user" class="flex items-center gap-2 pl-3 border-l border-gray-200">
-            <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
-              {{ initials }}
+          <div v-if="auth.user" class="relative pl-3 border-l border-gray-200">
+            <button
+              class="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              @click="dropdownOpen = !dropdownOpen"
+            >
+              <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
+                {{ initials }}
+              </div>
+              <span class="text-sm text-gray-700 font-medium">{{ auth.user.name }}</span>
+              <svg class="w-4 h-4 text-gray-400 transition-transform" :class="{ 'rotate-180': dropdownOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div
+              v-if="dropdownOpen"
+              class="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50"
+            >
+              <router-link
+                to="/settings"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                @click="dropdownOpen = false"
+              >
+                Settings
+              </router-link>
+              <button
+                class="w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                @click="handleLogout"
+              >
+                Log Out
+              </button>
             </div>
-            <span class="text-sm text-gray-700 font-medium">{{ auth.user.name }}</span>
           </div>
-          <button
-            class="text-sm text-gray-400 hover:text-red-500 transition-colors"
-            @click="handleLogout"
-          >
-            Log Out
-          </button>
         </nav>
 
         <!-- Mobile hamburger -->
@@ -102,6 +121,13 @@
             </span>
             Record Visit
           </router-link>
+          <router-link
+            to="/settings"
+            class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            @click="mobileOpen = false"
+          >
+            Settings
+          </router-link>
           <button
             class="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-red-500 transition-colors"
             @click="handleLogout"
@@ -128,21 +154,27 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useAuthStore } from '@/stores/auth';
-import { useSettingsStore } from '@/stores/settings';
 import { useRouter } from 'vue-router';
-import AiTierBadge from '@/components/AiTierBadge.vue';
 
 const auth = useAuthStore();
-const settings = useSettingsStore();
 const router = useRouter();
 const mobileOpen = ref(false);
+const dropdownOpen = ref(false);
+
+function closeDropdown(e) {
+    if (dropdownOpen.value && !e.target.closest('.relative')) {
+        dropdownOpen.value = false;
+    }
+}
 
 onMounted(() => {
-    if (!settings.tiers.length) {
-        settings.fetchTier();
-    }
+    document.addEventListener('click', closeDropdown);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener('click', closeDropdown);
 });
 
 const initials = computed(() => {
@@ -152,6 +184,7 @@ const initials = computed(() => {
 
 async function handleLogout() {
     mobileOpen.value = false;
+    dropdownOpen.value = false;
     await auth.logout();
     router.push({ name: 'landing' });
 }
