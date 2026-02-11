@@ -61,3 +61,13 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
 - **Issue:** For the demo seeder, running AI extraction adds latency, cost, and a dependency on API availability during `db:seed`.
 - **Solution:** 38 medical terms with manually verified character offsets are hardcoded in `DemoSeeder.php`. AI extraction (`TermExtractor`) is available for production use but not called during seeding.
 - **Takeaway:** Demo data must be deterministic and self-contained. Use AI services for production flows, but hardcode critical demo data to ensure reliability during presentations.
+
+### Lesson 12: Axios 401 interceptor can hijack non-auth routes
+- **Bug:** The global axios response interceptor caught ALL 401 responses and force-redirected to `/login`. When `auth.init()` ran on the `/demo` page (which has no `requiresAuth` meta), the 401 from `GET /auth/user` caused a redirect to login — preventing the demo page from loading.
+- **Fix:** Added `skipAuthRedirect` config flag to the interceptor. `auth.init()` now passes `{ skipAuthRedirect: true }` to the initial session check, so 401s during init don't trigger navigation.
+- **Takeaway:** Global error interceptors must have escape hatches. Any interceptor that performs side effects (navigation, toasts) should check for opt-out flags.
+
+### Lesson 13: Frontend template fields must match actual API response structure
+- **Bug:** DoctorDashboard.vue used `dashboard.patient_count`, `dashboard.unread_messages`, `patient.name`, `patient.last_visit_date` — none of which exist in the API response. API returns `dashboard.stats.total_patients`, `dashboard.stats.unread_notifications`, `patient.first_name`/`patient.last_name`.
+- **Fix:** Updated template to use correct field paths from the API response.
+- **Takeaway:** When building frontend components, inspect the actual API response (or the controller return statement) before writing template bindings. Don't assume field names — verify them.
