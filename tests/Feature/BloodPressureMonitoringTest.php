@@ -92,6 +92,7 @@ class BloodPressureMonitoringTest extends TestCase
             ->assertJsonPath('data.0.specialty_data.htn_stage', 'stage_2');
     }
 
+    /** @group slow */
     public function test_seeder_creates_bp_series(): void
     {
         $this->seed(DemoSeeder::class);
@@ -112,6 +113,7 @@ class BloodPressureMonitoringTest extends TestCase
         }
     }
 
+    /** @group slow */
     public function test_seeder_bp_series_has_correct_interpretations(): void
     {
         $this->seed(DemoSeeder::class);

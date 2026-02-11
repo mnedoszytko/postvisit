@@ -14,6 +14,7 @@ import Feedback from '@/views/Feedback.vue';
 import DoctorDashboard from '@/views/DoctorDashboard.vue';
 import DoctorPatientDetail from '@/views/DoctorPatientDetail.vue';
 import DemoMode from '@/views/DemoMode.vue';
+const ScenarioPicker = () => import('@/views/ScenarioPicker.vue');
 
 const routes = [
     {
@@ -95,6 +96,11 @@ const routes = [
         path: '/demo',
         name: 'demo-mode',
         component: DemoMode,
+    },
+    {
+        path: '/demo/scenarios',
+        name: 'scenario-picker',
+        component: ScenarioPicker,
     },
     {
         path: '/library',

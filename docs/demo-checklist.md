@@ -87,6 +87,8 @@
 | **Attachments — "Analyzing document..." progress** more visible, bigger, with animation | TODO | MUST | Currently tiny spinner, no sense of progress |
 | Attachments — Upload files drop zone too large | OK | NICE | Smaller would look cleaner |
 | **Demo: pre-loaded sample document** for attachment analysis | TODO | NICE | E.g. sample lab report PDF or ECG report — so demo user can see AI analysis without uploading their own file |
+| **Auto-categorization of uploaded documents** | TODO | NICE | AI analyzes uploaded file and assigns category (EKG, Lab Report, Imaging, Prescription, Referral, etc.). Shows as badge/tag on the document |
+| **Auto-extraction of document date** | TODO | NICE | AI extracts the date from the document content. Critical for timeline ordering and clinical context — a lab from 3 months ago vs today changes everything |
 | Remove PII from AI-generated notes | TODO | MUST | "Dr. Ciarka" and any other real names |
 | Chat button (?) bottom-right | OK | MUST | Floating action button |
 | **"Ask about this" button on EVERY section** — visible without expanding | TODO | MUST | Each SOAP section, Attachments, AI Analysis — all need a quick chat entry point. Click → opens chat pre-filled with context of that section |

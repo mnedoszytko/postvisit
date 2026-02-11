@@ -131,6 +131,10 @@ PostVisit.ai keeps the clinical context of a specific visit alive after the pati
 | 57 | Demo data persistence — "Resume previous session" option | Scenario Picker | 2-3h |
 | 58 | Background gradient polish (Landing) | Landing | 30m |
 | 59 | AI-generated patient avatars (fictional faces, not real people) | All patient views | 1-2h |
+| 60 | Auto-categorization of uploaded documents (EKG, Lab, Imaging, Rx, etc.) | Visit Detail | 1-2h |
+| 61 | Auto-extraction of document date from content — critical for timeline context | Visit Detail | 1h |
+| 62 | Demo mode banner — yellow bar at top showing "Demo Mode", current patient name, "Switch Scenario" button | All pages | 1-2h |
+| 63 | Demo patient emails as readable names (alex.johnson@demo.postvisit.ai) instead of random hashes | Scenario Picker | 30m |
 
 ---
 

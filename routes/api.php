@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuditController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DemoController;
+use App\Http\Controllers\Api\DemoScenarioController;
 use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\ExplainController;
@@ -169,5 +170,9 @@ Route::prefix('v1')->group(function () {
         Route::get('status', [DemoController::class, 'status']);
         Route::post('reset', [DemoController::class, 'reset']);
         Route::post('simulate-alert', [DemoController::class, 'simulateAlert']);
+
+        // Scenario picker
+        Route::get('scenarios', [DemoScenarioController::class, 'index']);
+        Route::post('start-scenario', [DemoScenarioController::class, 'startScenario']);
     });
 });

@@ -52,7 +52,7 @@
           <button
             :disabled="loading"
             class="flex-1 py-2.5 bg-white text-emerald-700 border border-emerald-300 rounded-lg font-medium hover:bg-emerald-50 transition-colors disabled:opacity-50 text-sm"
-            @click="demoLogin('patient')"
+            @click="router.push('/demo/scenarios')"
           >
             Sign in as Patient
           </button>
