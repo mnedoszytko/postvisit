@@ -150,6 +150,9 @@ const uploadProgress = ref(0);
 const uploadStatusText = ref('Processing audio...');
 const uploadDetailText = ref('Transcribing with Whisper AI...');
 
+// Persisted visit ID — allows retry without creating a new visit
+let createdVisitId = null;
+
 // Chunking — rotate MediaRecorder every CHUNK_DURATION_SEC to stay under Whisper 25 MB limit
 const CHUNK_DURATION_SEC = 10 * 60; // 10 minutes per segment
 
@@ -175,9 +178,16 @@ function getMimeType() {
         : 'audio/webm';
 }
 
+// Promise that resolves when the current recorder's onstop fires and blob is saved
+let recorderStopPromise = null;
+
 function createRecorder(stream) {
     const chunkData = []; // each recorder gets its own data array
     const recorder = new MediaRecorder(stream, { mimeType: getMimeType() });
+
+    // Create a promise that resolves when onstop completes
+    let resolveStop;
+    recorderStopPromise = new Promise(resolve => { resolveStop = resolve; });
 
     recorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -190,6 +200,7 @@ function createRecorder(stream) {
             const blob = new Blob(chunkData, { type: recorder.mimeType });
             audioSegments.value.push(blob);
         }
+        resolveStop();
     };
 
     recorder.start(1000);
@@ -228,12 +239,17 @@ async function startRecording() {
     }
 }
 
-function stopRecording() {
+async function stopRecording() {
     clearInterval(timer);
     clearInterval(chunkTimer);
 
     if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop(); // triggers onstop → saves final segment
+
+        // Wait for onstop to fire and blob to be saved before proceeding
+        if (recorderStopPromise) {
+            await recorderStopPromise;
+        }
     }
 
     // Stop all mic tracks
@@ -257,30 +273,56 @@ async function processVisit() {
     uploadProgress.value = 5;
 
     try {
-        // 1. Create a new visit
-        const patientId = auth.user?.patient_id || auth.user?.patient?.id;
-        if (!patientId) {
-            throw new Error('Patient profile not found. Please log in again.');
+        // 1. Create visit (reuse if retrying after error)
+        let visitId = createdVisitId;
+
+        if (!visitId) {
+            const patientId = auth.user?.patient_id || auth.user?.patient?.id;
+            if (!patientId) {
+                throw new Error('Patient profile not found. Please log in again.');
+            }
+
+            const visitRes = await api.post('/visits', {
+                patient_id: patientId,
+                practitioner_id: selectedPractitionerId.value,
+                visit_type: 'office_visit',
+                reason_for_visit: 'Companion Scribe recording',
+                started_at: new Date(visitDate.value).toISOString(),
+            });
+
+            visitId = visitRes.data.data.id;
+            createdVisitId = visitId; // persist for retry
         }
 
-        const visitRes = await api.post('/visits', {
-            patient_id: patientId,
-            practitioner_id: selectedPractitionerId.value,
-            visit_type: 'office_visit',
-            reason_for_visit: 'Companion Scribe recording',
-            started_at: new Date(visitDate.value).toISOString(),
-        });
-
-        const visitId = visitRes.data.data.id;
         uploadProgress.value = 10;
 
+        const ext = getMimeType().includes('webm') ? 'webm' : 'm4a';
+
+        // Phase 1: Save all audio to server FIRST (safety net for ALL paths)
+        for (let i = 0; i < segments.length; i++) {
+            uploadStatusText.value = segments.length === 1
+                ? 'Saving audio to server...'
+                : `Saving segment ${i + 1} of ${segments.length}...`;
+            uploadDetailText.value = 'Uploading audio...';
+
+            const saveForm = new FormData();
+            saveForm.append('audio', segments[i], segments.length === 1 ? `recording.${ext}` : `chunk-${i}.${ext}`);
+            saveForm.append('chunk_index', String(i));
+
+            await api.post(`/visits/${visitId}/transcript/save-chunk`, saveForm, {
+                timeout: 120000,
+            });
+
+            uploadProgress.value = 10 + Math.round(((i + 1) / segments.length) * 25);
+        }
+
+        // Phase 2: Transcribe
         if (segments.length === 1) {
-            // Single segment — use the existing direct upload endpoint
+            // Single segment — direct upload-audio (saves + transcribes + creates Transcript + dispatches job)
             uploadStatusText.value = 'Transcribing audio...';
             uploadDetailText.value = 'Sending to Whisper AI...';
 
             const formData = new FormData();
-            const ext = getMimeType().includes('webm') ? 'webm' : 'm4a';
             formData.append('audio', segments[0], `recording.${ext}`);
             formData.append('source_type', 'ambient_phone');
             formData.append('patient_consent_given', '1');
@@ -291,26 +333,7 @@ async function processVisit() {
 
             uploadProgress.value = 90;
         } else {
-            // Multiple segments — save all chunks first (safety net), then transcribe
-            const ext = getMimeType().includes('webm') ? 'webm' : 'm4a';
-
-            // Phase 1: Save all audio chunks to server (prevents data loss)
-            for (let i = 0; i < segments.length; i++) {
-                uploadStatusText.value = `Saving segment ${i + 1} of ${segments.length}...`;
-                uploadDetailText.value = 'Uploading audio to server...';
-
-                const saveForm = new FormData();
-                saveForm.append('audio', segments[i], `chunk-${i}.${ext}`);
-                saveForm.append('chunk_index', String(i));
-
-                await api.post(`/visits/${visitId}/transcript/save-chunk`, saveForm, {
-                    timeout: 120000,
-                });
-
-                uploadProgress.value = 10 + Math.round(((i + 1) / segments.length) * 30);
-            }
-
-            // Phase 2: Transcribe each chunk (audio is already safe on server)
+            // Multiple segments — transcribe each, then combine
             const transcriptParts = [];
 
             for (let i = 0; i < segments.length; i++) {
@@ -327,7 +350,7 @@ async function processVisit() {
                 });
 
                 transcriptParts.push(data.data.text);
-                uploadProgress.value = 40 + Math.round(((i + 1) / segments.length) * 40);
+                uploadProgress.value = 35 + Math.round(((i + 1) / segments.length) * 45);
             }
 
             // Phase 3: Combine all chunk transcripts and submit as text
@@ -412,7 +435,17 @@ async function getFirstPractitionerId(patientId) {
     throw new Error('No practitioner found. Please contact support.');
 }
 
+// Warn user before closing/navigating away during recording or upload
+function onBeforeUnload(e) {
+    if (step.value === 'recording' || uploading.value) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+}
+
 onMounted(async () => {
+    window.addEventListener('beforeunload', onBeforeUnload);
+
     try {
         const { data } = await api.get('/practitioners');
         practitioners.value = data.data || [];
@@ -432,6 +465,7 @@ watch(step, (val) => {
 });
 
 onUnmounted(() => {
+    window.removeEventListener('beforeunload', onBeforeUnload);
     clearInterval(timer);
     clearInterval(chunkTimer);
     if (mediaRecorder && mediaRecorder.state === 'recording') {
