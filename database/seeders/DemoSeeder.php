@@ -430,15 +430,15 @@ class DemoSeeder extends Seeder
             'signed_at' => now()->subDay(),
         ]);
 
-        // 11. Transcript (placeholder - awaiting Dr. Nedo input)
+        // 11. Transcript
         Transcript::create([
             'visit_id' => $visit->id,
             'patient_id' => $patient->id,
             'source_type' => 'ambient_device',
-            'stt_provider' => 'placeholder',
-            'audio_duration_seconds' => 0,
-            'raw_transcript' => 'PLACEHOLDER - Awaiting real transcript from Dr. Nedo',
-            'processing_status' => 'pending',
+            'stt_provider' => 'whisper',
+            'audio_duration_seconds' => 1590,
+            'raw_transcript' => file_get_contents(database_path('../demo/transcript.txt')),
+            'processing_status' => 'completed',
             'patient_consent_given' => true,
             'consent_timestamp' => now()->subDay(),
         ]);
