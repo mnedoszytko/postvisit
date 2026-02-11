@@ -1,0 +1,235 @@
+{
+  "demographics": {
+    "first_name": "Fatima",
+    "last_name": "Benali",
+    "dob": "1970-08-12",
+    "gender": "female",
+    "height_cm": 160.0,
+    "weight_kg": 72.0,
+    "bmi": 28.1,
+    "blood_type": "O+",
+    "email": "fatima.benali@demo.postvisit.ai",
+    "phone": "+32 479 012 345",
+    "mrn": "DEMO-V05",
+    "preferred_language": "fr"
+  },
+  "emergency_contact": {
+    "name": "Yasmine Benali",
+    "relationship": "Daughter",
+    "phone": "+32 470 123 456"
+  },
+  "allergies": [],
+  "conditions": [
+    {
+      "name": "Fibromyalgia",
+      "icd10": "M79.7",
+      "onset": "2018-03",
+      "status": "active"
+    },
+    {
+      "name": "Intervertebral disc degeneration, lumbar region",
+      "icd10": "M51.16",
+      "onset": "2025-09",
+      "status": "active"
+    },
+    {
+      "name": "Pain in limb (arm pain)",
+      "icd10": "M79.6",
+      "onset": "2026-01",
+      "status": "active"
+    },
+    {
+      "name": "Unspecified abdominal pain",
+      "icd10": "R10.9",
+      "onset": "2025-11",
+      "status": "active"
+    }
+  ],
+  "medications": [
+    {
+      "brand_name": "Lyrica",
+      "generic_name": "Pregabalin",
+      "dose": "75mg",
+      "frequency": "2x/day",
+      "status": "active",
+      "started": "2019-06",
+      "reason": "Fibromyalgia pain management"
+    },
+    {
+      "brand_name": "Dafalgan",
+      "generic_name": "Paracetamol",
+      "dose": "1000mg",
+      "frequency": "PRN (up to 3x/day)",
+      "status": "active",
+      "started": "2018-03",
+      "reason": "Pain relief"
+    }
+  ],
+  "family_history": [],
+  "social_history": {
+    "smoking": "never",
+    "smoking_details": null,
+    "alcohol": "occasional",
+    "alcohol_details": "Sometimes alcohol, infrequent",
+    "exercise": "Very limited by pain, mostly sedentary",
+    "occupation": "Unknown"
+  },
+  "lab_results": [
+    {
+      "test": "Hemoglobin",
+      "loinc": "718-7",
+      "value": 12.8,
+      "unit": "g/dL",
+      "reference_range_low": 12.0,
+      "reference_range_high": 16.0,
+      "reference_text": "Normal female: 12.0-16.0 g/dL",
+      "interpretation": "N",
+      "date": "2025-12-10",
+      "note": null
+    },
+    {
+      "test": "WBC",
+      "loinc": "6690-2",
+      "value": 6.8,
+      "unit": "x10^9/L",
+      "reference_range_low": 4.0,
+      "reference_range_high": 11.0,
+      "reference_text": "Normal: 4.0-11.0 x10^9/L",
+      "interpretation": "N",
+      "date": "2025-12-10",
+      "note": null
+    },
+    {
+      "test": "CRP",
+      "loinc": "1988-5",
+      "value": 4.2,
+      "unit": "mg/L",
+      "reference_range_low": null,
+      "reference_range_high": 5.0,
+      "reference_text": "Normal: <5.0 mg/L",
+      "interpretation": "N",
+      "date": "2025-12-10",
+      "note": "Upper normal — chronic low-grade inflammation from fibromyalgia"
+    },
+    {
+      "test": "ESR",
+      "loinc": "4537-7",
+      "value": 22,
+      "unit": "mm/hr",
+      "reference_range_low": null,
+      "reference_range_high": 20,
+      "reference_text": "Normal female: <20 mm/hr",
+      "interpretation": "H",
+      "date": "2025-12-10",
+      "note": "Mildly elevated — chronic inflammation consistent with fibromyalgia"
+    },
+    {
+      "test": "Vitamin D",
+      "loinc": "1989-3",
+      "value": 18,
+      "unit": "ng/mL",
+      "reference_range_low": 30,
+      "reference_range_high": 100,
+      "reference_text": "Sufficient: 30-100 ng/mL",
+      "interpretation": "L",
+      "date": "2025-12-10",
+      "note": "Deficient — very common in fibromyalgia patients, may worsen pain and fatigue"
+    },
+    {
+      "test": "TSH",
+      "loinc": "3016-3",
+      "value": 2.4,
+      "unit": "mIU/L",
+      "reference_range_low": 0.4,
+      "reference_range_high": 4.0,
+      "reference_text": "Normal: 0.4-4.0 mIU/L",
+      "interpretation": "N",
+      "date": "2025-12-10",
+      "note": "Normal — rules out thyroid dysfunction as cause of symptoms"
+    },
+    {
+      "test": "Fasting Glucose",
+      "loinc": "2345-7",
+      "value": 88,
+      "unit": "mg/dL",
+      "reference_range_low": 70,
+      "reference_range_high": 100,
+      "reference_text": "Normal: 70-100 mg/dL",
+      "interpretation": "N",
+      "date": "2025-12-10",
+      "note": null
+    },
+    {
+      "test": "Creatinine",
+      "loinc": "2160-0",
+      "value": 0.7,
+      "unit": "mg/dL",
+      "reference_range_low": 0.6,
+      "reference_range_high": 1.2,
+      "reference_text": "Normal female: 0.6-1.2 mg/dL",
+      "interpretation": "N",
+      "date": "2025-12-10",
+      "note": null
+    },
+    {
+      "test": "ANA",
+      "loinc": "8060-1",
+      "value": "negative",
+      "unit": null,
+      "reference_range_low": null,
+      "reference_range_high": null,
+      "reference_text": "Normal: negative",
+      "interpretation": "N",
+      "date": "2025-12-10",
+      "note": "Negative — rules out lupus and other autoimmune conditions"
+    }
+  ],
+  "vitals_timeline": [
+    {"date": "2026-01-12", "systolic": 120, "diastolic": 74, "heart_rate": 76, "spo2": 98},
+    {"date": "2026-01-13", "systolic": 118, "diastolic": 72, "heart_rate": 74, "spo2": 98},
+    {"date": "2026-01-14", "systolic": 122, "diastolic": 76, "heart_rate": 78, "spo2": 97},
+    {"date": "2026-01-15", "systolic": 119, "diastolic": 73, "heart_rate": 75, "spo2": 98},
+    {"date": "2026-01-16", "systolic": 124, "diastolic": 77, "heart_rate": 80, "spo2": 98},
+    {"date": "2026-01-17", "systolic": 117, "diastolic": 71, "heart_rate": 73, "spo2": 99},
+    {"date": "2026-01-18", "systolic": 121, "diastolic": 75, "heart_rate": 77, "spo2": 98},
+    {"date": "2026-01-19", "systolic": 116, "diastolic": 70, "heart_rate": 72, "spo2": 98},
+    {"date": "2026-01-20", "systolic": 123, "diastolic": 76, "heart_rate": 79, "spo2": 97},
+    {"date": "2026-01-21", "systolic": 120, "diastolic": 74, "heart_rate": 76, "spo2": 98},
+    {"date": "2026-01-22", "systolic": 118, "diastolic": 73, "heart_rate": 74, "spo2": 99},
+    {"date": "2026-01-23", "systolic": 125, "diastolic": 78, "heart_rate": 81, "spo2": 97},
+    {"date": "2026-01-24", "systolic": 115, "diastolic": 70, "heart_rate": 73, "spo2": 98},
+    {"date": "2026-01-25", "systolic": 122, "diastolic": 75, "heart_rate": 77, "spo2": 98},
+    {"date": "2026-01-26", "systolic": 128, "diastolic": 80, "heart_rate": 82, "spo2": 97},
+    {"date": "2026-01-27", "systolic": 119, "diastolic": 72, "heart_rate": 74, "spo2": 98},
+    {"date": "2026-01-28", "systolic": 121, "diastolic": 74, "heart_rate": 76, "spo2": 99},
+    {"date": "2026-01-29", "systolic": 117, "diastolic": 71, "heart_rate": 75, "spo2": 98},
+    {"date": "2026-01-30", "systolic": 123, "diastolic": 76, "heart_rate": 78, "spo2": 98},
+    {"date": "2026-01-31", "systolic": 120, "diastolic": 73, "heart_rate": 76, "spo2": 97},
+    {"date": "2026-02-01", "systolic": 118, "diastolic": 72, "heart_rate": 74, "spo2": 98},
+    {"date": "2026-02-02", "systolic": 124, "diastolic": 77, "heart_rate": 80, "spo2": 98},
+    {"date": "2026-02-03", "systolic": 116, "diastolic": 71, "heart_rate": 73, "spo2": 99},
+    {"date": "2026-02-04", "systolic": 121, "diastolic": 75, "heart_rate": 77, "spo2": 98},
+    {"date": "2026-02-05", "systolic": 119, "diastolic": 73, "heart_rate": 75, "spo2": 97},
+    {"date": "2026-02-06", "systolic": 126, "diastolic": 79, "heart_rate": 82, "spo2": 98},
+    {"date": "2026-02-07", "systolic": 118, "diastolic": 72, "heart_rate": 74, "spo2": 98},
+    {"date": "2026-02-08", "systolic": 122, "diastolic": 76, "heart_rate": 78, "spo2": 99},
+    {"date": "2026-02-09", "systolic": 117, "diastolic": 71, "heart_rate": 73, "spo2": 98},
+    {"date": "2026-02-10", "systolic": 120, "diastolic": 74, "heart_rate": 76, "spo2": 98}
+  ],
+  "upcoming": [
+    {
+      "type": "appointment",
+      "name": "Follow-up with GP — cholesterol check",
+      "date": null,
+      "location": null,
+      "notes": "Doctor recommended checking cholesterol levels at next blood work. Was not included in last panel."
+    },
+    {
+      "type": "appointment",
+      "name": "Referral to orthopedics / pain clinic",
+      "date": null,
+      "location": null,
+      "notes": "For L4-L5 disc protrusion management. Doctor mentioned disc problem during consultation."
+    }
+  ]
+}

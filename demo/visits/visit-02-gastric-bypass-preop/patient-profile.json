@@ -1,0 +1,307 @@
+{
+  "demographics": {
+    "first_name": "Sofia",
+    "last_name": "Kowalska",
+    "dob": "1977-11-22",
+    "gender": "female",
+    "height_cm": 165.0,
+    "weight_kg": 90.0,
+    "bmi": 33.1,
+    "blood_type": "O+",
+    "email": "sofia.kowalska@demo.postvisit.ai",
+    "phone": "+32 473 456 789",
+    "mrn": "DEMO-V02",
+    "preferred_language": "en"
+  },
+  "emergency_contact": {
+    "name": "Adam Kowalski",
+    "relationship": "Husband",
+    "phone": "+32 474 567 890"
+  },
+  "allergies": [],
+  "conditions": [
+    {
+      "name": "Morbid obesity, BMI 30.0-39.9",
+      "icd10": "E66.01",
+      "onset": "2018-01",
+      "status": "active"
+    },
+    {
+      "name": "Osteoarthritis, unspecified",
+      "icd10": "M19.90",
+      "onset": "2021-06",
+      "status": "active"
+    },
+    {
+      "name": "Encounter for screening for cardiovascular disease",
+      "icd10": "Z12.83",
+      "onset": "2026-01",
+      "status": "active"
+    }
+  ],
+  "medications": [
+    {
+      "brand_name": "Ibuprofen",
+      "generic_name": "Ibuprofen",
+      "dose": "400mg",
+      "frequency": "PRN (as needed)",
+      "status": "active",
+      "started": "2021-06",
+      "reason": "Knee arthritis pain"
+    },
+    {
+      "brand_name": "Omeprazole",
+      "generic_name": "Omeprazole",
+      "dose": "20mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2021-09",
+      "reason": "Gastroprotection with chronic NSAID use"
+    }
+  ],
+  "family_history": [
+    {
+      "relation": "Father",
+      "condition": "No cardiac disease",
+      "deceased": false,
+      "age_of_onset": null
+    },
+    {
+      "relation": "Mother",
+      "condition": "No cardiac disease",
+      "deceased": false,
+      "age_of_onset": null
+    }
+  ],
+  "social_history": {
+    "smoking": "never",
+    "smoking_details": null,
+    "alcohol": "occasional",
+    "alcohol_details": "Social drinking only",
+    "exercise": "Limited by knee arthritis and weight — mostly sedentary",
+    "occupation": "Office worker"
+  },
+  "lab_results": [
+    {
+      "test": "Total Cholesterol",
+      "loinc": "2093-3",
+      "value": 218,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 200,
+      "reference_text": "Desirable: <200 mg/dL",
+      "interpretation": "H",
+      "date": "2026-01-15",
+      "note": "Mild elevation — associated with obesity"
+    },
+    {
+      "test": "LDL Cholesterol",
+      "loinc": "2089-1",
+      "value": 132,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 130,
+      "reference_text": "Near optimal: <130 mg/dL",
+      "interpretation": "H",
+      "date": "2026-01-15",
+      "note": "Borderline high"
+    },
+    {
+      "test": "HDL Cholesterol",
+      "loinc": "2085-9",
+      "value": 44,
+      "unit": "mg/dL",
+      "reference_range_low": 40,
+      "reference_range_high": null,
+      "reference_text": "Desirable: >40 mg/dL",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": "Low-normal — common in obesity"
+    },
+    {
+      "test": "Triglycerides",
+      "loinc": "2571-8",
+      "value": 195,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 150,
+      "reference_text": "Normal: <150 mg/dL",
+      "interpretation": "H",
+      "date": "2026-01-15",
+      "note": "Elevated — metabolic syndrome risk factor"
+    },
+    {
+      "test": "Hemoglobin",
+      "loinc": "718-7",
+      "value": 13.2,
+      "unit": "g/dL",
+      "reference_range_low": 12.0,
+      "reference_range_high": 16.0,
+      "reference_text": "Normal female: 12.0-16.0 g/dL",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": null
+    },
+    {
+      "test": "WBC",
+      "loinc": "6690-2",
+      "value": 7.4,
+      "unit": "x10^9/L",
+      "reference_range_low": 4.0,
+      "reference_range_high": 11.0,
+      "reference_text": "Normal: 4.0-11.0 x10^9/L",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": null
+    },
+    {
+      "test": "Platelets",
+      "loinc": "777-3",
+      "value": 248,
+      "unit": "x10^9/L",
+      "reference_range_low": 150,
+      "reference_range_high": 400,
+      "reference_text": "Normal: 150-400 x10^9/L",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": null
+    },
+    {
+      "test": "INR",
+      "loinc": "6301-6",
+      "value": 1.0,
+      "unit": "ratio",
+      "reference_range_low": 0.8,
+      "reference_range_high": 1.2,
+      "reference_text": "Normal: 0.8-1.2",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": "Pre-operative coagulation check"
+    },
+    {
+      "test": "Fasting Glucose",
+      "loinc": "2345-7",
+      "value": 98,
+      "unit": "mg/dL",
+      "reference_range_low": 70,
+      "reference_range_high": 100,
+      "reference_text": "Normal: 70-100 mg/dL",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": "Upper normal — obesity-associated insulin resistance risk"
+    },
+    {
+      "test": "HbA1c",
+      "loinc": "4548-4",
+      "value": 5.6,
+      "unit": "%",
+      "reference_range_low": null,
+      "reference_range_high": 5.7,
+      "reference_text": "Normal: <5.7%, Pre-diabetic: 5.7-6.4%",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": "Borderline pre-diabetic — supports surgical intervention for metabolic benefit"
+    },
+    {
+      "test": "Creatinine",
+      "loinc": "2160-0",
+      "value": 0.8,
+      "unit": "mg/dL",
+      "reference_range_low": 0.6,
+      "reference_range_high": 1.2,
+      "reference_text": "Normal female: 0.6-1.2 mg/dL",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": null
+    },
+    {
+      "test": "Potassium",
+      "loinc": "2823-3",
+      "value": 4.3,
+      "unit": "mEq/L",
+      "reference_range_low": 3.5,
+      "reference_range_high": 5.0,
+      "reference_text": "Normal: 3.5-5.0 mEq/L",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": null
+    },
+    {
+      "test": "Sodium",
+      "loinc": "2951-2",
+      "value": 141,
+      "unit": "mEq/L",
+      "reference_range_low": 136,
+      "reference_range_high": 145,
+      "reference_text": "Normal: 136-145 mEq/L",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": null
+    },
+    {
+      "test": "ALT",
+      "loinc": "1742-6",
+      "value": 32,
+      "unit": "U/L",
+      "reference_range_low": null,
+      "reference_range_high": 35,
+      "reference_text": "Normal: <35 U/L",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": null
+    },
+    {
+      "test": "AST",
+      "loinc": "1920-8",
+      "value": 28,
+      "unit": "U/L",
+      "reference_range_low": null,
+      "reference_range_high": 35,
+      "reference_text": "Normal: <35 U/L",
+      "interpretation": "N",
+      "date": "2026-01-15",
+      "note": null
+    }
+  ],
+  "vitals_timeline": [
+    {"date": "2026-01-12", "systolic": 130, "diastolic": 82, "heart_rate": 72, "spo2": 98},
+    {"date": "2026-01-13", "systolic": 134, "diastolic": 85, "heart_rate": 75, "spo2": 97},
+    {"date": "2026-01-14", "systolic": 127, "diastolic": 80, "heart_rate": 70, "spo2": 99},
+    {"date": "2026-01-15", "systolic": 132, "diastolic": 84, "heart_rate": 74, "spo2": 98},
+    {"date": "2026-01-16", "systolic": 136, "diastolic": 87, "heart_rate": 77, "spo2": 97},
+    {"date": "2026-01-17", "systolic": 129, "diastolic": 81, "heart_rate": 71, "spo2": 98},
+    {"date": "2026-01-18", "systolic": 125, "diastolic": 78, "heart_rate": 68, "spo2": 99},
+    {"date": "2026-01-19", "systolic": 133, "diastolic": 86, "heart_rate": 76, "spo2": 98},
+    {"date": "2026-01-20", "systolic": 138, "diastolic": 88, "heart_rate": 78, "spo2": 97},
+    {"date": "2026-01-21", "systolic": 131, "diastolic": 83, "heart_rate": 73, "spo2": 98},
+    {"date": "2026-01-22", "systolic": 126, "diastolic": 79, "heart_rate": 69, "spo2": 99},
+    {"date": "2026-01-23", "systolic": 135, "diastolic": 85, "heart_rate": 76, "spo2": 97},
+    {"date": "2026-01-24", "systolic": 128, "diastolic": 80, "heart_rate": 70, "spo2": 98},
+    {"date": "2026-01-25", "systolic": 133, "diastolic": 84, "heart_rate": 74, "spo2": 98},
+    {"date": "2026-01-26", "systolic": 137, "diastolic": 87, "heart_rate": 77, "spo2": 97},
+    {"date": "2026-01-27", "systolic": 126, "diastolic": 79, "heart_rate": 69, "spo2": 99},
+    {"date": "2026-01-28", "systolic": 130, "diastolic": 82, "heart_rate": 72, "spo2": 98},
+    {"date": "2026-01-29", "systolic": 134, "diastolic": 86, "heart_rate": 75, "spo2": 97},
+    {"date": "2026-01-30", "systolic": 129, "diastolic": 81, "heart_rate": 71, "spo2": 98},
+    {"date": "2026-01-31", "systolic": 136, "diastolic": 88, "heart_rate": 78, "spo2": 97},
+    {"date": "2026-02-01", "systolic": 127, "diastolic": 80, "heart_rate": 70, "spo2": 99},
+    {"date": "2026-02-02", "systolic": 132, "diastolic": 83, "heart_rate": 73, "spo2": 98},
+    {"date": "2026-02-03", "systolic": 130, "diastolic": 82, "heart_rate": 72, "spo2": 98},
+    {"date": "2026-02-04", "systolic": 125, "diastolic": 79, "heart_rate": 68, "spo2": 99},
+    {"date": "2026-02-05", "systolic": 135, "diastolic": 86, "heart_rate": 76, "spo2": 97},
+    {"date": "2026-02-06", "systolic": 131, "diastolic": 84, "heart_rate": 74, "spo2": 98},
+    {"date": "2026-02-07", "systolic": 128, "diastolic": 81, "heart_rate": 71, "spo2": 98},
+    {"date": "2026-02-08", "systolic": 134, "diastolic": 85, "heart_rate": 75, "spo2": 97},
+    {"date": "2026-02-09", "systolic": 126, "diastolic": 80, "heart_rate": 69, "spo2": 99},
+    {"date": "2026-02-10", "systolic": 131, "diastolic": 83, "heart_rate": 73, "spo2": 98}
+  ],
+  "upcoming": [
+    {
+      "type": "procedure",
+      "name": "Gastric bypass surgery",
+      "date": null,
+      "location": "TBD — pending multidisciplinary summit review",
+      "notes": "Cardiac clearance: APPROVED. Echocardiogram normal, stress test normal. Date to be confirmed after multidisciplinary team review."
+    }
+  ]
+}

@@ -1,0 +1,279 @@
+{
+  "demographics": {
+    "first_name": "Krystyna",
+    "last_name": "Marek",
+    "dob": "1963-06-30",
+    "gender": "female",
+    "height_cm": 165.0,
+    "weight_kg": 95.0,
+    "bmi": 34.9,
+    "blood_type": "AB+",
+    "email": "krystyna.marek@demo.postvisit.ai",
+    "phone": "+32 477 890 123",
+    "mrn": "DEMO-V04",
+    "preferred_language": "en"
+  },
+  "emergency_contact": {
+    "name": "Jan Marek",
+    "relationship": "Husband",
+    "phone": "+32 478 901 234"
+  },
+  "allergies": [],
+  "conditions": [
+    {
+      "name": "Occlusion and stenosis of carotid artery",
+      "icd10": "I65.2",
+      "onset": "2026-01",
+      "status": "active"
+    },
+    {
+      "name": "Chest pain, unspecified",
+      "icd10": "R07.9",
+      "onset": "2026-01",
+      "status": "active"
+    },
+    {
+      "name": "Morbid obesity, BMI 30-39",
+      "icd10": "E66.01",
+      "onset": "2025-10",
+      "status": "active"
+    },
+    {
+      "name": "Essential hypertension",
+      "icd10": "I10",
+      "onset": "2020-03",
+      "status": "active"
+    },
+    {
+      "name": "Primary osteoarthritis, right knee",
+      "icd10": "M17.11",
+      "onset": "2025-06",
+      "status": "active"
+    },
+    {
+      "name": "Inguinal hernia, unilateral",
+      "icd10": "K40.90",
+      "onset": "2025-10",
+      "status": "resolved"
+    }
+  ],
+  "medications": [
+    {
+      "brand_name": "Belsar",
+      "generic_name": "Olmesartan",
+      "dose": "10mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2024-06",
+      "reason": "Essential hypertension"
+    },
+    {
+      "brand_name": "Asaflow",
+      "generic_name": "Acetylsalicylic acid",
+      "dose": "100mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2026-02",
+      "reason": "Cardioprotective antiplatelet for carotid plaques"
+    },
+    {
+      "brand_name": "Atorvastatin",
+      "generic_name": "Atorvastatin",
+      "dose": "40mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2026-02",
+      "reason": "LDL reduction for carotid plaques — LDL 168, ESC target <70 mg/dL"
+    },
+    {
+      "brand_name": "Diovan",
+      "generic_name": "Valsartan",
+      "dose": "80mg",
+      "frequency": "1x/day",
+      "status": "discontinued",
+      "started": "2020-03",
+      "reason": "Hypertension — stopped a long time ago, replaced by Belsar"
+    }
+  ],
+  "family_history": [
+    {
+      "relation": "Parents",
+      "condition": "No family cardiac death",
+      "deceased": false,
+      "age_of_onset": null
+    }
+  ],
+  "social_history": {
+    "smoking": "never",
+    "smoking_details": "Explicitly denied smoking",
+    "alcohol": "none",
+    "alcohol_details": null,
+    "exercise": "Very limited — 4 months off work post-surgery, significant weight gain during recovery",
+    "occupation": "On medical leave (post-surgery recovery)"
+  },
+  "lab_results": [
+    {
+      "test": "Total Cholesterol",
+      "loinc": "2093-3",
+      "value": 262,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 200,
+      "reference_text": "Desirable: <200 mg/dL",
+      "interpretation": "H",
+      "date": "2026-01-10",
+      "note": "Never properly tested before — likely longstanding hypercholesterolemia. With carotid plaques, statin urgently needed."
+    },
+    {
+      "test": "LDL Cholesterol",
+      "loinc": "2089-1",
+      "value": 168,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 130,
+      "reference_text": "Desirable: <130 mg/dL; with vascular disease: <70 mg/dL (ESC)",
+      "interpretation": "H",
+      "date": "2026-01-10",
+      "note": "Very high — with carotid plaques, ESC guidelines require aggressive LDL lowering. Critical treatment gap: no statin prescribed yet."
+    },
+    {
+      "test": "HDL Cholesterol",
+      "loinc": "2085-9",
+      "value": 42,
+      "unit": "mg/dL",
+      "reference_range_low": 40,
+      "reference_range_high": null,
+      "reference_text": "Desirable female: >50 mg/dL",
+      "interpretation": "N",
+      "date": "2026-01-10",
+      "note": "Low-normal for female — suboptimal"
+    },
+    {
+      "test": "Triglycerides",
+      "loinc": "2571-8",
+      "value": 198,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 150,
+      "reference_text": "Normal: <150 mg/dL",
+      "interpretation": "H",
+      "date": "2026-01-10",
+      "note": "Elevated — associated with obesity (BMI 34.9)"
+    },
+    {
+      "test": "Hemoglobin",
+      "loinc": "718-7",
+      "value": 12.6,
+      "unit": "g/dL",
+      "reference_range_low": 12.0,
+      "reference_range_high": 16.0,
+      "reference_text": "Normal female: 12.0-16.0 g/dL",
+      "interpretation": "N",
+      "date": "2026-01-10",
+      "note": "Lower end of normal — post-surgical"
+    },
+    {
+      "test": "CRP",
+      "loinc": "1988-5",
+      "value": 8.2,
+      "unit": "mg/L",
+      "reference_range_low": null,
+      "reference_range_high": 5.0,
+      "reference_text": "Normal: <5.0 mg/L",
+      "interpretation": "H",
+      "date": "2026-01-10",
+      "note": "Elevated — expected post-surgical inflammation (knee prosthesis 7 weeks ago)"
+    },
+    {
+      "test": "Fasting Glucose",
+      "loinc": "2345-7",
+      "value": 105,
+      "unit": "mg/dL",
+      "reference_range_low": 70,
+      "reference_range_high": 100,
+      "reference_text": "Normal: 70-100 mg/dL",
+      "interpretation": "H",
+      "date": "2026-01-10",
+      "note": "Impaired fasting glucose — obesity-related metabolic risk"
+    },
+    {
+      "test": "Creatinine",
+      "loinc": "2160-0",
+      "value": 0.9,
+      "unit": "mg/dL",
+      "reference_range_low": 0.6,
+      "reference_range_high": 1.2,
+      "reference_text": "Normal female: 0.6-1.2 mg/dL",
+      "interpretation": "N",
+      "date": "2026-01-10",
+      "note": null
+    },
+    {
+      "test": "D-dimer",
+      "loinc": "48065-7",
+      "value": 0.8,
+      "unit": "mg/L",
+      "reference_range_low": null,
+      "reference_range_high": 0.5,
+      "reference_text": "Normal: <0.5 mg/L",
+      "interpretation": "H",
+      "date": "2026-01-10",
+      "note": "Elevated — expected post-surgical finding (knee prosthesis + hernia surgery)"
+    }
+  ],
+  "vitals_timeline": [
+    {"date": "2026-01-12", "systolic": 142, "diastolic": 86, "heart_rate": 78, "spo2": 97},
+    {"date": "2026-01-13", "systolic": 138, "diastolic": 82, "heart_rate": 76, "spo2": 96},
+    {"date": "2026-01-14", "systolic": 140, "diastolic": 85, "heart_rate": 80, "spo2": 97},
+    {"date": "2026-01-15", "systolic": 135, "diastolic": 80, "heart_rate": 74, "spo2": 98},
+    {"date": "2026-01-16", "systolic": 144, "diastolic": 88, "heart_rate": 82, "spo2": 96},
+    {"date": "2026-01-17", "systolic": 137, "diastolic": 83, "heart_rate": 75, "spo2": 97},
+    {"date": "2026-01-18", "systolic": 133, "diastolic": 79, "heart_rate": 72, "spo2": 97},
+    {"date": "2026-01-19", "systolic": 141, "diastolic": 87, "heart_rate": 79, "spo2": 96},
+    {"date": "2026-01-20", "systolic": 145, "diastolic": 90, "heart_rate": 81, "spo2": 97},
+    {"date": "2026-01-21", "systolic": 136, "diastolic": 81, "heart_rate": 73, "spo2": 98},
+    {"date": "2026-01-22", "systolic": 139, "diastolic": 84, "heart_rate": 77, "spo2": 96},
+    {"date": "2026-01-23", "systolic": 143, "diastolic": 87, "heart_rate": 80, "spo2": 97},
+    {"date": "2026-01-24", "systolic": 130, "diastolic": 78, "heart_rate": 71, "spo2": 97},
+    {"date": "2026-01-25", "systolic": 138, "diastolic": 85, "heart_rate": 76, "spo2": 96},
+    {"date": "2026-01-26", "systolic": 141, "diastolic": 86, "heart_rate": 79, "spo2": 98},
+    {"date": "2026-01-27", "systolic": 134, "diastolic": 80, "heart_rate": 74, "spo2": 97},
+    {"date": "2026-01-28", "systolic": 140, "diastolic": 84, "heart_rate": 78, "spo2": 96},
+    {"date": "2026-01-29", "systolic": 137, "diastolic": 82, "heart_rate": 75, "spo2": 97},
+    {"date": "2026-01-30", "systolic": 142, "diastolic": 88, "heart_rate": 81, "spo2": 96},
+    {"date": "2026-01-31", "systolic": 135, "diastolic": 81, "heart_rate": 73, "spo2": 98},
+    {"date": "2026-02-01", "systolic": 139, "diastolic": 83, "heart_rate": 77, "spo2": 97},
+    {"date": "2026-02-02", "systolic": 143, "diastolic": 89, "heart_rate": 82, "spo2": 96},
+    {"date": "2026-02-03", "systolic": 136, "diastolic": 82, "heart_rate": 74, "spo2": 97},
+    {"date": "2026-02-04", "systolic": 131, "diastolic": 78, "heart_rate": 70, "spo2": 98},
+    {"date": "2026-02-05", "systolic": 140, "diastolic": 86, "heart_rate": 79, "spo2": 96},
+    {"date": "2026-02-06", "systolic": 138, "diastolic": 84, "heart_rate": 76, "spo2": 97},
+    {"date": "2026-02-07", "systolic": 144, "diastolic": 88, "heart_rate": 80, "spo2": 96},
+    {"date": "2026-02-08", "systolic": 133, "diastolic": 80, "heart_rate": 72, "spo2": 98},
+    {"date": "2026-02-09", "systolic": 137, "diastolic": 83, "heart_rate": 76, "spo2": 97},
+    {"date": "2026-02-10", "systolic": 139, "diastolic": 85, "heart_rate": 78, "spo2": 96}
+  ],
+  "upcoming": [
+    {
+      "type": "procedure",
+      "name": "Vascular CT scan",
+      "date": "2026-03-05",
+      "location": "Radiology department — level minus 2",
+      "notes": "CT angiography of carotid and neck vessels. Referral given at this visit to assess carotid plaques severity."
+    },
+    {
+      "type": "lab",
+      "name": "Cholesterol panel (fasting)",
+      "date": "2026-02-28",
+      "location": "Family doctor / local lab",
+      "notes": "Strongly recommended by cardiologist. Needed to monitor response to newly started atorvastatin 40mg given carotid plaques and baseline LDL 168."
+    },
+    {
+      "type": "appointment",
+      "name": "Cardiology follow-up",
+      "date": "2026-04-01",
+      "location": "Cardiology clinic",
+      "notes": "Review CT scan results, cholesterol labs, and assess response to atorvastatin 40mg + Asaflow 100mg started at this visit."
+    }
+  ]
+}
