@@ -2,6 +2,8 @@
 
 PostVisit.ai demo scenarios based on sample cardiology patient cases. Each dialogue was generated from a clinical scenario template, labeled with Doctor/Patient speaker attribution, and synthesized using ElevenLabs Text-to-Dialogue TTS with distinct voices for doctor and patient.
 
+> **Disclaimer:** All patient photographs are AI-generated (Flux 2 Realism via fal.ai) and do not depict real individuals. Clinical scenarios are based on representative cardiology cases but do not represent actual patients. All names, demographics, and medical data are entirely fictional.
+
 ## Pipeline
 
 ```
