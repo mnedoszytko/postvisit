@@ -35,25 +35,16 @@
         <!-- Observations / Test Results -->
         <div v-if="visit.observations?.length" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
           <button class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors" @click="obsExpanded = !obsExpanded">
-            <h3 class="font-semibold text-gray-800">Test Results &amp; Observations</h3>
+            <div class="flex items-center gap-2">
+              <h3 class="font-semibold text-gray-800">Test Results &amp; Observations</h3>
+              <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                {{ visit.observations.length }}
+              </span>
+            </div>
             <span class="text-gray-400 text-sm">{{ obsExpanded ? 'Collapse' : 'Expand' }}</span>
           </button>
-          <div v-if="obsExpanded" class="px-4 pb-4 space-y-3">
-            <div v-for="obs in visit.observations" :key="obs.id" class="border-b border-gray-100 pb-2 last:border-0">
-              <div class="flex items-center justify-between">
-                <span class="font-medium text-gray-800 text-sm">{{ obs.code_display }}</span>
-                <span
-                  :class="['text-xs px-2 py-0.5 rounded-full', interpretationClass(obs.interpretation)]"
-                >
-                  {{ obs.interpretation === 'N' ? 'Normal' : obs.interpretation === 'H' ? 'High' : obs.interpretation === 'L' ? 'Low' : obs.interpretation || '' }}
-                </span>
-              </div>
-              <p class="text-sm text-gray-600">
-                <template v-if="obs.value_type === 'quantity'">{{ obs.value_quantity }} {{ obs.value_unit }}</template>
-                <template v-else>{{ obs.value_string }}</template>
-              </p>
-              <p v-if="obs.reference_range_text" class="text-xs text-gray-400">Ref: {{ obs.reference_range_text }}</p>
-            </div>
+          <div v-if="obsExpanded" class="px-4 pb-4">
+            <LabResults :observations="visit.observations" />
           </div>
         </div>
 
@@ -180,6 +171,7 @@ import { useRoute } from 'vue-router';
 import { useVisitStore } from '@/stores/visit';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import VisitSection from '@/components/VisitSection.vue';
+import LabResults from '@/components/LabResults.vue';
 import ChatPanel from '@/components/ChatPanel.vue';
 import TermPopover from '@/components/TermPopover.vue';
 
@@ -235,13 +227,6 @@ const soapSections = computed(() => {
 function formatDate(dateStr) {
     if (!dateStr) return '';
     return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-function interpretationClass(interp) {
-    if (interp === 'N') return 'bg-green-100 text-green-700';
-    if (interp === 'H') return 'bg-red-100 text-red-700';
-    if (interp === 'L') return 'bg-blue-100 text-blue-700';
-    return 'bg-gray-100 text-gray-600';
 }
 
 const entityCategoryLabels = {

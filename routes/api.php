@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\ExplainController;
 use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\MedicationController;
+use App\Http\Controllers\Api\ObservationController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\PrescriptionController;
 use App\Http\Controllers\Api\TranscriptController;
@@ -80,6 +81,10 @@ Route::prefix('v1')->group(function () {
 
             // Explain
             Route::post('explain', [ExplainController::class, 'explain']);
+
+            // Observations (visit-scoped)
+            Route::get('observations', [ObservationController::class, 'index']);
+            Route::get('observations/{observation}', [ObservationController::class, 'show']);
 
             // Prescriptions (visit-scoped)
             Route::get('prescriptions', [PrescriptionController::class, 'visitPrescriptions']);
