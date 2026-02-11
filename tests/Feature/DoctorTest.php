@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\ChatMessage;
 use App\Models\ChatSession;
 use App\Models\Notification;
+use App\Models\Observation;
 use App\Models\Organization;
 use App\Models\Patient;
 use App\Models\Practitioner;
@@ -170,5 +171,125 @@ class DoctorTest extends TestCase
         $response = $this->getJson('/api/v1/doctor/dashboard');
 
         $response->assertStatus(401);
+    }
+
+    public function test_doctor_can_view_patient_observations(): void
+    {
+        $visit = Visit::factory()->create([
+            'patient_id' => $this->patient->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+        ]);
+
+        Observation::factory()->count(3)->create([
+            'patient_id' => $this->patient->id,
+            'visit_id' => $visit->id,
+        ]);
+
+        $response = $this->actingAs($this->doctorUser)
+            ->getJson("/api/v1/doctor/patients/{$this->patient->id}/observations");
+
+        $response->assertOk()
+            ->assertJsonCount(3, 'data');
+    }
+
+    public function test_doctor_can_filter_observations_by_code(): void
+    {
+        $visit = Visit::factory()->create([
+            'patient_id' => $this->patient->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+        ]);
+
+        Observation::factory()->create([
+            'patient_id' => $this->patient->id,
+            'visit_id' => $visit->id,
+            'code' => '29463-7',
+            'code_display' => 'Body weight',
+        ]);
+
+        Observation::factory()->create([
+            'patient_id' => $this->patient->id,
+            'visit_id' => $visit->id,
+            'code' => '8867-4',
+            'code_display' => 'Heart rate',
+        ]);
+
+        $response = $this->actingAs($this->doctorUser)
+            ->getJson("/api/v1/doctor/patients/{$this->patient->id}/observations?code=29463-7");
+
+        $response->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.code', '29463-7');
+    }
+
+    public function test_doctor_can_filter_observations_by_category(): void
+    {
+        $visit = Visit::factory()->create([
+            'patient_id' => $this->patient->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+        ]);
+
+        Observation::factory()->create([
+            'patient_id' => $this->patient->id,
+            'visit_id' => $visit->id,
+            'category' => 'vital-signs',
+        ]);
+
+        Observation::factory()->create([
+            'patient_id' => $this->patient->id,
+            'visit_id' => $visit->id,
+            'category' => 'laboratory',
+        ]);
+
+        $response = $this->actingAs($this->doctorUser)
+            ->getJson("/api/v1/doctor/patients/{$this->patient->id}/observations?category=laboratory");
+
+        $response->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.category', 'laboratory');
+    }
+
+    public function test_weight_observations_include_specialty_data(): void
+    {
+        $visit = Visit::factory()->create([
+            'patient_id' => $this->patient->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+        ]);
+
+        Observation::factory()->create([
+            'patient_id' => $this->patient->id,
+            'visit_id' => $visit->id,
+            'code' => '29463-7',
+            'code_display' => 'Body weight',
+            'value_type' => 'quantity',
+            'value_quantity' => 85.3,
+            'value_unit' => 'kg',
+            'specialty_data' => [
+                'monitoring_context' => 'heart_failure',
+                'dry_weight' => 82.0,
+                'alert_threshold_kg' => 2.0,
+                'alert_threshold_days' => 3,
+            ],
+        ]);
+
+        $response = $this->actingAs($this->doctorUser)
+            ->getJson("/api/v1/doctor/patients/{$this->patient->id}/observations?code=29463-7");
+
+        $response->assertOk()
+            ->assertJsonPath('data.0.specialty_data.monitoring_context', 'heart_failure')
+            ->assertJsonPath('data.0.specialty_data.dry_weight', 82);
+    }
+
+    public function test_patient_cannot_access_doctor_observations(): void
+    {
+        $patientUser = User::factory()->patient($this->patient)->create();
+
+        $response = $this->actingAs($patientUser)
+            ->getJson("/api/v1/doctor/patients/{$this->patient->id}/observations");
+
+        $response->assertStatus(403);
     }
 }

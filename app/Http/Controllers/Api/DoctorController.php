@@ -112,6 +112,23 @@ class DoctorController extends Controller
         return response()->json(['data' => $sessions]);
     }
 
+    public function patientObservations(Request $request, Patient $patient): JsonResponse
+    {
+        $query = $patient->observations();
+
+        if ($request->has('code')) {
+            $query->where('code', $request->input('code'));
+        }
+
+        if ($request->has('category')) {
+            $query->where('category', $request->input('category'));
+        }
+
+        $observations = $query->orderBy('effective_date', 'desc')->get();
+
+        return response()->json(['data' => $observations]);
+    }
+
     public function notifications(Request $request): JsonResponse
     {
         $notifications = Notification::where('user_id', $request->user()->id)

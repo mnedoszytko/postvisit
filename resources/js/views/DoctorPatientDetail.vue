@@ -25,6 +25,9 @@
         </div>
       </div>
 
+      <!-- Weight Monitoring Chart -->
+      <WeightChart v-if="weightObservations.length >= 2" :weights="weightObservations" />
+
       <!-- Visit history -->
       <section>
         <h2 class="text-lg font-semibold text-gray-800 mb-3">Visit History</h2>
@@ -187,12 +190,18 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useApi } from '@/composables/useApi';
 import DoctorLayout from '@/layouts/DoctorLayout.vue';
+import WeightChart from '@/components/WeightChart.vue';
 
 const route = useRoute();
 const api = useApi();
 
 const patient = ref(null);
 const visits = ref([]);
+const observations = ref([]);
+
+const weightObservations = computed(() => {
+  return observations.value.filter(o => o.code === '29463-7');
+});
 const chatSessions = ref([]);
 const engagement = ref(null);
 const notifications = ref([]);
@@ -219,16 +228,18 @@ const activeConditions = computed(() => {
 
 onMounted(async () => {
     try {
-        const [patientRes, visitsRes, engagementRes, chatAuditRes] = await Promise.all([
+        const [patientRes, visitsRes, engagementRes, chatAuditRes, obsRes] = await Promise.all([
             api.get(`/doctor/patients/${route.params.id}`),
             api.get(`/doctor/patients/${route.params.id}/visits`),
             api.get(`/doctor/patients/${route.params.id}/engagement`),
             api.get(`/doctor/patients/${route.params.id}/chat-audit`),
+            api.get(`/doctor/patients/${route.params.id}/observations?code=29463-7`),
         ]);
         patient.value = patientRes.data.data;
         visits.value = visitsRes.data.data;
         engagement.value = engagementRes.data.data;
         chatSessions.value = chatAuditRes.data.data;
+        observations.value = obsRes.data.data;
     } catch {
         // Handled by API interceptor
     }

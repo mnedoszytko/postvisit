@@ -106,9 +106,9 @@ class DemoSeederTest extends TestCase
     {
         $patient = Patient::where('email', 'patient@demo.postvisit.ai')->first();
 
-        // 7 original (HR, BP, EKG, Echo, Cholesterol, Potassium, TSH) + 9 new HF labs = 16
+        // 7 original (HR, BP, EKG, Echo, Cholesterol, Potassium, TSH) + 9 HF labs + 10 weight = 26
         $count = Observation::where('patient_id', $patient->id)->count();
-        $this->assertEquals(16, $count);
+        $this->assertEquals(26, $count);
     }
 
     public function test_hf_labs_categorized_as_laboratory(): void
