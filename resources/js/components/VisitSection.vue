@@ -9,7 +9,14 @@
     </button>
 
     <div v-if="expanded" class="px-4 pb-4 space-y-3">
-      <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">{{ content }}</p>
+      <HighlightedText
+        v-if="terms?.length"
+        :content="content"
+        :terms="terms"
+        :section-key="sectionKey"
+        @term-click="(payload) => $emit('term-click', payload)"
+      />
+      <p v-else class="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">{{ content }}</p>
       <ExplainButton @click="$emit('explain')" />
     </div>
   </div>
@@ -18,13 +25,16 @@
 <script setup>
 import { ref } from 'vue';
 import ExplainButton from '@/components/ExplainButton.vue';
+import HighlightedText from '@/components/HighlightedText.vue';
 
 defineProps({
     title: { type: String, required: true },
     content: { type: String, default: '' },
+    terms: { type: Array, default: () => [] },
+    sectionKey: { type: String, default: '' },
 });
 
-defineEmits(['explain']);
+defineEmits(['explain', 'term-click']);
 
 const expanded = ref(false);
 </script>

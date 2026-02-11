@@ -110,10 +110,61 @@ Plik `LICENSE` w root repo.
 
 ## Checklist przed submission
 
+> Full rules & judging criteria: `docs/hackathon-rules.md`
+> Deadline: **Mon Feb 16, 3:00 PM EST**
+
+### Submission (wymagane na platformie CV)
+- [ ] Demo video uploaded (YouTube/Loom) — **max 3 minuty**
+- [ ] GitHub repo link — **public**
+- [ ] Written summary — **100–200 words**, po angielsku
+
+### Repo & Licencje
+- [ ] `LICENSE` file w root (MIT)
 - [ ] Cały nasz kod pod MIT license
-- [ ] `LICENSE` file w root repo
-- [ ] Bundlowane guidelines mają `ATTRIBUTION.md` z atrybucjami
-- [ ] Żadne proprietary data w repo
-- [ ] Demo video pokazuje tylko open source komponenty
-- [ ] README zawiera disclaimer: "Demo only, not for clinical use"
-- [ ] `.env.example` bez prawdziwych kluczy API
+- [ ] `ATTRIBUTION.md` z atrybucjami dla bundlowanych guidelines (ESC, AHA, WHO, RxNorm)
+- [ ] Żadne proprietary data w repo (NICE, UpToDate, Cochrane — NIE)
+- [ ] `docs/licenses.md` aktualny — wszystkie deps, API, data sources
+
+### Secrets & Security
+- [ ] `.env.example` z wszystkimi wymaganymi kluczami (bez wartości!)
+- [ ] `.env` w `.gitignore` (nigdy w repo)
+- [ ] Żadne API keys / tokeny / hasła w kodzie ani w git history
+- [ ] Anthropic API key tylko w `.env`
+
+### Kod & Testy
+- [ ] `herd php artisan test` — wszystkie testy przechodzą
+- [ ] `bun run build` — frontend kompiluje bez błędów
+- [ ] `vendor/bin/pint --dirty` — code style OK
+- [ ] Brak `dd()`, `dump()`, `console.log()` debug statements
+
+### Dokumentacja (hackathon judging criterion — Depth & Execution 20%)
+- [ ] `README.md` — project overview, setup, architecture, demo guide (English!)
+- [ ] `docs/api.md` — endpointy z examples
+- [ ] `docs/architecture.md` — system architecture, data flow, AI pipeline
+- [ ] `docs/ai-prompts.md` — każdy prompt udokumentowany
+- [ ] `CHANGELOG.md` — feature changelog
+- [ ] Wszystkie docs przetłumaczone na **English**
+
+### Demo Video (30% of score — najważniejsza kategoria!)
+- [ ] Wszystkie must-have features działają na żywo
+- [ ] Screen recordings w 16:9
+- [ ] Napisy burned-in
+- [ ] Storytelling: problem → solution → wow moment
+- [ ] Pokazuje Opus 4.6 capabilities (1M context, extended thinking)
+- [ ] Max 3 minuty — ani sekundy więcej
+
+### Opus 4.6 Use (25% of score)
+- [ ] 1M context window wyraźnie wykorzystany (visit + guidelines + patient history w jednym prompcie)
+- [ ] Extended thinking widoczne w demo
+- [ ] Prompt caching na guidelines (90% savings)
+- [ ] Coś zaskakującego — "capabilities that surprised even us"
+
+### Impact (25% of score)
+- [ ] README jasno opisuje problem i kto korzysta
+- [ ] Disclaimer: "Prototype — not for clinical use"
+- [ ] Mapowanie na problem statements (all 3 tracks)
+
+### Self-evaluation (przed submitem)
+- [ ] Puścić Opusa jako "judge" na nasze repo — ocena wg 4 kryteriów
+- [ ] Poprawić najsłabsze punkty
+- [ ] Sprawdzić czy README/video odpowiadają na pytania sędziów

@@ -92,7 +92,10 @@ Użytkownik wklei 2 scenariusze filmiku. Czekamy na dane.
 - **Special prizes:** "Most Creative Opus 4.6 Exploration" i "The Keep Thinking Prize"
 - **Sędziowie:** 6 osób z Anthropic (Boris Cherny, Cat Wu, Thariq Shihpar, Lydia Hallie, Ado Kukic, Jason Bigman)
 - **Winners showcase:** 21 lutego w SF
-- **Submission:** GitHub repo + demo video (1-5 min) + opis projektu (limit słów: sprawdzić na portalu — prawdopodobnie 200)
+- **Submission:** GitHub repo (public) + demo video (**max 3 min**) + written summary (**100–200 words**) via CV platform
+- **Judging Stage 1:** Async, Feb 16–17 (all submissions)
+- **Judging Stage 2:** Live, Feb 18 12:00 PM EST (top 6 only) → winners at 1:30 PM
+- **Full rules:** `docs/hackathon-rules.md`
 
 ### Decyzja 10: Model policy — Sonnet OK do testów
 **Status:** Przyjęte
@@ -215,3 +218,25 @@ MediaRecorder in browser → POST to Laravel → proxy to OpenAI Whisper API for
 **Status:** Przyjęte (2026-02-10)
 
 67 feature tests, 175 assertions, <1s runtime. SQLite in-memory for speed. PostgreSQL-specific features (ilike) handled with conditional logic for test compatibility.
+
+## Data: 2026-02-11
+
+### Decyzja 27: Medical term highlighting — jsonb offsets, not inline HTML or real-time extraction
+**Status:** Przyjęte (2026-02-11)
+
+**Problem:** PRD user story P3 requires individual medical terms in SOAP notes to be highlighted and clickable (tap-to-explain). Three approaches considered.
+
+**Options:**
+- **A) Store terms with character offsets in jsonb** — AI extracts terms once when note is created, stores them as `{term, start, end}` objects in a `medical_terms` jsonb column on `visit_notes`. Frontend renders highlights at display time using offsets.
+- **B) Inline HTML in SOAP text** — Wrap terms in `<span>` tags directly in the stored SOAP text. Simpler frontend but corrupts the signed clinical note text, makes search/export unreliable, and mixes presentation with data.
+- **C) Real-time AI extraction on each page load** — No stored terms; call AI every time the patient views the note. Consistent but expensive (~$0.05 per view), adds 2-3s latency, and results may vary between calls.
+
+**Decision:** Option A — jsonb offsets.
+
+**Rationale:**
+- One-time AI cost per note (extraction at processing time or hardcoded in demo seed)
+- Zero latency on page load — terms are pre-computed and delivered with the visit response
+- Terms tied to immutable signed notes — offsets are stable because SOAP text never changes after signing
+- Clean separation of data (SOAP text) and metadata (term positions)
+- Frontend validates offsets client-side with fallback to string search for robustness
+- Survives server restarts, works offline, no AI dependency at read time
