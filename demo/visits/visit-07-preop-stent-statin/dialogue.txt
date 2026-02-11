@@ -1,0 +1,39 @@
+Patient: Dzień dobry.
+Doctor: Dzień dobry. Dobrze, w czym mogę Panu pomóc?
+Patient: Badanie przed operacją, chodzi o narkozę chyba.
+Doctor: Okej, jaką operacją?
+Patient: Ramię. Nie wziąłem jakichś pudeł dokumentów, to tutaj będzie robione, trzy dziury tu będą gdzieś.
+Doctor: Dobra. Pan widzi, że miał zawał, tak? W 2020 miał Pan dwa stenty wszczepione w prawą tętnicę wieńcową. Jak sytuacja wygląda w tej chwili? Czy ma Pan jakieś bóle w klatce piersiowej?
+Patient: Nie mam bólu w klatce piersiowej. Problem z tym, że ja podczas zawału nie mam bólu w klatce piersiowej, tylko z tyłu, między łopatkami. Ja właśnie jeden tak jakby przechodziłem zawał i drugi w poniedziałek, piątego, potem w poniedziałek drugi nastąpił. Dopiero wtedy do szpitala. Przynosiłem ból, też pojechałem, bo myślę, że to kręgosłup mi siada.
+Doctor: Aktualnie Pan nie odczuwa już takich?
+Patient: Odczuwam te bóle, tylko że ja nawet i przed zawałem odczuwam te bóle. Z tego co ortopeda mówił, że bardziej mięśnie są nadwrężone.
+Doctor: Kiedy to było? Jeszcze raz, ten zawał?
+Patient: Zawał był czerwiec 2020.
+Doctor: Jakie leki Pan aktualnie przyjmuje?
+Patient: No sporo jest. Biorę Azaflof, biorę Sywiker.
+Doctor: Jaka dawka Sywikera?
+Patient: 20 na 0,5. Teraz biorę połówkę, bo takie wystarczają. Brałem zawał i zaczął mi spadać nisko ciśnienie.
+Doctor: Jeszcze raz, ile miligramów?
+Patient: 20 przez 0,5.
+Doctor: Co jeszcze oprócz Sywikera Pan bierze?
+Patient: Brałem Lipitor, ale od dwóch miesięcy nie biorę, bo mnie tak mięśnie bolały.
+Doctor: Od dwóch miesięcy Pan nie bierze?
+Patient: Tak.
+Doctor: Prawdopodobnie cholesterol do góry poszedł.
+Patient: Biorę Bisopho.
+Doctor: Dawka?
+Patient: Co jeszcze? Antydepresyjne biorę. Alkazol.
+Doctor: Tak, dobra. To zróbmy kilka badań w takim razie.
+Doctor: Od kiedy Pan bierze tę atorwastatynę? Czy tę suwazenę?
+Patient: Lipitor od zawału brałem.
+Doctor: Dopiero teraz Pana mięśnie zaczęły boleć? Bolały, potem przystało i okej, już było, i teraz znowu zaczęło?
+Patient: Tak.
+Doctor: Wie Pan co, jest to trochę problem, ponieważ jeżeli Pan nie bierze tego leku, to cholesterol Panu idzie do góry i mogą być nowe blaszki. Więc coś trzeba będzie wymyślać. To co ja proponuję: Pan nie bierze to już dwa miesiące, i co, minęły Panu w tej chwili te bóle?
+Patient: Jakby trochę, ale nie do końca.
+Doctor: No właśnie. To niech Pan weźmie to z powrotem i zrobimy tak, że Pan sobie oznaczy badania krwi za jakieś 4 tygodnie. I wtedy zobaczymy, czy realnie to jest nietolerancja na statyny, czyli na ten lek, który Pan teraz bierze, czy to jest coś innego. Bo mówię, nie może Pan tego nie brać, bo inaczej wszystko to postąpi, te blaszki, które Pan ma w tej chwili. Jeżeli chodzi o operację, to ja nie widzę w tej chwili przeciwwskazań, no bo to jest jakby podstawowa przyczyna, dla której Pan przychodzi. Ale jeżeli chodzi o te leki, no to musimy sprawę ustalić. To może być problem. Jeżeli będzie cholesterol tak wysoki, to prędzej czy później może Pan mieć kolejny zawał. I schudnąć przede wszystkim, bo ma Pan dosyć dużą nadwagę.
+Patient: Zaczynam, no zacząłem podjadać, podjadać, podjadać. Ale z tego się cieszę, wagę już powoli też spadła, bo ważyłem 119 kilogramów.
+Doctor: Dobrze. Więc tak, niech Pan zrobi za 4 tygodnie te badania. Lek proszę wziąć na nowo. Teraz będzie Pan miał rozregulowany ten cholesterol niezależnie, ze względu na to, że nie bierze Pan tego leku. Nie powiem Panu co teraz brać, co nie.
+Patient: Nie rozumiem pytania.
+Doctor: No mam nadzieję, że nie. Jeżeli Pan mówi, że Panu te bóle nie przeszły po odstawieniu tego, to prawdopodobnie nie ma Pan nietolerancji na statyny. A jeżeli okaże się, że bóle są silniejsze, to niech Pan odstawi. Ale tak czy siak musi Pan zrobić badania za 4 tygodnie i wrócić, tak? Dobra?
+Patient: Tak.
+Doctor: To wszystko z mojej strony. Dziękuję i wszystkiego dobrego.

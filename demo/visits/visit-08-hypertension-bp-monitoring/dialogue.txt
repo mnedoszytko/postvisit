@@ -1,0 +1,55 @@
+Doctor: Dobrze, czy mogę pomóc? Jaki jest powód Pana wizyty?
+Patient: Właśnie, ja mam problem z ciśnieniem, takie nierównomierne. I wcześniej byłem u kardiologa, dwa, trzy miesiące wcześniej, przepisał mi lekarstwa. I później podczas świąt skoczyło prawie do 200. I teraz tak unormowało się, ale chciałem sprawdzić jeszcze.
+Doctor: Co Pan bierze za leki aktualnie?
+Patient: Tam ledypina piątka.
+Doctor: I to jest wszystko, tak?
+Patient: Tak. No i sprawdzam też tak samo rano, wieczorem.
+Doctor: Dobrze, a niech Pan powie w takim razie, jak wyglądają wartości ciśnienia w domu. Ma Pan gdzieś to zapisane?
+Patient: Ja nie mam zapisane, ale mierzę i pamiętam. Także rano mierzę to 130, 137, 130, w tych granicach. Na 70, 80. A wieczorem tak troszeczkę wyżej, 140, 150 na 90.
+Doctor: A niech Pan mi powie, jak to wygląda w tej chwili, jeżeli chodzi o tą zmienność. Mówi Pan, że czasami Panu do 200 idzie, czy to jest często, czy rzadko?
+Patient: Nie, nie, nie. To tylko był raz, raz tylko było, podczas świąt. Teraz wszystko unormowało się.
+Doctor: Czyli generalnie aktualnie ciśnienie jest stabilne, tak?
+Patient: Teraz jest stabilne, tak, tak, już cały czas jest stabilne. Ale że wziąłem wizytę już nie wiem, może miesiąc wcześniej, dlatego jestem, żeby jeszcze się upewnić. Normalnie teraz jest stabilne i normalnie nic nie dokucza.
+Doctor: A Pan palił papierosy?
+Patient: Nie.
+Doctor: Nigdy?
+Patient: Nie.
+Doctor: W rodzinie ktoś umarł z powodu serca?
+Patient: Nie umarł, ale moja mama ma problemy z sercem, ona jak pamiętam ma cały czas z nadciśnieniem problemy. No i rodzeństwo, tak samo też biorą lekarstwa.
+Doctor: Jak u Pana konsumpcja alkoholu wygląda?
+Patient: Od czasu do czasu, nie piję dużo, ale zdarza się czasami.
+Doctor: Jakieś bóle w klatce piersiowej, duszności?
+Patient: Nie, nie ma.
+Doctor: Robił Pan jakieś badania krwi ostatnio?
+Patient: Badania krwi robiłem tak, to było miesiąc wcześniej.
+Doctor: Coś tam niepokojącego w tych badaniach?
+Patient: Normalnie, chyba raczej nie.
+Doctor: Cholesterol?
+Patient: Cholesterol jest trzeci. Nie ma w ostatnich badaniach niestety nic. Jakieś z grudnia.
+Doctor: Dobra, zrobimy echo serca.
+Doctor: Kiedy Pan ostatnio był u kardiologa?
+Patient: To było może 3-4 miesiące wcześniej.
+Doctor: I gdzie Pan się leczył?
+Patient: To znaczy, ja się nie leczyłem, tylko byłem na wizytę, żeby sprawdzić. I to kardiolog Nowak, to też kardiolog, polski.
+Doctor: Dobrze, a doktor Nowak wspominała, że jest troszeczkę powiększony lewy przedsionek?
+Patient: Nie, nic o tym nie wspominała, tylko przepisała te lekarstwo i to wszystko.
+Doctor: Dobra. Więc tak, ja tutaj nic szczególnego nie widzę. EKG wygląda dobrze, zrobił Pan również próbę wysiłkową, która wypadła dobrze. Jeżeli Pan nie ma na co dzień bólu w klatce piersiowej, to okej. Natomiast ten cholesterol to raz na jakiś czas trzeba sprawdzać. A ciśnienie, jeżeli ono aktualnie jest stabilne, to nie będziemy zmieniać leków.
+Patient: To jeśli ono takie jest, jakie jest, to nie ma wielkiego zagrożenia?
+Doctor: No nie, jeżeli ono jest 130 nad ranem, to wszystko ładnie wygląda. Tutaj dzisiaj miał Pan to ciśnienie dosyć duże, było ono 170 na 96, więc pewno się Pan zestresował albo jest coś na rzeczy. Ale rozumiem, że dzisiaj rano Pan mierzył to ciśnienie?
+Patient: Tak, miałem też 130 i nawet przed przyjściem tutaj miałem 148.
+Doctor: A jakiego ciśnieniomierza Pan używa?
+Patient: No kupiłem taki profesjonalny urządzenie właśnie w aptece, pod poleceniem. Profesjonalny, miałem już drugi aparat, ale ten jest dobry.
+Doctor: Ok.
+Patient: A z tym ciśnieniem to też, bo właśnie doktor Nowak mówiła, żeby sprawdzać ze trzeci raz. Rzeczywiście sprawdzam trzy razy, bo to trzecie jest najniższe, w tym poradzie.
+Doctor: Dobrze, no to wie Pan co? Możemy jeszcze jedną rzecz zrobić. Mogę Pana wysłać na coś takiego co się nazywa monitoring ciśnienia 24 godziny. I wtedy będziemy na 100% pewni, że u Pana te leki są dobre. Dobra? Ja tylko pójdę po skierowanie, zaraz przyjdę.
+Patient: Dobra.
+Doctor: To jest to. Niech Pan weźmie randewu w sekretariacie. I po wynikach proszę się pojawić jeszcze raz i wtedy Panu powiem, czy to leczenie kontynuujemy, czy nie. Dobra?
+Patient: Aha, ok. Wziąć randewu i on tam po skierowaniu dalej, tak?
+Doctor: Tak, dokładnie.
+Patient: Dziękuję bardzo.
+Doctor: No dobra, dziękuję, z mojej strony wszystko. Wszystkiego dobrego.
+Patient: Dziękuję bardzo. Do widzenia.
+Patient: A co, chodzi tutaj z Panem umówić się na wizytę, to już muszę wziąć randewu teraz?
+Doctor: Najlepiej tak, bo mamy taki miesiąc ciśnienia tutaj mniej więcej, więc jak Pan weźmie już wizytę na ten ciśnieniomierz, to od razu niech Pan się umówi już na kolejną, dobra?
+Patient: Ok, dziękuję bardzo.
+Doctor: Dziękuję, do widzenia.
