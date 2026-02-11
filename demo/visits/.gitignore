@@ -1,0 +1,5 @@
+# Original patient recordings (privacy + size)
+*.webm
+*.m4a
+*.wav
+*.ogg

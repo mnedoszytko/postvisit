@@ -1,0 +1,32 @@
+Doctor: So you told me that you don't have the operation date yet, is that right?
+Patient: There's still the summit to go through.
+Doctor: Ah, still the summit. Ok, that's fine.
+Patient: They told me to redo everything and then go back to them.
+Doctor: Ok, so it's a gastric bypass, or did they say something more specific?
+Patient: No, no, no. A gastric bypass, that's what they told me.
+Doctor: Ok, that's fine. Do you have chest pain?
+Patient: Oh, very, very rarely.
+Doctor: Are you short of breath?
+Patient: Not much.
+Doctor: Do you smoke?
+Patient: No.
+Doctor: Do you take any medications?
+Patient: Yes, currently.
+Doctor: Did you take medications before?
+Patient: Yes. Painkillers, more or less.
+Doctor: Ok, that's fine. So in the family, is there any history? Did anyone die from heart-related causes?
+Patient: No.
+Doctor: Ok, so here you had a stress test. Did you experience any pain during the stress test? No problems?
+Patient: No, just my knees, that's all. Because I have arthritis.
+Doctor: What is your weight and height?
+Patient: 1.65 meters and 90 kilos.
+Doctor: 1.65 meters and 90 kilos, ok. Well listen, we'll do an echocardiography now.
+Doctor: The echocardiography is normal. The stress test is normal. So I don't see any contraindication here for your surgery. Did they say why you need to see a cardiologist? Did they have any specific questions?
+Patient: No.
+Doctor: Ok, well, apparently you have to go through all the checks.
+Patient: Yes, absolutely.
+Doctor: Well, in any case, from my side there's no problem. So I'll note all of this down. And well, I hope everything goes well for your operation.
+Patient: Ok, thank you.
+Doctor: Do you have any more questions?
+Patient: No.
+Doctor: There you go. That's all from my side then. Thank you very much. Goodbye.

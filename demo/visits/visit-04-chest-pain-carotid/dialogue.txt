@@ -1,0 +1,71 @@
+Doctor: Good morning.
+Patient: Good morning.
+Doctor: Can you tell me what can I help you with today?
+Patient: So let's start with the fact that four months ago — here are my papers, all of them, the doctor's instructions — four months ago I had a surgery for a double-sided bulge and I had a concussion. After that I felt very bad, my heart was beating. And now, seven weeks ago, I had a knee prosthesis, seven weeks ago. And I also had a concussion, but much earlier, I was treated by a cardiologist, by Mr. Waśkiewicz. I don't know if you, doctor, know him, but the doctors in Delta wanted to check what was going on with me and they couldn't, there was nothing on the computer. So they advised me to change the doctor, to do all the tests all over again, because we don't know what has been done so far.
+Doctor: Okay, but tell me, what is the basic problem?
+Patient: The problem is that sometimes I have pain here, right here in my chest. I know it's the heart, and I don't know what to do.
+Doctor: You know it's the heart?
+Patient: Yes, I think so, because I don't know what else it could be.
+Doctor: It doesn't have to be the heart.
+Patient: But I know that earlier — I just feel it, I feel it.
+Doctor: So you have chest pain, we can sum it up.
+Patient: Yes.
+Doctor: I understand, okay. Do you take any medication?
+Patient: I mean, I take Belsar, I take 10 mg of Belsar, and I have the pressure regulated, so it's okay. Maybe today, a little bit of emotions, it may have jumped up a bit today, because I already had the cinema today, I had osteopathy on my knees today.
+Doctor: Do you have a problem with cholesterol?
+Patient: I mean, I don't know. In the hospital, after the surgery, when they did the tests, the results showed that I never had such problems, but it was known that I was on morphine, after all those insensitive things — it was because I had this prosthesis inserted in my knee.
+Doctor: Do you have a problem with cholesterol?
+Patient: I mean, until now, normally, I never had it.
+Doctor: Okay. When was the last time you did a blood test?
+Patient: In the hospital, it was a month ago, but they didn't do anything, because it was a lot of pills, a lot of drugs, so the results were definitely not as they should be.
+Doctor: Do you smoke?
+Patient: No, I don't smoke.
+Doctor: Did anyone in your family die from a heart attack?
+Patient: No.
+Doctor: And did you take Dr. Waśkiewicz's medicine for the pain in the chest?
+Patient: Yes.
+Doctor: And what did he say?
+Patient: Well, I've been taking medicine for many years. I used to take Diovan, such a medicine, some of those, but later, somehow, it all stopped. I just stopped taking these medicines, but it was a long time ago. And there were simply no studies, no records of what was done to me. And I had done with Mr. Waśkiewicz — I mean, I know one thing, that I definitely had some plaques here in the vessels, so these plaques here, somewhere I had some—
+Doctor: In the vessels of the neck?
+Patient: Yes.
+Doctor: So you had plaques there. And you didn't get anything for cholesterol?
+Patient: No, not at the moment.
+Doctor: But it was — I say it was a long time ago?
+Patient: I mean, the last time, I did it a few months ago, but there are no such studies anywhere, nowhere. So in the computer, the doctors wanted to check it before the surgery and it just wasn't there. So I was advised to just change the doctor and that's it. And I would like to check all this to know if it is OK or not OK.
+Doctor: I understand. Since when do you have this pain?
+Patient: I mean, after this surgery. Well, after the surgery, it started, it will be four months already, because it was the first surgery here, in this hospital.
+Doctor: For example, you were with Dr. Błaszkiewicz earlier, right?
+Patient: Earlier, yes, yes.
+Doctor: And then you also had pain.
+Patient: Yes, but it was a few years ago. These visits every six months, these visits to Mr. Błaszkiewicz, to the doctor, were every six months, every year, it was different there. Even every few years, well, it was a lot of years ago.
+Doctor: OK. We'll do a few tests then. OK.
+Doctor: I don't see anything wrong here. Pain in the chest may result from various things. This is not necessarily the heart. However, if you had plaques in the neck vessels, I will send you for something called a vascular CT scan — computer tomography. Thanks to this, we will be able to see if there is any problem in the heart. However, it would be good if the family doctor would also do a cholesterol level test.
+Patient: Okay.
+Doctor: Because this may also be a problem. If you already have plaques in the neck vessels, you may need to lower the cholesterol level.
+Patient: Yes, good.
+Doctor: I don't see anything terrible here.
+Patient: And there is nothing reduced in the heart? Because I remember something there, Dr. Błaszkiewicz, there is some murmur, something reduced, I don't know. There is nothing there?
+Doctor: I don't see anything special in any case. However, the most important thing is to do this test.
+Patient: Yes.
+Doctor: Please make an appointment at level minus two, there is a radiologist there.
+Patient: At minus two, okay.
+Doctor: How much do you weigh now?
+Patient: Ninety-five.
+Doctor: You have to lose a little weight.
+Patient: Yes, I know, but I am now at the back of this hospital. I have been without work for four months, without this, I gained a few kilograms.
+Doctor: Yes, this is a bit too much. This is quite a lot, too much. You have obesity of the second degree, 35 BMI.
+Patient: Yes?
+Doctor: Yes, this is something you have to address quite calmly, because then there will really be problems with the heart. Do you have any questions?
+Patient: Belsar — can you write it down? By the way, I will have it, or maybe the doctor will write it down for me?
+Doctor: Belsar. You can wait a moment.
+Patient: Well, cool.
+Doctor: Okay, so now minus two and an appointment for the CT scan, and then come back here to me.
+Patient: Okay.
+Doctor: Do you measure blood pressure at home?
+Patient: Yes. Relatively regularly.
+Doctor: Good, good. Ten milligrams, right, for Belsar?
+Patient: Yes.
+Doctor: Okay. Thank you very much.
+Patient: Thank you. All the best.
+Doctor: Goodbye.
+Patient: Goodbye.

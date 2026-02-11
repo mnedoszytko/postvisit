@@ -1,0 +1,58 @@
+Doctor: So we did the coronary scan here, it was done on January 20th, but I don't see the protocol, hold on a moment. Edith, are you still short of breath?
+Patient: Yes, yes I am.
+Doctor: Ok, and what medication are you currently taking?
+Patient: Nothing for the heart. I take Cymbalta, but they're discontinuing it, they won't produce it anymore. I take L-Thyroxine at 0.50, and I also take Toviaz for urinary incontinence.
+Doctor: Ok, so here it mentions, as I explained to you, moderate stenosis of the left coronary artery and the right coronary artery. When I look at the images here, it really seems that these narrowings are not something significant. So if I understand correctly, you don't have chest pain?
+Patient: I feel a heaviness. For example, Sunday, I went for a walk in the park, the weather was nice, I felt fine. When I got home, I was unwell, but nothing specific, just fatigue. Because the fatigue these past months has been very, very great. Really enormous fatigue. It's incredible.
+Doctor: Well then, does this shortness of breath, this heaviness, this burden, does it happen after exertion?
+Patient: Yes.
+Doctor: Ok, you're not taking Asaflow? Listen, honestly, the narrowings I see here are borderline. It's very difficult to say whether that's what explains your shortness of breath, because there could be a whole range of other causes. So what I propose is that we do a coronarography. A coronarography is a procedure that will allow us to see the condition of these arteries, but also evaluate the blood flow in these arteries. We'll do additional tests to see if these plaques are truly borderline, or perhaps they missed something on the coronary scan.
+Doctor: The procedure goes like this: I'll insert a needle here at the forearm, then I'll pass a small catheter up to the heart to see the anatomy of these arteries, and then we'll place a small wire to measure the flow. And then I can tell you with certainty or without, whether this is really something significant, or if there's another cause. Ok?
+Doctor: So I'll schedule a date for you. It's not urgent, there's a bit of a wait right now. Let me see if I can propose something. For example, I have a date on Tuesday the 3rd, does that work for you? March 3rd, that's in two weeks.
+Patient: Ok.
+Doctor: So Tuesday the 3rd, do you prefer here or at Sainte-Elisabeth?
+Patient: No, no, here.
+Doctor: Ok, that's fine. The procedure will take place at the Sainte-Elisabeth site, but they'll transfer you, and then you'll come back here. Ok? I'll be the one doing it. You're not diabetic?
+Patient: No.
+Doctor: You need to be fasting. Preferably arrive here around 7 o'clock. Ok?
+Patient: Ok.
+Doctor: I'll print everything for you.
+Patient: All right, very good.
+Doctor: So, fasting, I'm going to prescribe some additional medications. Have you had a blood test recently, for example cholesterol levels?
+Patient: Yes, it's not as high as before.
+Doctor: Are you already taking something for cholesterol or not?
+Patient: I was taking Arterin and I take some homeopathic things. But in my folder, there are the results, the latest blood test results. But I didn't print them, I don't know how to access them.
+Doctor: Here, I have the blood test results from July 16th, 2021. Your LDL cholesterol level, the bad cholesterol, was at 75, and you're telling me you're not taking anything for cholesterol.
+Patient: No.
+Doctor: So in fact, 75, when you already have plaques in the coronary arteries, is considered too high. So I'm obligated to start you on treatment.
+Patient: Yes.
+Doctor: So I'm going to give you two additional medications. One of these medications is called Asaflow, that's a low-dose aspirin, and the other is called Crestor. We need to lower the cholesterol level a bit, and we also need to give you a low-dose aspirin to protect against heart attack. Now, what's important is that very rarely there are side effects with Crestor. If you experience pain in your legs, cramps, or muscle pain, you stop this medication. It's rare, less than 5% of patients. Don't worry.
+Patient: I always have pain. It's rare that I don't have muscle cramps. I have fibromyalgia, so pain is very frequent for me. For example, last night I had terrible pain in one knee, really terrible. I always take Ketamine.
+Doctor: Of course. So here, these two medications, the coronarography is scheduled for March 3rd. You come here to reception, fasting.
+Patient: March 3rd.
+Doctor: March 3rd, my apologies. And do you have any questions?
+Patient: Not particularly, I'll read all this.
+Doctor: Perfect, so we'll see each other in two weeks on Tuesday. Ok?
+Patient: The procedure, you said at 7 o'clock, admission at 7:30?
+Doctor: Yes, at 7:30 here with us.
+Patient: Ok. I'll read all this.
+Patient: Doctor, you still have the blood analysis. Could you tell me about my iron levels? Because my iron is always very low, and I don't know where things stand right now.
+Doctor: Is it very low? Ferritin, and so on. So, for iron, the ferritin is normal, it's at 58, the normal range being between 30 and 400. So I don't see a deficiency here. Additionally, you are slightly anemic, that's true.
+Patient: Yes.
+Doctor: But that, I assume, has always been the case.
+Patient: Yes, slightly.
+Doctor: But the red blood cell volume, that's a parameter that sometimes tells us if there's anemia caused by iron deficiency. It's rather normal. So in my opinion, that's not the issue.
+Patient: Ok.
+Doctor: I'll print this for you. Here, this is for you.
+Patient: That's very kind.
+Doctor: Do you have any more questions?
+Patient: No, no.
+Doctor: The medications, the prescription, I've given you everything.
+Patient: Ah yes, that. Ok.
+Doctor: This is the prescription. In any case, it's linked to your identity card.
+Patient: Yes, ah yes. Ok.
+Patient: Listen, on another note. My mother died from a cerebral hemorrhage. My sister died at fifty-eight from an aneurysm.
+Doctor: Yes, what is the question?
+Patient: Whether there are hereditary factors. I've always had the feeling that I should be careful about all this. And I have these tests done because I asked for them, because I wasn't at ease.
+Doctor: In any case, is everything ok? Perfect. Well, listen, thank you very much. That's all from my side then. Have a good day.
+Patient: You too. Goodbye.
