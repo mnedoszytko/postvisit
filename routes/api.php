@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\ExplainController;
 use App\Http\Controllers\Api\FeedbackController;
+use App\Http\Controllers\Api\MedicalLookupController;
 use App\Http\Controllers\Api\MedicationController;
 use App\Http\Controllers\Api\ObservationController;
 use App\Http\Controllers\Api\PatientController;
@@ -116,6 +117,14 @@ Route::prefix('v1')->group(function () {
         Route::get('medications/{rxnormCode}/interactions', [MedicationController::class, 'interactions']);
         Route::get('medications/{rxnormCode}/adverse-events', [MedicationController::class, 'adverseEvents']);
         Route::get('medications/{rxnormCode}/label', [MedicationController::class, 'label']);
+
+        // ----- Module 6: Medical Lookup (NIH + DailyMed) -----
+        Route::prefix('lookup')->group(function () {
+            Route::get('conditions', [MedicalLookupController::class, 'searchConditions']);
+            Route::get('drugs', [MedicalLookupController::class, 'searchDrugs']);
+            Route::get('procedures', [MedicalLookupController::class, 'searchProcedures']);
+            Route::get('drug-label', [MedicalLookupController::class, 'drugLabel']);
+        });
 
         // ----- Module 7: Doctor Dashboard (doctor role required) -----
         Route::prefix('doctor')->middleware('role:doctor,admin')->group(function () {

@@ -299,6 +299,34 @@ Get known interactions for a medication.
 
 ---
 
+## Medical Lookup (NIH + DailyMed)
+
+All lookup endpoints require authentication.
+
+### GET /lookup/conditions?q={query}
+Search ICD-10 conditions via NIH Clinical Tables API. Minimum 2 characters.
+
+**Response:** `200` `{ data: { total: 3, matches: [{ code: "I10", display: "Essential (primary) hypertension" }] } }`
+
+### GET /lookup/drugs?q={query}
+Search drugs via NIH Clinical Tables API. Minimum 2 characters.
+
+**Response:** `200` `{ data: { total: 2, matches: [{ name: "Propranolol" }] } }`
+
+### GET /lookup/procedures?q={query}
+Search procedures via NIH Clinical Tables API. Minimum 2 characters.
+
+**Response:** `200` `{ data: { total: 1, matches: [{ name: "Echocardiography" }] } }`
+
+### GET /lookup/drug-label?drug_name={name}
+Get structured drug label from DailyMed. Minimum 2 characters.
+
+**Response:** `200` `{ data: { setid, title, effective_time, author } }`
+
+**Error handling:** External API failures return empty results (`{ data: { total: 0, matches: [] } }` or `{ data: [] }`) with 200 status.
+
+---
+
 ## Feedback / Messages
 
 All feedback endpoints require authentication.
