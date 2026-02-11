@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Transcript;
 use App\Models\VisitNote;
 use App\Services\AI\ScribeProcessor;
+use App\Services\AI\TermExtractor;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -52,6 +53,20 @@ class ProcessTranscriptJob implements ShouldQueue
                     'physical_exam' => $soap['objective'] ?? null,
                 ]
             );
+
+            // Extract medical terms for highlighting in patient view
+            $visitNote = VisitNote::where('visit_id', $this->transcript->visit_id)->first();
+            if ($visitNote) {
+                try {
+                    app(TermExtractor::class)->extract($visitNote);
+                    Log::info('Medical terms extracted', ['visit_id' => $this->transcript->visit_id]);
+                } catch (\Throwable $e) {
+                    Log::warning('Term extraction failed (non-fatal)', [
+                        'visit_id' => $this->transcript->visit_id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
 
             Log::info('Transcript processed successfully', [
                 'transcript_id' => $this->transcript->id,
