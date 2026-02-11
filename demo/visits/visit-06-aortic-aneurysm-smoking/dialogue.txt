@@ -1,0 +1,25 @@
+Doctor: Tell me, sir, what can I do for you today?
+Patient: Well, listen, I don't really know, normally it was the hospital doctor who had set up the appointment. And in fact, it's because here, they discovered, they did an MRI, and they saw that it's enlarged here.
+Doctor: So, dilation of the descending aorta. And why did they do the scan as well, yes?
+Patient: No, actually, originally, I was admitted for gallstones. There was a stone that had gotten stuck. So they did several tests during the MRI. And that's when they found this.
+Doctor: That's the abdominal aorta. And on January 19th, did they do an angio-scan of the aorta or not?
+Patient: Normally, yes.
+Doctor: Three zones of aneurysms of the abdominal aorta. And there are no aneurysms at the thoracic aorta level. So the aneurysm is at the abdominal level. Did they tell you what needs to be done about it?
+Patient: I don't know. They told me to make an appointment. They set up the appointment with you, I think.
+Doctor: Actually, here we're dealing with the aorta at the abdominal level, not the thoracic level. Typically, they refer patients to cardiologists when it involves an aneurysm of the ascending aorta. So that's not your case. I'm trying to understand why they referred you here. But anyway. Now, are you taking any medications?
+Patient: At the moment, no.
+Doctor: Are you short of breath or do you have chest pain?
+Patient: Chest pain, no. But it's true that when I make a small effort or something, I get quite short of breath.
+Doctor: So you smoke, yes?
+Patient: Yes. Well, I've reduced the amount. I'm going to try to quit. I'm at about 10 cigarettes a day. Before, I was at about 25 cigarettes. Now I'm trying to stick to 10 cigarettes a day. But I'm going to try to stop.
+Doctor: Listen, here, on the echocardiography, I don't see any major issues. You had a stress test here?
+Patient: Yes, you did. Ok, that's good.
+Doctor: So the stress test was also normal. So I'm going to order a coronary scan. It's a test that will allow us to see the heart arteries given all the risk factors you have here. I'd like to see if there's a problem there, but generally, at this point, I haven't found anything. Do you have any questions?
+Patient: No.
+Doctor: Here, so this is the referral. You go to level minus two to have it done, ok?
+Patient: This I give to you? I suppose. Normally, yes.
+Doctor: Will they do it today?
+Patient: No, there's a bit of a wait. I'll go make the appointment at level minus two.
+Doctor: Yes, level minus two. Ok. All good? Ok, that's all from my side. Thank you very much.
+Patient: Thank you. Have a good day.
+Doctor: Thank you, have a good day as well.

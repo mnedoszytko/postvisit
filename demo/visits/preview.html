@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Patient Portraits — Preview</title>
+<style>
+  body { font-family: -apple-system, system-ui, sans-serif; background: #f5f5f5; margin: 2rem; }
+  h1 { text-align: center; color: #333; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; max-width: 1200px; margin: 2rem auto; }
+  .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .card .info { padding: 0.75rem 1rem; }
+  .card .name { font-weight: 700; font-size: 1.1rem; color: #1a1a1a; }
+  .card .meta { font-size: 0.85rem; color: #666; margin-top: 0.25rem; }
+  .card .dx { font-size: 0.8rem; color: #059669; margin-top: 0.35rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>PostVisit.ai — Patient Portraits (Flux 2 Realism)</h1>
+<p style="text-align:center; max-width:800px; margin:0 auto 1.5rem; color:#666; font-size:0.9rem; line-height:1.5;">
+  <strong>Disclaimer:</strong> All patient photographs are AI-generated (Flux 2 Realism, fal.ai) and do not depict real individuals. Clinical scenarios are based on representative cardiology cases but do not represent actual patients. All names, demographics, and medical data are entirely fictional.
+</p>
+<div class="grid">
+  <div class="card">
+    <img src="visit-01-coronarography-stenosis/patient-photo.png" alt="Marie Dupont">
+    <div class="info">
+      <div class="name">01 — Marie Dupont</div>
+      <div class="meta">72F · FR · BMI 25.9</div>
+      <div class="dx">Coronary stenosis, fibromyalgia</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="visit-02-gastric-bypass-preop/patient-photo.png" alt="Sofia Kowalska">
+    <div class="info">
+      <div class="name">02 — Sofia Kowalska</div>
+      <div class="meta">48F · EN · BMI 33.1</div>
+      <div class="dx">Gastric bypass pre-op, arthritis</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="visit-03-hypertension-followup/patient-photo.png" alt="Henri Lambert">
+    <div class="info">
+      <div class="name">03 — Henri Lambert</div>
+      <div class="meta">68M · FR · BMI 26.8</div>
+      <div class="dx">Hypertension, atrial fibrillation</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="visit-04-chest-pain-carotid/patient-photo.png" alt="Krystyna Marek">
+    <div class="info">
+      <div class="name">04 — Krystyna Marek</div>
+      <div class="meta">62F · EN · BMI 34.9</div>
+      <div class="dx">Chest pain, carotid plaques</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="visit-05-arm-pain-fibromyalgia/patient-photo.png" alt="Fatima Benali">
+    <div class="info">
+      <div class="name">05 — Fatima Benali</div>
+      <div class="meta">55F · FR · BMI 28.1</div>
+      <div class="dx">Fibromyalgia, disc protrusion L4-L5</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="visit-06-aortic-aneurysm-smoking/patient-photo.png" alt="Robert Janssen">
+    <div class="info">
+      <div class="name">06 — Robert Janssen</div>
+      <div class="meta">60M · EN · BMI 26.8</div>
+      <div class="dx">3x aortic aneurysm, smoker</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="visit-07-preop-stent-statin/patient-photo.png" alt="Tomasz Zieliński">
+    <div class="info">
+      <div class="name">07 — Tomasz Zieliński</div>
+      <div class="meta">58M · PL · BMI 35.9</div>
+      <div class="dx">Post-MI 2020, 2 stents, statin intolerance</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="visit-08-hypertension-bp-monitoring/patient-photo.png" alt="Marek Wiśniewski">
+    <div class="info">
+      <div class="name">08 — Marek Wiśniewski</div>
+      <div class="meta">52M · PL · BMI 27.8</div>
+      <div class="dx">Hypertension, white coat effect</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

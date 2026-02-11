@@ -1,0 +1,274 @@
+{
+  "demographics": {
+    "first_name": "Henri",
+    "last_name": "Lambert",
+    "dob": "1957-04-08",
+    "gender": "male",
+    "height_cm": 175.0,
+    "weight_kg": 82.0,
+    "bmi": 26.8,
+    "blood_type": "B+",
+    "email": "henri.lambert@demo.postvisit.ai",
+    "phone": "+32 475 678 901",
+    "mrn": "DEMO-V03",
+    "preferred_language": "fr"
+  },
+  "emergency_contact": {
+    "name": "Claire Lambert",
+    "relationship": "Wife",
+    "phone": "+32 476 789 012"
+  },
+  "allergies": [
+    {
+      "name": "Perindopril (Copérindo)",
+      "severity": "moderate",
+      "reaction": "Constipation and insomnia"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "Essential hypertension",
+      "icd10": "I10",
+      "onset": "2018-06",
+      "status": "active"
+    },
+    {
+      "name": "Atrial fibrillation, unspecified",
+      "icd10": "I48.91",
+      "onset": "2023-09",
+      "status": "active"
+    }
+  ],
+  "medications": [
+    {
+      "brand_name": "Biprésil",
+      "generic_name": "Perindopril/Amlodipine",
+      "dose": "5/10mg",
+      "frequency": "1x/day morning",
+      "status": "active",
+      "started": "2025-03",
+      "reason": "Hypertension and arrhythmia — better tolerated than previous regimen"
+    },
+    {
+      "brand_name": "Copérindo",
+      "generic_name": "Perindopril",
+      "dose": "5mg",
+      "frequency": "1x/day",
+      "status": "discontinued",
+      "started": "2024-01",
+      "reason": "Hypertension — discontinued due to constipation and insomnia"
+    },
+    {
+      "brand_name": "Bisoprolone",
+      "generic_name": "Bisoprolol",
+      "dose": "5mg",
+      "frequency": "1x/day",
+      "status": "discontinued",
+      "started": "2024-01",
+      "reason": "Rate control — discontinued due to constipation and insomnia alongside Copérindo"
+    }
+  ],
+  "family_history": [
+    {
+      "relation": "Father",
+      "condition": "No significant cardiac history",
+      "deceased": false,
+      "age_of_onset": null
+    }
+  ],
+  "social_history": {
+    "smoking": "never",
+    "smoking_details": null,
+    "alcohol": "moderate",
+    "alcohol_details": "1 glass of wine per day — doctor warned about daily consumption",
+    "exercise": "Moderate for age, regular walking",
+    "occupation": "Retired"
+  },
+  "lab_results": [
+    {
+      "test": "Total Cholesterol",
+      "loinc": "2093-3",
+      "value": 205,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 200,
+      "reference_text": "Desirable: <200 mg/dL",
+      "interpretation": "H",
+      "date": "2025-11-20",
+      "note": "Borderline elevated"
+    },
+    {
+      "test": "LDL Cholesterol",
+      "loinc": "2089-1",
+      "value": 118,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 130,
+      "reference_text": "Desirable: <130 mg/dL",
+      "interpretation": "N",
+      "date": "2025-11-20",
+      "note": "Within limits but monitor"
+    },
+    {
+      "test": "HDL Cholesterol",
+      "loinc": "2085-9",
+      "value": 52,
+      "unit": "mg/dL",
+      "reference_range_low": 40,
+      "reference_range_high": null,
+      "reference_text": "Desirable: >40 mg/dL",
+      "interpretation": "N",
+      "date": "2025-11-20",
+      "note": null
+    },
+    {
+      "test": "Triglycerides",
+      "loinc": "2571-8",
+      "value": 165,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 150,
+      "reference_text": "Normal: <150 mg/dL",
+      "interpretation": "H",
+      "date": "2025-11-20",
+      "note": "Slightly elevated — possibly related to daily alcohol intake"
+    },
+    {
+      "test": "Potassium",
+      "loinc": "2823-3",
+      "value": 4.1,
+      "unit": "mEq/L",
+      "reference_range_low": 3.5,
+      "reference_range_high": 5.0,
+      "reference_text": "Normal: 3.5-5.0 mEq/L",
+      "interpretation": "N",
+      "date": "2025-11-20",
+      "note": "Important to monitor on ACE inhibitor (perindopril component)"
+    },
+    {
+      "test": "Sodium",
+      "loinc": "2951-2",
+      "value": 140,
+      "unit": "mEq/L",
+      "reference_range_low": 136,
+      "reference_range_high": 145,
+      "reference_text": "Normal: 136-145 mEq/L",
+      "interpretation": "N",
+      "date": "2025-11-20",
+      "note": null
+    },
+    {
+      "test": "Creatinine",
+      "loinc": "2160-0",
+      "value": 1.1,
+      "unit": "mg/dL",
+      "reference_range_low": 0.7,
+      "reference_range_high": 1.3,
+      "reference_text": "Normal male: 0.7-1.3 mg/dL",
+      "interpretation": "N",
+      "date": "2025-11-20",
+      "note": "Monitor — on ACE inhibitor"
+    },
+    {
+      "test": "eGFR",
+      "loinc": "33914-3",
+      "value": 72,
+      "unit": "mL/min/1.73m2",
+      "reference_range_low": 60,
+      "reference_range_high": null,
+      "reference_text": "Normal: >60 mL/min/1.73m2",
+      "interpretation": "N",
+      "date": "2025-11-20",
+      "note": "Mild reduction, age-related — stage G2"
+    },
+    {
+      "test": "ALT",
+      "loinc": "1742-6",
+      "value": 38,
+      "unit": "U/L",
+      "reference_range_low": null,
+      "reference_range_high": 40,
+      "reference_text": "Normal: <40 U/L",
+      "interpretation": "N",
+      "date": "2025-11-20",
+      "note": "Upper normal — monitor given daily alcohol"
+    },
+    {
+      "test": "AST",
+      "loinc": "1920-8",
+      "value": 34,
+      "unit": "U/L",
+      "reference_range_low": null,
+      "reference_range_high": 40,
+      "reference_text": "Normal: <40 U/L",
+      "interpretation": "N",
+      "date": "2025-11-20",
+      "note": null
+    },
+    {
+      "test": "GGT",
+      "loinc": "2324-2",
+      "value": 52,
+      "unit": "U/L",
+      "reference_range_low": null,
+      "reference_range_high": 55,
+      "reference_text": "Normal male: <55 U/L",
+      "interpretation": "N",
+      "date": "2025-11-20",
+      "note": "Upper normal — consistent with moderate daily alcohol intake"
+    },
+    {
+      "test": "Fasting Glucose",
+      "loinc": "2345-7",
+      "value": 102,
+      "unit": "mg/dL",
+      "reference_range_low": 70,
+      "reference_range_high": 100,
+      "reference_text": "Normal: 70-100 mg/dL",
+      "interpretation": "H",
+      "date": "2025-11-20",
+      "note": "Impaired fasting glucose — prediabetic range"
+    }
+  ],
+  "vitals_timeline": [
+    {"date": "2026-01-12", "systolic": 152, "diastolic": 86, "heart_rate": 88, "spo2": 97},
+    {"date": "2026-01-13", "systolic": 148, "diastolic": 84, "heart_rate": 62, "spo2": 96},
+    {"date": "2026-01-14", "systolic": 155, "diastolic": 88, "heart_rate": 92, "spo2": 97},
+    {"date": "2026-01-15", "systolic": 146, "diastolic": 82, "heart_rate": 58, "spo2": 96},
+    {"date": "2026-01-16", "systolic": 150, "diastolic": 85, "heart_rate": 95, "spo2": 97},
+    {"date": "2026-01-17", "systolic": 143, "diastolic": 80, "heart_rate": 65, "spo2": 96},
+    {"date": "2026-01-18", "systolic": 148, "diastolic": 83, "heart_rate": 56, "spo2": 98},
+    {"date": "2026-01-19", "systolic": 145, "diastolic": 81, "heart_rate": 90, "spo2": 97},
+    {"date": "2026-01-20", "systolic": 158, "diastolic": 87, "heart_rate": 93, "spo2": 96},
+    {"date": "2026-01-21", "systolic": 142, "diastolic": 80, "heart_rate": 60, "spo2": 97},
+    {"date": "2026-01-22", "systolic": 144, "diastolic": 82, "heart_rate": 55, "spo2": 96},
+    {"date": "2026-01-23", "systolic": 140, "diastolic": 78, "heart_rate": 85, "spo2": 97},
+    {"date": "2026-01-24", "systolic": 147, "diastolic": 84, "heart_rate": 91, "spo2": 96},
+    {"date": "2026-01-25", "systolic": 139, "diastolic": 79, "heart_rate": 63, "spo2": 98},
+    {"date": "2026-01-26", "systolic": 141, "diastolic": 80, "heart_rate": 57, "spo2": 97},
+    {"date": "2026-01-27", "systolic": 136, "diastolic": 76, "heart_rate": 88, "spo2": 96},
+    {"date": "2026-01-28", "systolic": 143, "diastolic": 81, "heart_rate": 92, "spo2": 97},
+    {"date": "2026-01-29", "systolic": 138, "diastolic": 77, "heart_rate": 59, "spo2": 96},
+    {"date": "2026-01-30", "systolic": 140, "diastolic": 79, "heart_rate": 66, "spo2": 98},
+    {"date": "2026-01-31", "systolic": 135, "diastolic": 75, "heart_rate": 86, "spo2": 97},
+    {"date": "2026-02-01", "systolic": 137, "diastolic": 78, "heart_rate": 55, "spo2": 96},
+    {"date": "2026-02-02", "systolic": 142, "diastolic": 80, "heart_rate": 90, "spo2": 97},
+    {"date": "2026-02-03", "systolic": 134, "diastolic": 74, "heart_rate": 62, "spo2": 96},
+    {"date": "2026-02-04", "systolic": 138, "diastolic": 76, "heart_rate": 58, "spo2": 98},
+    {"date": "2026-02-05", "systolic": 136, "diastolic": 77, "heart_rate": 84, "spo2": 97},
+    {"date": "2026-02-06", "systolic": 133, "diastolic": 74, "heart_rate": 93, "spo2": 96},
+    {"date": "2026-02-07", "systolic": 139, "diastolic": 78, "heart_rate": 61, "spo2": 97},
+    {"date": "2026-02-08", "systolic": 128, "diastolic": 72, "heart_rate": 56, "spo2": 96},
+    {"date": "2026-02-09", "systolic": 135, "diastolic": 75, "heart_rate": 82, "spo2": 98},
+    {"date": "2026-02-10", "systolic": 132, "diastolic": 74, "heart_rate": 68, "spo2": 97}
+  ],
+  "upcoming": [
+    {
+      "type": "appointment",
+      "name": "Annual cardiology follow-up",
+      "date": "2027-02-01",
+      "location": "Cardiology clinic",
+      "notes": "Routine annual follow-up. Monitor BP control, AFib status, and lipid profile. Coronary scan completed — results clean."
+    }
+  ]
+}

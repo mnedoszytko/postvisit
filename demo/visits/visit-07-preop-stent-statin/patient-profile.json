@@ -1,0 +1,330 @@
+{
+  "demographics": {
+    "first_name": "Tomasz",
+    "last_name": "Zielinski",
+    "dob": "1967-10-25",
+    "gender": "male",
+    "height_cm": 182.0,
+    "weight_kg": 119.0,
+    "bmi": 35.9,
+    "blood_type": "B-",
+    "email": "tomasz.zielinski@demo.postvisit.ai",
+    "phone": "+32 479 345 678",
+    "mrn": "DEMO-V07",
+    "preferred_language": "pl"
+  },
+  "emergency_contact": {
+    "name": "Ewa Zielinska",
+    "relationship": "Wife",
+    "phone": "+32 470 456 789"
+  },
+  "allergies": [
+    {
+      "name": "Atorvastatin",
+      "severity": "moderate",
+      "reaction": "Muscle pain (myalgia) — stopped Lipitor 2 months ago, possible statin intolerance under investigation"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "ST elevation myocardial infarction of unspecified site",
+      "icd10": "I21.09",
+      "onset": "2020-06",
+      "status": "resolved"
+    },
+    {
+      "name": "Presence of coronary angioplasty implant and graft",
+      "icd10": "Z95.5",
+      "onset": "2020-06",
+      "status": "active"
+    },
+    {
+      "name": "Dyslipidemia, unspecified",
+      "icd10": "E78.5",
+      "onset": "2020-06",
+      "status": "active"
+    },
+    {
+      "name": "Morbid obesity, BMI 35-39.9",
+      "icd10": "E66.01",
+      "onset": "2024-01",
+      "status": "active"
+    },
+    {
+      "name": "Rotator cuff tear, unspecified shoulder",
+      "icd10": "M75.10",
+      "onset": "2025-09",
+      "status": "active"
+    },
+    {
+      "name": "Major depressive disorder, single episode, unspecified",
+      "icd10": "F32.9",
+      "onset": "2023-01",
+      "status": "active"
+    }
+  ],
+  "medications": [
+    {
+      "brand_name": "Asaflow",
+      "generic_name": "Acetylsalicylic acid",
+      "dose": "100mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2020-06",
+      "reason": "Post-MI antiplatelet therapy"
+    },
+    {
+      "brand_name": "Co-Valsartan (Sywiker)",
+      "generic_name": "Valsartan/Hydrochlorothiazide",
+      "dose": "20/0.5mg (taking half dose)",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2020-06",
+      "reason": "Post-MI blood pressure management — reduced to half dose due to low BP episodes"
+    },
+    {
+      "brand_name": "Bisopho",
+      "generic_name": "Bisoprolol",
+      "dose": "5mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2020-06",
+      "reason": "Post-MI beta-blocker — heart rate control and cardioprotection"
+    },
+    {
+      "brand_name": "Alkazol",
+      "generic_name": "Escitalopram (probable)",
+      "dose": "10mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2023-01",
+      "reason": "Major depressive disorder"
+    },
+    {
+      "brand_name": "Lipitor",
+      "generic_name": "Atorvastatin",
+      "dose": "40mg",
+      "frequency": "1x/day",
+      "status": "discontinued",
+      "started": "2020-06",
+      "reason": "Dyslipidemia post-MI — discontinued 2 months ago due to muscle pain. Doctor notes: if pain persists after stopping, likely NOT statin intolerance. Plan: restart and recheck labs in 4 weeks."
+    }
+  ],
+  "family_history": [
+    {
+      "relation": "Family",
+      "condition": "Not discussed in detail during visit",
+      "deceased": false,
+      "age_of_onset": null
+    }
+  ],
+  "social_history": {
+    "smoking": "former",
+    "smoking_details": "Not explicitly discussed — assumed former smoker (common post-MI profile)",
+    "alcohol": "none",
+    "alcohol_details": null,
+    "exercise": "Very limited — obesity (BMI 35.9) and shoulder injury restrict physical activity",
+    "occupation": "Likely manual labor (shoulder injury context)"
+  },
+  "lab_results": [
+    {
+      "test": "Total Cholesterol",
+      "loinc": "2093-3",
+      "value": 195,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 200,
+      "reference_text": "Desirable: <200 mg/dL",
+      "interpretation": "N",
+      "date": "2025-12-01",
+      "note": "Controlled ON statin (Lipitor 40mg). Expected to rise significantly after 2 months off statin."
+    },
+    {
+      "test": "LDL Cholesterol",
+      "loinc": "2089-1",
+      "value": 108,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 55,
+      "reference_text": "Optimal post-MI (ESC very high CV risk): <55 mg/dL",
+      "interpretation": "H",
+      "date": "2025-12-01",
+      "note": "Even on statin, not at ESC goal of <55 mg/dL for very high risk (post-MI with stents). Now off statin — expected to worsen dramatically."
+    },
+    {
+      "test": "HDL Cholesterol",
+      "loinc": "2085-9",
+      "value": 34,
+      "unit": "mg/dL",
+      "reference_range_low": 40,
+      "reference_range_high": null,
+      "reference_text": "Desirable male: >40 mg/dL",
+      "interpretation": "L",
+      "date": "2025-12-01",
+      "note": "Low — consistent with obesity and metabolic syndrome"
+    },
+    {
+      "test": "Triglycerides",
+      "loinc": "2571-8",
+      "value": 228,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 150,
+      "reference_text": "Normal: <150 mg/dL",
+      "interpretation": "H",
+      "date": "2025-12-01",
+      "note": "Elevated — obesity-related"
+    },
+    {
+      "test": "Fasting Glucose",
+      "loinc": "2345-7",
+      "value": 112,
+      "unit": "mg/dL",
+      "reference_range_low": 70,
+      "reference_range_high": 100,
+      "reference_text": "Normal: 70-100 mg/dL",
+      "interpretation": "H",
+      "date": "2025-12-01",
+      "note": "Impaired fasting glucose — prediabetic range"
+    },
+    {
+      "test": "HbA1c",
+      "loinc": "4548-4",
+      "value": 6.1,
+      "unit": "%",
+      "reference_range_low": null,
+      "reference_range_high": 5.7,
+      "reference_text": "Normal: <5.7%; Prediabetic: 5.7-6.4%; Diabetic: >=6.5%",
+      "interpretation": "H",
+      "date": "2025-12-01",
+      "note": "Prediabetic range (5.7-6.4%) — metabolic syndrome with obesity"
+    },
+    {
+      "test": "Creatinine",
+      "loinc": "2160-0",
+      "value": 1.0,
+      "unit": "mg/dL",
+      "reference_range_low": 0.7,
+      "reference_range_high": 1.3,
+      "reference_text": "Normal male: 0.7-1.3 mg/dL",
+      "interpretation": "N",
+      "date": "2025-12-01",
+      "note": null
+    },
+    {
+      "test": "Creatine Kinase (CK)",
+      "loinc": "2157-6",
+      "value": 320,
+      "unit": "U/L",
+      "reference_range_low": 30,
+      "reference_range_high": 200,
+      "reference_text": "Normal: 30-200 U/L",
+      "interpretation": "H",
+      "date": "2025-12-01",
+      "note": "Elevated — may be statin myopathy or obesity/physical exertion. Key marker for statin intolerance investigation."
+    },
+    {
+      "test": "ALT",
+      "loinc": "1742-6",
+      "value": 45,
+      "unit": "U/L",
+      "reference_range_low": null,
+      "reference_range_high": 40,
+      "reference_text": "Normal: <40 U/L",
+      "interpretation": "H",
+      "date": "2025-12-01",
+      "note": "Mildly elevated — possible statin effect, obesity, or fatty liver"
+    },
+    {
+      "test": "AST",
+      "loinc": "1920-8",
+      "value": 38,
+      "unit": "U/L",
+      "reference_range_low": null,
+      "reference_range_high": 40,
+      "reference_text": "Normal: <40 U/L",
+      "interpretation": "N",
+      "date": "2025-12-01",
+      "note": null
+    },
+    {
+      "test": "Total Cholesterol (projected off-statin)",
+      "loinc": "2093-3",
+      "value": 280,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 200,
+      "reference_text": "Desirable: <200 mg/dL",
+      "interpretation": "HH",
+      "date": "2026-02-15",
+      "note": "PROJECTED — off statin for 2 months. Estimated based on pre-treatment lipid levels. Repeat labs ordered in 4 weeks."
+    },
+    {
+      "test": "LDL Cholesterol (projected off-statin)",
+      "loinc": "2089-1",
+      "value": 178,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 55,
+      "reference_text": "Optimal post-MI (ESC very high CV risk): <55 mg/dL",
+      "interpretation": "HH",
+      "date": "2026-02-15",
+      "note": "PROJECTED — dangerously high for post-MI patient with 2 stents. Over 3x ESC target. Urgent statin restart indicated."
+    }
+  ],
+  "vitals_timeline": [
+    {"date": "2026-01-12", "systolic": 128, "diastolic": 78, "heart_rate": 62, "spo2": 97},
+    {"date": "2026-01-13", "systolic": 124, "diastolic": 74, "heart_rate": 60, "spo2": 98},
+    {"date": "2026-01-14", "systolic": 132, "diastolic": 82, "heart_rate": 64, "spo2": 96},
+    {"date": "2026-01-15", "systolic": 126, "diastolic": 76, "heart_rate": 58, "spo2": 97},
+    {"date": "2026-01-16", "systolic": 130, "diastolic": 80, "heart_rate": 63, "spo2": 98},
+    {"date": "2026-01-17", "systolic": 122, "diastolic": 73, "heart_rate": 60, "spo2": 97},
+    {"date": "2026-01-18", "systolic": 135, "diastolic": 84, "heart_rate": 66, "spo2": 96},
+    {"date": "2026-01-19", "systolic": 127, "diastolic": 77, "heart_rate": 61, "spo2": 98},
+    {"date": "2026-01-20", "systolic": 120, "diastolic": 72, "heart_rate": 58, "spo2": 97},
+    {"date": "2026-01-21", "systolic": 131, "diastolic": 81, "heart_rate": 64, "spo2": 96},
+    {"date": "2026-01-22", "systolic": 125, "diastolic": 75, "heart_rate": 60, "spo2": 98},
+    {"date": "2026-01-23", "systolic": 129, "diastolic": 79, "heart_rate": 62, "spo2": 97},
+    {"date": "2026-01-24", "systolic": 118, "diastolic": 73, "heart_rate": 57, "spo2": 97},
+    {"date": "2026-01-25", "systolic": 133, "diastolic": 83, "heart_rate": 65, "spo2": 96},
+    {"date": "2026-01-26", "systolic": 126, "diastolic": 76, "heart_rate": 60, "spo2": 98},
+    {"date": "2026-01-27", "systolic": 121, "diastolic": 74, "heart_rate": 59, "spo2": 97},
+    {"date": "2026-01-28", "systolic": 130, "diastolic": 80, "heart_rate": 63, "spo2": 96},
+    {"date": "2026-01-29", "systolic": 124, "diastolic": 75, "heart_rate": 58, "spo2": 98},
+    {"date": "2026-01-30", "systolic": 128, "diastolic": 78, "heart_rate": 62, "spo2": 97},
+    {"date": "2026-01-31", "systolic": 134, "diastolic": 85, "heart_rate": 66, "spo2": 96},
+    {"date": "2026-02-01", "systolic": 123, "diastolic": 74, "heart_rate": 59, "spo2": 98},
+    {"date": "2026-02-02", "systolic": 127, "diastolic": 77, "heart_rate": 61, "spo2": 97},
+    {"date": "2026-02-03", "systolic": 131, "diastolic": 82, "heart_rate": 64, "spo2": 96},
+    {"date": "2026-02-04", "systolic": 120, "diastolic": 73, "heart_rate": 56, "spo2": 98},
+    {"date": "2026-02-05", "systolic": 129, "diastolic": 79, "heart_rate": 62, "spo2": 97},
+    {"date": "2026-02-06", "systolic": 125, "diastolic": 76, "heart_rate": 60, "spo2": 96},
+    {"date": "2026-02-07", "systolic": 133, "diastolic": 83, "heart_rate": 65, "spo2": 97},
+    {"date": "2026-02-08", "systolic": 122, "diastolic": 74, "heart_rate": 58, "spo2": 98},
+    {"date": "2026-02-09", "systolic": 126, "diastolic": 77, "heart_rate": 61, "spo2": 97},
+    {"date": "2026-02-10", "systolic": 130, "diastolic": 80, "heart_rate": 63, "spo2": 96}
+  ],
+  "upcoming": [
+    {
+      "type": "lab",
+      "name": "Lipid panel + CK + liver enzymes",
+      "date": "2026-03-10",
+      "location": "Local laboratory",
+      "notes": "Ordered in 4 weeks to assess cholesterol levels off statin and CK levels. Critical for determining statin intolerance vs. other causes of myalgia."
+    },
+    {
+      "type": "procedure",
+      "name": "Shoulder arthroscopy",
+      "date": null,
+      "location": "Orthopedic surgery department",
+      "notes": "Rotator cuff repair — 3 arthroscopic portals. Cardiac clearance APPROVED at this visit. Awaiting surgical scheduling."
+    },
+    {
+      "type": "appointment",
+      "name": "Cardiology follow-up",
+      "date": null,
+      "location": "Cardiology clinic",
+      "notes": "After lab results return — to review cholesterol off statin, decide on statin restart or alternative lipid-lowering therapy."
+    }
+  ]
+}

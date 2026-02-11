@@ -1,0 +1,292 @@
+{
+  "demographics": {
+    "first_name": "Marie",
+    "last_name": "Dupont",
+    "dob": "1953-09-14",
+    "gender": "female",
+    "height_cm": 162.0,
+    "weight_kg": 68.0,
+    "bmi": 25.9,
+    "blood_type": "A+",
+    "email": "marie.dupont@demo.postvisit.ai",
+    "phone": "+32 471 234 567",
+    "mrn": "DEMO-V01",
+    "preferred_language": "fr"
+  },
+  "emergency_contact": {
+    "name": "Pierre Dupont",
+    "relationship": "Son",
+    "phone": "+32 472 345 678"
+  },
+  "allergies": [
+    {
+      "name": "Codeine",
+      "severity": "moderate",
+      "reaction": "Nausea and vomiting"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "Atherosclerotic heart disease",
+      "icd10": "I25.1",
+      "onset": "2026-01",
+      "status": "active"
+    },
+    {
+      "name": "Fibromyalgia",
+      "icd10": "M79.7",
+      "onset": "2012-06",
+      "status": "active"
+    },
+    {
+      "name": "Hypothyroidism, unspecified",
+      "icd10": "E03.9",
+      "onset": "2015-03",
+      "status": "active"
+    },
+    {
+      "name": "Stress urinary incontinence",
+      "icd10": "N39.3",
+      "onset": "2022-01",
+      "status": "active"
+    },
+    {
+      "name": "Anemia, unspecified",
+      "icd10": "D64.9",
+      "onset": "2023-05",
+      "status": "active"
+    }
+  ],
+  "medications": [
+    {
+      "brand_name": "Crestor",
+      "generic_name": "Rosuvastatin",
+      "dose": "20mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2026-02",
+      "reason": "Coronary plaques / atherosclerotic heart disease"
+    },
+    {
+      "brand_name": "Asaflow",
+      "generic_name": "Acetylsalicylic acid",
+      "dose": "100mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2026-02",
+      "reason": "Cardioprotective — antiplatelet therapy"
+    },
+    {
+      "brand_name": "L-Thyroxine",
+      "generic_name": "Levothyroxine",
+      "dose": "50mcg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2015-03",
+      "reason": "Hypothyroidism"
+    },
+    {
+      "brand_name": "Toviaz",
+      "generic_name": "Fesoterodine",
+      "dose": "4mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2022-01",
+      "reason": "Stress urinary incontinence"
+    },
+    {
+      "brand_name": "Cymbalta",
+      "generic_name": "Duloxetine",
+      "dose": "60mg",
+      "frequency": "1x/day",
+      "status": "discontinuing",
+      "started": "2019-08",
+      "reason": "Fibromyalgia pain management — product being withdrawn from market"
+    }
+  ],
+  "family_history": [
+    {
+      "relation": "Mother",
+      "condition": "Cerebral hemorrhage",
+      "deceased": true,
+      "age_of_onset": null
+    },
+    {
+      "relation": "Sister",
+      "condition": "Aneurysm",
+      "deceased": true,
+      "age_of_onset": 58
+    }
+  ],
+  "social_history": {
+    "smoking": "never",
+    "smoking_details": null,
+    "alcohol": "none",
+    "alcohol_details": null,
+    "exercise": "Occasional walks, limited by fatigue and fibromyalgia pain",
+    "occupation": "Retired"
+  },
+  "lab_results": [
+    {
+      "test": "Total Cholesterol",
+      "loinc": "2093-3",
+      "value": 158,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 200,
+      "reference_text": "Desirable: <200 mg/dL",
+      "interpretation": "N",
+      "date": "2025-07-16",
+      "note": null
+    },
+    {
+      "test": "LDL Cholesterol",
+      "loinc": "2089-1",
+      "value": 75,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 55,
+      "reference_text": "Optimal with CAD: <55 mg/dL (ESC very high CV risk target)",
+      "interpretation": "H",
+      "date": "2025-07-16",
+      "note": "Too high with existing coronary plaques — ESC guidelines require <55 mg/dL for very high cardiovascular risk"
+    },
+    {
+      "test": "HDL Cholesterol",
+      "loinc": "2085-9",
+      "value": 58,
+      "unit": "mg/dL",
+      "reference_range_low": 40,
+      "reference_range_high": null,
+      "reference_text": "Desirable: >40 mg/dL",
+      "interpretation": "N",
+      "date": "2025-07-16",
+      "note": "Good for age"
+    },
+    {
+      "test": "Triglycerides",
+      "loinc": "2571-8",
+      "value": 125,
+      "unit": "mg/dL",
+      "reference_range_low": null,
+      "reference_range_high": 150,
+      "reference_text": "Normal: <150 mg/dL",
+      "interpretation": "N",
+      "date": "2025-07-16",
+      "note": null
+    },
+    {
+      "test": "Hemoglobin",
+      "loinc": "718-7",
+      "value": 11.2,
+      "unit": "g/dL",
+      "reference_range_low": 12.0,
+      "reference_range_high": 16.0,
+      "reference_text": "Normal female: 12.0-16.0 g/dL",
+      "interpretation": "L",
+      "date": "2025-07-16",
+      "note": "Mild anemia — mentioned in dialogue"
+    },
+    {
+      "test": "MCV",
+      "loinc": "787-2",
+      "value": 86,
+      "unit": "fL",
+      "reference_range_low": 80,
+      "reference_range_high": 100,
+      "reference_text": "Normal: 80-100 fL",
+      "interpretation": "N",
+      "date": "2025-07-16",
+      "note": "Normal — rules out iron-deficiency cause of anemia"
+    },
+    {
+      "test": "Ferritin",
+      "loinc": "2276-4",
+      "value": 58,
+      "unit": "ng/mL",
+      "reference_range_low": 30,
+      "reference_range_high": 400,
+      "reference_text": "Normal female: 30-400 ng/mL",
+      "interpretation": "N",
+      "date": "2025-07-16",
+      "note": "Explicitly mentioned: 58, normal"
+    },
+    {
+      "test": "TSH",
+      "loinc": "3016-3",
+      "value": 3.8,
+      "unit": "mIU/L",
+      "reference_range_low": 0.4,
+      "reference_range_high": 4.0,
+      "reference_text": "Normal: 0.4-4.0 mIU/L",
+      "interpretation": "N",
+      "date": "2025-07-16",
+      "note": "On levothyroxine — well-controlled"
+    },
+    {
+      "test": "Fasting Glucose",
+      "loinc": "2345-7",
+      "value": 92,
+      "unit": "mg/dL",
+      "reference_range_low": 70,
+      "reference_range_high": 100,
+      "reference_text": "Normal: 70-100 mg/dL",
+      "interpretation": "N",
+      "date": "2025-07-16",
+      "note": "Not diabetic — mentioned in dialogue"
+    },
+    {
+      "test": "Creatinine",
+      "loinc": "2160-0",
+      "value": 0.9,
+      "unit": "mg/dL",
+      "reference_range_low": 0.6,
+      "reference_range_high": 1.2,
+      "reference_text": "Normal female: 0.6-1.2 mg/dL",
+      "interpretation": "N",
+      "date": "2025-07-16",
+      "note": null
+    }
+  ],
+  "vitals_timeline": [
+    {"date": "2026-01-12", "systolic": 124, "diastolic": 76, "heart_rate": 73, "spo2": 96},
+    {"date": "2026-01-13", "systolic": 128, "diastolic": 79, "heart_rate": 76, "spo2": 97},
+    {"date": "2026-01-14", "systolic": 121, "diastolic": 74, "heart_rate": 71, "spo2": 96},
+    {"date": "2026-01-15", "systolic": 126, "diastolic": 78, "heart_rate": 75, "spo2": 95},
+    {"date": "2026-01-16", "systolic": 130, "diastolic": 81, "heart_rate": 79, "spo2": 96},
+    {"date": "2026-01-17", "systolic": 123, "diastolic": 75, "heart_rate": 72, "spo2": 97},
+    {"date": "2026-01-18", "systolic": 119, "diastolic": 73, "heart_rate": 70, "spo2": 96},
+    {"date": "2026-01-19", "systolic": 127, "diastolic": 80, "heart_rate": 77, "spo2": 95},
+    {"date": "2026-01-20", "systolic": 131, "diastolic": 82, "heart_rate": 80, "spo2": 96},
+    {"date": "2026-01-21", "systolic": 125, "diastolic": 77, "heart_rate": 74, "spo2": 97},
+    {"date": "2026-01-22", "systolic": 122, "diastolic": 75, "heart_rate": 73, "spo2": 96},
+    {"date": "2026-01-23", "systolic": 129, "diastolic": 80, "heart_rate": 78, "spo2": 95},
+    {"date": "2026-01-24", "systolic": 118, "diastolic": 72, "heart_rate": 71, "spo2": 97},
+    {"date": "2026-01-25", "systolic": 126, "diastolic": 79, "heart_rate": 76, "spo2": 96},
+    {"date": "2026-01-26", "systolic": 132, "diastolic": 81, "heart_rate": 82, "spo2": 95},
+    {"date": "2026-01-27", "systolic": 120, "diastolic": 74, "heart_rate": 72, "spo2": 96},
+    {"date": "2026-01-28", "systolic": 125, "diastolic": 78, "heart_rate": 75, "spo2": 97},
+    {"date": "2026-01-29", "systolic": 128, "diastolic": 79, "heart_rate": 77, "spo2": 96},
+    {"date": "2026-01-30", "systolic": 123, "diastolic": 76, "heart_rate": 74, "spo2": 95},
+    {"date": "2026-01-31", "systolic": 130, "diastolic": 82, "heart_rate": 80, "spo2": 96},
+    {"date": "2026-02-01", "systolic": 121, "diastolic": 73, "heart_rate": 71, "spo2": 97},
+    {"date": "2026-02-02", "systolic": 127, "diastolic": 78, "heart_rate": 76, "spo2": 96},
+    {"date": "2026-02-03", "systolic": 124, "diastolic": 77, "heart_rate": 73, "spo2": 95},
+    {"date": "2026-02-04", "systolic": 119, "diastolic": 74, "heart_rate": 70, "spo2": 96},
+    {"date": "2026-02-05", "systolic": 131, "diastolic": 80, "heart_rate": 79, "spo2": 97},
+    {"date": "2026-02-06", "systolic": 126, "diastolic": 79, "heart_rate": 75, "spo2": 96},
+    {"date": "2026-02-07", "systolic": 122, "diastolic": 75, "heart_rate": 72, "spo2": 95},
+    {"date": "2026-02-08", "systolic": 129, "diastolic": 81, "heart_rate": 78, "spo2": 96},
+    {"date": "2026-02-09", "systolic": 120, "diastolic": 73, "heart_rate": 71, "spo2": 97},
+    {"date": "2026-02-10", "systolic": 125, "diastolic": 78, "heart_rate": 74, "spo2": 96}
+  ],
+  "upcoming": [
+    {
+      "type": "procedure",
+      "name": "Coronarography",
+      "date": "2026-03-03",
+      "location": "Saint Mary's Hospital",
+      "notes": "Fasting required. Diagnostic coronary angiography to assess moderate stenosis in LAD and RCA. May proceed to stenting if indicated."
+    }
+  ]
+}

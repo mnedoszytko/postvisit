@@ -1,0 +1,292 @@
+{
+  "demographics": {
+    "first_name": "Marek",
+    "last_name": "Wisniewski",
+    "dob": "1973-03-18",
+    "gender": "male",
+    "height_cm": 178.0,
+    "weight_kg": 88.0,
+    "bmi": 27.8,
+    "blood_type": "O+",
+    "email": "marek.wisniewski@demo.postvisit.ai",
+    "phone": "+32 471 567 890",
+    "mrn": "DEMO-V08",
+    "preferred_language": "pl"
+  },
+  "emergency_contact": {
+    "name": "Anna Wisniewska",
+    "relationship": "Wife",
+    "phone": "+32 472 678 901"
+  },
+  "allergies": [],
+  "conditions": [
+    {
+      "name": "Essential hypertension",
+      "icd10": "I10",
+      "onset": "2025-10",
+      "status": "active"
+    },
+    {
+      "name": "Elevated blood-pressure reading without diagnosis of hypertension",
+      "icd10": "R03.0",
+      "onset": "2025-12",
+      "status": "active"
+    }
+  ],
+  "medications": [
+    {
+      "brand_name": "Amlodipine (Ledypina)",
+      "generic_name": "Amlodipine",
+      "dose": "5mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2025-10",
+      "reason": "Essential hypertension — prescribed by Dr. Nowak after initial elevated BP readings"
+    }
+  ],
+  "family_history": [
+    {
+      "relation": "Mother",
+      "condition": "Hypertension (chronic, on medications)",
+      "deceased": false,
+      "age_of_onset": null
+    },
+    {
+      "relation": "Siblings",
+      "condition": "Hypertension (multiple siblings, on medications)",
+      "deceased": false,
+      "age_of_onset": null
+    }
+  ],
+  "social_history": {
+    "smoking": "never",
+    "smoking_details": "Explicitly denied — 'Nie' to smoking, 'Nigdy' (never)",
+    "alcohol": "occasional",
+    "alcohol_details": "Occasional — 'od czasu do czasu, nie pije duzo' (from time to time, not much)",
+    "exercise": "Not discussed during visit",
+    "occupation": "Working (active, scheduled appointment during work hours)"
+  },
+  "lab_results": [
+    {
+      "test": "Hemoglobin",
+      "loinc": "718-7",
+      "value": 15.0,
+      "unit": "g/dL",
+      "reference_range_low": 13.0,
+      "reference_range_high": 17.0,
+      "reference_text": "Normal male: 13.0-17.0 g/dL",
+      "interpretation": "N",
+      "date": "2025-12-15",
+      "note": null
+    },
+    {
+      "test": "WBC",
+      "loinc": "6690-2",
+      "value": 7.2,
+      "unit": "x10^9/L",
+      "reference_range_low": 4.0,
+      "reference_range_high": 11.0,
+      "reference_text": "Normal: 4.0-11.0 x10^9/L",
+      "interpretation": "N",
+      "date": "2025-12-15",
+      "note": null
+    },
+    {
+      "test": "Fasting Glucose",
+      "loinc": "2345-7",
+      "value": 94,
+      "unit": "mg/dL",
+      "reference_range_low": 70,
+      "reference_range_high": 100,
+      "reference_text": "Normal: 70-100 mg/dL",
+      "interpretation": "N",
+      "date": "2025-12-15",
+      "note": null
+    },
+    {
+      "test": "Creatinine",
+      "loinc": "2160-0",
+      "value": 0.9,
+      "unit": "mg/dL",
+      "reference_range_low": 0.7,
+      "reference_range_high": 1.3,
+      "reference_text": "Normal male: 0.7-1.3 mg/dL",
+      "interpretation": "N",
+      "date": "2025-12-15",
+      "note": null
+    },
+    {
+      "test": "eGFR",
+      "loinc": "33914-3",
+      "value": 92,
+      "unit": "mL/min/1.73m2",
+      "reference_range_low": 60,
+      "reference_range_high": null,
+      "reference_text": "Normal: >60 mL/min/1.73m2",
+      "interpretation": "N",
+      "date": "2025-12-15",
+      "note": null
+    },
+    {
+      "test": "Potassium",
+      "loinc": "2823-3",
+      "value": 4.4,
+      "unit": "mEq/L",
+      "reference_range_low": 3.5,
+      "reference_range_high": 5.0,
+      "reference_text": "Normal: 3.5-5.0 mEq/L",
+      "interpretation": "N",
+      "date": "2025-12-15",
+      "note": null
+    },
+    {
+      "test": "Sodium",
+      "loinc": "2951-2",
+      "value": 142,
+      "unit": "mEq/L",
+      "reference_range_low": 136,
+      "reference_range_high": 145,
+      "reference_text": "Normal: 136-145 mEq/L",
+      "interpretation": "N",
+      "date": "2025-12-15",
+      "note": null
+    },
+    {
+      "test": "TSH",
+      "loinc": "3016-3",
+      "value": 1.8,
+      "unit": "mIU/L",
+      "reference_range_low": 0.4,
+      "reference_range_high": 4.0,
+      "reference_text": "Normal: 0.4-4.0 mIU/L",
+      "interpretation": "N",
+      "date": "2025-12-15",
+      "note": "Rules out thyroid cause of hypertension"
+    }
+  ],
+  "vitals_timeline": [
+    {"date": "2026-01-12", "time": "07:15", "systolic": 132, "diastolic": 76, "heart_rate": 72, "spo2": 98, "context": "morning"},
+    {"date": "2026-01-12", "time": "20:30", "systolic": 142, "diastolic": 88, "heart_rate": 76, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-13", "time": "07:00", "systolic": 128, "diastolic": 74, "heart_rate": 70, "spo2": 98, "context": "morning"},
+    {"date": "2026-01-13", "time": "21:00", "systolic": 145, "diastolic": 90, "heart_rate": 78, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-14", "time": "06:45", "systolic": 134, "diastolic": 78, "heart_rate": 73, "spo2": 99, "context": "morning"},
+    {"date": "2026-01-14", "time": "20:15", "systolic": 148, "diastolic": 92, "heart_rate": 79, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-15", "time": "07:30", "systolic": 130, "diastolic": 72, "heart_rate": 68, "spo2": 98, "context": "morning"},
+    {"date": "2026-01-15", "time": "20:45", "systolic": 140, "diastolic": 86, "heart_rate": 74, "spo2": 98, "context": "evening"},
+    {"date": "2026-01-16", "time": "07:10", "systolic": 136, "diastolic": 80, "heart_rate": 74, "spo2": 97, "context": "morning"},
+    {"date": "2026-01-16", "time": "21:15", "systolic": 150, "diastolic": 94, "heart_rate": 80, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-17", "time": "06:50", "systolic": 126, "diastolic": 70, "heart_rate": 69, "spo2": 99, "context": "morning"},
+    {"date": "2026-01-17", "time": "20:00", "systolic": 143, "diastolic": 89, "heart_rate": 77, "spo2": 98, "context": "evening"},
+    {"date": "2026-01-18", "time": "08:00", "systolic": 133, "diastolic": 76, "heart_rate": 71, "spo2": 98, "context": "morning"},
+    {"date": "2026-01-18", "time": "20:30", "systolic": 146, "diastolic": 91, "heart_rate": 78, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-19", "time": "07:20", "systolic": 129, "diastolic": 73, "heart_rate": 70, "spo2": 99, "context": "morning"},
+    {"date": "2026-01-19", "time": "21:00", "systolic": 141, "diastolic": 87, "heart_rate": 75, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-20", "time": "07:00", "systolic": 137, "diastolic": 82, "heart_rate": 75, "spo2": 98, "context": "morning"},
+    {"date": "2026-01-20", "time": "20:45", "systolic": 152, "diastolic": 95, "heart_rate": 82, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-21", "time": "07:15", "systolic": 131, "diastolic": 74, "heart_rate": 69, "spo2": 98, "context": "morning"},
+    {"date": "2026-01-21", "time": "20:15", "systolic": 144, "diastolic": 90, "heart_rate": 76, "spo2": 98, "context": "evening"},
+    {"date": "2026-01-22", "time": "06:55", "systolic": 128, "diastolic": 71, "heart_rate": 68, "spo2": 99, "context": "morning"},
+    {"date": "2026-01-22", "time": "21:00", "systolic": 147, "diastolic": 92, "heart_rate": 79, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-23", "time": "07:30", "systolic": 135, "diastolic": 78, "heart_rate": 73, "spo2": 98, "context": "morning"},
+    {"date": "2026-01-23", "time": "20:30", "systolic": 142, "diastolic": 88, "heart_rate": 76, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-24", "time": "07:10", "systolic": 130, "diastolic": 75, "heart_rate": 71, "spo2": 98, "context": "morning"},
+    {"date": "2026-01-24", "time": "20:00", "systolic": 139, "diastolic": 86, "heart_rate": 74, "spo2": 98, "context": "evening"},
+    {"date": "2026-01-25", "time": "07:45", "systolic": 140, "diastolic": 82, "heart_rate": 76, "spo2": 97, "context": "morning"},
+    {"date": "2026-01-25", "time": "21:15", "systolic": 155, "diastolic": 95, "heart_rate": 81, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-26", "time": "07:00", "systolic": 127, "diastolic": 72, "heart_rate": 69, "spo2": 99, "context": "morning"},
+    {"date": "2026-01-26", "time": "20:45", "systolic": 143, "diastolic": 89, "heart_rate": 77, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-27", "time": "07:20", "systolic": 133, "diastolic": 77, "heart_rate": 72, "spo2": 98, "context": "morning"},
+    {"date": "2026-01-27", "time": "20:30", "systolic": 145, "diastolic": 91, "heart_rate": 78, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-28", "time": "07:00", "systolic": 129, "diastolic": 73, "heart_rate": 70, "spo2": 98, "context": "morning"},
+    {"date": "2026-01-28", "time": "20:15", "systolic": 141, "diastolic": 87, "heart_rate": 75, "spo2": 98, "context": "evening"},
+    {"date": "2026-01-29", "time": "07:30", "systolic": 136, "diastolic": 80, "heart_rate": 74, "spo2": 97, "context": "morning"},
+    {"date": "2026-01-29", "time": "21:00", "systolic": 149, "diastolic": 93, "heart_rate": 80, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-30", "time": "07:15", "systolic": 131, "diastolic": 75, "heart_rate": 71, "spo2": 99, "context": "morning"},
+    {"date": "2026-01-30", "time": "20:30", "systolic": 144, "diastolic": 90, "heart_rate": 77, "spo2": 97, "context": "evening"},
+    {"date": "2026-01-31", "time": "06:45", "systolic": 128, "diastolic": 72, "heart_rate": 69, "spo2": 98, "context": "morning"},
+    {"date": "2026-01-31", "time": "20:00", "systolic": 146, "diastolic": 91, "heart_rate": 78, "spo2": 97, "context": "evening"},
+    {"date": "2026-02-01", "time": "07:00", "systolic": 134, "diastolic": 78, "heart_rate": 73, "spo2": 98, "context": "morning"},
+    {"date": "2026-02-01", "time": "20:45", "systolic": 148, "diastolic": 92, "heart_rate": 79, "spo2": 97, "context": "evening"},
+    {"date": "2026-02-02", "time": "07:30", "systolic": 130, "diastolic": 74, "heart_rate": 70, "spo2": 99, "context": "morning"},
+    {"date": "2026-02-02", "time": "21:00", "systolic": 142, "diastolic": 88, "heart_rate": 76, "spo2": 97, "context": "evening"},
+    {"date": "2026-02-03", "time": "07:10", "systolic": 137, "diastolic": 80, "heart_rate": 75, "spo2": 98, "context": "morning"},
+    {"date": "2026-02-03", "time": "20:15", "systolic": 150, "diastolic": 94, "heart_rate": 81, "spo2": 97, "context": "evening"},
+    {"date": "2026-02-04", "time": "06:50", "systolic": 126, "diastolic": 70, "heart_rate": 68, "spo2": 98, "context": "morning"},
+    {"date": "2026-02-04", "time": "20:30", "systolic": 140, "diastolic": 86, "heart_rate": 74, "spo2": 98, "context": "evening"},
+    {"date": "2026-02-05", "time": "07:15", "systolic": 132, "diastolic": 76, "heart_rate": 72, "spo2": 97, "context": "morning"},
+    {"date": "2026-02-05", "time": "21:00", "systolic": 145, "diastolic": 91, "heart_rate": 78, "spo2": 97, "context": "evening"},
+    {"date": "2026-02-06", "time": "07:00", "systolic": 129, "diastolic": 73, "heart_rate": 70, "spo2": 99, "context": "morning"},
+    {"date": "2026-02-06", "time": "20:45", "systolic": 143, "diastolic": 89, "heart_rate": 77, "spo2": 97, "context": "evening"},
+    {"date": "2026-02-07", "time": "07:30", "systolic": 135, "diastolic": 79, "heart_rate": 74, "spo2": 98, "context": "morning"},
+    {"date": "2026-02-07", "time": "20:15", "systolic": 147, "diastolic": 92, "heart_rate": 79, "spo2": 97, "context": "evening"},
+    {"date": "2026-02-08", "time": "07:20", "systolic": 131, "diastolic": 75, "heart_rate": 71, "spo2": 98, "context": "morning"},
+    {"date": "2026-02-08", "time": "20:30", "systolic": 141, "diastolic": 87, "heart_rate": 75, "spo2": 98, "context": "evening"},
+    {"date": "2026-02-09", "time": "07:00", "systolic": 133, "diastolic": 77, "heart_rate": 72, "spo2": 99, "context": "morning"},
+    {"date": "2026-02-09", "time": "21:00", "systolic": 146, "diastolic": 91, "heart_rate": 78, "spo2": 97, "context": "evening"},
+    {"date": "2026-02-10", "time": "07:30", "systolic": 148, "diastolic": 88, "heart_rate": 80, "spo2": 97, "context": "morning"},
+    {"date": "2026-02-10", "time": "10:15", "systolic": 170, "diastolic": 96, "heart_rate": 84, "spo2": 97, "context": "in_office"},
+    {"date": "2025-12-28", "time": "22:00", "systolic": 198, "diastolic": 108, "heart_rate": 92, "spo2": 96, "context": "episode"}
+  ],
+  "upcoming": [
+    {
+      "type": "procedure",
+      "name": "24h ambulatory blood pressure monitoring (ABPM)",
+      "date": null,
+      "location": "Cardiology clinic — appointment via secretariat",
+      "notes": "Ordered to differentiate white coat hypertension from sustained hypertension. Patient shows clear circadian pattern (morning vs evening) and significant white coat effect (170/96 in office vs 130-137/76 at home). Results will guide medication adjustment."
+    },
+    {
+      "type": "appointment",
+      "name": "Cardiology follow-up",
+      "date": null,
+      "location": "Cardiology clinic",
+      "notes": "After ABPM results — to review 24h BP profile and decide whether to continue, increase, or change amlodipine. Cholesterol panel also recommended (not checked in recent labs)."
+    }
+  ],
+  "abpm_report": {
+    "date": "2026-02-17",
+    "duration_hours": 24,
+    "device": "Spacelabs 90217",
+    "total_readings": 68,
+    "successful_readings": 64,
+    "success_rate_percent": 94,
+    "summary": {
+      "overall": {
+        "mean_systolic": 134,
+        "mean_diastolic": 82,
+        "mean_heart_rate": 74,
+        "systolic_range": [118, 162],
+        "diastolic_range": [68, 98]
+      },
+      "daytime": {
+        "period": "07:00-22:00",
+        "readings": 42,
+        "mean_systolic": 138,
+        "mean_diastolic": 85,
+        "mean_heart_rate": 76,
+        "systolic_load_percent": 35,
+        "diastolic_load_percent": 22
+      },
+      "nighttime": {
+        "period": "22:00-07:00",
+        "readings": 22,
+        "mean_systolic": 122,
+        "mean_diastolic": 74,
+        "mean_heart_rate": 66,
+        "systolic_load_percent": 8,
+        "diastolic_load_percent": 5
+      },
+      "dipping_status": "dipper",
+      "nocturnal_dip_percent": {
+        "systolic": 11.6,
+        "diastolic": 12.9
+      },
+      "morning_surge": {
+        "systolic_mmhg": 28,
+        "time": "06:45"
+      }
+    },
+    "interpretation": "Borderline daytime hypertension (mean 138/85 mmHg, threshold 135/85). Normal nocturnal dipping (11.6%). Systolic load 35% during daytime exceeds 25% threshold. Morning surge of 28 mmHg within normal limits. Results support continuation of current antihypertensive therapy (Amlodipine 5mg). Consider dose adjustment if daytime readings do not improve with lifestyle modifications.",
+    "recommendation": "Continue Amlodipine 5mg. Recommend salt restriction, regular exercise, and home BP monitoring. Repeat ABPM in 6 months if daytime load persists above 25%."
+  }
+}
