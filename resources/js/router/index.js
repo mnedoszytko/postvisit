@@ -97,6 +97,12 @@ const routes = [
         component: DemoMode,
     },
     {
+        path: '/library',
+        name: 'medical-library',
+        component: () => import('@/views/MedicalLibrary.vue'),
+        meta: { requiresAuth: true, role: 'patient' },
+    },
+    {
         path: '/medical-lookup',
         name: 'medical-lookup',
         component: () => import('@/views/MedicalLookupDemo.vue'),

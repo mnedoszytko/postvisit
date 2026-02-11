@@ -27,6 +27,12 @@
             My Health
           </router-link>
           <router-link
+            to="/library"
+            class="text-sm text-gray-600 hover:text-emerald-700 transition-colors"
+          >
+            Library
+          </router-link>
+          <router-link
             to="/scribe"
             class="text-sm text-gray-600 hover:text-emerald-700 transition-colors flex items-center gap-1.5"
           >
@@ -109,6 +115,13 @@
             @click="mobileOpen = false"
           >
             My Health
+          </router-link>
+          <router-link
+            to="/library"
+            class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            @click="mobileOpen = false"
+          >
+            Library
           </router-link>
           <router-link
             to="/scribe"
