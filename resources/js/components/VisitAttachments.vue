@@ -190,9 +190,7 @@ async function uploadAll() {
         formData.append('document_type', pf.type);
 
         try {
-            const { data } = await api.post(`/visits/${props.visitId}/documents`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+            const { data } = await api.post(`/visits/${props.visitId}/documents`, formData);
             documents.value.unshift(data.data);
         } catch {
             // Toast handled by api interceptor
