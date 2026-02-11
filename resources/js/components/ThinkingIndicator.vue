@@ -16,12 +16,25 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
     query: { type: String, default: '' },
+    thinkingActive: { type: Boolean, default: false },
 });
 
 const hintIndex = ref(0);
 let interval = null;
 
+const thinkingHints = [
+    'Deep analysis in progress...',
+    'Reasoning through clinical context...',
+    'Cross-referencing guidelines...',
+    'Evaluating medical evidence...',
+];
+
 const contextualHints = computed(() => {
+    // When extended thinking is active, show special hints
+    if (props.thinkingActive) {
+        return thinkingHints;
+    }
+
     const q = props.query.toLowerCase();
 
     if (q.includes('medication') || q.includes('medicine') || q.includes('drug') || q.includes('side effect') || q.includes('lek')) {

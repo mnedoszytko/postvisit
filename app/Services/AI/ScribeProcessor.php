@@ -14,9 +14,10 @@ class ScribeProcessor
     /**
      * Process a raw transcript into structured clinical data.
      *
-     * Returns extracted entities, SOAP note, and cleaned transcript.
+     * Uses extended thinking for deeper clinical reasoning before
+     * producing the structured output.
      *
-     * @return array{clean_transcript: string, extracted_entities: array, soap_note: array, speakers: array}
+     * @return array{clean_transcript: string, extracted_entities: array, soap_note: array, speakers: array, thinking: string}
      */
     public function process(Transcript $transcript): array
     {
@@ -32,17 +33,21 @@ class ScribeProcessor
         $messages = [
             [
                 'role' => 'user',
-                'content' => "Process the following visit transcript.\n\n" .
-                    "Visit Metadata:\n" . json_encode($metadata, JSON_PRETTY_PRINT) . "\n\n" .
-                    "Raw Transcript:\n" . ($transcript->raw_transcript ?? ''),
+                'content' => "Process the following visit transcript.\n\n".
+                    "Visit Metadata:\n".json_encode($metadata, JSON_PRETTY_PRINT)."\n\n".
+                    "Raw Transcript:\n".($transcript->raw_transcript ?? ''),
             ],
         ];
 
-        $response = $this->client->chat($systemPrompt, $messages, [
-            'max_tokens' => 8192,
+        $result = $this->client->chatWithThinking($systemPrompt, $messages, [
+            'max_tokens' => 16000,
+            'budget_tokens' => config('anthropic.thinking.scribe_budget', 10000),
         ]);
 
-        return $this->parseJsonResponse($response);
+        $parsed = $this->parseJsonResponse($result['text']);
+        $parsed['thinking'] = $result['thinking'];
+
+        return $parsed;
     }
 
     private function parseJsonResponse(string $response): array

@@ -16,10 +16,10 @@ class QaAssistant
     /**
      * Answer a patient question about their visit via streaming.
      *
-     * Assembles visit context, appends conversation history,
-     * checks for escalation, and streams the response.
+     * Uses extended thinking for clinical reasoning, then streams
+     * the response. Yields typed arrays for thinking vs text chunks.
      *
-     * @return Generator<string> Yields response text chunks
+     * @return Generator<array{type: string, content: string}> Yields thinking/text chunks
      */
     public function answer(ChatSession $session, string $question): Generator
     {
@@ -28,7 +28,7 @@ class QaAssistant
         // Check for urgent content before answering
         $escalation = $this->escalationDetector->evaluate($question, $visit);
         if ($escalation['is_urgent'] && $escalation['severity'] === 'critical') {
-            yield $escalation['recommended_action'];
+            yield ['type' => 'text', 'content' => $escalation['recommended_action']];
 
             return;
         }
@@ -61,15 +61,18 @@ class QaAssistant
         if ($escalation['is_urgent']) {
             $messages[] = [
                 'role' => 'user',
-                'content' => "[SYSTEM NOTE: Urgency detected - severity: {$escalation['severity']}. " .
+                'content' => "[SYSTEM NOTE: Urgency detected - severity: {$escalation['severity']}. ".
                     "Reason: {$escalation['reason']}. Address this concern appropriately in your response.]",
             ];
         }
 
-        yield from $this->client->stream(
+        yield from $this->client->streamWithThinking(
             $context['system_prompt'],
             $messages,
-            ['max_tokens' => 4096]
+            [
+                'max_tokens' => 16000,
+                'budget_tokens' => config('anthropic.thinking.chat_budget', 8000),
+            ]
         );
     }
 }

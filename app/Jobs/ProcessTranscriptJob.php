@@ -37,6 +37,7 @@ class ProcessTranscriptJob implements ShouldQueue
                     'clean_text' => $scribeResult['clean_transcript'] ?? null,
                     'speakers' => $scribeResult['speakers'] ?? [],
                 ],
+                'summary' => $scribeResult['thinking'] ?? null,
                 'processing_status' => 'completed',
             ]);
 

@@ -41,7 +41,7 @@ class ChatTest extends TestCase
         $this->mock(QaAssistant::class, function (MockInterface $mock) use ($responseText) {
             $mock->shouldReceive('answer')
                 ->andReturnUsing(function () use ($responseText) {
-                    yield $responseText;
+                    yield ['type' => 'text', 'content' => $responseText];
                 });
         });
     }
