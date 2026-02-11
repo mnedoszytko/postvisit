@@ -1,0 +1,470 @@
+{
+    "chief_complaint": [
+        {
+            "term": "palpitations",
+            "start": 56,
+            "end": 68,
+            "definition": "A sensation of your heart beating irregularly, racing, or fluttering. In your case, you described your heart skipping and fluttering, which is why you were referred for evaluation."
+        },
+        {
+            "term": "heart skipping",
+            "start": 82,
+            "end": 96,
+            "definition": "The feeling that your heart misses or skips a beat. This is often caused by extra heartbeats that disrupt the normal rhythm."
+        },
+        {
+            "term": "fluttering",
+            "start": 101,
+            "end": 111,
+            "definition": "A sensation of rapid, irregular movement in the chest, often related to abnormal heartbeats."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "palpitations",
+            "start": 38,
+            "end": 50,
+            "definition": "The sensation of your heart beating irregularly, skipping, or fluttering. You have been experiencing these for about two weeks."
+        },
+        {
+            "term": "fluttering sensation",
+            "start": 133,
+            "end": 153,
+            "definition": "A feeling of rapid, irregular movement in the chest, typically associated with irregular heartbeats."
+        },
+        {
+            "term": "lightheadedness",
+            "start": 592,
+            "end": 607,
+            "definition": "A brief feeling of dizziness or faintness. You reported this happening momentarily after stronger palpitations."
+        },
+        {
+            "term": "chest pain",
+            "start": 674,
+            "end": 684,
+            "definition": "Any pain or discomfort felt in the chest area, which can sometimes indicate heart problems. You denied experiencing this symptom."
+        },
+        {
+            "term": "shortness of breath",
+            "start": 686,
+            "end": 705,
+            "definition": "Difficulty breathing or feeling like you can't get enough air. You denied experiencing this symptom."
+        },
+        {
+            "term": "syncope",
+            "start": 707,
+            "end": 714,
+            "definition": "A medical term for fainting or temporarily losing consciousness due to a drop in blood flow to the brain."
+        },
+        {
+            "term": "pre-syncope",
+            "start": 719,
+            "end": 730,
+            "definition": "The feeling that you are about to faint — lightheadedness, blurred vision, or weakness — without actually losing consciousness."
+        },
+        {
+            "term": "caffeine intake",
+            "start": 855,
+            "end": 870,
+            "definition": "The amount of caffeine you consume, primarily from coffee. High caffeine intake can stimulate extra heartbeats and worsen palpitations."
+        },
+        {
+            "term": "sleep deprivation",
+            "start": 1017,
+            "end": 1034,
+            "definition": "Not getting enough sleep, which can stress the body and may contribute to irregular heartbeats."
+        },
+        {
+            "term": "multivitamin",
+            "start": 1153,
+            "end": 1165,
+            "definition": "A dietary supplement containing a combination of vitamins and minerals. You reported taking one daily."
+        },
+        {
+            "term": "hypertension",
+            "start": 1412,
+            "end": 1424,
+            "definition": "The medical term for high blood pressure, a condition where the force of blood against your artery walls is consistently too high. Your father has this condition."
+        },
+        {
+            "term": "sudden cardiac death",
+            "start": 1488,
+            "end": 1508,
+            "definition": "An unexpected death caused by a sudden loss of heart function. Your doctor asked about this to check whether you have a family history of serious heart conditions."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "Palpitations",
+            "start": 20,
+            "end": 32,
+            "definition": "The sensation of irregular, skipping, or fluttering heartbeats that you have been experiencing."
+        },
+        {
+            "term": "lightheadedness",
+            "start": 78,
+            "end": 93,
+            "definition": "A brief feeling of dizziness or faintness, which you reported experiencing after stronger palpitations."
+        },
+        {
+            "term": "chest pain",
+            "start": 102,
+            "end": 112,
+            "definition": "Pain or discomfort in the chest area. You denied having this symptom."
+        },
+        {
+            "term": "syncope",
+            "start": 114,
+            "end": 121,
+            "definition": "The medical term for fainting or losing consciousness. You denied this symptom."
+        },
+        {
+            "term": "pre-syncope",
+            "start": 123,
+            "end": 134,
+            "definition": "The feeling of nearly fainting without actually losing consciousness. You denied this symptom."
+        },
+        {
+            "term": "shortness of breath",
+            "start": 140,
+            "end": 159,
+            "definition": "Difficulty breathing or feeling unable to get enough air. You denied this in both cardiovascular and respiratory reviews."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "Blood pressure",
+            "start": 14,
+            "end": 28,
+            "definition": "The force of blood pushing against the walls of your arteries. It is measured as two numbers: the pressure when the heart beats (systolic) over the pressure when the heart rests between beats (diastolic)."
+        },
+        {
+            "term": "140\/90 mmHg",
+            "start": 30,
+            "end": 41,
+            "definition": "Your blood pressure reading at this visit. 140 is the systolic (top number) and 90 is the diastolic (bottom number). This is considered elevated and at the borderline for high blood pressure."
+        },
+        {
+            "term": "mmHg",
+            "start": 37,
+            "end": 41,
+            "definition": "Stands for 'millimeters of mercury,' the standard unit of measurement for blood pressure."
+        },
+        {
+            "term": "Heart rate",
+            "start": 55,
+            "end": 65,
+            "definition": "The number of times your heart beats per minute. Your heart rate was 78 beats per minute, which is within the normal range."
+        },
+        {
+            "term": "bpm",
+            "start": 70,
+            "end": 73,
+            "definition": "Stands for 'beats per minute,' the unit used to measure heart rate."
+        },
+        {
+            "term": "EKG",
+            "start": 79,
+            "end": 82,
+            "definition": "Electrocardiogram — a test that records the electrical activity of your heart through small electrode patches placed on your skin. It helps detect irregular rhythms and other heart problems."
+        },
+        {
+            "term": "Cardiac auscultation",
+            "start": 87,
+            "end": 107,
+            "definition": "The process of listening to your heart sounds using a stethoscope. Your doctor used this to check for irregular beats and abnormal sounds like murmurs."
+        },
+        {
+            "term": "premature beats",
+            "start": 154,
+            "end": 169,
+            "definition": "Extra heartbeats that occur earlier than the normal rhythm. These are the 'skipped' or 'extra' beats you have been feeling."
+        },
+        {
+            "term": "murmur",
+            "start": 183,
+            "end": 189,
+            "definition": "An extra or unusual sound heard during a heartbeat, caused by turbulent blood flow through or near the heart. A very faint murmur was noted in your exam."
+        },
+        {
+            "term": "12-lead EKG",
+            "start": 241,
+            "end": 252,
+            "definition": "A standard electrocardiogram that uses 12 electrode positions on the body to create a detailed picture of the heart's electrical activity from multiple angles."
+        },
+        {
+            "term": "Normal sinus rhythm",
+            "start": 267,
+            "end": 286,
+            "definition": "The normal, regular electrical pattern of the heart, originating from the sinus node (the heart's natural pacemaker). This means your underlying heart rhythm is normal."
+        },
+        {
+            "term": "pr",
+            "start": 20,
+            "end": 22,
+            "definition": "The PR interval is a measurement on the EKG that shows how long it takes for the electrical signal to travel from the upper chambers to the lower chambers of the heart. Yours was normal."
+        },
+        {
+            "term": "QRS",
+            "start": 321,
+            "end": 324,
+            "definition": "The QRS complex is a measurement on the EKG representing the electrical activity when the heart's lower chambers (ventricles) contract. A normal QRS indicates the ventricles are conducting signals properly."
+        },
+        {
+            "term": "QT",
+            "start": 326,
+            "end": 328,
+            "definition": "The QT interval is an EKG measurement of the time it takes for the heart's lower chambers to electrically reset after each heartbeat. A normal QT means this process is happening at a healthy pace."
+        },
+        {
+            "term": "Premature ventricular contractions",
+            "start": 332,
+            "end": 366,
+            "definition": "Extra heartbeats that originate in the ventricles (lower chambers of the heart) and occur earlier than the normal beat. These are the 'skips' and 'flutters' you have been feeling."
+        },
+        {
+            "term": "PVCs",
+            "start": 368,
+            "end": 372,
+            "definition": "Abbreviation for premature ventricular contractions — extra heartbeats from the lower chambers of the heart. These are what your doctor identified on your EKG."
+        },
+        {
+            "term": "widened QRS complexes",
+            "start": 386,
+            "end": 407,
+            "definition": "On the EKG, the QRS complex appears wider than normal during a PVC because the electrical signal takes an abnormal path through the ventricles. This is a characteristic sign of PVCs."
+        },
+        {
+            "term": "Echocardiogram",
+            "start": 411,
+            "end": 425,
+            "definition": "An ultrasound of the heart that uses sound waves to create images showing the heart's structure, chambers, valves, and how well it pumps blood."
+        },
+        {
+            "term": "Left ventricular ejection fraction",
+            "start": 440,
+            "end": 474,
+            "definition": "A measurement of how much blood the left ventricle (the heart's main pumping chamber) pushes out with each beat. Your value of 55% is considered normal, meaning your heart is pumping effectively."
+        },
+        {
+            "term": "wall motion",
+            "start": 498,
+            "end": 509,
+            "definition": "How the walls of the heart move during each heartbeat. Normal wall motion means all parts of the heart muscle are contracting properly."
+        },
+        {
+            "term": "contractility",
+            "start": 514,
+            "end": 527,
+            "definition": "The ability of the heart muscle to squeeze and pump blood. Normal contractility means your heart muscle is functioning well."
+        },
+        {
+            "term": "structural heart disease",
+            "start": 542,
+            "end": 566,
+            "definition": "Any abnormality in the heart's physical structure, such as problems with the walls, chambers, or valves. Your echocardiogram showed no signs of this."
+        },
+        {
+            "term": "mitral valve regurgitation",
+            "start": 574,
+            "end": 600,
+            "definition": "A condition where the mitral valve (which separates the upper and lower left chambers of the heart) does not close completely, allowing a small amount of blood to leak backward. Yours was mild and considered an incidental finding."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "Premature ventricular contractions",
+            "start": 5,
+            "end": 39,
+            "definition": "Extra heartbeats originating in the ventricles (lower chambers of the heart). These are the skipped and fluttering beats you have been experiencing."
+        },
+        {
+            "term": "PVCs",
+            "start": 41,
+            "end": 45,
+            "definition": "Abbreviation for premature ventricular contractions — the extra heartbeats identified on your EKG."
+        },
+        {
+            "term": "sleep deprivation",
+            "start": 130,
+            "end": 147,
+            "definition": "Not getting enough sleep, which can stress the body and may contribute to extra heartbeats."
+        },
+        {
+            "term": "structural heart disease",
+            "start": 175,
+            "end": 199,
+            "definition": "Any physical abnormality of the heart's walls, chambers, or valves. Your echocardiogram showed no evidence of this, which is reassuring."
+        },
+        {
+            "term": "echocardiogram",
+            "start": 203,
+            "end": 217,
+            "definition": "An ultrasound of the heart used to examine its structure and pumping function. Yours was normal."
+        },
+        {
+            "term": "Normal sinus rhythm",
+            "start": 219,
+            "end": 238,
+            "definition": "The heart's normal, regular electrical pattern, meaning your underlying rhythm is healthy."
+        },
+        {
+            "term": "EKG",
+            "start": 252,
+            "end": 255,
+            "definition": "Electrocardiogram — a test that records the electrical activity of your heart to check for rhythm problems."
+        },
+        {
+            "term": "Elevated blood pressure",
+            "start": 263,
+            "end": 286,
+            "definition": "Blood pressure that is higher than the normal range. Your reading of 140\/90 mmHg is above the ideal level."
+        },
+        {
+            "term": "140\/90 mmHg",
+            "start": 288,
+            "end": 299,
+            "definition": "Your blood pressure reading at this visit, which is at the borderline for high blood pressure (hypertension)."
+        },
+        {
+            "term": "hypertension",
+            "start": 318,
+            "end": 330,
+            "definition": "The medical term for high blood pressure, a condition that can strain the heart and blood vessels over time if not managed."
+        },
+        {
+            "term": "caffeine intake",
+            "start": 100,
+            "end": 115,
+            "definition": "The amount of caffeine consumed, mainly from coffee. High caffeine intake can contribute to elevated blood pressure and extra heartbeats."
+        },
+        {
+            "term": "mitral valve regurgitation",
+            "start": 412,
+            "end": 438,
+            "definition": "A condition where the mitral valve doesn't close fully, allowing some blood to flow backward in the heart. Yours is mild and was found incidentally during your echocardiogram."
+        }
+    ],
+    "plan": [
+        {
+            "term": "propranolol",
+            "start": 11,
+            "end": 22,
+            "definition": "A medication in the beta-blocker class that slows the heart rate and reduces the force of heartbeats. It is being prescribed to help manage your extra heartbeats (PVCs) and borderline elevated blood pressure."
+        },
+        {
+            "term": "40 mg",
+            "start": 23,
+            "end": 28,
+            "definition": "The dose of propranolol prescribed for you — 40 milligrams per tablet."
+        },
+        {
+            "term": "orally",
+            "start": 29,
+            "end": 35,
+            "definition": "Taken by mouth, meaning you swallow the medication as a pill or tablet."
+        },
+        {
+            "term": "twice daily",
+            "start": 36,
+            "end": 47,
+            "definition": "A dosing schedule meaning you take the medication two times per day, typically once in the morning and once in the evening."
+        },
+        {
+            "term": "Beta-blocker",
+            "start": 54,
+            "end": 66,
+            "definition": "A class of medications that block the effects of adrenaline on the heart, helping to slow the heart rate and reduce blood pressure. Propranolol belongs to this class."
+        },
+        {
+            "term": "PVCs",
+            "start": 86,
+            "end": 90,
+            "definition": "Premature ventricular contractions — the extra heartbeats from the lower chambers of your heart that have been causing your symptoms."
+        },
+        {
+            "term": "blood pressure",
+            "start": 129,
+            "end": 143,
+            "definition": "The force of blood against the walls of your arteries. Managing it is important to reduce strain on your heart and blood vessels."
+        },
+        {
+            "term": "orthostatic lightheadedness",
+            "start": 196,
+            "end": 223,
+            "definition": "Dizziness or a feeling of faintness when you stand up quickly, caused by a temporary drop in blood pressure. This is a possible side effect of propranolol."
+        },
+        {
+            "term": "blunted exercise heart rate",
+            "start": 243,
+            "end": 270,
+            "definition": "A reduced increase in heart rate during physical activity. Beta-blockers like propranolol can prevent your heart rate from rising as much as usual during exercise."
+        },
+        {
+            "term": "tapered",
+            "start": 324,
+            "end": 331,
+            "definition": "Gradually reducing the dose of a medication over time rather than stopping it suddenly. Propranolol must be tapered to avoid rebound effects on the heart."
+        },
+        {
+            "term": "PVC trigger",
+            "start": 492,
+            "end": 503,
+            "definition": "A substance or factor that can provoke extra heartbeats (PVCs). Caffeine is a recognized trigger for PVCs."
+        },
+        {
+            "term": "Thyroid function tests",
+            "start": 799,
+            "end": 821,
+            "definition": "Blood tests that measure how well your thyroid gland is working. An overactive thyroid can cause palpitations and extra heartbeats, so this test helps rule that out."
+        },
+        {
+            "term": "Potassium level",
+            "start": 827,
+            "end": 842,
+            "definition": "A blood test measuring the amount of potassium in your blood. Abnormal potassium levels can cause or worsen irregular heartbeats."
+        },
+        {
+            "term": "Basic metabolic panel",
+            "start": 848,
+            "end": 869,
+            "definition": "A blood test that measures several important substances in your blood, including sugar, calcium, and kidney function markers. It helps identify conditions that could be contributing to your symptoms."
+        },
+        {
+            "term": "BMP",
+            "start": 871,
+            "end": 874,
+            "definition": "Abbreviation for basic metabolic panel — a standard set of blood tests checking kidney function, electrolytes, and blood sugar."
+        },
+        {
+            "term": "thyroid disease",
+            "start": 899,
+            "end": 914,
+            "definition": "A condition where the thyroid gland produces too much or too little thyroid hormone. Overactive thyroid (hyperthyroidism) can cause palpitations similar to yours."
+        },
+        {
+            "term": "electrolyte imbalances",
+            "start": 919,
+            "end": 941,
+            "definition": "Abnormal levels of minerals in your blood (such as potassium, sodium, and calcium) that are essential for normal heart rhythm and muscle function."
+        },
+        {
+            "term": "Holter monitor",
+            "start": 987,
+            "end": 1001,
+            "definition": "A small, portable device you wear for 24 hours (or longer) that continuously records your heart's electrical activity. It will help your doctor count how many PVCs you have and check for other rhythm problems."
+        },
+        {
+            "term": "PVC burden",
+            "start": 1054,
+            "end": 1064,
+            "definition": "The percentage or total number of heartbeats that are PVCs over a given time period. A higher PVC burden may require more aggressive treatment."
+        },
+        {
+            "term": "arrhythmias",
+            "start": 1090,
+            "end": 1101,
+            "definition": "Abnormal heart rhythms. The Holter monitor will check whether you have any other types of irregular heartbeats beyond PVCs."
+        }
+    ]
+}

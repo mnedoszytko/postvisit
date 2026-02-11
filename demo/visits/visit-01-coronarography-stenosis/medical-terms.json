@@ -1,0 +1,500 @@
+{
+    "chief_complaint": [
+        {
+            "term": "coronary CT scan",
+            "start": 29,
+            "end": 45,
+            "definition": "A specialized imaging test that uses X-rays to create detailed pictures of the blood vessels supplying your heart. This scan was done to check for any blockages in your heart's arteries."
+        },
+        {
+            "term": "dyspnea",
+            "start": 83,
+            "end": 90,
+            "definition": "The medical term for difficulty breathing or shortness of breath. In your case, this has been an ongoing symptom your doctor wants to evaluate."
+        },
+        {
+            "term": "fatigue",
+            "start": 95,
+            "end": 102,
+            "definition": "An overwhelming feeling of tiredness or exhaustion that doesn't improve with rest. Your doctor is assessing whether this could be related to your heart health."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "cardiology",
+            "start": 40,
+            "end": 50,
+            "definition": "The branch of medicine that deals with diseases and conditions of the heart and blood vessels."
+        },
+        {
+            "term": "coronary CT scan",
+            "start": 73,
+            "end": 89,
+            "definition": "A specialized imaging test using X-rays to visualize the arteries that supply blood to your heart, looking for blockages or narrowing."
+        },
+        {
+            "term": "stenosis",
+            "start": 145,
+            "end": 153,
+            "definition": "A narrowing of a blood vessel that can reduce blood flow. In your case, moderate narrowing was found in the arteries supplying your heart."
+        },
+        {
+            "term": "left and right coronary arteries",
+            "start": 161,
+            "end": 193,
+            "definition": "The two main blood vessels that supply oxygen-rich blood to your heart muscle. Both of yours showed some narrowing on imaging."
+        },
+        {
+            "term": "shortness of breath",
+            "start": 216,
+            "end": 235,
+            "definition": "Difficulty breathing or feeling like you can't get enough air. You experience this especially after physical activity."
+        },
+        {
+            "term": "anginal chest pain",
+            "start": 430,
+            "end": 448,
+            "definition": "A specific type of chest pain caused by reduced blood flow to the heart, often described as squeezing or pressure. You reported you do not have this classic type of pain."
+        },
+        {
+            "term": "post-exertional malaise",
+            "start": 463,
+            "end": 486,
+            "definition": "A worsening of symptoms or feeling of unwellness that occurs after physical activity. You described feeling unwell after walking in the park."
+        },
+        {
+            "term": "fatigue",
+            "start": 522,
+            "end": 529,
+            "definition": "An extreme feeling of tiredness or lack of energy. You described yours as severe and worsening over recent months."
+        },
+        {
+            "term": "musculoskeletal pain",
+            "start": 623,
+            "end": 643,
+            "definition": "Pain affecting the muscles, bones, joints, or surrounding tissues. In your case, this is related to your fibromyalgia."
+        },
+        {
+            "term": "fibromyalgia",
+            "start": 659,
+            "end": 671,
+            "definition": "A long-term condition that causes widespread pain throughout the body, along with fatigue and other symptoms. It is a known part of your medical history."
+        },
+        {
+            "term": "muscle cramps",
+            "start": 692,
+            "end": 705,
+            "definition": "Sudden, involuntary tightening of muscles that can be painful. You experience these frequently as part of your fibromyalgia."
+        },
+        {
+            "term": "Hypothyroidism",
+            "start": 795,
+            "end": 809,
+            "definition": "A condition where your thyroid gland does not produce enough thyroid hormones, which can cause fatigue, weight gain, and other symptoms. This is part of your medical history."
+        },
+        {
+            "term": "Urinary incontinence",
+            "start": 812,
+            "end": 832,
+            "definition": "The involuntary leakage of urine, meaning you may lose bladder control at times. This is a known condition in your history."
+        },
+        {
+            "term": "fibromyalgia",
+            "start": 659,
+            "end": 671,
+            "definition": "A chronic condition causing widespread body pain, fatigue, and tenderness. You have this along with ongoing muscle and joint pain."
+        },
+        {
+            "term": "chronic musculoskeletal pain",
+            "start": 615,
+            "end": 643,
+            "definition": "Long-lasting pain in the muscles and bones that has persisted over time, related to your fibromyalgia."
+        },
+        {
+            "term": "anemia",
+            "start": 897,
+            "end": 903,
+            "definition": "A condition where you don't have enough healthy red blood cells to carry adequate oxygen to your body's tissues, which can cause fatigue and weakness."
+        },
+        {
+            "term": "cerebral hemorrhage",
+            "start": 974,
+            "end": 993,
+            "definition": "Bleeding inside the brain, which is a type of stroke. Your mother passed away from this condition."
+        },
+        {
+            "term": "cerebral aneurysm",
+            "start": 1028,
+            "end": 1045,
+            "definition": "A weakened, bulging area in the wall of a blood vessel in the brain that can rupture and cause bleeding. Your sister passed away from this condition."
+        },
+        {
+            "term": "cerebrovascular",
+            "start": 1091,
+            "end": 1106,
+            "definition": "Relating to the blood vessels that supply the brain. You have expressed concern about whether your family history of brain bleeding conditions could be hereditary."
+        },
+        {
+            "term": "homeopathic supplements",
+            "start": 1176,
+            "end": 1199,
+            "definition": "Alternative health products based on the principle of using highly diluted substances. You currently take these as part of your health routine."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "fatigue",
+            "start": 42,
+            "end": 49,
+            "definition": "An overwhelming sense of tiredness that has been getting progressively worse for you over recent months."
+        },
+        {
+            "term": "post-exertional malaise",
+            "start": 70,
+            "end": 93,
+            "definition": "Feeling unwell or experiencing worsened symptoms after physical activity, such as you described after walking."
+        },
+        {
+            "term": "Dyspnea on exertion",
+            "start": 117,
+            "end": 136,
+            "definition": "Shortness of breath that occurs during or after physical activity, which is one of your main symptoms."
+        },
+        {
+            "term": "chest heaviness",
+            "start": 151,
+            "end": 166,
+            "definition": "A sensation of weight or pressure on the chest. You experience this after physical effort rather than as sharp pain."
+        },
+        {
+            "term": "fibromyalgia",
+            "start": 268,
+            "end": 280,
+            "definition": "A chronic condition causing widespread pain throughout the body. This is a known part of your medical history."
+        },
+        {
+            "term": "muscle cramps",
+            "start": 292,
+            "end": 305,
+            "definition": "Sudden, painful tightening of muscles that you experience frequently."
+        },
+        {
+            "term": "Urinary incontinence",
+            "start": 367,
+            "end": 387,
+            "definition": "The involuntary leakage of urine, which is a chronic condition you are managing."
+        },
+        {
+            "term": "iron levels",
+            "start": 458,
+            "end": 469,
+            "definition": "The amount of iron in your blood, which is essential for making red blood cells. You report a history of low levels."
+        },
+        {
+            "term": "anemia",
+            "start": 484,
+            "end": 490,
+            "definition": "A condition where you have fewer red blood cells than normal, which can contribute to fatigue and weakness."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "coronary CT scan",
+            "start": 120,
+            "end": 136,
+            "definition": "A specialized heart imaging test that was the focus of this visit, used to look at the blood vessels supplying your heart."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "coronary artery stenosis",
+            "start": 14,
+            "end": 38,
+            "definition": "Narrowing of the blood vessels that supply your heart muscle. Yours is rated as moderate, meaning the arteries are partially blocked but not completely."
+        },
+        {
+            "term": "coronary arteries",
+            "start": 57,
+            "end": 74,
+            "definition": "The blood vessels that deliver oxygen-rich blood to your heart muscle. Both your left and right coronary arteries show some narrowing."
+        },
+        {
+            "term": "coronary CT scan",
+            "start": 107,
+            "end": 123,
+            "definition": "The imaging test that was used to visualize the narrowing in your heart's arteries."
+        },
+        {
+            "term": "exertional dyspnea",
+            "start": 258,
+            "end": 276,
+            "definition": "Shortness of breath that occurs with physical activity. Your doctor is investigating whether your coronary artery narrowing could be causing this symptom."
+        },
+        {
+            "term": "chest heaviness",
+            "start": 281,
+            "end": 296,
+            "definition": "The sensation of weight or pressure on your chest that you feel after exertion."
+        },
+        {
+            "term": "Dyspnea on exertion",
+            "start": 350,
+            "end": 369,
+            "definition": "Shortness of breath triggered by physical activity. The exact cause of yours is still uncertain and requires further testing."
+        },
+        {
+            "term": "coronary stenosis",
+            "start": 434,
+            "end": 451,
+            "definition": "The narrowing found in your heart's arteries, which may or may not be the cause of your breathing difficulties."
+        },
+        {
+            "term": "LDL cholesterol",
+            "start": 516,
+            "end": 531,
+            "definition": "Often called 'bad cholesterol,' this is a type of fat in your blood that can build up in artery walls and contribute to blockages."
+        },
+        {
+            "term": "secondary prevention",
+            "start": 536,
+            "end": 556,
+            "definition": "Medical steps taken to prevent worsening or complications in someone who already has a known disease. Since you have coronary artery plaques, your treatment goals are stricter."
+        },
+        {
+            "term": "LDL",
+            "start": 516,
+            "end": 519,
+            "definition": "Low-density lipoprotein, the 'bad' cholesterol that contributes to plaque buildup in arteries."
+        },
+        {
+            "term": "mg\/dL",
+            "start": 573,
+            "end": 578,
+            "definition": "Milligrams per deciliter — a unit of measurement used for blood test results like cholesterol levels."
+        },
+        {
+            "term": "coronary artery plaques",
+            "start": 632,
+            "end": 655,
+            "definition": "Fatty deposits that have built up inside the walls of your heart's arteries, which can narrow them and reduce blood flow."
+        },
+        {
+            "term": "Lipid-lowering therapy",
+            "start": 657,
+            "end": 679,
+            "definition": "Medications designed to reduce cholesterol and other fats in your blood to help protect your heart and arteries."
+        },
+        {
+            "term": "anemia",
+            "start": 710,
+            "end": 716,
+            "definition": "A condition with lower-than-normal red blood cells. Yours is mild and has been present for some time."
+        },
+        {
+            "term": "ferritin",
+            "start": 737,
+            "end": 745,
+            "definition": "A blood protein that stores iron. Your level of 58 is normal, which suggests your anemia is not caused by iron deficiency."
+        },
+        {
+            "term": "MCV",
+            "start": 759,
+            "end": 762,
+            "definition": "Mean corpuscular volume — a measurement of the average size of your red blood cells. A normal MCV helps your doctor determine the type of anemia you have."
+        },
+        {
+            "term": "iron-deficiency",
+            "start": 780,
+            "end": 795,
+            "definition": "A type of anemia caused by not having enough iron to make red blood cells. Your test results suggest this is not the cause of your anemia."
+        },
+        {
+            "term": "Fibromyalgia",
+            "start": 812,
+            "end": 824,
+            "definition": "A chronic condition causing widespread body pain, fatigue, and tenderness. Yours is ongoing with muscle pain and cramps."
+        },
+        {
+            "term": "Hypothyroidism",
+            "start": 892,
+            "end": 906,
+            "definition": "A condition where your thyroid gland doesn't produce enough hormones. Yours is being managed."
+        },
+        {
+            "term": "Urinary incontinence",
+            "start": 928,
+            "end": 948,
+            "definition": "The involuntary loss of bladder control, which is being managed as part of your care."
+        }
+    ],
+    "plan": [
+        {
+            "term": "Coronary angiography",
+            "start": 5,
+            "end": 25,
+            "definition": "A procedure where a thin tube (catheter) is inserted into a blood vessel and guided to your heart, then dye is injected so X-ray images can show whether your arteries are significantly blocked."
+        },
+        {
+            "term": "FFR",
+            "start": 49,
+            "end": 52,
+            "definition": "Fractional Flow Reserve — a special measurement taken during angiography using a pressure wire to determine if a narrowing in your artery is actually reducing blood flow enough to cause symptoms."
+        },
+        {
+            "term": "fasting",
+            "start": 277,
+            "end": 284,
+            "definition": "Not eating or drinking before a medical procedure. You will need to arrive without having eaten for your angiography appointment."
+        },
+        {
+            "term": "radial",
+            "start": 311,
+            "end": 317,
+            "definition": "Relating to the radial artery in your forearm\/wrist. This is the blood vessel where the catheter will be inserted to access your heart's arteries."
+        },
+        {
+            "term": "arterial access",
+            "start": 326,
+            "end": 341,
+            "definition": "The point where a thin tube is inserted into an artery to begin the catheter procedure. In your case, this will be through a blood vessel in your forearm."
+        },
+        {
+            "term": "catheter",
+            "start": 346,
+            "end": 354,
+            "definition": "A thin, flexible tube that will be carefully threaded through your blood vessel from your forearm up to your heart's arteries during the angiography procedure."
+        },
+        {
+            "term": "coronary arteries",
+            "start": 370,
+            "end": 387,
+            "definition": "The blood vessels that supply oxygen-rich blood to your heart. These are the arteries being examined for significant blockages."
+        },
+        {
+            "term": "angiographic imaging",
+            "start": 392,
+            "end": 412,
+            "definition": "X-ray pictures taken after contrast dye is injected into your arteries, allowing the doctor to see the inside of your coronary arteries in detail."
+        },
+        {
+            "term": "pressure wire",
+            "start": 417,
+            "end": 430,
+            "definition": "A very thin wire with a sensor at its tip that is threaded into your coronary artery to measure blood pressure on either side of a narrowing, helping determine if the blockage is significant."
+        },
+        {
+            "term": "hemodynamic significance",
+            "start": 447,
+            "end": 471,
+            "definition": "Whether a narrowing in your artery is severe enough to actually reduce blood flow to your heart muscle. This is what the FFR measurement will determine."
+        },
+        {
+            "term": "stenoses",
+            "start": 475,
+            "end": 483,
+            "definition": "The plural form of stenosis, meaning multiple narrowings in your blood vessels. You have narrowings in both your left and right coronary arteries."
+        },
+        {
+            "term": "Asaflow",
+            "start": 496,
+            "end": 503,
+            "definition": "A brand name for low-dose aspirin in a special coating to protect your stomach. It is being prescribed as a blood thinner to help protect your heart."
+        },
+        {
+            "term": "low-dose aspirin",
+            "start": 505,
+            "end": 521,
+            "definition": "A small dose of aspirin used not for pain, but to help prevent blood clots from forming in your arteries, which could lead to a heart attack."
+        },
+        {
+            "term": "cardioprotection",
+            "start": 547,
+            "end": 563,
+            "definition": "Measures taken to protect the heart from damage or disease progression. Your new medications are aimed at reducing your heart-related risks."
+        },
+        {
+            "term": "anti-platelet therapy",
+            "start": 565,
+            "end": 586,
+            "definition": "Treatment that prevents blood cells called platelets from clumping together and forming clots. This helps keep blood flowing smoothly through your narrowed arteries."
+        },
+        {
+            "term": "myocardial infarction",
+            "start": 605,
+            "end": 626,
+            "definition": "The medical term for a heart attack, which occurs when blood flow to part of the heart is blocked. Your new medications aim to reduce this risk."
+        },
+        {
+            "term": "coronary artery disease",
+            "start": 645,
+            "end": 668,
+            "definition": "A condition where the arteries supplying your heart become narrowed or blocked by plaque buildup. This has been confirmed by your CT scan results."
+        },
+        {
+            "term": "Crestor",
+            "start": 683,
+            "end": 690,
+            "definition": "A brand name for rosuvastatin, a cholesterol-lowering medication. It is being prescribed to lower your LDL cholesterol to a safer level given your coronary artery plaques."
+        },
+        {
+            "term": "rosuvastatin",
+            "start": 692,
+            "end": 704,
+            "definition": "A statin medication that lowers LDL ('bad') cholesterol in your blood. It works by reducing the amount of cholesterol your liver produces."
+        },
+        {
+            "term": "LDL cholesterol",
+            "start": 730,
+            "end": 745,
+            "definition": "Low-density lipoprotein cholesterol, known as 'bad' cholesterol, which contributes to plaque buildup in arteries. Yours needs to be lowered further."
+        },
+        {
+            "term": "coronary plaques",
+            "start": 802,
+            "end": 818,
+            "definition": "Fatty deposits inside the walls of your heart's arteries. Because you have these, your target cholesterol level is stricter than for someone without them."
+        },
+        {
+            "term": "myalgias",
+            "start": 972,
+            "end": 980,
+            "definition": "Muscle pains or aches. This is a potential side effect of the new cholesterol medication you should watch for."
+        },
+        {
+            "term": "statin-related myopathy",
+            "start": 1111,
+            "end": 1134,
+            "definition": "Muscle pain or weakness caused by statin medications like rosuvastatin. Because you already have fibromyalgia with muscle pain, it may be harder to tell if the statin is causing additional muscle problems."
+        },
+        {
+            "term": "Coronary angiography",
+            "start": 5,
+            "end": 25,
+            "definition": "The catheter-based procedure scheduled for March 3 to directly examine your coronary arteries and measure blood flow through any narrowings."
+        },
+        {
+            "term": "anemia",
+            "start": 1344,
+            "end": 1350,
+            "definition": "Your mild, chronic condition of having fewer red blood cells than normal. Since your iron storage (ferritin) and red blood cell size (MCV) are normal, no further testing is needed at this time."
+        },
+        {
+            "term": "Ferritin",
+            "start": 1367,
+            "end": 1375,
+            "definition": "A protein that stores iron in your body. Your normal level indicates your anemia is not due to iron deficiency."
+        },
+        {
+            "term": "MCV",
+            "start": 1384,
+            "end": 1387,
+            "definition": "Mean corpuscular volume — a measure of the average size of your red blood cells, which is normal in your case."
+        },
+        {
+            "term": "iron-deficiency",
+            "start": 1439,
+            "end": 1454,
+            "definition": "A condition where the body lacks sufficient iron, often causing anemia. Your tests show this is not the cause of your anemia."
+        }
+    ]
+}

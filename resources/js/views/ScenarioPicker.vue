@@ -4,7 +4,7 @@
       <div class="text-center mb-8">
         <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">PostVisit.ai — Patient Portraits</h1>
         <p class="text-sm text-gray-500 mt-2 max-w-2xl mx-auto">
-          Select a patient to start a demo session. Each scenario creates a fresh session with realistic clinical data, visit transcript, and AI-generated SOAP notes.
+          Select a patient to start a demo session. Each scenario loads a realistic visit transcript and clinical data relevant to the individual pathology.
         </p>
       </div>
 

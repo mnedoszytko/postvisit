@@ -123,13 +123,16 @@
             <!-- Doctor's Recommendations -->
             <div v-if="recommendations.length" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
               <div class="p-4">
-                <div class="flex items-center gap-2 mb-3">
-                  <span class="w-6 h-6 flex items-center justify-center rounded-lg shrink-0 bg-amber-50">
-                    <svg class="w-3.5 h-3.5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                    </svg>
-                  </span>
-                  <h3 class="font-semibold text-gray-800">Doctor's Recommendations</h3>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 flex items-center justify-center rounded-lg shrink-0 bg-amber-50">
+                      <svg class="w-3.5 h-3.5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                      </svg>
+                    </span>
+                    <h3 class="font-semibold text-gray-800">Doctor's Recommendations</h3>
+                  </div>
+                  <AskAiButton @click="openChat('Doctor\'s Recommendations')" />
                 </div>
                 <div class="space-y-2">
                   <div
@@ -149,13 +152,16 @@
             <!-- Next Actions Checklist -->
             <div v-if="nextActions.length" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
               <div class="p-4">
-                <div class="flex items-center gap-2 mb-3">
-                  <span class="w-6 h-6 flex items-center justify-center rounded-lg shrink-0 bg-emerald-50">
-                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </span>
-                  <h3 class="font-semibold text-gray-800">Next Actions</h3>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 flex items-center justify-center rounded-lg shrink-0 bg-emerald-50">
+                      <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </span>
+                    <h3 class="font-semibold text-gray-800">Next Actions</h3>
+                  </div>
+                  <AskAiButton @click="openChat('Next Actions')" />
                 </div>
                 <div class="space-y-1.5">
                   <label
@@ -188,7 +194,10 @@
                     {{ visit.observations.length }}
                   </span>
                 </div>
-                <span class="text-gray-400 text-sm">{{ obsExpanded ? 'Collapse' : 'Expand' }}</span>
+                <div class="flex items-center gap-2">
+                  <AskAiButton @click.stop="openChat('Test Results & Observations')" />
+                  <span class="text-gray-400 text-sm">{{ obsExpanded ? 'Collapse' : 'Expand' }}</span>
+                </div>
               </button>
               <div v-if="obsExpanded" class="px-4 pb-4">
                 <LabResults :observations="visit.observations" />
@@ -199,7 +208,10 @@
             <div v-if="visit.conditions?.length" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
               <button class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors" @click="condExpanded = !condExpanded">
                 <h3 class="font-semibold text-gray-800">Diagnosis</h3>
-                <span class="text-gray-400 text-sm">{{ condExpanded ? 'Collapse' : 'Expand' }}</span>
+                <div class="flex items-center gap-2">
+                  <AskAiButton @click.stop="openChat('Diagnosis')" />
+                  <span class="text-gray-400 text-sm">{{ condExpanded ? 'Collapse' : 'Expand' }}</span>
+                </div>
               </button>
               <div v-if="condExpanded" class="px-4 pb-4 space-y-2">
                 <div v-for="cond in visit.conditions" :key="cond.id" class="flex items-start gap-3">
@@ -216,7 +228,10 @@
             <div v-if="visit.prescriptions?.length" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
               <button class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors" @click="rxExpanded = !rxExpanded">
                 <h3 class="font-semibold text-gray-800">Medications Prescribed</h3>
-                <span class="text-gray-400 text-sm">{{ rxExpanded ? 'Collapse' : 'Expand' }}</span>
+                <div class="flex items-center gap-2">
+                  <AskAiButton @click.stop="openChat('Medications Prescribed')" />
+                  <span class="text-gray-400 text-sm">{{ rxExpanded ? 'Collapse' : 'Expand' }}</span>
+                </div>
               </button>
               <div v-if="rxExpanded" class="px-4 pb-4 space-y-3">
                 <div v-for="rx in visit.prescriptions" :key="rx.id" class="border-b border-gray-100 pb-2 last:border-0">
@@ -237,7 +252,10 @@
                   <h3 class="font-semibold text-gray-800">AI-Extracted Clinical Entities</h3>
                   <span class="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">AI</span>
                 </div>
-                <span class="text-gray-400 text-sm">{{ entitiesExpanded ? 'Collapse' : 'Expand' }}</span>
+                <div class="flex items-center gap-2">
+                  <AskAiButton @click.stop="openChat('AI-Extracted Clinical Entities')" />
+                  <span class="text-gray-400 text-sm">{{ entitiesExpanded ? 'Collapse' : 'Expand' }}</span>
+                </div>
               </button>
               <div v-if="entitiesExpanded" class="px-4 pb-4 space-y-5">
                 <div v-for="(items, category) in entities" :key="category">
@@ -325,7 +343,10 @@
                     {{ visit.transcript.processing_status }}
                   </span>
                 </div>
-                <span class="text-gray-400 text-sm">{{ transcriptExpanded ? 'Collapse' : 'Expand' }}</span>
+                <div class="flex items-center gap-2">
+                  <AskAiButton @click.stop="openChat('Visit Transcript')" />
+                  <span class="text-gray-400 text-sm">{{ transcriptExpanded ? 'Collapse' : 'Expand' }}</span>
+                </div>
               </button>
               <div v-if="transcriptExpanded" class="px-4 pb-4 max-h-96 overflow-y-auto">
                 <div v-if="visit.transcript.diarized_transcript?.clean_text" class="text-sm leading-relaxed whitespace-pre-wrap space-y-1">
@@ -409,6 +430,7 @@ import LabResults from '@/components/LabResults.vue';
 import ChatPanel from '@/components/ChatPanel.vue';
 import TermPopover from '@/components/TermPopover.vue';
 import VisitAttachments from '@/components/VisitAttachments.vue';
+import AskAiButton from '@/components/AskAiButton.vue';
 
 const route = useRoute();
 const visitStore = useVisitStore();

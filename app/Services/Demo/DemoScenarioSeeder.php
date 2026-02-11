@@ -33,6 +33,12 @@ class DemoScenarioSeeder
             $scenario['transcript_file'] = $scenario['source_dir'].'/raw-transcript.txt';
         }
 
+        // Load pre-generated SOAP note / medical terms from notes_dir (for inline-config scenarios)
+        if (isset($scenario['notes_dir']) && ! isset($scenario['visit_note'])) {
+            $notesDir = base_path($scenario['notes_dir']);
+            $scenario['visit_note'] = $this->loadNotesFromDir($notesDir);
+        }
+
         $org = $this->findOrCreateOrganization();
         $doctorUser = $this->findOrCreateDoctor($org);
         $practitioner = $doctorUser->practitioner;
@@ -57,9 +63,10 @@ class DemoScenarioSeeder
      * Load patient data from a source directory's patient-profile.json.
      *
      * Transforms the simplified JSON format into the full format expected
-     * by the existing seeder methods.
+     * by the existing seeder methods. Also loads pre-generated SOAP notes
+     * and medical terms if available.
      *
-     * @return array{patient: array, conditions: array, medications: array, observations: array}
+     * @return array{patient: array, conditions: array, medications: array, observations: array, visit_note?: array}
      */
     public function loadFromSourceDir(string $sourceDir): array
     {
@@ -70,12 +77,80 @@ class DemoScenarioSeeder
 
         $json = json_decode(file_get_contents($jsonPath), true);
 
-        return [
+        $result = [
             'patient' => $this->transformPatient($json),
             'conditions' => $this->transformConditions($json['conditions'] ?? []),
             'medications' => $this->transformMedications($json['medications'] ?? []),
             'observations' => $this->transformObservations($json),
         ];
+
+        // Load pre-generated SOAP note if available
+        $soapPath = $sourceDir.'/soap-note.json';
+        if (file_exists($soapPath)) {
+            $soapData = json_decode(file_get_contents($soapPath), true);
+            $soap = $soapData['soap_note'] ?? [];
+
+            if (! empty($soap)) {
+                $visitNote = [
+                    'composition_type' => 'progress_note',
+                    'chief_complaint' => $soap['chief_complaint'] ?? null,
+                    'history_of_present_illness' => $soap['history_of_present_illness'] ?? null,
+                    'review_of_systems' => $soap['review_of_systems'] ?? null,
+                    'physical_exam' => $soap['physical_exam'] ?? null,
+                    'assessment' => $soap['assessment'] ?? null,
+                    'plan' => $soap['plan'] ?? null,
+                    'follow_up' => $soap['follow_up'] ?? null,
+                ];
+
+                // Load pre-generated medical terms if available
+                $termsPath = $sourceDir.'/medical-terms.json';
+                if (file_exists($termsPath)) {
+                    $visitNote['medical_terms'] = json_decode(file_get_contents($termsPath), true);
+                }
+
+                $result['visit_note'] = $visitNote;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Load pre-generated SOAP note and medical terms from a directory.
+     *
+     * @return array<string, mixed>
+     */
+    private function loadNotesFromDir(string $dir): array
+    {
+        $soapPath = $dir.'/soap-note.json';
+        if (! file_exists($soapPath)) {
+            return [];
+        }
+
+        $soapData = json_decode(file_get_contents($soapPath), true);
+        $soap = $soapData['soap_note'] ?? [];
+
+        if (empty($soap)) {
+            return [];
+        }
+
+        $visitNote = [
+            'composition_type' => 'progress_note',
+            'chief_complaint' => $soap['chief_complaint'] ?? null,
+            'history_of_present_illness' => $soap['history_of_present_illness'] ?? null,
+            'review_of_systems' => $soap['review_of_systems'] ?? null,
+            'physical_exam' => $soap['physical_exam'] ?? null,
+            'assessment' => $soap['assessment'] ?? null,
+            'plan' => $soap['plan'] ?? null,
+            'follow_up' => $soap['follow_up'] ?? null,
+        ];
+
+        $termsPath = $dir.'/medical-terms.json';
+        if (file_exists($termsPath)) {
+            $visitNote['medical_terms'] = json_decode(file_get_contents($termsPath), true);
+        }
+
+        return $visitNote;
     }
 
     /**

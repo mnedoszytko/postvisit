@@ -42,6 +42,8 @@ return [
             'icon' => 'heart-pulse',
             'color' => 'emerald',
             'photo_dir' => 'demo/visits/visit-00-pvcs-palpitations',
+            'transcript_file' => 'demo/visits/visit-00-pvcs-palpitations/raw-transcript.txt',
+            'notes_dir' => 'demo/visits/visit-00-pvcs-palpitations',
 
             'patient' => [
                 'first_name' => 'Alex',
