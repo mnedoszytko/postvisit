@@ -23,7 +23,7 @@ return new class extends Migration
             // SQLite: recreate table without CHECK constraints
             DB::statement('CREATE TABLE documents_new (
                 id varchar NOT NULL PRIMARY KEY,
-                fhir_document_reference_id varchar NOT NULL,
+                fhir_document_reference_id varchar NOT NULL UNIQUE,
                 patient_id varchar NOT NULL REFERENCES patients(id),
                 visit_id varchar REFERENCES visits(id),
                 title varchar NOT NULL,
