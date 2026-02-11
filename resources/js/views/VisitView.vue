@@ -219,6 +219,7 @@
         v-if="chatOpen"
         :visit-id="route.params.id"
         :initial-context="chatContext"
+        :highlight="chatHighlight"
         @close="chatOpen = false"
       />
 
@@ -247,6 +248,7 @@ const route = useRoute();
 const visitStore = useVisitStore();
 const chatOpen = ref(false);
 const chatContext = ref('');
+const chatHighlight = ref(false);
 const obsExpanded = ref(false);
 const condExpanded = ref(false);
 const rxExpanded = ref(false);
@@ -419,6 +421,11 @@ function showTermPopover(payload) {
 
 function openChat(context = '') {
     popoverVisible.value = false;
+    if (chatOpen.value) {
+        // Chat already open — trigger highlight animation to signal context change
+        chatHighlight.value = true;
+        setTimeout(() => { chatHighlight.value = false; }, 600);
+    }
     chatContext.value = context;
     chatOpen.value = true;
 }

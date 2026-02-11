@@ -1,5 +1,10 @@
 <template>
-  <div class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white border-l border-gray-200 shadow-xl z-50 flex flex-col">
+  <div
+    :class="[
+      'fixed inset-y-0 right-0 w-full sm:w-96 bg-white border-l shadow-xl z-50 flex flex-col transition-all duration-500',
+      highlight ? 'border-emerald-400 shadow-emerald-200/50 ring-2 ring-emerald-300' : 'border-gray-200'
+    ]"
+  >
     <!-- Header -->
     <div class="h-16 border-b border-gray-200 flex items-center justify-between px-4 shrink-0">
       <div class="flex items-center gap-2">
@@ -137,6 +142,7 @@ function parseSources(text) {
 const props = defineProps({
     visitId: { type: String, required: true },
     initialContext: { type: String, default: '' },
+    highlight: { type: Boolean, default: false },
 });
 
 defineEmits(['close']);
@@ -231,6 +237,13 @@ function scrollToBottom() {
 }
 
 watch(() => chatStore.messages, scrollToBottom, { deep: true });
+
+// When context changes while chat is already open, pre-fill the new context
+watch(() => props.initialContext, (newCtx, oldCtx) => {
+    if (newCtx && newCtx !== oldCtx) {
+        message.value = `Explain: ${newCtx}`;
+    }
+});
 
 onMounted(() => {
     chatStore.clearMessages();
