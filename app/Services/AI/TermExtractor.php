@@ -35,7 +35,7 @@ class TermExtractor
 
         $response = $this->client->chat($systemPrompt, [
             ['role' => 'user', 'content' => $userMessage],
-        ], ['max_tokens' => 4096]);
+        ], ['max_tokens' => 8192]);
 
         $terms = $this->parseResponse($response);
         $validated = $this->validateOffsets($visitNote, $terms);
@@ -118,19 +118,33 @@ class TermExtractor
                 }
 
                 $actual = substr($text, $start, $length);
-                if (strtolower($actual) === strtolower($entry['term'])) {
-                    $validTerms[] = [
+                $matched = strtolower($actual) === strtolower($entry['term']);
+
+                // Fallback: if offset is wrong, search for the term in the text
+                if (! $matched) {
+                    $pos = stripos($text, $entry['term']);
+                    if ($pos !== false) {
+                        $start = $pos;
+                        $end = $pos + strlen($entry['term']);
+                        $actual = substr($text, $start, strlen($entry['term']));
+                        $matched = true;
+                    }
+                }
+
+                if ($matched) {
+                    $validated_entry = [
                         'term' => $actual,
                         'start' => $start,
                         'end' => $end,
                     ];
+                    if (! empty($entry['definition'])) {
+                        $validated_entry['definition'] = $entry['definition'];
+                    }
+                    $validTerms[] = $validated_entry;
                 } else {
-                    Log::channel('ai')->debug('TermExtractor: offset mismatch', [
+                    Log::channel('ai')->debug('TermExtractor: term not found in text', [
                         'section' => $section,
-                        'expected' => $entry['term'],
-                        'actual' => $actual,
-                        'start' => $start,
-                        'end' => $end,
+                        'term' => $entry['term'],
                     ]);
                 }
             }
