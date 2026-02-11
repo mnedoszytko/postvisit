@@ -171,6 +171,39 @@ class TranscriptController extends Controller
         ]);
     }
 
+    /**
+     * Transcribe a single audio chunk and return the text without creating a Transcript record.
+     * Used by the frontend for chunked uploads of long recordings (>10 min).
+     */
+    public function transcribeChunk(Request $request, Visit $visit, SpeechToTextProvider $stt): JsonResponse
+    {
+        $request->validate([
+            'audio' => ['required', 'file', 'mimes:mp3,mp4,m4a,wav,webm,ogg', 'max:102400'],
+            'chunk_index' => ['required', 'integer', 'min:0'],
+            'total_chunks' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $storagePath = $request->file('audio')->store(
+            "transcripts/{$visit->id}/chunks",
+            'local'
+        );
+
+        $absolutePath = Storage::disk('local')->path($storagePath);
+
+        $text = $stt->transcribe($absolutePath);
+
+        // Clean up chunk file after transcription
+        Storage::disk('local')->delete($storagePath);
+
+        return response()->json([
+            'data' => [
+                'text' => $text,
+                'chunk_index' => (int) $request->input('chunk_index'),
+                'total_chunks' => (int) $request->input('total_chunks'),
+            ],
+        ]);
+    }
+
     public function status(Visit $visit): JsonResponse
     {
         $transcript = $visit->transcript;

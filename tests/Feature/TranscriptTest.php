@@ -239,4 +239,29 @@ class TranscriptTest extends TestCase
 
         $response->assertStatus(404);
     }
+
+    public function test_transcribe_chunk_validates_required_fields(): void
+    {
+        $response = $this->actingAs($this->user)->postJson(
+            "/api/v1/visits/{$this->visit->id}/transcript/transcribe-chunk",
+            []
+        );
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['audio', 'chunk_index', 'total_chunks']);
+    }
+
+    public function test_transcribe_chunk_requires_valid_chunk_index(): void
+    {
+        $response = $this->actingAs($this->user)->postJson(
+            "/api/v1/visits/{$this->visit->id}/transcript/transcribe-chunk",
+            [
+                'chunk_index' => -1,
+                'total_chunks' => 3,
+            ]
+        );
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['audio', 'chunk_index']);
+    }
 }
