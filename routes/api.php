@@ -58,6 +58,10 @@ Route::prefix('v1')->group(function () {
 
         // Documents (standalone)
         Route::get('documents/{document}', [DocumentController::class, 'show']);
+        Route::get('documents/{document}/download', [DocumentController::class, 'download']);
+        Route::get('documents/{document}/thumbnail', [DocumentController::class, 'thumbnail']);
+        Route::get('documents/{document}/analysis', [DocumentController::class, 'analysisStatus']);
+        Route::delete('documents/{document}', [DocumentController::class, 'destroy']);
 
         // Practitioners (for visit form dropdown)
         Route::get('practitioners', [VisitController::class, 'practitioners']);
@@ -88,6 +92,10 @@ Route::prefix('v1')->group(function () {
 
             // Prescriptions (visit-scoped)
             Route::get('prescriptions', [PrescriptionController::class, 'visitPrescriptions']);
+
+            // Documents (visit-scoped)
+            Route::get('documents', [DocumentController::class, 'visitDocuments']);
+            Route::post('documents', [DocumentController::class, 'store']);
 
             // Feedback / Messages
             Route::post('messages', [FeedbackController::class, 'store']);

@@ -90,6 +90,9 @@
           </div>
         </div>
 
+        <!-- Patient Attachments -->
+        <VisitAttachments :visit-id="route.params.id" />
+
         <!-- AI-Extracted Entities (from transcript analysis) -->
         <div v-if="entities && Object.keys(entities).length" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
           <button class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors" @click="entitiesExpanded = !entitiesExpanded">
@@ -243,6 +246,7 @@ import PatientLayout from '@/layouts/PatientLayout.vue';
 import VisitSection from '@/components/VisitSection.vue';
 import ChatPanel from '@/components/ChatPanel.vue';
 import TermPopover from '@/components/TermPopover.vue';
+import VisitAttachments from '@/components/VisitAttachments.vue';
 
 const route = useRoute();
 const visitStore = useVisitStore();
