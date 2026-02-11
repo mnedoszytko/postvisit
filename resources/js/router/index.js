@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/auth';
 
 import Landing from '@/views/Landing.vue';
 import Login from '@/views/Login.vue';
+import Register from '@/views/Register.vue';
 import PatientProfile from '@/views/PatientProfile.vue';
 import CompanionScribe from '@/views/CompanionScribe.vue';
 import Processing from '@/views/Processing.vue';
@@ -23,6 +24,11 @@ const routes = [
         path: '/login',
         name: 'login',
         component: Login,
+    },
+    {
+        path: '/register',
+        name: 'register',
+        component: Register,
     },
     {
         path: '/profile',

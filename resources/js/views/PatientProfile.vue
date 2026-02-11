@@ -33,6 +33,7 @@
               {{ visit.started_at ? new Date(visit.started_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '' }}
               <span v-if="visit.practitioner" class="ml-2">
                 &middot; Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
+                <span v-if="visit.practitioner.primary_specialty" class="text-gray-400">, {{ visit.practitioner.primary_specialty }}</span>
               </span>
             </p>
           </router-link>

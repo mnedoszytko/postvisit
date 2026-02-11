@@ -22,6 +22,10 @@ class Document extends Model
         'file_path',
         'file_size',
         'file_hash',
+        'ai_analysis',
+        'analysis_status',
+        'analyzed_at',
+        'analysis_error',
         'status',
         'document_date',
         'confidentiality_level',
@@ -32,6 +36,8 @@ class Document extends Model
     protected function casts(): array
     {
         return [
+            'ai_analysis' => 'array',
+            'analyzed_at' => 'datetime',
             'document_date' => 'date',
             'retention_until' => 'date',
         ];

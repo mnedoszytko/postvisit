@@ -1,6 +1,6 @@
 # PostVisit.ai API Reference
 
-Base URL: `/api/v1/`
+Base URL: `/api/v1/` — 51 endpoints
 
 All responses follow the format: `{ "data": ... }` for success, `{ "error": { "message": "..." } }` for errors.
 
@@ -116,6 +116,15 @@ View a single document with patient and visit info. **Requires auth.**
 
 ---
 
+## Practitioners
+
+### GET /practitioners
+List all practitioners. **Requires auth.**
+
+**Response:** `200` `{ data: [{ id, first_name, last_name, primary_specialty, medical_degree }] }`
+
+---
+
 ## Visits
 
 All visit endpoints require authentication.
@@ -159,7 +168,7 @@ Upload a transcript for a visit.
 **Body:**
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
-| raw_transcript | string | yes | Full text |
+| raw_transcript | string | yes* | Full text (*required unless `use_demo_transcript` is true) |
 | source_type | string | yes | `ambient_phone`, `ambient_device`, `manual_upload` |
 | stt_provider | string | no | defaults to `none` |
 | audio_duration_seconds | integer | no | defaults to `0` |
@@ -170,6 +179,41 @@ Upload a transcript for a visit.
 **Response:** `201` `{ data: { id, processing_status: "pending" } }`
 
 When `process: true` is set, `processing_status` will be `"processing"` in the response.
+
+### POST /visits/{visit}/transcript/upload-audio
+Upload audio file for transcription via Whisper. Stores file, transcribes, creates Transcript record, and dispatches processing job.
+
+**Body (multipart/form-data):**
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| audio | file | yes | Max 100 MB |
+| source_type | string | yes | `ambient_phone`, `ambient_device`, `manual_upload` |
+| patient_consent_given | boolean | yes | must be true |
+
+**Response:** `201` `{ data: { id, processing_status: "processing" }, processing_status: "processing" }`
+
+### POST /visits/{visit}/transcript/save-chunk
+Save an audio chunk to disk without transcribing. Used as a safety net -- audio is preserved even if later transcription fails.
+
+**Body (multipart/form-data):**
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| audio | file | yes | Max 100 MB |
+| chunk_index | integer | yes | 0-based index |
+
+**Response:** `200` `{ data: { stored_path, chunk_index } }`
+
+### POST /visits/{visit}/transcript/transcribe-chunk
+Transcribe an audio chunk via Whisper and return text. File is also stored on disk. Used for chunked uploads of long recordings (>10 min).
+
+**Body (multipart/form-data):**
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| audio | file | yes | Max 100 MB |
+| chunk_index | integer | yes | 0-based index |
+| total_chunks | integer | yes | Total number of chunks |
+
+**Response:** `200` `{ data: { text, chunk_index, total_chunks, stored_path } }`
 
 ### GET /visits/{visit}/transcript
 View the transcript for a visit.

@@ -1,6 +1,6 @@
 # PostVisit.ai
 
-[![Tests](https://img.shields.io/badge/tests-67%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-89%20passed-brightgreen)]()
 [![PHP](https://img.shields.io/badge/PHP-8.4-8892BF)]()
 [![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20)]()
 [![Vue](https://img.shields.io/badge/Vue-3-4FC08D)]()
@@ -16,7 +16,7 @@ PostVisit.ai solves this by maintaining the full context of a clinical visit and
 
 ## What It Does
 
-- **Companion Scribe** -- Patient-initiated visit recording that captures the full doctor-patient conversation
+- **Companion Scribe** -- Patient-initiated visit recording with doctor selection, date picker, and hardened 3-phase upload pipeline (save audio, transcribe, combine). Supports long recordings via automatic 10-minute chunking.
 - **AI Visit Summary** -- Transcription processed into structured SOAP notes, observations, diagnoses, and prescriptions
 - **Contextual Q&A** -- Patient asks questions in natural language; gets answers grounded in their visit data, clinical guidelines, and FDA safety data
 - **Medication Intelligence** -- Drug interaction checks, dosage explanations, side effect data from OpenFDA FAERS, and official drug labels from DailyMed
@@ -128,14 +128,15 @@ curl -X POST http://postvisit.test/api/v1/auth/login \
 
 ## API
 
-47 REST endpoints under `/api/v1/`. Key modules:
+51 REST endpoints under `/api/v1/`. Key modules:
 
 | Module | Endpoints | Description |
 |--------|-----------|-------------|
 | Auth | 4 | Register, login, logout, profile |
 | Patients | 8 | Profile, visits, conditions, documents, prescriptions |
+| Practitioners | 1 | List practitioners for visit form |
 | Visits | 3 | Create, view, summary |
-| Transcripts | 4 | Upload, view, process, status |
+| Transcripts | 7 | Upload text, upload audio, save chunk, transcribe chunk, view, process, status |
 | Chat (SSE) | 2 | AI Q&A with streaming, history |
 | Explain (SSE) | 1 | Medical term explanation with streaming |
 | Medications | 5 | Search, detail, interactions, adverse events, labels |
@@ -167,7 +168,7 @@ AI services include:
 php artisan test
 ```
 
-67 feature tests covering all API modules with 172+ assertions. Tests use SQLite in-memory for speed, with mocked AI services.
+89 feature tests covering all API modules with 264 assertions. Tests use SQLite in-memory for speed, with mocked AI services.
 
 ## Project Structure
 

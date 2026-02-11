@@ -221,6 +221,35 @@ MediaRecorder in browser → POST to Laravel → proxy to OpenAI Whisper API for
 
 ## Data: 2026-02-11
 
+### Decyzja 28: Audio upload — save-first-then-transcribe pattern
+**Status:** Przyjęte (2026-02-11)
+
+**Problem:** 21-minute recording lost because audio was only in browser memory when transcription failed. Need a resilient upload pipeline.
+
+**Options:**
+- **A) Single endpoint (store + transcribe atomically)** — If transcription fails, audio may be lost unless stored first. Simple but risky.
+- **B) Save-first-then-transcribe (3-phase)** — Phase 1: save all audio to server. Phase 2: transcribe. Phase 3: combine and process. Audio survives any failure after Phase 1.
+- **C) Background upload during recording** — Stream audio to server in real-time during recording. Most resilient but complex (WebSocket/chunked upload during MediaRecorder capture).
+
+**Decision:** Option B — save-first-then-transcribe.
+
+**Rationale:**
+- Audio persists on server before any transcription attempt
+- If Whisper fails, user can retry without re-recording
+- Simple 3-phase flow: save → transcribe → combine
+- Works for both single-segment and multi-segment recordings
+- No real-time streaming complexity (Option C is future roadmap)
+- Visit ID persisted for retry — no orphaned resources
+
+### Decyzja 29: Recording pipeline hardening — 4 defensive measures
+**Status:** Przyjęte (2026-02-11)
+
+Four hardening measures added to prevent recording data loss:
+1. **Await onstop Promise** — `stopRecording()` awaits MediaRecorder's `onstop` event before allowing user to proceed. Prevents race condition.
+2. **Closure-scoped chunk data** — Each `createRecorder()` uses its own scoped array, eliminating shared-state race condition during chunk rotation.
+3. **beforeunload warning** — Browser warns when closing tab during recording or upload.
+4. **Retry reuses visitId** — Failed uploads retry to the same visit, not a new one.
+
 ### Decyzja 27: Medical term highlighting — jsonb offsets, not inline HTML or real-time extraction
 **Status:** Przyjęte (2026-02-11)
 

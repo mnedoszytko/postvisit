@@ -8,6 +8,7 @@
           {{ formatDate(visit.started_at) }} &middot; {{ formatVisitType(visit.visit_type) }}
           <span v-if="visit.practitioner">
             &middot; Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
+            <span v-if="visit.practitioner.primary_specialty" class="text-gray-400">, {{ visit.practitioner.primary_specialty }}</span>
           </span>
         </p>
         <p v-if="visit?.reason_for_visit" class="text-gray-600 mt-1">{{ visit.reason_for_visit }}</p>
@@ -88,6 +89,9 @@
             </div>
           </div>
         </div>
+
+        <!-- Patient Attachments -->
+        <VisitAttachments :visit-id="route.params.id" />
 
         <!-- AI-Extracted Entities (from transcript analysis) -->
         <div v-if="entities && Object.keys(entities).length" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
@@ -186,8 +190,19 @@
             </div>
             <span class="text-gray-400 text-sm">{{ transcriptExpanded ? 'Collapse' : 'Expand' }}</span>
           </button>
-          <div v-if="transcriptExpanded" class="px-4 pb-4">
-            <p class="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto">{{ visit.transcript.raw_transcript }}</p>
+          <div v-if="transcriptExpanded" class="px-4 pb-4 max-h-96 overflow-y-auto">
+            <div v-if="visit.transcript.diarized_transcript?.clean_text" class="text-sm leading-relaxed whitespace-pre-wrap space-y-1">
+              <template v-for="(line, i) in visit.transcript.diarized_transcript.clean_text.split('\n')" :key="i">
+                <p v-if="line.startsWith('Doctor:') || line.startsWith('Dr:')" class="text-gray-700">
+                  <span class="font-semibold text-emerald-700">Doctor:</span>{{ line.replace(/^(Doctor|Dr):/, '') }}
+                </p>
+                <p v-else-if="line.startsWith('Patient:')" class="text-gray-700">
+                  <span class="font-semibold text-blue-600">Patient:</span>{{ line.replace(/^Patient:/, '') }}
+                </p>
+                <p v-else-if="line.trim()" class="text-gray-600">{{ line }}</p>
+              </template>
+            </div>
+            <p v-else class="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">{{ visit.transcript.raw_transcript }}</p>
           </div>
         </div>
       </div>
@@ -207,6 +222,7 @@
         v-if="chatOpen"
         :visit-id="route.params.id"
         :initial-context="chatContext"
+        :highlight="chatHighlight"
         @close="chatOpen = false"
       />
 
@@ -230,11 +246,13 @@ import PatientLayout from '@/layouts/PatientLayout.vue';
 import VisitSection from '@/components/VisitSection.vue';
 import ChatPanel from '@/components/ChatPanel.vue';
 import TermPopover from '@/components/TermPopover.vue';
+import VisitAttachments from '@/components/VisitAttachments.vue';
 
 const route = useRoute();
 const visitStore = useVisitStore();
 const chatOpen = ref(false);
 const chatContext = ref('');
+const chatHighlight = ref(false);
 const obsExpanded = ref(false);
 const condExpanded = ref(false);
 const rxExpanded = ref(false);
@@ -267,7 +285,7 @@ const soapSections = computed(() => {
     return [
         { key: 'cc', title: 'Chief Complaint' },
         { key: 'hpi', title: 'History of Present Illness' },
-        { key: 'ros', title: 'Review of Systems' },
+        { key: 'ros', title: 'Reported Symptoms' },
         { key: 'pe', title: 'Physical Examination' },
         { key: 'assessment', title: 'Assessment' },
         { key: 'plan', title: 'Plan' },
@@ -407,6 +425,11 @@ function showTermPopover(payload) {
 
 function openChat(context = '') {
     popoverVisible.value = false;
+    if (chatOpen.value) {
+        // Chat already open — trigger highlight animation to signal context change
+        chatHighlight.value = true;
+        setTimeout(() => { chatHighlight.value = false; }, 600);
+    }
     chatContext.value = context;
     chatOpen.value = true;
 }

@@ -58,7 +58,7 @@ class TranscriptController extends Controller
     public function uploadAudio(Request $request, Visit $visit, SpeechToTextProvider $stt): JsonResponse
     {
         $validated = $request->validate([
-            'audio' => ['required', 'file', 'mimes:mp3,mp4,m4a,wav,webm,ogg', 'max:102400'],
+            'audio' => ['required', 'file', 'max:102400'],
             'source_type' => ['required', 'in:ambient_phone,ambient_device,manual_upload'],
             'patient_consent_given' => ['required', 'boolean'],
         ]);
@@ -129,10 +129,23 @@ class TranscriptController extends Controller
                 $transcript->update([
                     'entities_extracted' => $scribeResult['extracted_entities'] ?? [],
                     'soap_note' => $scribeResult['soap_note'] ?? [],
+                    'diarized_transcript' => [
+                        'clean_text' => $scribeResult['clean_transcript'] ?? null,
+                        'speakers' => $scribeResult['speakers'] ?? [],
+                    ],
                     'processing_status' => 'completed',
                 ]);
 
+                // Update visit reason from chief complaint if still default
                 $soap = $scribeResult['soap_note'] ?? [];
+                $chiefComplaint = $soap['subjective'] ?? null;
+                if ($chiefComplaint && str_contains($visit->reason_for_visit ?? '', 'Companion Scribe')) {
+                    $reason = strtok(trim($chiefComplaint), "\n");
+                    if (strlen($reason) > 120) {
+                        $reason = substr($reason, 0, 117).'...';
+                    }
+                    $visit->update(['reason_for_visit' => $reason]);
+                }
 
                 VisitNote::updateOrCreate(
                     ['visit_id' => $transcript->visit_id],
@@ -178,7 +191,7 @@ class TranscriptController extends Controller
     public function transcribeChunk(Request $request, Visit $visit, SpeechToTextProvider $stt): JsonResponse
     {
         $request->validate([
-            'audio' => ['required', 'file', 'mimes:mp3,mp4,m4a,wav,webm,ogg', 'max:102400'],
+            'audio' => ['required', 'file', 'max:102400'],
             'chunk_index' => ['required', 'integer', 'min:0'],
             'total_chunks' => ['required', 'integer', 'min:1'],
         ]);
@@ -190,16 +203,39 @@ class TranscriptController extends Controller
 
         $absolutePath = Storage::disk('local')->path($storagePath);
 
+        // Keep chunk file on disk — audio is preserved even if transcription fails
         $text = $stt->transcribe($absolutePath);
-
-        // Clean up chunk file after transcription
-        Storage::disk('local')->delete($storagePath);
 
         return response()->json([
             'data' => [
                 'text' => $text,
                 'chunk_index' => (int) $request->input('chunk_index'),
                 'total_chunks' => (int) $request->input('total_chunks'),
+                'stored_path' => $storagePath,
+            ],
+        ]);
+    }
+
+    /**
+     * Save an audio chunk to disk without transcribing. Returns the stored path.
+     * Used as a safety net — audio is preserved even if later transcription fails.
+     */
+    public function saveChunk(Request $request, Visit $visit): JsonResponse
+    {
+        $request->validate([
+            'audio' => ['required', 'file', 'max:102400'],
+            'chunk_index' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $storagePath = $request->file('audio')->store(
+            "transcripts/{$visit->id}/chunks",
+            'local'
+        );
+
+        return response()->json([
+            'data' => [
+                'stored_path' => $storagePath,
+                'chunk_index' => (int) $request->input('chunk_index'),
             ],
         ]);
     }

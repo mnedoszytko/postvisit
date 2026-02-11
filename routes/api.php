@@ -58,6 +58,13 @@ Route::prefix('v1')->group(function () {
 
         // Documents (standalone)
         Route::get('documents/{document}', [DocumentController::class, 'show']);
+        Route::get('documents/{document}/download', [DocumentController::class, 'download']);
+        Route::get('documents/{document}/thumbnail', [DocumentController::class, 'thumbnail']);
+        Route::get('documents/{document}/analysis', [DocumentController::class, 'analysisStatus']);
+        Route::delete('documents/{document}', [DocumentController::class, 'destroy']);
+
+        // Practitioners (for visit form dropdown)
+        Route::get('practitioners', [VisitController::class, 'practitioners']);
 
         // ----- Module 2: Companion Scribe — Visits & Transcripts -----
         Route::post('visits', [VisitController::class, 'store']);
@@ -71,6 +78,7 @@ Route::prefix('v1')->group(function () {
             Route::post('transcript', [TranscriptController::class, 'store']);
             Route::post('transcript/upload-audio', [TranscriptController::class, 'uploadAudio']);
             Route::post('transcript/transcribe-chunk', [TranscriptController::class, 'transcribeChunk']);
+            Route::post('transcript/save-chunk', [TranscriptController::class, 'saveChunk']);
             Route::get('transcript', [TranscriptController::class, 'show']);
             Route::post('transcript/process', [TranscriptController::class, 'process']);
             Route::get('transcript/status', [TranscriptController::class, 'status']);
@@ -84,6 +92,10 @@ Route::prefix('v1')->group(function () {
 
             // Prescriptions (visit-scoped)
             Route::get('prescriptions', [PrescriptionController::class, 'visitPrescriptions']);
+
+            // Documents (visit-scoped)
+            Route::get('documents', [DocumentController::class, 'visitDocuments']);
+            Route::post('documents', [DocumentController::class, 'store']);
 
             // Feedback / Messages
             Route::post('messages', [FeedbackController::class, 'store']);

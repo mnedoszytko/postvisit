@@ -3,27 +3,41 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Practitioner;
 use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class VisitController extends Controller
 {
+    public function practitioners(): JsonResponse
+    {
+        $practitioners = Practitioner::select('id', 'first_name', 'last_name', 'primary_specialty', 'medical_degree')
+            ->orderBy('last_name')
+            ->get();
+
+        return response()->json(['data' => $practitioners]);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'patient_id' => ['required', 'uuid', 'exists:patients,id'],
             'practitioner_id' => ['required', 'uuid', 'exists:practitioners,id'],
             'organization_id' => ['nullable', 'uuid', 'exists:organizations,id'],
-            'visit_type' => ['required', 'string'],
+            'visit_type' => ['required', 'in:office_visit,telehealth,emergency,inpatient'],
             'reason_for_visit' => ['required', 'string'],
             'started_at' => ['required', 'date'],
         ]);
 
-        $validated['fhir_encounter_id'] = 'Encounter/' . \Illuminate\Support\Str::uuid();
+        $validated['fhir_encounter_id'] = 'Encounter/'.\Illuminate\Support\Str::uuid();
         $validated['visit_status'] = 'in_progress';
         $validated['class'] = $validated['class'] ?? 'AMB';
         $validated['created_by'] = $request->user()->id;
+
+        if (empty($validated['organization_id'])) {
+            $validated['organization_id'] = Practitioner::find($validated['practitioner_id'])?->organization_id;
+        }
 
         $visit = Visit::create($validated);
         $visit->load(['patient', 'practitioner', 'organization']);

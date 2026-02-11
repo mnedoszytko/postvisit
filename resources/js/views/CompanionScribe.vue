@@ -2,11 +2,41 @@
   <PatientLayout>
     <div class="max-w-lg mx-auto space-y-6">
       <!-- Consent step -->
-      <div v-if="step === 'consent'" class="bg-white rounded-2xl border border-gray-200 p-6 text-center space-y-4">
-        <h1 class="text-2xl font-bold text-gray-900">Companion Scribe</h1>
-        <p class="text-gray-600">
+      <div v-if="step === 'consent'" class="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+        <h1 class="text-2xl font-bold text-gray-900 text-center">Companion Scribe</h1>
+        <p class="text-gray-600 text-center">
           Record your doctor's visit to get a complete, understandable summary afterwards.
         </p>
+
+        <!-- Visit info form -->
+        <div class="space-y-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Healthcare Provider</label>
+            <select
+              v-model="selectedPractitionerId"
+              class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
+            >
+              <option value="" disabled>Select your doctor...</option>
+              <option v-for="p in practitioners" :key="p.id" :value="p.id">
+                Dr. {{ p.first_name }} {{ p.last_name }} — {{ p.primary_specialty }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Visit Date</label>
+            <input
+              v-model="visitDate"
+              type="date"
+              class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
+            />
+          </div>
+          <div v-if="selectedPractitioner" class="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-xl px-3 py-2">
+            <span class="font-medium text-gray-700">{{ selectedPractitioner.medical_degree }}</span>
+            <span>&middot;</span>
+            <span>{{ selectedPractitioner.primary_specialty }}</span>
+          </div>
+        </div>
+
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 text-left space-y-2">
           <p class="font-medium">Both parties must consent</p>
           <p>By pressing the button below, you confirm that both the healthcare provider and the patient have agreed to record this visit.</p>
@@ -16,7 +46,7 @@
         </div>
         <button
           class="w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
-          :disabled="starting"
+          :disabled="starting || !selectedPractitionerId || !visitDate"
           @click="startRecording"
         >
           {{ starting ? 'Requesting microphone...' : 'Both Parties Consent — Start Recording' }}
@@ -85,7 +115,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useApi } from '@/composables/useApi';
 import { useAuthStore } from '@/stores/auth';
@@ -106,10 +136,22 @@ const error = ref('');
 const demoMode = ref(false);
 const demoLoading = ref(false);
 
+// Visit info form
+const practitioners = ref([]);
+const selectedPractitionerId = ref('');
+const visitDate = ref(new Date().toISOString().slice(0, 10));
+
+const selectedPractitioner = computed(() =>
+    practitioners.value.find(p => p.id === selectedPractitionerId.value) || null
+);
+
 // Upload progress
 const uploadProgress = ref(0);
 const uploadStatusText = ref('Processing audio...');
 const uploadDetailText = ref('Transcribing with Whisper AI...');
+
+// Persisted visit ID — allows retry without creating a new visit
+let createdVisitId = null;
 
 // Chunking — rotate MediaRecorder every CHUNK_DURATION_SEC to stay under Whisper 25 MB limit
 const CHUNK_DURATION_SEC = 10 * 60; // 10 minutes per segment
@@ -119,7 +161,6 @@ let timer = null;
 let chunkTimer = null;
 let mediaRecorder = null;
 let mediaStream = null;
-let currentChunkData = [];
 
 // Completed audio segments (blobs) — one per CHUNK_DURATION_SEC window
 const audioSegments = ref([]);
@@ -137,21 +178,29 @@ function getMimeType() {
         : 'audio/webm';
 }
 
+// Promise that resolves when the current recorder's onstop fires and blob is saved
+let recorderStopPromise = null;
+
 function createRecorder(stream) {
-    currentChunkData = [];
+    const chunkData = []; // each recorder gets its own data array
     const recorder = new MediaRecorder(stream, { mimeType: getMimeType() });
+
+    // Create a promise that resolves when onstop completes
+    let resolveStop;
+    recorderStopPromise = new Promise(resolve => { resolveStop = resolve; });
 
     recorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-            currentChunkData.push(event.data);
+            chunkData.push(event.data);
         }
     };
 
     recorder.onstop = () => {
-        if (currentChunkData.length > 0) {
-            const blob = new Blob(currentChunkData, { type: recorder.mimeType });
+        if (chunkData.length > 0) {
+            const blob = new Blob(chunkData, { type: recorder.mimeType });
             audioSegments.value.push(blob);
         }
+        resolveStop();
     };
 
     recorder.start(1000);
@@ -190,12 +239,17 @@ async function startRecording() {
     }
 }
 
-function stopRecording() {
+async function stopRecording() {
     clearInterval(timer);
     clearInterval(chunkTimer);
 
     if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop(); // triggers onstop → saves final segment
+
+        // Wait for onstop to fire and blob to be saved before proceeding
+        if (recorderStopPromise) {
+            await recorderStopPromise;
+        }
     }
 
     // Stop all mic tracks
@@ -219,33 +273,56 @@ async function processVisit() {
     uploadProgress.value = 5;
 
     try {
-        // 1. Create a new visit
-        const patientId = auth.user?.patient_id || auth.user?.patient?.id;
-        if (!patientId) {
-            throw new Error('Patient profile not found. Please log in again.');
+        // 1. Create visit (reuse if retrying after error)
+        let visitId = createdVisitId;
+
+        if (!visitId) {
+            const patientId = auth.user?.patient_id || auth.user?.patient?.id;
+            if (!patientId) {
+                throw new Error('Patient profile not found. Please log in again.');
+            }
+
+            const visitRes = await api.post('/visits', {
+                patient_id: patientId,
+                practitioner_id: selectedPractitionerId.value,
+                visit_type: 'office_visit',
+                reason_for_visit: 'Companion Scribe recording',
+                started_at: new Date(visitDate.value).toISOString(),
+            });
+
+            visitId = visitRes.data.data.id;
+            createdVisitId = visitId; // persist for retry
         }
 
-        const practitionerId = auth.user?.patient?.visits?.[0]?.practitioner_id
-            || await getFirstPractitionerId(patientId);
-
-        const visitRes = await api.post('/visits', {
-            patient_id: patientId,
-            practitioner_id: practitionerId,
-            visit_type: 'consultation',
-            reason_for_visit: 'Companion Scribe recording',
-            started_at: new Date().toISOString(),
-        });
-
-        const visitId = visitRes.data.data.id;
         uploadProgress.value = 10;
 
+        const ext = getMimeType().includes('webm') ? 'webm' : 'm4a';
+
+        // Phase 1: Save all audio to server FIRST (safety net for ALL paths)
+        for (let i = 0; i < segments.length; i++) {
+            uploadStatusText.value = segments.length === 1
+                ? 'Saving audio to server...'
+                : `Saving segment ${i + 1} of ${segments.length}...`;
+            uploadDetailText.value = 'Uploading audio...';
+
+            const saveForm = new FormData();
+            saveForm.append('audio', segments[i], segments.length === 1 ? `recording.${ext}` : `chunk-${i}.${ext}`);
+            saveForm.append('chunk_index', String(i));
+
+            await api.post(`/visits/${visitId}/transcript/save-chunk`, saveForm, {
+                timeout: 120000,
+            });
+
+            uploadProgress.value = 10 + Math.round(((i + 1) / segments.length) * 25);
+        }
+
+        // Phase 2: Transcribe
         if (segments.length === 1) {
-            // Single segment — use the existing direct upload endpoint
+            // Single segment — direct upload-audio (saves + transcribes + creates Transcript + dispatches job)
             uploadStatusText.value = 'Transcribing audio...';
             uploadDetailText.value = 'Sending to Whisper AI...';
 
             const formData = new FormData();
-            const ext = getMimeType().includes('webm') ? 'webm' : 'm4a';
             formData.append('audio', segments[0], `recording.${ext}`);
             formData.append('source_type', 'ambient_phone');
             formData.append('patient_consent_given', '1');
@@ -256,9 +333,8 @@ async function processVisit() {
 
             uploadProgress.value = 90;
         } else {
-            // Multiple segments — upload each chunk, collect transcripts, submit combined text
+            // Multiple segments — transcribe each, then combine
             const transcriptParts = [];
-            const ext = getMimeType().includes('webm') ? 'webm' : 'm4a';
 
             for (let i = 0; i < segments.length; i++) {
                 uploadStatusText.value = `Transcribing segment ${i + 1} of ${segments.length}...`;
@@ -274,10 +350,10 @@ async function processVisit() {
                 });
 
                 transcriptParts.push(data.data.text);
-                uploadProgress.value = 10 + Math.round(((i + 1) / segments.length) * 70);
+                uploadProgress.value = 35 + Math.round(((i + 1) / segments.length) * 45);
             }
 
-            // Combine all chunk transcripts and submit as text
+            // Phase 3: Combine all chunk transcripts and submit as text
             uploadStatusText.value = 'Processing combined transcript...';
             uploadDetailText.value = 'Analyzing with AI...';
 
@@ -316,15 +392,16 @@ async function useDemoTranscript() {
             throw new Error('Patient profile not found. Please log in again.');
         }
 
-        const practitionerId = auth.user?.patient?.visits?.[0]?.practitioner_id
+        const practitionerId = selectedPractitionerId.value
+            || auth.user?.patient?.visits?.[0]?.practitioner_id
             || await getFirstPractitionerId(patientId);
 
         const visitRes = await api.post('/visits', {
             patient_id: patientId,
             practitioner_id: practitionerId,
-            visit_type: 'consultation',
+            visit_type: 'office_visit',
             reason_for_visit: 'Demo — Companion Scribe recording',
-            started_at: new Date().toISOString(),
+            started_at: new Date(visitDate.value).toISOString(),
         });
 
         const visitId = visitRes.data.data.id;
@@ -358,6 +435,28 @@ async function getFirstPractitionerId(patientId) {
     throw new Error('No practitioner found. Please contact support.');
 }
 
+// Warn user before closing/navigating away during recording or upload
+function onBeforeUnload(e) {
+    if (step.value === 'recording' || uploading.value) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+}
+
+onMounted(async () => {
+    window.addEventListener('beforeunload', onBeforeUnload);
+
+    try {
+        const { data } = await api.get('/practitioners');
+        practitioners.value = data.data || [];
+        if (practitioners.value.length === 1) {
+            selectedPractitionerId.value = practitioners.value[0].id;
+        }
+    } catch {
+        // Non-blocking — user can still type manually
+    }
+});
+
 watch(step, (val) => {
     if (val === 'recording') {
         seconds.value = 0;
@@ -366,6 +465,7 @@ watch(step, (val) => {
 });
 
 onUnmounted(() => {
+    window.removeEventListener('beforeunload', onBeforeUnload);
     clearInterval(timer);
     clearInterval(chunkTimer);
     if (mediaRecorder && mediaRecorder.state === 'recording') {
