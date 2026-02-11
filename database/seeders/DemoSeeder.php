@@ -289,6 +289,232 @@ class DemoSeeder extends Seeder
             'created_by' => $doctorUser->id,
         ]);
 
+        // 6h. BNP (Brain Natriuretic Peptide) — elevated in heart failure
+        Observation::create([
+            'fhir_observation_id' => 'obs-bnp-' . Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'practitioner_id' => $practitioner->id,
+            'code_system' => 'LOINC',
+            'code' => '30934-4',
+            'code_display' => 'Natriuretic peptide B [Mass/volume] in Serum or Plasma',
+            'category' => 'laboratory',
+            'status' => 'final',
+            'value_type' => 'quantity',
+            'value_quantity' => 450,
+            'value_unit' => 'pg/mL',
+            'reference_range_low' => 0,
+            'reference_range_high' => 100,
+            'reference_range_text' => 'Normal: <100 pg/mL; HF likely: >400 pg/mL',
+            'interpretation' => 'H',
+            'effective_date' => $yesterday,
+            'issued_at' => now()->subDay(),
+            'specialty_data' => [
+                'clinical_significance' => 'Elevated BNP supports diagnosis of heart failure',
+                'hf_threshold' => 400,
+                'gray_zone' => '100-400 pg/mL',
+            ],
+            'created_by' => $doctorUser->id,
+        ]);
+
+        // 6i. NT-proBNP — more sensitive HF biomarker
+        Observation::create([
+            'fhir_observation_id' => 'obs-ntprobnp-' . Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'practitioner_id' => $practitioner->id,
+            'code_system' => 'LOINC',
+            'code' => '33762-6',
+            'code_display' => 'NT-proBNP [Mass/volume] in Serum or Plasma',
+            'category' => 'laboratory',
+            'status' => 'final',
+            'value_type' => 'quantity',
+            'value_quantity' => 1850,
+            'value_unit' => 'pg/mL',
+            'reference_range_low' => 0,
+            'reference_range_high' => 300,
+            'reference_range_text' => 'Normal <50y: <300 pg/mL; HF likely: >900 pg/mL',
+            'interpretation' => 'H',
+            'effective_date' => $yesterday,
+            'issued_at' => now()->subDay(),
+            'specialty_data' => [
+                'clinical_significance' => 'Markedly elevated NT-proBNP consistent with decompensated heart failure',
+                'age_adjusted_cutoff' => 300,
+            ],
+            'created_by' => $doctorUser->id,
+        ]);
+
+        // 6j. Creatinine — renal function monitoring in HF
+        Observation::create([
+            'fhir_observation_id' => 'obs-creat-' . Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'practitioner_id' => $practitioner->id,
+            'code_system' => 'LOINC',
+            'code' => '2160-0',
+            'code_display' => 'Creatinine [Mass/volume] in Serum or Plasma',
+            'category' => 'laboratory',
+            'status' => 'final',
+            'value_type' => 'quantity',
+            'value_quantity' => 1.4,
+            'value_unit' => 'mg/dL',
+            'reference_range_low' => 0.7,
+            'reference_range_high' => 1.3,
+            'reference_range_text' => '0.7-1.3 mg/dL',
+            'interpretation' => 'H',
+            'effective_date' => $yesterday,
+            'issued_at' => now()->subDay(),
+            'specialty_data' => [
+                'clinical_significance' => 'Mildly elevated creatinine — monitor for cardiorenal syndrome',
+                'egfr_estimated' => 58,
+            ],
+            'created_by' => $doctorUser->id,
+        ]);
+
+        // 6k. BUN (Blood Urea Nitrogen) — renal monitoring
+        Observation::create([
+            'fhir_observation_id' => 'obs-bun-' . Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'practitioner_id' => $practitioner->id,
+            'code_system' => 'LOINC',
+            'code' => '3094-0',
+            'code_display' => 'Urea nitrogen [Mass/volume] in Serum or Plasma',
+            'category' => 'laboratory',
+            'status' => 'final',
+            'value_type' => 'quantity',
+            'value_quantity' => 28,
+            'value_unit' => 'mg/dL',
+            'reference_range_low' => 7,
+            'reference_range_high' => 20,
+            'reference_range_text' => '7-20 mg/dL',
+            'interpretation' => 'H',
+            'effective_date' => $yesterday,
+            'issued_at' => now()->subDay(),
+            'created_by' => $doctorUser->id,
+        ]);
+
+        // 6l. Sodium — electrolyte monitoring in HF
+        Observation::create([
+            'fhir_observation_id' => 'obs-na-' . Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'practitioner_id' => $practitioner->id,
+            'code_system' => 'LOINC',
+            'code' => '2951-2',
+            'code_display' => 'Sodium [Moles/volume] in Serum or Plasma',
+            'category' => 'laboratory',
+            'status' => 'final',
+            'value_type' => 'quantity',
+            'value_quantity' => 134,
+            'value_unit' => 'mEq/L',
+            'reference_range_low' => 136,
+            'reference_range_high' => 145,
+            'reference_range_text' => '136-145 mEq/L',
+            'interpretation' => 'L',
+            'effective_date' => $yesterday,
+            'issued_at' => now()->subDay(),
+            'specialty_data' => [
+                'clinical_significance' => 'Mild hyponatremia — common in HF due to fluid overload and neurohormonal activation',
+            ],
+            'created_by' => $doctorUser->id,
+        ]);
+
+        // 6m. LDL Cholesterol
+        Observation::create([
+            'fhir_observation_id' => 'obs-ldl-' . Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'practitioner_id' => $practitioner->id,
+            'code_system' => 'LOINC',
+            'code' => '2089-1',
+            'code_display' => 'LDL Cholesterol [Mass/volume] in Serum or Plasma',
+            'category' => 'laboratory',
+            'status' => 'final',
+            'value_type' => 'quantity',
+            'value_quantity' => 142,
+            'value_unit' => 'mg/dL',
+            'reference_range_low' => 0,
+            'reference_range_high' => 100,
+            'reference_range_text' => 'Optimal: <100 mg/dL; Near optimal: 100-129',
+            'interpretation' => 'H',
+            'effective_date' => $yesterday,
+            'issued_at' => now()->subDay(),
+            'created_by' => $doctorUser->id,
+        ]);
+
+        // 6n. HDL Cholesterol
+        Observation::create([
+            'fhir_observation_id' => 'obs-hdl-' . Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'practitioner_id' => $practitioner->id,
+            'code_system' => 'LOINC',
+            'code' => '2085-9',
+            'code_display' => 'HDL Cholesterol [Mass/volume] in Serum or Plasma',
+            'category' => 'laboratory',
+            'status' => 'final',
+            'value_type' => 'quantity',
+            'value_quantity' => 38,
+            'value_unit' => 'mg/dL',
+            'reference_range_low' => 40,
+            'reference_range_high' => 60,
+            'reference_range_text' => 'Desirable: >40 mg/dL (men), >50 mg/dL (women)',
+            'interpretation' => 'L',
+            'effective_date' => $yesterday,
+            'issued_at' => now()->subDay(),
+            'created_by' => $doctorUser->id,
+        ]);
+
+        // 6o. Triglycerides
+        Observation::create([
+            'fhir_observation_id' => 'obs-trig-' . Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'practitioner_id' => $practitioner->id,
+            'code_system' => 'LOINC',
+            'code' => '2571-8',
+            'code_display' => 'Triglycerides [Mass/volume] in Serum or Plasma',
+            'category' => 'laboratory',
+            'status' => 'final',
+            'value_type' => 'quantity',
+            'value_quantity' => 178,
+            'value_unit' => 'mg/dL',
+            'reference_range_low' => 0,
+            'reference_range_high' => 150,
+            'reference_range_text' => 'Normal: <150 mg/dL; Borderline: 150-199',
+            'interpretation' => 'H',
+            'effective_date' => $yesterday,
+            'issued_at' => now()->subDay(),
+            'created_by' => $doctorUser->id,
+        ]);
+
+        // 6p. Hemoglobin — anemia screening in HF
+        Observation::create([
+            'fhir_observation_id' => 'obs-hgb-' . Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'practitioner_id' => $practitioner->id,
+            'code_system' => 'LOINC',
+            'code' => '718-7',
+            'code_display' => 'Hemoglobin [Mass/volume] in Blood',
+            'category' => 'laboratory',
+            'status' => 'final',
+            'value_type' => 'quantity',
+            'value_quantity' => 12.8,
+            'value_unit' => 'g/dL',
+            'reference_range_low' => 13.5,
+            'reference_range_high' => 17.5,
+            'reference_range_text' => '13.5-17.5 g/dL (men)',
+            'interpretation' => 'L',
+            'effective_date' => $yesterday,
+            'issued_at' => now()->subDay(),
+            'specialty_data' => [
+                'clinical_significance' => 'Mild anemia — common in HF, worsens symptoms and prognosis',
+            ],
+            'created_by' => $doctorUser->id,
+        ]);
+
         // 7. Condition: PVCs
         Condition::create([
             'fhir_condition_id' => 'condition-' . Str::uuid(),
