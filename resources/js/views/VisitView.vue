@@ -25,7 +25,34 @@
         Loading visit data...
       </div>
 
-      <!-- Visit sections -->
+      <!-- Empty visit — no transcript or SOAP note yet -->
+      <div v-else-if="visit && isEmptyVisit" class="space-y-4">
+        <div class="bg-white rounded-2xl border border-gray-200 p-8 text-center space-y-4">
+          <div class="w-16 h-16 mx-auto bg-emerald-50 rounded-full flex items-center justify-center">
+            <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800">No recording yet</h3>
+          <p class="text-gray-500 text-sm max-w-sm mx-auto">
+            This visit doesn't have a transcript yet. Start recording to get a complete summary with AI-powered insights.
+          </p>
+          <router-link
+            :to="{ path: '/scribe', query: { visitId: route.params.id } }"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+            </svg>
+            Start Recording
+          </router-link>
+        </div>
+
+        <!-- Still show attachments on empty visits -->
+        <VisitAttachments :visit-id="route.params.id" />
+      </div>
+
+      <!-- Visit sections (has content) -->
       <div v-else-if="visit" class="space-y-4">
         <!-- SOAP Note sections -->
         <VisitSection
@@ -264,6 +291,12 @@ const popoverDefinition = ref('');
 const popoverAnchorRect = ref(null);
 
 const visit = computed(() => visitStore.currentVisit);
+
+const isEmptyVisit = computed(() => {
+    const v = visit.value;
+    if (!v) return false;
+    return !v.visit_note && !v.transcript?.raw_transcript;
+});
 
 const entities = computed(() => visit.value?.transcript?.entities_extracted || null);
 
