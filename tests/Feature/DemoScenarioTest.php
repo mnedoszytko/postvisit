@@ -15,13 +15,12 @@ class DemoScenarioTest extends TestCase
         $response = $this->getJson('/api/v1/demo/scenarios');
 
         $response->assertOk()
-            ->assertJsonCount(2, 'data')
+            ->assertJsonCount(9, 'data')
             ->assertJsonPath('data.0.key', 'pvcs')
             ->assertJsonPath('data.0.name', 'PVCs / Palpitations')
             ->assertJsonPath('data.0.patient_name', 'Alex Johnson')
-            ->assertJsonPath('data.1.key', 'heart-failure')
-            ->assertJsonPath('data.1.name', 'Heart Failure')
-            ->assertJsonPath('data.1.patient_name', 'Maria Santos');
+            ->assertJsonPath('data.1.key', 'coronarography')
+            ->assertJsonPath('data.1.name', 'Coronarography / Stenosis');
     }
 
     public function test_can_start_pvcs_scenario(): void
@@ -48,24 +47,36 @@ class DemoScenarioTest extends TestCase
         ]);
     }
 
-    public function test_can_start_heart_failure_scenario(): void
+    public function test_can_start_coronarography_scenario(): void
     {
         $response = $this->postJson('/api/v1/demo/start-scenario', [
-            'scenario' => 'heart-failure',
+            'scenario' => 'coronarography',
         ]);
 
         $response->assertOk()
             ->assertJsonPath('data.user.role', 'patient')
-            ->assertJsonPath('data.scenario', 'heart-failure');
+            ->assertJsonPath('data.scenario', 'coronarography');
 
         $this->assertDatabaseHas('patients', [
-            'first_name' => 'Maria',
-            'last_name' => 'Santos',
+            'first_name' => 'Marie',
+            'last_name' => 'Dupont',
         ]);
 
+        // Verify conditions were loaded from JSON
         $this->assertDatabaseHas('conditions', [
-            'code' => 'I50.22',
-            'code_display' => 'Chronic systolic heart failure',
+            'code' => 'I25.1',
+            'code_display' => 'Atherosclerotic heart disease',
+        ]);
+
+        // Verify medications were loaded from JSON
+        $this->assertDatabaseHas('medications', [
+            'generic_name' => 'Rosuvastatin',
+        ]);
+
+        // Verify lab observations were loaded from JSON
+        $this->assertDatabaseHas('observations', [
+            'code' => '2093-3',
+            'code_display' => 'Total Cholesterol',
         ]);
     }
 
@@ -90,7 +101,7 @@ class DemoScenarioTest extends TestCase
     public function test_doctor_is_shared_across_scenarios(): void
     {
         $this->postJson('/api/v1/demo/start-scenario', ['scenario' => 'pvcs']);
-        $this->postJson('/api/v1/demo/start-scenario', ['scenario' => 'heart-failure']);
+        $this->postJson('/api/v1/demo/start-scenario', ['scenario' => 'coronarography']);
 
         $doctorCount = User::where('email', 'doctor@demo.postvisit.ai')->count();
         $this->assertEquals(1, $doctorCount);

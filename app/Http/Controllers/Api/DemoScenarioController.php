@@ -19,17 +19,45 @@ class DemoScenarioController extends Controller
     public function index(): JsonResponse
     {
         $scenarios = collect(config('demo-scenarios.scenarios'))
-            ->map(fn (array $s) => [
-                'key' => $s['key'],
-                'name' => $s['name'],
-                'description' => $s['description'],
-                'icon' => $s['icon'],
-                'color' => $s['color'],
-                'patient_name' => $s['patient']['first_name'].' '.$s['patient']['last_name'],
-                'patient_age' => Carbon::parse($s['patient']['dob'])->age,
-                'patient_gender' => $s['patient']['gender'],
-                'condition' => $s['conditions'][0]['code_display'] ?? null,
-            ])
+            ->map(function (array $s) {
+                // For source_dir scenarios, read patient data from JSON
+                if (isset($s['source_dir'])) {
+                    $jsonPath = base_path($s['source_dir'].'/patient-profile.json');
+                    if (file_exists($jsonPath)) {
+                        $json = json_decode(file_get_contents($jsonPath), true);
+                        $demographics = $json['demographics'];
+
+                        return [
+                            'key' => $s['key'],
+                            'name' => $s['name'],
+                            'description' => $s['description'],
+                            'icon' => $s['icon'],
+                            'color' => $s['color'],
+                            'patient_name' => $demographics['first_name'].' '.$demographics['last_name'],
+                            'patient_age' => Carbon::parse($demographics['dob'])->age,
+                            'patient_gender' => $demographics['gender'],
+                            'condition' => $json['conditions'][0]['name'] ?? null,
+                            'language' => $demographics['preferred_language'],
+                            'has_audio' => file_exists(base_path($s['source_dir'].'/dialogue-tts.mp3')),
+                        ];
+                    }
+                }
+
+                // Existing inline format
+                return [
+                    'key' => $s['key'],
+                    'name' => $s['name'],
+                    'description' => $s['description'],
+                    'icon' => $s['icon'],
+                    'color' => $s['color'],
+                    'patient_name' => $s['patient']['first_name'].' '.$s['patient']['last_name'],
+                    'patient_age' => Carbon::parse($s['patient']['dob'])->age,
+                    'patient_gender' => $s['patient']['gender'],
+                    'condition' => $s['conditions'][0]['code_display'] ?? null,
+                    'language' => $s['patient']['preferred_language'] ?? 'en',
+                    'has_audio' => false,
+                ];
+            })
             ->values();
 
         return response()->json(['data' => $scenarios]);

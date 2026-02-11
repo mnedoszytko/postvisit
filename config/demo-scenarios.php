@@ -262,188 +262,215 @@ return [
             ],
         ],
 
-        'heart-failure' => [
-            'key' => 'heart-failure',
-            'name' => 'Heart Failure',
-            'description' => 'Chronic heart failure management with recent decompensation. Weight monitoring and medication adjustment.',
-            'icon' => 'activity',
-            'color' => 'rose',
-
-            'patient' => [
-                'first_name' => 'Maria',
-                'last_name' => 'Santos',
-                'dob' => '1958-11-22',
-                'gender' => 'female',
-                'phone' => '+1-555-0456',
-                'preferred_language' => 'en',
-                'timezone' => 'America/New_York',
-                'mrn' => 'MRN-002',
-                'height_cm' => 162.5,
-                'weight_kg' => 73.5,
-                'blood_type' => 'O+',
-                'allergies' => [
-                    ['name' => 'Aspirin', 'severity' => 'mild', 'reaction' => 'Stomach upset'],
-                ],
-                'emergency_contact_name' => 'Carlos Santos',
-                'emergency_contact_phone' => '+1-555-0457',
-                'emergency_contact_relationship' => 'Husband',
-            ],
-
+        'coronarography' => [
+            'key' => 'coronarography',
+            'name' => 'Coronarography / Stenosis',
+            'description' => 'Post-coronarography follow-up for LAD stenosis, fibromyalgia management, and medication review.',
+            'icon' => 'heart',
+            'color' => 'red',
+            'source_dir' => 'demo/visits/visit-01-coronarography-stenosis',
             'visit' => [
                 'visit_type' => 'office_visit',
                 'class' => 'AMB',
                 'service_type' => 'cardiology_consultation',
-                'reason_for_visit' => 'Heart failure follow-up — worsening shortness of breath and weight gain',
-                'summary' => 'HFrEF patient with recent decompensation. Weight up 4 kg in 2 weeks. Adjusted diuretics, added SGLT2i.',
+                'reason_for_visit' => 'Post-coronarography follow-up for LAD stenosis',
+                'summary' => 'Post-coronarography follow-up. LAD stenosis confirmed. Reviewing medications and managing fibromyalgia symptoms.',
                 'duration_minutes' => 35,
-                'days_ago' => 3,
+                'days_ago' => 1,
             ],
-
-            'conditions' => [
-                [
-                    'code_system' => 'ICD-10-CM',
-                    'code' => 'I50.22',
-                    'code_display' => 'Chronic systolic heart failure',
-                    'category' => 'encounter-diagnosis',
-                    'clinical_status' => 'active',
-                    'verification_status' => 'confirmed',
-                    'severity' => 'moderate',
-                    'onset_years_ago' => 2,
-                    'clinical_notes' => 'HFrEF with LVEF 35%. Recent decompensation with fluid overload.',
-                ],
-                [
-                    'code_system' => 'ICD-10-CM',
-                    'code' => 'I10',
-                    'code_display' => 'Essential hypertension',
-                    'category' => 'encounter-diagnosis',
-                    'clinical_status' => 'active',
-                    'verification_status' => 'confirmed',
-                    'severity' => 'mild',
-                    'onset_years_ago' => 10,
-                ],
-            ],
-
-            'medications' => [
-                [
-                    'rxnorm_code' => '4603', 'generic_name' => 'Furosemide',
-                    'display_name' => 'Furosemide 40mg tablet',
-                    'form' => 'tablet', 'strength_value' => 40, 'strength_unit' => 'mg',
-                    'prescription' => [
-                        'dose_quantity' => 40, 'dose_unit' => 'mg', 'frequency' => 'BID',
-                        'route' => 'oral',
-                        'special_instructions' => 'Increase from 20mg QD due to fluid overload',
-                    ],
-                ],
-                [
-                    'rxnorm_code' => '29046', 'generic_name' => 'Lisinopril',
-                    'display_name' => 'Lisinopril 20mg tablet',
-                    'form' => 'tablet', 'strength_value' => 20, 'strength_unit' => 'mg',
-                    'prescription' => [
-                        'dose_quantity' => 20, 'dose_unit' => 'mg', 'frequency' => 'QD',
-                        'route' => 'oral',
-                        'special_instructions' => 'Continued — titrated to max tolerated dose',
-                    ],
-                ],
-                [
-                    'rxnorm_code' => '20352', 'generic_name' => 'Carvedilol',
-                    'display_name' => 'Carvedilol 25mg tablet',
-                    'form' => 'tablet', 'strength_value' => 25, 'strength_unit' => 'mg',
-                    'prescription' => [
-                        'dose_quantity' => 25, 'dose_unit' => 'mg', 'frequency' => 'BID',
-                        'route' => 'oral',
-                        'special_instructions' => 'Continued — stable on current dose',
-                    ],
-                ],
-                [
-                    'rxnorm_code' => '1488564', 'generic_name' => 'Dapagliflozin',
-                    'display_name' => 'Dapagliflozin 10mg tablet',
-                    'form' => 'tablet', 'strength_value' => 10, 'strength_unit' => 'mg',
-                    'prescription' => [
-                        'dose_quantity' => 10, 'dose_unit' => 'mg', 'frequency' => 'QD',
-                        'route' => 'oral',
-                        'special_instructions' => 'NEW — added for HFrEF mortality benefit per ESC 2023',
-                    ],
-                ],
-            ],
-
-            'observations' => [
-                [
-                    'code_system' => 'LOINC', 'code' => '30934-4', 'code_display' => 'BNP',
-                    'category' => 'laboratory', 'value_type' => 'quantity',
-                    'value_quantity' => 820, 'value_unit' => 'pg/mL',
-                    'reference_range_low' => 0, 'reference_range_high' => 100,
-                    'interpretation' => 'H',
-                ],
-                [
-                    'code_system' => 'LOINC', 'code' => '2160-0', 'code_display' => 'Creatinine',
-                    'category' => 'laboratory', 'value_type' => 'quantity',
-                    'value_quantity' => 1.6, 'value_unit' => 'mg/dL',
-                    'reference_range_low' => 0.6, 'reference_range_high' => 1.1,
-                    'interpretation' => 'H',
-                ],
-            ],
-
-            'weight_series' => [
-                ['day' => -28, 'kg' => 73.5], ['day' => -25, 'kg' => 73.8], ['day' => -21, 'kg' => 74.0],
-                ['day' => -18, 'kg' => 74.2], ['day' => -14, 'kg' => 74.5], ['day' => -11, 'kg' => 75.2],
-                ['day' => -8, 'kg' => 76.0], ['day' => -6, 'kg' => 76.8], ['day' => -4, 'kg' => 77.5],
-                ['day' => -3, 'kg' => 78.0], ['day' => -2, 'kg' => 77.2], ['day' => -1, 'kg' => 76.5],
-                ['day' => 0, 'kg' => 75.8],
-            ],
-
             'visit_note' => [
                 'composition_type' => 'progress_note',
-                'chief_complaint' => 'Worsening shortness of breath and weight gain over the past 2 weeks',
-                'history_of_present_illness' => 'Mrs. Santos is a 67-year-old female with known HFrEF (LVEF 35%) presenting with progressive dyspnea on exertion and 4 kg weight gain over 2 weeks.',
-                'physical_exam' => "General: Alert, mildly dyspneic at rest. Vitals: HR 88, BP 142/88, RR 22, SpO2 94% on RA, Weight 78 kg.\nCardiovascular: S3 gallop present, JVP elevated to 12 cm.\nLungs: Bibasilar crackles.\nExtremities: 2+ pitting edema bilaterally.",
-                'assessment' => 'Acute-on-chronic heart failure decompensation (HFrEF, LVEF 35%) — NYHA Class III. Precipitated by dietary sodium indiscretion.',
-                'plan' => "1. Increase Furosemide to 40mg BID\n2. Add Dapagliflozin 10mg QD (DAPA-HF trial)\n3. Continue Lisinopril 20mg QD and Carvedilol 25mg BID\n4. Daily weight monitoring\n5. Strict 1.5L/day fluid restriction\n6. Recheck labs in 1 week\n7. Follow-up in 2 weeks",
-                'follow_up' => '2 weeks for volume status reassessment.',
-                'follow_up_timeframe' => '2 weeks',
-                'medical_terms' => [
-                    'chief_complaint' => [
-                        ['term' => 'shortness of breath', 'start' => 10, 'end' => 29, 'definition' => 'Difficulty breathing or feeling like you can\'t get enough air. In heart failure, this happens because fluid backs up into your lungs.'],
-                        ['term' => 'weight gain', 'start' => 34, 'end' => 45, 'definition' => 'Rapid weight gain (2+ kg in a few days) in heart failure usually means your body is retaining fluid, not fat. Daily weighing helps catch this early.'],
-                    ],
-                    'history_of_present_illness' => [
-                        ['term' => 'HFrEF', 'start' => 52, 'end' => 57, 'definition' => 'Heart Failure with Reduced Ejection Fraction — your heart muscle is weakened and doesn\'t pump blood as efficiently as normal. "Reduced" means your EF is below 40%.'],
-                        ['term' => 'LVEF 35%', 'start' => 59, 'end' => 67, 'definition' => 'Left Ventricular Ejection Fraction of 35%. This measures how much blood your heart pumps out with each beat. Normal is 55-70%. Your 35% means your heart is pumping about half as effectively as normal.'],
-                        ['term' => 'dyspnea on exertion', 'start' => 96, 'end' => 115, 'definition' => 'Shortness of breath that occurs during physical activity like walking or climbing stairs. It happens because your heart can\'t pump enough blood to meet your body\'s demands during exercise.'],
-                    ],
-                    'physical_exam' => [
-                        ['term' => 'dyspneic', 'start' => 22, 'end' => 30, 'definition' => 'Having difficulty breathing. "Mildly dyspneic at rest" means you were slightly short of breath even while sitting still — a sign of worsening heart failure.'],
-                        ['term' => 'HR', 'start' => 48, 'end' => 50, 'definition' => 'Heart Rate — your heart beats per minute. Your HR of 88 is slightly elevated, which can happen when the heart compensates for reduced pumping power.'],
-                        ['term' => 'BP', 'start' => 55, 'end' => 57, 'definition' => 'Blood Pressure. Your reading of 142/88 is elevated (Stage 2 hypertension), which puts extra strain on your already weakened heart.'],
-                        ['term' => 'SpO2', 'start' => 72, 'end' => 76, 'definition' => 'Oxygen saturation — how much oxygen your blood is carrying. 94% is lower than ideal (normal is 95-100%), suggesting fluid in your lungs is affecting oxygen exchange.'],
-                        ['term' => 'S3 gallop', 'start' => 114, 'end' => 123, 'definition' => 'An extra heart sound heard through a stethoscope. An S3 gallop in adults is a classic sign of heart failure — it\'s caused by blood rushing into a ventricle that\'s already overfilled.'],
-                        ['term' => 'JVP elevated', 'start' => 133, 'end' => 145, 'definition' => 'Jugular Venous Pressure — the visible pulsation in the neck veins. Elevated JVP (12 cm, normal <4 cm) means blood is backing up because your heart can\'t pump it forward efficiently.'],
-                        ['term' => 'Bibasilar crackles', 'start' => 160, 'end' => 178, 'definition' => 'Crackling sounds heard at the base of both lungs through a stethoscope. These are caused by fluid that has leaked into the air sacs of your lungs — a hallmark of heart failure.'],
-                        ['term' => 'pitting edema', 'start' => 198, 'end' => 211, 'definition' => 'Swelling in the legs/ankles where pressing a finger leaves a temporary dent. "2+" means moderate severity. This is excess fluid your heart can\'t circulate properly.'],
-                    ],
-                    'assessment' => [
-                        ['term' => 'Acute-on-chronic heart failure', 'start' => 0, 'end' => 31, 'definition' => 'A sudden worsening of your ongoing (chronic) heart failure. Think of it as a flare-up — your baseline condition got worse due to a trigger (in your case, too much salt in your diet).'],
-                        ['term' => 'decompensation', 'start' => 32, 'end' => 46, 'definition' => 'When your heart can no longer compensate for its weakness. Your body was managing, but excess fluid tipped the balance — leading to swelling, breathing difficulty, and weight gain.'],
-                        ['term' => 'HFrEF', 'start' => 48, 'end' => 53, 'definition' => 'Heart Failure with Reduced Ejection Fraction. Your heart\'s pumping ability is reduced to 35% (normal is 55-70%).'],
-                        ['term' => 'NYHA Class III', 'start' => 67, 'end' => 81, 'definition' => 'New York Heart Association classification of heart failure severity. Class III means marked limitation — you\'re comfortable at rest but less than ordinary activity causes symptoms. Scale goes I (mild) to IV (severe).'],
-                        ['term' => 'sodium indiscretion', 'start' => 101, 'end' => 120, 'definition' => 'Eating more salt than recommended. Salt makes your body hold onto water, which is especially dangerous in heart failure because your heart already can\'t handle the extra fluid.'],
-                    ],
-                    'plan' => [
-                        ['term' => 'Furosemide', 'start' => 12, 'end' => 22, 'definition' => 'A powerful diuretic ("water pill") that helps your kidneys remove excess fluid from your body. Increasing to 40mg twice daily will help reduce the fluid buildup causing your swelling and breathing problems.'],
-                        ['term' => 'BID', 'start' => 31, 'end' => 34, 'definition' => '"Bis in die" — Latin for twice a day. Take one dose in the morning and one in the evening.'],
-                        ['term' => 'Dapagliflozin', 'start' => 42, 'end' => 55, 'definition' => 'An SGLT2 inhibitor originally developed for diabetes, but proven in the DAPA-HF trial to reduce hospitalizations and death in heart failure patients — even those without diabetes. This is a major addition to your treatment.'],
-                        ['term' => 'QD', 'start' => 62, 'end' => 64, 'definition' => '"Quaque die" — Latin for once daily. Take one pill per day.'],
-                        ['term' => 'DAPA-HF trial', 'start' => 66, 'end' => 79, 'definition' => 'A landmark clinical trial that proved Dapagliflozin reduces the risk of worsening heart failure and cardiovascular death by 26% in HFrEF patients.'],
-                        ['term' => 'Lisinopril', 'start' => 95, 'end' => 105, 'definition' => 'An ACE inhibitor that relaxes blood vessels and reduces the workload on your heart. It\'s a cornerstone medication for heart failure.'],
-                        ['term' => 'Carvedilol', 'start' => 117, 'end' => 127, 'definition' => 'A beta-blocker that slows your heart rate and lowers blood pressure, helping your heart pump more efficiently over time. One of the key medications for heart failure.'],
-                        ['term' => 'fluid restriction', 'start' => 184, 'end' => 201, 'definition' => 'Limiting how much liquid you drink per day to 1.5 liters. This helps prevent fluid overload when your heart can\'t pump efficiently. Includes all beverages, soups, and ice.'],
-                    ],
-                ],
+                'chief_complaint' => 'Post-coronarography follow-up for LAD stenosis',
             ],
-
             'chat_session' => [
-                'topic' => 'Post-visit follow-up: Heart failure management',
+                'topic' => 'Post-visit follow-up: Coronarography and stenosis',
             ],
         ],
+
+        'gastric-bypass' => [
+            'key' => 'gastric-bypass',
+            'name' => 'Gastric Bypass Pre-op',
+            'description' => 'Pre-operative cardiac clearance for gastric bypass surgery. Echocardiogram and stress test normal.',
+            'icon' => 'scissors',
+            'color' => 'blue',
+            'source_dir' => 'demo/visits/visit-02-gastric-bypass-preop',
+            'visit' => [
+                'visit_type' => 'office_visit',
+                'class' => 'AMB',
+                'service_type' => 'cardiology_consultation',
+                'reason_for_visit' => 'Pre-operative cardiac clearance for gastric bypass surgery',
+                'summary' => 'Cardiac clearance for gastric bypass. Echo and stress test normal. No contraindication for surgery. BMI 33.1.',
+                'duration_minutes' => 25,
+                'days_ago' => 1,
+            ],
+            'visit_note' => [
+                'composition_type' => 'progress_note',
+                'chief_complaint' => 'Pre-operative cardiac clearance for gastric bypass surgery',
+            ],
+            'chat_session' => [
+                'topic' => 'Post-visit follow-up: Gastric bypass cardiac clearance',
+            ],
+        ],
+
+        'hypertension-followup' => [
+            'key' => 'hypertension-followup',
+            'name' => 'Hypertension Follow-up',
+            'description' => 'Routine hypertension follow-up with medication adjustment and lifestyle counseling.',
+            'icon' => 'gauge',
+            'color' => 'amber',
+            'source_dir' => 'demo/visits/visit-03-hypertension-followup',
+            'visit' => [
+                'visit_type' => 'office_visit',
+                'class' => 'AMB',
+                'service_type' => 'cardiology_consultation',
+                'reason_for_visit' => 'Hypertension follow-up and medication review',
+                'summary' => 'Hypertension follow-up. Blood pressure controlled on current regimen. Continuing Amlodipine 5mg and monitoring.',
+                'duration_minutes' => 20,
+                'days_ago' => 1,
+            ],
+            'visit_note' => [
+                'composition_type' => 'progress_note',
+                'chief_complaint' => 'Hypertension follow-up and medication review',
+            ],
+            'chat_session' => [
+                'topic' => 'Post-visit follow-up: Hypertension management',
+            ],
+        ],
+
+        'chest-pain' => [
+            'key' => 'chest-pain',
+            'name' => 'Chest Pain / Carotid',
+            'description' => 'Evaluation of atypical chest pain with carotid stenosis workup. Echo and carotid ultrasound performed.',
+            'icon' => 'alert-triangle',
+            'color' => 'orange',
+            'source_dir' => 'demo/visits/visit-04-chest-pain-carotid',
+            'visit' => [
+                'visit_type' => 'office_visit',
+                'class' => 'AMB',
+                'service_type' => 'cardiology_consultation',
+                'reason_for_visit' => 'Evaluation of chest pain and carotid stenosis',
+                'summary' => 'Chest pain evaluation with carotid ultrasound. Mild carotid stenosis noted. Echo shows preserved EF. Conservative management.',
+                'duration_minutes' => 35,
+                'days_ago' => 1,
+            ],
+            'visit_note' => [
+                'composition_type' => 'progress_note',
+                'chief_complaint' => 'Evaluation of chest pain and carotid stenosis',
+            ],
+            'chat_session' => [
+                'topic' => 'Post-visit follow-up: Chest pain and carotid assessment',
+            ],
+        ],
+
+        'fibromyalgia' => [
+            'key' => 'fibromyalgia',
+            'name' => 'Arm Pain / Fibromyalgia',
+            'description' => 'Evaluation of arm pain with possible fibromyalgia diagnosis. Cardiac workup to rule out cardiac origin.',
+            'icon' => 'hand',
+            'color' => 'purple',
+            'source_dir' => 'demo/visits/visit-05-arm-pain-fibromyalgia',
+            'visit' => [
+                'visit_type' => 'office_visit',
+                'class' => 'AMB',
+                'service_type' => 'cardiology_consultation',
+                'reason_for_visit' => 'Evaluation of arm pain — rule out cardiac origin',
+                'summary' => 'Arm pain evaluation. Cardiac workup negative. Likely fibromyalgia or musculoskeletal origin. Referral to rheumatology.',
+                'duration_minutes' => 20,
+                'days_ago' => 1,
+            ],
+            'visit_note' => [
+                'composition_type' => 'progress_note',
+                'chief_complaint' => 'Evaluation of arm pain — rule out cardiac origin',
+            ],
+            'chat_session' => [
+                'topic' => 'Post-visit follow-up: Arm pain assessment',
+            ],
+        ],
+
+        'aortic-aneurysm' => [
+            'key' => 'aortic-aneurysm',
+            'name' => 'Aortic Aneurysm / Smoking',
+            'description' => 'Follow-up for thoracic aortic aneurysm with smoking cessation counseling and monitoring.',
+            'icon' => 'wind',
+            'color' => 'slate',
+            'source_dir' => 'demo/visits/visit-06-aortic-aneurysm-smoking',
+            'visit' => [
+                'visit_type' => 'office_visit',
+                'class' => 'AMB',
+                'service_type' => 'cardiology_consultation',
+                'reason_for_visit' => 'Aortic aneurysm follow-up and smoking cessation counseling',
+                'summary' => 'Aortic aneurysm monitoring. Stable size on imaging. Smoking cessation discussed. Continuing conservative management.',
+                'duration_minutes' => 25,
+                'days_ago' => 1,
+            ],
+            'visit_note' => [
+                'composition_type' => 'progress_note',
+                'chief_complaint' => 'Aortic aneurysm follow-up and smoking cessation counseling',
+            ],
+            'chat_session' => [
+                'topic' => 'Post-visit follow-up: Aortic aneurysm management',
+            ],
+        ],
+
+        'preop-stent' => [
+            'key' => 'preop-stent',
+            'name' => 'Pre-op Stent / Statin',
+            'description' => 'Pre-operative cardiac assessment for shoulder surgery. Post-MI with 2 stents. Statin intolerance investigation.',
+            'icon' => 'pill',
+            'color' => 'indigo',
+            'source_dir' => 'demo/visits/visit-07-preop-stent-statin',
+            'visit' => [
+                'visit_type' => 'office_visit',
+                'class' => 'AMB',
+                'service_type' => 'cardiology_consultation',
+                'reason_for_visit' => 'Pre-operative cardiac assessment for shoulder surgery — post-MI with stents',
+                'summary' => 'Pre-op clearance for shoulder arthroscopy. Post-MI with 2 RCA stents (2020). Statin stopped 2 months ago due to myalgia. Cardiac clearance approved. Restart statin, recheck labs in 4 weeks.',
+                'duration_minutes' => 30,
+                'days_ago' => 1,
+            ],
+            'visit_note' => [
+                'composition_type' => 'progress_note',
+                'chief_complaint' => 'Pre-operative cardiac assessment for shoulder surgery — post-MI with stents',
+            ],
+            'chat_session' => [
+                'topic' => 'Post-visit follow-up: Pre-op clearance and statin management',
+            ],
+        ],
+
+        'bp-monitoring' => [
+            'key' => 'bp-monitoring',
+            'name' => 'BP Monitoring',
+            'description' => 'Hypertension management with 24-hour ambulatory blood pressure monitoring referral.',
+            'icon' => 'activity',
+            'color' => 'teal',
+            'source_dir' => 'demo/visits/visit-08-hypertension-bp-monitoring',
+            'visit' => [
+                'visit_type' => 'office_visit',
+                'class' => 'AMB',
+                'service_type' => 'cardiology_consultation',
+                'reason_for_visit' => 'Hypertension follow-up — elevated readings, referral for 24h BP monitoring',
+                'summary' => 'Hypertension assessment. In-office BP 170/96, home readings 130-148. Echo normal. Referred for 24h ambulatory BP monitoring. Continue Amlodipine 5mg.',
+                'duration_minutes' => 25,
+                'days_ago' => 1,
+            ],
+            'visit_note' => [
+                'composition_type' => 'progress_note',
+                'chief_complaint' => 'Hypertension follow-up — elevated readings, referral for 24h BP monitoring',
+            ],
+            'chat_session' => [
+                'topic' => 'Post-visit follow-up: Blood pressure monitoring',
+            ],
+        ],
+
+        // TODO: needs full scenario prep (transcript, audio, photo)
+        // 'heart-failure' => [
+        //     'key' => 'heart-failure',
+        //     'name' => 'Heart Failure',
+        //     'description' => 'Chronic heart failure management with recent decompensation. Weight monitoring and medication adjustment.',
+        //     'icon' => 'activity',
+        //     'color' => 'rose',
+        //     ...
+        // ],
 
     ],
 

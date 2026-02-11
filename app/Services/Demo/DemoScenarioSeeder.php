@@ -14,6 +14,7 @@ use App\Models\Transcript;
 use App\Models\User;
 use App\Models\Visit;
 use App\Models\VisitNote;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 class DemoScenarioSeeder
@@ -25,6 +26,13 @@ class DemoScenarioSeeder
      */
     public function seed(array $scenario): User
     {
+        // If source_dir exists, load data from JSON and merge with scenario config
+        if (isset($scenario['source_dir'])) {
+            $loaded = $this->loadFromSourceDir(base_path($scenario['source_dir']));
+            $scenario = array_merge($scenario, $loaded);
+            $scenario['transcript_file'] = $scenario['source_dir'].'/raw-transcript.txt';
+        }
+
         $org = $this->findOrCreateOrganization();
         $doctorUser = $this->findOrCreateDoctor($org);
         $practitioner = $doctorUser->practitioner;
@@ -43,6 +51,235 @@ class DemoScenarioSeeder
         $this->createChatSession($scenario['chat_session'] ?? [], $patient, $visit);
 
         return $user;
+    }
+
+    /**
+     * Load patient data from a source directory's patient-profile.json.
+     *
+     * Transforms the simplified JSON format into the full format expected
+     * by the existing seeder methods.
+     *
+     * @return array{patient: array, conditions: array, medications: array, observations: array}
+     */
+    public function loadFromSourceDir(string $sourceDir): array
+    {
+        $jsonPath = $sourceDir.'/patient-profile.json';
+        if (! file_exists($jsonPath)) {
+            throw new \RuntimeException("Patient profile not found: {$jsonPath}");
+        }
+
+        $json = json_decode(file_get_contents($jsonPath), true);
+
+        return [
+            'patient' => $this->transformPatient($json),
+            'conditions' => $this->transformConditions($json['conditions'] ?? []),
+            'medications' => $this->transformMedications($json['medications'] ?? []),
+            'observations' => $this->transformObservations($json),
+        ];
+    }
+
+    /**
+     * Transform JSON demographics into the flat patient array.
+     *
+     * @param  array<string, mixed>  $json
+     * @return array<string, mixed>
+     */
+    private function transformPatient(array $json): array
+    {
+        $d = $json['demographics'];
+
+        return [
+            'first_name' => $d['first_name'],
+            'last_name' => $d['last_name'],
+            'dob' => $d['dob'],
+            'gender' => $d['gender'],
+            'phone' => $d['phone'],
+            'preferred_language' => $d['preferred_language'],
+            'timezone' => 'Europe/Brussels',
+            'mrn' => $d['mrn'],
+            'height_cm' => $d['height_cm'],
+            'weight_kg' => $d['weight_kg'],
+            'blood_type' => $d['blood_type'] ?? null,
+            'allergies' => $json['allergies'] ?? [],
+            'emergency_contact_name' => $json['emergency_contact']['name'] ?? null,
+            'emergency_contact_phone' => $json['emergency_contact']['phone'] ?? null,
+            'emergency_contact_relationship' => $json['emergency_contact']['relationship'] ?? null,
+        ];
+    }
+
+    /**
+     * Transform simplified conditions into FHIR-like format.
+     *
+     * @param  array<int, array<string, mixed>>  $conditions
+     * @return array<int, array<string, mixed>>
+     */
+    private function transformConditions(array $conditions): array
+    {
+        return array_map(function (array $c) {
+            $result = [
+                'code_system' => 'ICD-10-CM',
+                'code' => $c['icd10'],
+                'code_display' => $c['name'],
+                'category' => 'encounter-diagnosis',
+                'clinical_status' => $c['status'],
+                'verification_status' => 'confirmed',
+                'severity' => null,
+            ];
+
+            // Parse onset string (e.g. "2020-06") to calculate onset_years_ago
+            if (isset($c['onset'])) {
+                $onsetDate = Carbon::parse($c['onset'].'-01');
+                $yearsAgo = (int) $onsetDate->diffInYears(now());
+                if ($yearsAgo > 0) {
+                    $result['onset_years_ago'] = $yearsAgo;
+                } else {
+                    $weeksAgo = (int) $onsetDate->diffInWeeks(now());
+                    $result['onset_weeks_ago'] = max(1, $weeksAgo);
+                }
+            }
+
+            return $result;
+        }, $conditions);
+    }
+
+    /**
+     * Transform simplified medications into RxNorm-like format.
+     *
+     * @param  array<int, array<string, mixed>>  $medications
+     * @return array<int, array<string, mixed>>
+     */
+    private function transformMedications(array $medications): array
+    {
+        return array_values(array_filter(array_map(function (array $m) {
+            // Skip discontinued medications
+            if (($m['status'] ?? 'active') === 'discontinued') {
+                return null;
+            }
+
+            $parsed = $this->parseDoseString($m['dose'] ?? '');
+
+            return [
+                'rxnorm_code' => (string) abs(crc32($m['generic_name'])),
+                'generic_name' => $m['generic_name'],
+                'display_name' => $m['generic_name'].' '.$m['dose'],
+                'form' => 'tablet',
+                'strength_value' => $parsed['value'],
+                'strength_unit' => $parsed['unit'],
+                'prescription' => [
+                    'dose_quantity' => $parsed['value'],
+                    'dose_unit' => $parsed['unit'],
+                    'frequency' => $m['frequency'],
+                    'route' => 'oral',
+                    'special_instructions' => $m['reason'] ?? null,
+                ],
+            ];
+        }, $medications)));
+    }
+
+    /**
+     * Parse a dose string like "400mg" or "50mcg" into value and unit.
+     *
+     * @return array{value: float, unit: string}
+     */
+    private function parseDoseString(string $dose): array
+    {
+        if (preg_match('/^([\d.]+)\s*(.+)$/', trim($dose), $matches)) {
+            return [
+                'value' => (float) $matches[1],
+                'unit' => $matches[2],
+            ];
+        }
+
+        return ['value' => 0, 'unit' => 'mg'];
+    }
+
+    /**
+     * Transform lab results and vitals into LOINC observations.
+     *
+     * @param  array<string, mixed>  $json
+     * @return array<int, array<string, mixed>>
+     */
+    private function transformObservations(array $json): array
+    {
+        $observations = [];
+
+        // Lab results
+        foreach ($json['lab_results'] ?? [] as $lab) {
+            // Skip projected/future lab results
+            $note = $lab['note'] ?? '';
+            if (stripos($note, 'projected') !== false) {
+                continue;
+            }
+
+            $observations[] = [
+                'code_system' => 'LOINC',
+                'code' => $lab['loinc'],
+                'code_display' => $lab['test'],
+                'category' => 'laboratory',
+                'value_type' => 'quantity',
+                'value_quantity' => $lab['value'],
+                'value_unit' => $lab['unit'],
+                'reference_range_low' => $lab['reference_range_low'],
+                'reference_range_high' => $lab['reference_range_high'],
+                'reference_range_text' => $lab['reference_text'] ?? null,
+                'interpretation' => $lab['interpretation'],
+            ];
+        }
+
+        // Vitals from the last entry in vitals_timeline
+        $vitalsTimeline = $json['vitals_timeline'] ?? [];
+        if (! empty($vitalsTimeline)) {
+            $lastVitals = end($vitalsTimeline);
+
+            // Blood pressure panel
+            $observations[] = [
+                'code_system' => 'LOINC',
+                'code' => '85354-9',
+                'code_display' => 'Blood pressure panel',
+                'category' => 'vital-signs',
+                'value_type' => 'string',
+                'value_string' => $lastVitals['systolic'].'/'.$lastVitals['diastolic'].' mmHg',
+                'interpretation' => 'N',
+                'specialty_data' => [
+                    'systolic' => ['value' => $lastVitals['systolic'], 'unit' => 'mmHg', 'code' => '8480-6'],
+                    'diastolic' => ['value' => $lastVitals['diastolic'], 'unit' => 'mmHg', 'code' => '8462-4'],
+                ],
+            ];
+
+            // Heart rate
+            if (isset($lastVitals['heart_rate'])) {
+                $observations[] = [
+                    'code_system' => 'LOINC',
+                    'code' => '8867-4',
+                    'code_display' => 'Heart rate',
+                    'category' => 'vital-signs',
+                    'value_type' => 'quantity',
+                    'value_quantity' => $lastVitals['heart_rate'],
+                    'value_unit' => 'bpm',
+                    'reference_range_low' => 60,
+                    'reference_range_high' => 100,
+                    'interpretation' => 'N',
+                ];
+            }
+
+            // SpO2
+            if (isset($lastVitals['spo2'])) {
+                $observations[] = [
+                    'code_system' => 'LOINC',
+                    'code' => '2708-6',
+                    'code_display' => 'Oxygen saturation',
+                    'category' => 'vital-signs',
+                    'value_type' => 'quantity',
+                    'value_quantity' => $lastVitals['spo2'],
+                    'value_unit' => '%',
+                    'reference_range_low' => 95,
+                    'reference_range_high' => 100,
+                    'interpretation' => $lastVitals['spo2'] >= 95 ? 'N' : 'L',
+                ];
+            }
+        }
+
+        return $observations;
     }
 
     private function findOrCreateOrganization(): Organization
