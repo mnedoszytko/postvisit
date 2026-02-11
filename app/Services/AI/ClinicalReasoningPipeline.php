@@ -219,8 +219,8 @@ PROMPT;
             [['role' => 'user', 'content' => $planPrompt]],
             [
                 'model' => $tier->model(),
-                'max_tokens' => 4000,
-                'budget_tokens' => min($tier->thinkingBudget('chat'), 4000),
+                'max_tokens' => 8000,
+                'budget_tokens' => min($tier->thinkingBudget('chat'), 6000),
             ]
         );
 
@@ -274,7 +274,7 @@ PROMPT;
                 [['role' => 'user', 'content' => $verifyPrompt]],
                 [
                     'model' => $tier->model(),
-                    'max_tokens' => 4000,
+                    'max_tokens' => 8000,
                     'budget_tokens' => min($tier->thinkingBudget('chat'), 4000),
                 ]
             );
