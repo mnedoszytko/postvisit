@@ -59,6 +59,9 @@ Route::prefix('v1')->group(function () {
         // Documents (standalone)
         Route::get('documents/{document}', [DocumentController::class, 'show']);
 
+        // Practitioners (for visit form dropdown)
+        Route::get('practitioners', [VisitController::class, 'practitioners']);
+
         // ----- Module 2: Companion Scribe — Visits & Transcripts -----
         Route::post('visits', [VisitController::class, 'store']);
 

@@ -10,6 +10,15 @@ use Illuminate\Http\Request;
 
 class VisitController extends Controller
 {
+    public function practitioners(): JsonResponse
+    {
+        $practitioners = Practitioner::select('id', 'first_name', 'last_name', 'primary_specialty', 'medical_degree')
+            ->orderBy('last_name')
+            ->get();
+
+        return response()->json(['data' => $practitioners]);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
