@@ -2,11 +2,41 @@
   <PatientLayout>
     <div class="max-w-lg mx-auto space-y-6">
       <!-- Consent step -->
-      <div v-if="step === 'consent'" class="bg-white rounded-2xl border border-gray-200 p-6 text-center space-y-4">
-        <h1 class="text-2xl font-bold text-gray-900">Companion Scribe</h1>
-        <p class="text-gray-600">
+      <div v-if="step === 'consent'" class="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+        <h1 class="text-2xl font-bold text-gray-900 text-center">Companion Scribe</h1>
+        <p class="text-gray-600 text-center">
           Record your doctor's visit to get a complete, understandable summary afterwards.
         </p>
+
+        <!-- Visit info form -->
+        <div class="space-y-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Healthcare Provider</label>
+            <select
+              v-model="selectedPractitionerId"
+              class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
+            >
+              <option value="" disabled>Select your doctor...</option>
+              <option v-for="p in practitioners" :key="p.id" :value="p.id">
+                Dr. {{ p.first_name }} {{ p.last_name }} — {{ p.primary_specialty }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Visit Date</label>
+            <input
+              v-model="visitDate"
+              type="date"
+              class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
+            />
+          </div>
+          <div v-if="selectedPractitioner" class="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-xl px-3 py-2">
+            <span class="font-medium text-gray-700">{{ selectedPractitioner.medical_degree }}</span>
+            <span>&middot;</span>
+            <span>{{ selectedPractitioner.primary_specialty }}</span>
+          </div>
+        </div>
+
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 text-left space-y-2">
           <p class="font-medium">Both parties must consent</p>
           <p>By pressing the button below, you confirm that both the healthcare provider and the patient have agreed to record this visit.</p>
@@ -16,7 +46,7 @@
         </div>
         <button
           class="w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
-          :disabled="starting"
+          :disabled="starting || !selectedPractitionerId || !visitDate"
           @click="startRecording"
         >
           {{ starting ? 'Requesting microphone...' : 'Both Parties Consent — Start Recording' }}
@@ -85,7 +115,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useApi } from '@/composables/useApi';
 import { useAuthStore } from '@/stores/auth';
@@ -105,6 +135,15 @@ const uploading = ref(false);
 const error = ref('');
 const demoMode = ref(false);
 const demoLoading = ref(false);
+
+// Visit info form
+const practitioners = ref([]);
+const selectedPractitionerId = ref('');
+const visitDate = ref(new Date().toISOString().slice(0, 10));
+
+const selectedPractitioner = computed(() =>
+    practitioners.value.find(p => p.id === selectedPractitionerId.value) || null
+);
 
 // Upload progress
 const uploadProgress = ref(0);
@@ -224,15 +263,12 @@ async function processVisit() {
             throw new Error('Patient profile not found. Please log in again.');
         }
 
-        const practitionerId = auth.user?.patient?.visits?.[0]?.practitioner_id
-            || await getFirstPractitionerId(patientId);
-
         const visitRes = await api.post('/visits', {
             patient_id: patientId,
-            practitioner_id: practitionerId,
+            practitioner_id: selectedPractitionerId.value,
             visit_type: 'office_visit',
             reason_for_visit: 'Companion Scribe recording',
-            started_at: new Date().toISOString(),
+            started_at: new Date(visitDate.value).toISOString(),
         });
 
         const visitId = visitRes.data.data.id;
@@ -333,7 +369,8 @@ async function useDemoTranscript() {
             throw new Error('Patient profile not found. Please log in again.');
         }
 
-        const practitionerId = auth.user?.patient?.visits?.[0]?.practitioner_id
+        const practitionerId = selectedPractitionerId.value
+            || auth.user?.patient?.visits?.[0]?.practitioner_id
             || await getFirstPractitionerId(patientId);
 
         const visitRes = await api.post('/visits', {
@@ -341,7 +378,7 @@ async function useDemoTranscript() {
             practitioner_id: practitionerId,
             visit_type: 'office_visit',
             reason_for_visit: 'Demo — Companion Scribe recording',
-            started_at: new Date().toISOString(),
+            started_at: new Date(visitDate.value).toISOString(),
         });
 
         const visitId = visitRes.data.data.id;
@@ -374,6 +411,18 @@ async function getFirstPractitionerId(patientId) {
     }
     throw new Error('No practitioner found. Please contact support.');
 }
+
+onMounted(async () => {
+    try {
+        const { data } = await api.get('/practitioners');
+        practitioners.value = data.data || [];
+        if (practitioners.value.length === 1) {
+            selectedPractitionerId.value = practitioners.value[0].id;
+        }
+    } catch {
+        // Non-blocking — user can still type manually
+    }
+});
 
 watch(step, (val) => {
     if (val === 'recording') {
