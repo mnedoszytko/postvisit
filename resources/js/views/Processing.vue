@@ -66,7 +66,8 @@ const api = useApi();
 const steps = [
     { label: 'Transcribing audio...' },
     { label: 'Extracting clinical information...' },
-    { label: 'Building SOAP note...' },
+    { label: 'Building your visit summary...' },
+    { label: 'Cross-referencing with medical guidelines...' },
     { label: 'Checking medications...' },
     { label: 'Preparing your summary...' },
 ];
@@ -117,10 +118,10 @@ async function pollStatus() {
                 clearInterval(timerInterval);
                 failed.value = true;
             } else if (hasSoapNote) {
-                // SOAP note built — checking medications
-                activeStep.value = 3;
+                // SOAP note built — cross-referencing guidelines, then medications
+                activeStep.value = 4;
             } else if (hasEntities) {
-                // Entities extracted — building SOAP note
+                // Entities extracted — building visit summary
                 activeStep.value = 2;
             } else if (status === 'processing') {
                 // Processing started but no structured data yet — transcribing/extracting
