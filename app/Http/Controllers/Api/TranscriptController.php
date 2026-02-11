@@ -94,7 +94,7 @@ class TranscriptController extends Controller
         return response()->json(['data' => $transcript]);
     }
 
-    public function process(Request $request, Visit $visit, ScribeProcessor $scribeProcessor): JsonResponse
+    public function process(Request $request, Visit $visit): JsonResponse
     {
         $transcript = $visit->transcript;
 
@@ -111,8 +111,9 @@ class TranscriptController extends Controller
         $sync = $request->boolean('sync', false);
 
         if ($sync) {
-            // Synchronous processing for demo — calls ScribeProcessor directly
+            // Synchronous processing for demo — resolve ScribeProcessor only when needed
             try {
+                $scribeProcessor = app(ScribeProcessor::class);
                 $scribeResult = $scribeProcessor->process($transcript);
 
                 $transcript->update([
@@ -147,7 +148,7 @@ class TranscriptController extends Controller
                 $transcript->update(['processing_status' => 'failed']);
 
                 return response()->json([
-                    'error' => ['message' => 'Processing failed: ' . $e->getMessage()],
+                    'error' => ['message' => 'Processing failed: '.$e->getMessage()],
                 ], 500);
             }
         }

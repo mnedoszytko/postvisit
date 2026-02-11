@@ -238,6 +238,7 @@ async function useDemoTranscript() {
         router.push({ path: '/processing', query: { visitId } });
     } catch (err) {
         error.value = err.response?.data?.message || err.message || 'Demo failed. Please try again.';
+    } finally {
         demoLoading.value = false;
     }
 }

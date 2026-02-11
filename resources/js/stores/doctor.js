@@ -39,7 +39,7 @@ export const useDoctorStore = defineStore('doctor', {
                 const { data } = await api.get('/doctor/patients', { params });
                 this.patients = (data.data || []).map(p => ({
                     ...p,
-                    name: `${p.first_name} ${p.last_name}`,
+                    name: [p.first_name, p.last_name].filter(Boolean).join(' '),
                 }));
             } catch (err) {
                 this.error = err.response?.data?.error?.message || 'Failed to load patients';
