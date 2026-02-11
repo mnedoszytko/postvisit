@@ -154,6 +154,34 @@ Use for rollback if merge breaks something.
 - Before enabling: add `dev` branch as buffer between work and deploy
 - Flow becomes: `feature/* → dev → main (deploy)`
 
+## Merge Strategy
+
+All agent branches go through PR + codex review before merging to main.
+
+### Workflow
+1. **Agent works on branch** (e.g. `agent2-workspace`, `feature/*`)
+2. **Push + create PR** to `main` via `gh pr create`
+3. **Codex review via CLI** — mandatory before merge:
+   ```bash
+   # Review the full PR diff with codex
+   gh pr diff <PR_NUMBER> | codex review -
+
+   # Or review specific files
+   codex review app/Services/AI/ContextAssembler.php
+   ```
+4. **Fix issues** found by codex review (new commits on the same branch)
+5. **Squash merge** to main — keeps history clean:
+   ```bash
+   gh pr merge <PR_NUMBER> --squash
+   ```
+
+### Rules
+- Never merge directly to main without PR
+- Never merge without codex review pass
+- Squash merge is the default (1 PR = 1 commit on main)
+- Agent branches are deleted after merge
+- If codex review finds critical issues → fix, re-push, re-review
+
 ## Coding Guidelines
 
 ### Language Policy
