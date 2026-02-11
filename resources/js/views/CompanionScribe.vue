@@ -150,8 +150,8 @@ const uploadProgress = ref(0);
 const uploadStatusText = ref('Processing audio...');
 const uploadDetailText = ref('Transcribing with Whisper AI...');
 
-// Persisted visit ID — allows retry without creating a new visit
-let createdVisitId = null;
+// Persisted visit ID — allows retry without creating a new visit, or reuse from existing visit
+let createdVisitId = route.query.visitId || null;
 
 // Chunking — rotate MediaRecorder every CHUNK_DURATION_SEC to stay under Whisper 25 MB limit
 const CHUNK_DURATION_SEC = 10 * 60; // 10 minutes per segment
@@ -454,6 +454,22 @@ onMounted(async () => {
         }
     } catch {
         // Non-blocking — user can still type manually
+    }
+
+    // Pre-fill from existing visit when navigating from Visit Summary
+    if (route.query.visitId) {
+        try {
+            const { data } = await api.get(`/visits/${route.query.visitId}`);
+            const visit = data.data;
+            if (visit?.practitioner_id) {
+                selectedPractitionerId.value = visit.practitioner_id;
+            }
+            if (visit?.started_at) {
+                visitDate.value = visit.started_at.slice(0, 10);
+            }
+        } catch {
+            // Non-blocking — user can still select manually
+        }
     }
 });
 
