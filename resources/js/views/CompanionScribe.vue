@@ -179,7 +179,7 @@ async function processVisit() {
         const visitRes = await api.post('/visits', {
             patient_id: patientId,
             practitioner_id: practitionerId,
-            visit_type: 'consultation',
+            visit_type: 'office_visit',
             reason_for_visit: 'Companion Scribe recording',
             started_at: new Date().toISOString(),
         });
@@ -221,7 +221,7 @@ async function useDemoTranscript() {
         const visitRes = await api.post('/visits', {
             patient_id: patientId,
             practitioner_id: practitionerId,
-            visit_type: 'consultation',
+            visit_type: 'office_visit',
             reason_for_visit: 'Demo — Companion Scribe recording',
             started_at: new Date().toISOString(),
         });

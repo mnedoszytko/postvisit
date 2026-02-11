@@ -16,7 +16,7 @@ class VisitController extends Controller
             'patient_id' => ['required', 'uuid', 'exists:patients,id'],
             'practitioner_id' => ['required', 'uuid', 'exists:practitioners,id'],
             'organization_id' => ['nullable', 'uuid', 'exists:organizations,id'],
-            'visit_type' => ['required', 'string'],
+            'visit_type' => ['required', 'in:office_visit,telehealth,emergency,inpatient'],
             'reason_for_visit' => ['required', 'string'],
             'started_at' => ['required', 'date'],
         ]);
