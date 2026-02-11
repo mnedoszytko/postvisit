@@ -77,7 +77,8 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
 - **Fix:** Changed to `patient.first_name`/`patient.last_name`, computed `patientAge` from `patient.dob`, mapped `conditions` to `code_display`, formatted `visit.visit_type` → "Office Visit", used `visit.started_at` for date.
 - **Takeaway:** Same lesson as #13 repeating. When any view renders model data, ALWAYS check the actual model fields (migration or `$fillable`) and the controller response. This error pattern is systematic — every new view needs a field audit.
 
-### Lesson 15: VPS agents mix unrelated changes into PRs
-- **Bug:** PR #68 was supposed to be "1-line CI fix (add id-token: write)". Instead the VPS agent added DemoSeeder renames (Dr. Nedo → Dr. Sarah Chen), auth interceptor fixes, DoctorDashboard field fixes, Pint formatting, new lessons.md entries, and CLAUDE.md TODO updates — 10 files changed instead of 1.
-- **Fix:** Closed PR #68, recreated as clean single-file PR from main.
-- **Takeaway:** VPS agents working on long-lived branches accumulate drift. When creating a PR for a specific fix, ALWAYS branch from fresh `main` and change ONLY the files relevant to the PR scope. Before pushing, verify with `git diff main..HEAD --stat` that every file in the diff is justified. This is already in CLAUDE.md (PR Discipline section) but agents ignore it — needs stronger enforcement.
+### Lesson 15: VPS agents create PRs from dirty branches, mixing unrelated changes
+- **Bug:** PRs #68 and #69 were both supposed to be single-purpose (1-line CI fix and 1-line disclaimer fix respectively). Instead both had 10 files changed — DemoSeeder renames, auth interceptor fixes, DoctorDashboard field fixes, Pint formatting, lessons.md entries, and CLAUDE.md TODO updates leaked in.
+- **Root cause:** VPS agents created branches from their long-lived workspace branches (`agent2-workspace`, `agent3-workspace`) instead of fresh `main`. The workspace had accumulated days of uncommitted/unstaged changes that got swept into the PR.
+- **Fix:** Both PRs closed and recreated from clean `main` branches. Added mandatory workflow to CLAUDE.md PR Discipline section with explicit `git fetch origin main && git checkout -b fix/xyz FETCH_HEAD` pattern.
+- **Takeaway:** Agents on VPS MUST always branch from fresh `main` for single-purpose PRs. `git diff --stat` before committing is non-negotiable. If more than the expected files appear — STOP and start over.

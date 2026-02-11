@@ -28,7 +28,7 @@
     </div>
 
     <p class="mt-16 text-xs text-gray-400 max-w-md text-center">
-      PostVisit.ai is a patient education tool. It does not provide medical advice and does not replace professional medical judgment.
+      PostVisit.ai helps you understand and act on your doctor's recommendations. It is not a substitute for professional medical judgment.
     </p>
   </div>
 </template>
