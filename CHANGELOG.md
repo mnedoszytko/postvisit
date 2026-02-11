@@ -5,6 +5,9 @@ All notable changes to PostVisit.ai are documented here in reverse chronological
 ## 2026-02-11
 
 ### Added
+- **PMC Open Access articles in AI context (POST-61)** — GuidelinesRepository now loads full-text PMC articles (PVC consensus, HF 2022, HTN 2017) via BioC API for matched conditions. MAX_WORDS raised to 50,000 to demonstrate Opus 4.6's 1M context window. Includes fallback on PMC failure, token count logging, and source attribution with PMC counts.
+- **Multi-step clinical reasoning pipeline (POST-62)** — New `ClinicalReasoningPipeline` service with Plan-Execute-Verify pattern for complex clinical questions (drug safety, dosage, symptom combinations). Plan phase identifies knowledge domains, Execute generates with extended thinking + guidelines, Verify validates against clinical evidence. SSE streams phase indicators. Wired into QaAssistant with automatic trigger detection.
+- **Opus 4.6 usage documentation (POST-74)** — New `docs/opus-4.6-usage.md` covering ASL-4 safety rationale, extended thinking for clinical reasoning, 1M context window utilization, prompt caching economics, 3-tier comparison table, and per-subsystem thinking budgets.
 - **QR Code Mobile Photo Upload Bridge** — Desktop users can generate a QR code to upload photos (medication boxes, lab results, ECG printouts) from their phone directly to a visit. Short-lived tokens (15 min, single-use), standalone Blade mobile page with camera input, real-time polling on desktop detects uploaded photos. Pattern: WhatsApp Web-style bridge.
   - `upload_tokens` table with UUID tokens, visit scoping, expiry, and single-use enforcement
   - `UploadTokenController` (API) for token creation and status polling

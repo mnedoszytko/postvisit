@@ -94,14 +94,16 @@ Example format for a subjective section:
 Patient presents with palpitations and irregular heartbeat for the past 3 months, occurring several times daily. Episodes last 10-30 seconds and are more frequent with stress and caffeine.
 
 Medical history:
-- Urinary incontinence (on Toviaz)
-- Hypothyroidism (on L-Thyroxine 50 mcg)
+- Urinary incontinence
+- Hypothyroidism
 - Chronic musculoskeletal pain and fibromyalgia
 
 Family history:
 - Mother: cerebral hemorrhage
 - Sister: fatal cerebral aneurysm at age 58
 ```
+
+Note: The medical history may mention that a patient has a condition being treated, but medication names, dosages, and prescribing details belong ONLY in `plan` and `current_medications`.
 
 ## Quality Standards
 
