@@ -107,3 +107,20 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
 - **Bug:** If upload failed mid-way, clicking "Process Visit" again created a NEW visit, orphaning the old one (which already had audio chunks saved to it).
 - **Fix:** `createdVisitId` is persisted across retries. If a visit was already created, the retry reuses it.
 - **Takeaway:** When implementing retry flows for multi-step operations, persist intermediate resource IDs so retries are idempotent. Don't create new parent resources on retry.
+
+## 2026-02-11
+
+### Lesson 21: Agent worktree .env must match its Herd domain
+- **Bug:** `postvisit-agent3.test` returned 401 on every request after login. "Sign in as Patient" called `demo/start` (200 OK) but subsequent API calls all failed with 401. Same codebase worked fine on `postvisit.test`.
+- **Root cause:** The `.env` file in the agent3 worktree was copied from main and still had `APP_URL=http://postvisit.test` and `SANCTUM_STATEFUL_DOMAINS=postvisit.test`. Sanctum only attaches session cookies to stateful domains — requests from `postvisit-agent3.test` were treated as third-party/API and cookies were never sent.
+- **Fix:** Updated `.env` in all agent worktrees (agent3, agent4, agent5) to use their correct Herd domain:
+  ```
+  APP_URL=http://postvisit-agentN.test
+  SANCTUM_STATEFUL_DOMAINS=postvisit-agentN.test
+  ```
+- **Takeaway:** When creating a new git worktree for Herd, ALWAYS update `APP_URL`, `SANCTUM_STATEFUL_DOMAINS`, and `DB_DATABASE` in `.env` to match the worktree directory name. Herd serves each directory as `{dirname}.test` — if Sanctum config doesn't match, cookie auth silently fails.
+
+### Lesson 22: Deduplicate 401 toast notifications
+- **Bug:** When session expires, pages with multiple parallel API calls (e.g., HealthDashboard making 3 requests) show N identical "Session expired" toasts stacked on top of each other.
+- **Fix:** Added a 5-second timestamp-based cooldown in the axios 401 interceptor. After showing one toast and redirecting to login, subsequent 401s within 5 seconds are silently rejected.
+- **Takeaway:** Any global error handler (toast, redirect) that can be triggered by parallel requests needs deduplication. Timer-based cooldown is more robust than flag-based (flags reset too fast with async router navigation).
