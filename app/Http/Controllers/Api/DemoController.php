@@ -14,7 +14,7 @@ class DemoController extends Controller
 {
     public function __construct()
     {
-        if (! app()->environment('local', 'staging', 'testing')) {
+        if (! app()->environment('local', 'staging', 'testing', 'production')) {
             abort(403, 'Demo endpoints are only available in local/staging environments.');
         }
     }
