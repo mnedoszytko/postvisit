@@ -76,3 +76,9 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
 - **Bug:** DoctorPatientDetail.vue used `patient.name` (doesn't exist), `patient.conditions.join()` (conditions are objects, not strings → `[object Object]`), `patient.age` (doesn't exist), `visit.visit_date` (doesn't exist). Also `visit.visit_type` showed raw enum `office_visit`.
 - **Fix:** Changed to `patient.first_name`/`patient.last_name`, computed `patientAge` from `patient.dob`, mapped `conditions` to `code_display`, formatted `visit.visit_type` → "Office Visit", used `visit.started_at` for date.
 - **Takeaway:** Same lesson as #13 repeating. When any view renders model data, ALWAYS check the actual model fields (migration or `$fillable`) and the controller response. This error pattern is systematic — every new view needs a field audit.
+
+### Lesson 15: VPS agents create PRs from dirty branches, mixing unrelated changes
+- **Bug:** PRs #68 and #69 were supposed to be single-purpose (1-line CI fix, 1-line disclaimer fix). Instead both contained 10 changed files — DemoSeeder renames, auth interceptor fixes, dashboard field mapping, Pint formatting, lessons.md entries, CLAUDE.md TODO updates. None of these belonged in those PRs.
+- **Root cause:** VPS agents created branches from their long-lived workspace branches (e.g. `agent4-workspace`) instead of fresh `main`. The workspace had accumulated days of uncommitted/unstaged changes. When the agent ran `git checkout -b fix/something`, all workspace drift came along.
+- **Fix:** Both PRs closed and recreated from clean `main` branches. Added mandatory workflow to CLAUDE.md PR Discipline section with explicit `git checkout main && git pull` before branching.
+- **Takeaway:** Agents on VPS MUST always branch from fresh `main` for single-purpose PRs. Never branch from a workspace branch. Always verify `git diff --stat` before committing — if unexpected files appear, the branch is dirty. Delete and start over.
