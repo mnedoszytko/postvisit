@@ -22,8 +22,12 @@
           </router-link>
           <router-link
             to="/scribe"
-            class="text-sm text-gray-600 hover:text-emerald-700 transition-colors"
+            class="text-sm text-gray-600 hover:text-emerald-700 transition-colors flex items-center gap-1.5"
           >
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+            </span>
             Record Visit
           </router-link>
           <div v-if="auth.user" class="flex items-center gap-2 pl-3 border-l border-gray-200">
@@ -75,9 +79,13 @@
           </router-link>
           <router-link
             to="/scribe"
-            class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
             @click="mobileOpen = false"
           >
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+            </span>
             Record Visit
           </router-link>
           <button
