@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\AiTier;
+use App\Http\Controllers\Controller;
 use App\Services\AI\AiTierManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
