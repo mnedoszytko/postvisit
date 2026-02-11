@@ -26,11 +26,11 @@ Return a JSON object with:
 
 ```json
 {
-  "clean_transcript": "Cleaned version of the transcript with speaker labels",
-  "speakers": {
-    "doctor": "Identified doctor segments",
-    "patient": "Identified patient segments"
-  },
+  "clean_transcript": "Cleaned version of the full transcript with speaker labels as plain text",
+  "speakers": [
+    {"speaker": "doctor", "text": "Good morning, how are you feeling today?", "timestamp": "00:00"},
+    {"speaker": "patient", "text": "I have been experiencing headaches.", "timestamp": "00:08"}
+  ],
   "extracted_entities": {
     "symptoms": [],
     "diagnoses": [],

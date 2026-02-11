@@ -126,9 +126,13 @@ class TranscriptController extends Controller
                 $scribeProcessor = app(ScribeProcessor::class);
                 $scribeResult = $scribeProcessor->process($transcript);
 
+                $speakers = $scribeResult['speakers'] ?? [];
+                $diarized = (! empty($speakers) && isset($speakers[0]['speaker'])) ? $speakers : null;
+
                 $transcript->update([
                     'entities_extracted' => $scribeResult['extracted_entities'] ?? [],
                     'soap_note' => $scribeResult['soap_note'] ?? [],
+                    'diarized_transcript' => $diarized,
                     'processing_status' => 'completed',
                 ]);
 

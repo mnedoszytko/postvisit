@@ -32,6 +32,7 @@ class ProcessTranscriptJob implements ShouldQueue
             $this->transcript->update([
                 'entities_extracted' => $scribeResult['extracted_entities'] ?? [],
                 'soap_note' => $scribeResult['soap_note'] ?? [],
+                'diarized_transcript' => $this->buildDiarizedTranscript($scribeResult),
                 'processing_status' => 'completed',
             ]);
 
@@ -69,5 +70,16 @@ class ProcessTranscriptJob implements ShouldQueue
 
             throw $e;
         }
+    }
+
+    private function buildDiarizedTranscript(array $scribeResult): ?array
+    {
+        $speakers = $scribeResult['speakers'] ?? [];
+
+        if (! empty($speakers) && isset($speakers[0]['speaker'])) {
+            return $speakers;
+        }
+
+        return null;
     }
 }

@@ -127,19 +127,29 @@
           </div>
         </div>
 
-        <!-- Raw Transcript -->
+        <!-- Visit Transcript -->
         <div v-if="visit.transcript?.raw_transcript" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
           <button class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors" @click="transcriptExpanded = !transcriptExpanded">
             <div class="flex items-center gap-2">
               <h3 class="font-semibold text-gray-800">Visit Transcript</h3>
+              <span
+                v-if="diarizedSegments"
+                class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full"
+              >
+                Speaker ID
+              </span>
               <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
                 {{ visit.transcript.processing_status }}
               </span>
             </div>
             <span class="text-gray-400 text-sm">{{ transcriptExpanded ? 'Collapse' : 'Expand' }}</span>
           </button>
-          <div v-if="transcriptExpanded" class="px-4 pb-4">
-            <p class="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto">{{ visit.transcript.raw_transcript }}</p>
+          <div v-if="transcriptExpanded" class="px-4 pb-4 max-h-[32rem] overflow-y-auto">
+            <TranscriptConversation
+              v-if="diarizedSegments"
+              :segments="diarizedSegments"
+            />
+            <p v-else class="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">{{ visit.transcript.raw_transcript }}</p>
           </div>
         </div>
       </div>
@@ -182,6 +192,7 @@ import PatientLayout from '@/layouts/PatientLayout.vue';
 import VisitSection from '@/components/VisitSection.vue';
 import ChatPanel from '@/components/ChatPanel.vue';
 import TermPopover from '@/components/TermPopover.vue';
+import TranscriptConversation from '@/components/TranscriptConversation.vue';
 
 const route = useRoute();
 const visitStore = useVisitStore();
@@ -202,6 +213,14 @@ const popoverAnchorRect = ref(null);
 const visit = computed(() => visitStore.currentVisit);
 
 const entities = computed(() => visit.value?.transcript?.entities_extracted || null);
+
+const diarizedSegments = computed(() => {
+    const segments = visit.value?.transcript?.diarized_transcript;
+    if (Array.isArray(segments) && segments.length > 0 && segments[0]?.speaker) {
+        return segments;
+    }
+    return null;
+});
 
 const sectionFieldMap = {
     cc: 'chief_complaint',

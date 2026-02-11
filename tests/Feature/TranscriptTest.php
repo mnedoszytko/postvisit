@@ -233,6 +233,94 @@ class TranscriptTest extends TestCase
         ]);
     }
 
+    public function test_process_sync_saves_diarized_transcript(): void
+    {
+        $fakeResult = [
+            'extracted_entities' => ['symptoms' => ['headache']],
+            'soap_note' => ['subjective' => 'Headache', 'objective' => '', 'assessment' => '', 'plan' => ''],
+            'clean_transcript' => 'Doctor: How are you? Patient: I have headaches.',
+            'speakers' => [
+                ['speaker' => 'doctor', 'text' => 'How are you feeling today?', 'timestamp' => '00:00'],
+                ['speaker' => 'patient', 'text' => 'I have been experiencing headaches.', 'timestamp' => '00:08'],
+            ],
+        ];
+
+        $this->mock(ScribeProcessor::class)
+            ->shouldReceive('process')
+            ->once()
+            ->andReturn($fakeResult);
+
+        $transcript = Transcript::factory()->create([
+            'visit_id' => $this->visit->id,
+            'patient_id' => $this->visit->patient_id,
+            'processing_status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($this->user)->postJson("/api/v1/visits/{$this->visit->id}/transcript/process", [
+            'sync' => true,
+        ]);
+
+        $response->assertOk();
+
+        $transcript->refresh();
+        $this->assertNotNull($transcript->diarized_transcript);
+        $this->assertCount(2, $transcript->diarized_transcript);
+        $this->assertEquals('doctor', $transcript->diarized_transcript[0]['speaker']);
+        $this->assertEquals('patient', $transcript->diarized_transcript[1]['speaker']);
+    }
+
+    public function test_process_sync_handles_empty_speakers_gracefully(): void
+    {
+        $fakeResult = [
+            'extracted_entities' => [],
+            'soap_note' => ['subjective' => 'test', 'objective' => '', 'assessment' => '', 'plan' => ''],
+            'clean_transcript' => 'Some transcript text',
+            'speakers' => [],
+        ];
+
+        $this->mock(ScribeProcessor::class)
+            ->shouldReceive('process')
+            ->once()
+            ->andReturn($fakeResult);
+
+        $transcript = Transcript::factory()->create([
+            'visit_id' => $this->visit->id,
+            'patient_id' => $this->visit->patient_id,
+            'processing_status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($this->user)->postJson("/api/v1/visits/{$this->visit->id}/transcript/process", [
+            'sync' => true,
+        ]);
+
+        $response->assertOk();
+
+        $transcript->refresh();
+        $this->assertNull($transcript->diarized_transcript);
+    }
+
+    public function test_visit_show_includes_diarized_transcript(): void
+    {
+        $diarized = [
+            ['speaker' => 'doctor', 'text' => 'Hello', 'timestamp' => '00:00'],
+            ['speaker' => 'patient', 'text' => 'Hi doctor', 'timestamp' => '00:03'],
+        ];
+
+        Transcript::factory()->create([
+            'visit_id' => $this->visit->id,
+            'patient_id' => $this->visit->patient_id,
+            'raw_transcript' => 'Doctor: Hello. Patient: Hi doctor.',
+            'diarized_transcript' => $diarized,
+            'processing_status' => 'completed',
+        ]);
+
+        $response = $this->actingAs($this->user)->getJson("/api/v1/visits/{$this->visit->id}");
+
+        $response->assertOk();
+        $response->assertJsonPath('data.transcript.diarized_transcript.0.speaker', 'doctor');
+        $response->assertJsonPath('data.transcript.diarized_transcript.1.speaker', 'patient');
+    }
+
     public function test_status_returns_404_when_no_transcript(): void
     {
         $response = $this->actingAs($this->user)->getJson("/api/v1/visits/{$this->visit->id}/transcript/status");

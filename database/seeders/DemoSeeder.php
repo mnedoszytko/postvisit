@@ -431,13 +431,16 @@ class DemoSeeder extends Seeder
         ]);
 
         // 11. Transcript
+        $rawTranscript = file_get_contents(database_path('../demo/transcript.txt'));
+
         Transcript::create([
             'visit_id' => $visit->id,
             'patient_id' => $patient->id,
             'source_type' => 'ambient_device',
             'stt_provider' => 'whisper',
             'audio_duration_seconds' => 1590,
-            'raw_transcript' => file_get_contents(database_path('../demo/transcript.txt')),
+            'raw_transcript' => $rawTranscript,
+            'diarized_transcript' => $this->parseDiarizedTranscript($rawTranscript),
             'processing_status' => 'completed',
             'patient_consent_given' => true,
             'consent_timestamp' => now()->subDay(),
@@ -451,5 +454,31 @@ class DemoSeeder extends Seeder
             'status' => 'active',
             'initiated_at' => now(),
         ]);
+    }
+
+    /**
+     * Parse raw transcript text into diarized speaker segments.
+     *
+     * Expects lines like: [00:00] DR. NEDO: text or [00:12] PATIENT: text
+     */
+    private function parseDiarizedTranscript(string $rawTranscript): array
+    {
+        $segments = [];
+        $pattern = '/\[(\d{2}:\d{2})\]\s+(DR\.\s*\w+|PATIENT):\s*(.+)/i';
+
+        foreach (explode("\n", $rawTranscript) as $line) {
+            if (preg_match($pattern, trim($line), $matches)) {
+                $speakerRaw = strtolower(trim($matches[2]));
+                $speaker = str_starts_with($speakerRaw, 'dr') ? 'doctor' : 'patient';
+
+                $segments[] = [
+                    'speaker' => $speaker,
+                    'text' => trim($matches[3]),
+                    'timestamp' => $matches[1],
+                ];
+            }
+        }
+
+        return $segments;
     }
 }
