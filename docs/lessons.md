@@ -82,3 +82,28 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
 - **Root cause:** VPS agents created branches from their long-lived workspace branches (`agent2-workspace`, `agent3-workspace`) instead of fresh `main`. The workspace had accumulated days of uncommitted/unstaged changes that got swept into the PR.
 - **Fix:** Both PRs closed and recreated from clean `main` branches. Added mandatory workflow to CLAUDE.md PR Discipline section with explicit `git fetch origin main && git checkout -b fix/xyz FETCH_HEAD` pattern.
 - **Takeaway:** Agents on VPS MUST always branch from fresh `main` for single-purpose PRs. `git diff --stat` before committing is non-negotiable. If more than the expected files appear — STOP and start over.
+
+### Lesson 16: MediaRecorder onstop fires asynchronously — never assume data is ready after .stop()
+- **Bug:** `stopRecording()` called `mediaRecorder.stop()` and immediately set `step.value = 'done'`. But `onstop` (which saves the blob to `audioSegments`) fires async. User could click "Process Visit" before the final segment was saved — getting empty or incomplete data.
+- **Fix:** `createRecorder()` now creates a Promise that resolves when `onstop` completes. `stopRecording()` awaits this promise before transitioning to the 'done' step.
+- **Takeaway:** Browser media APIs are event-driven and asynchronous. After calling `.stop()` on MediaRecorder, the data is NOT ready until `onstop` fires. Always use Promises or callbacks to gate subsequent operations.
+
+### Lesson 17: Shared mutable state + async callbacks = race condition (MediaRecorder chunk rotation)
+- **Bug:** The chunk rotation feature used a shared `currentChunkData` array. When `rotateChunk()` stopped the old recorder and created a new one, the new recorder's `createRecorder()` cleared the shared array BEFORE the old recorder's async `onstop` could read it — losing the entire segment.
+- **Fix:** Each `createRecorder()` call creates its own closure-scoped `chunkData` array. The old recorder's `onstop` reads its own closure data, unaffected by the new recorder.
+- **Takeaway:** Never share mutable state between async producers. Each async producer should own its data via closures. This is the classic producer-consumer race condition.
+
+### Lesson 18: Save audio to server BEFORE attempting transcription
+- **Bug:** 21-minute recording (3 segments) was lost because the upload endpoint both stored and transcribed in one step. When transcription failed (MIME validation, then Whisper format rejection), the audio blob existed only in browser memory and was unrecoverable.
+- **Fix:** 3-phase pipeline: (1) save all audio chunks to server via `save-chunk` endpoint, (2) transcribe each via `transcribe-chunk`, (3) combine text and submit. If any phase fails, audio files are already on disk.
+- **Takeaway:** For irreplaceable user data (recordings, uploads), always persist to durable storage FIRST, then process. Never combine "save" and "process" into a single atomic operation when the data source is ephemeral (browser memory).
+
+### Lesson 19: Always add beforeunload protection for in-progress recordings
+- **Bug:** No warning when user accidentally closes tab during recording or upload. All audio data lost silently.
+- **Fix:** Added `beforeunload` event listener that triggers browser's "are you sure?" dialog during recording or upload steps.
+- **Takeaway:** Any page that holds ephemeral user data (recordings, unsaved forms, long-running uploads) MUST register a `beforeunload` handler. Remove it on unmount.
+
+### Lesson 20: Retry should reuse resources, not create new ones
+- **Bug:** If upload failed mid-way, clicking "Process Visit" again created a NEW visit, orphaning the old one (which already had audio chunks saved to it).
+- **Fix:** `createdVisitId` is persisted across retries. If a visit was already created, the retry reuses it.
+- **Takeaway:** When implementing retry flows for multi-step operations, persist intermediate resource IDs so retries are idempotent. Don't create new parent resources on retry.
