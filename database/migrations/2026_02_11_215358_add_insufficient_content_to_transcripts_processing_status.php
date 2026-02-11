@@ -7,10 +7,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // PostgreSQL: alter the enum type to add the new value
-        if (DB::getDriverName() === 'pgsql') {
-            DB::statement("ALTER TYPE transcripts_processing_status_check ADD VALUE IF NOT EXISTS 'insufficient_content'");
-        }
+        // No-op: 'insufficient_content' is already included in the enum definition
+        // in create_transcripts_table migration. Laravel uses varchar + CHECK constraint
+        // on PostgreSQL, not a named enum type, so ALTER TYPE does not apply.
     }
 
     public function down(): void
