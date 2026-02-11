@@ -198,6 +198,28 @@ Use for rollback if merge breaks something.
 - Before enabling: add `dev` branch as buffer between work and deploy
 - Flow becomes: `feature/* → dev → main (deploy)`
 
+## Changelog Policy
+
+Every significant change must be recorded in `CHANGELOG.md`. This is our primary tool for tracing what changed and when.
+
+### Rules
+1. **Every meaningful change gets an entry** — new features, bug fixes, refactors, dependency updates, architecture changes. Skip trivial formatting or typo fixes.
+2. **Format**: reverse chronological order, grouped by date (YYYY-MM-DD), with sections: Added, Fixed, Changed, Removed as needed.
+3. **Keep descriptions short** — one line per change, enough context to understand what and why.
+4. **No versioning yet** — we don't tag releases or bump versions until MVP is reached. CHANGELOG.md is purely for tracing changes over time.
+5. **Update in the same commit** — when you implement a feature or fix, update CHANGELOG.md in the same commit (or PR). Don't batch changelog updates separately.
+
+### Example entry
+```markdown
+## 2026-02-11
+
+### Added
+- Medical term highlighting with tap-to-explain in SOAP notes
+
+### Fixed
+- URL redirect handling during Chrome testing
+```
+
 ## Coding Guidelines
 
 ### Language Policy
