@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ProcessTranscriptJob;
 use App\Models\Transcript;
 use App\Models\Visit;
+use App\Models\VisitNote;
+use App\Services\AI\ScribeProcessor;
 use App\Services\Stt\SpeechToTextProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,7 +18,8 @@ class TranscriptController extends Controller
     public function store(Request $request, Visit $visit): JsonResponse
     {
         $validated = $request->validate([
-            'raw_transcript' => ['required', 'string'],
+            'raw_transcript' => ['required_without:use_demo_transcript', 'string'],
+            'use_demo_transcript' => ['nullable', 'boolean'],
             'source_type' => ['required', 'in:ambient_phone,ambient_device,manual_upload'],
             'stt_provider' => ['nullable', 'string'],
             'audio_duration_seconds' => ['nullable', 'integer'],
@@ -24,8 +27,17 @@ class TranscriptController extends Controller
             'process' => ['nullable', 'boolean'],
         ]);
 
+        if ($request->boolean('use_demo_transcript')) {
+            $demoPath = database_path('../demo/transcript.txt');
+            $validated['raw_transcript'] = file_exists($demoPath)
+                ? file_get_contents($demoPath)
+                : $validated['raw_transcript'] ?? 'Demo transcript not found';
+            $validated['audio_duration_seconds'] = 1590;
+            $validated['stt_provider'] = 'whisper';
+        }
+
         $shouldProcess = $validated['process'] ?? false;
-        unset($validated['process']);
+        unset($validated['process'], $validated['use_demo_transcript']);
 
         $validated['visit_id'] = $visit->id;
         $validated['patient_id'] = $visit->patient_id;
@@ -92,7 +104,7 @@ class TranscriptController extends Controller
         return response()->json(['data' => $transcript]);
     }
 
-    public function process(Visit $visit): JsonResponse
+    public function process(Request $request, Visit $visit): JsonResponse
     {
         $transcript = $visit->transcript;
 
@@ -104,8 +116,52 @@ class TranscriptController extends Controller
             return response()->json(['data' => $transcript, 'message' => 'Transcript already processed']);
         }
 
-        // Mark as processing — AI processing will be handled asynchronously
         $transcript->update(['processing_status' => 'processing']);
+
+        $sync = $request->boolean('sync', false);
+
+        if ($sync) {
+            // Synchronous processing for demo — resolve ScribeProcessor only when needed
+            try {
+                $scribeProcessor = app(ScribeProcessor::class);
+                $scribeResult = $scribeProcessor->process($transcript);
+
+                $transcript->update([
+                    'entities_extracted' => $scribeResult['extracted_entities'] ?? [],
+                    'soap_note' => $scribeResult['soap_note'] ?? [],
+                    'processing_status' => 'completed',
+                ]);
+
+                $soap = $scribeResult['soap_note'] ?? [];
+
+                VisitNote::updateOrCreate(
+                    ['visit_id' => $transcript->visit_id],
+                    [
+                        'patient_id' => $transcript->patient_id,
+                        'author_practitioner_id' => $transcript->visit->practitioner_id,
+                        'composition_type' => 'progress_note',
+                        'status' => 'preliminary',
+                        'chief_complaint' => $soap['subjective'] ?? null,
+                        'history_of_present_illness' => $soap['subjective'] ?? null,
+                        'assessment' => $soap['assessment'] ?? null,
+                        'plan' => $soap['plan'] ?? null,
+                        'review_of_systems' => $soap['objective'] ?? null,
+                        'physical_exam' => $soap['objective'] ?? null,
+                    ]
+                );
+
+                return response()->json([
+                    'data' => $transcript->fresh(),
+                    'message' => 'Transcript processed successfully',
+                ]);
+            } catch (\Throwable $e) {
+                $transcript->update(['processing_status' => 'failed']);
+
+                return response()->json([
+                    'error' => ['message' => 'Processing failed: '.$e->getMessage()],
+                ], 500);
+            }
+        }
 
         ProcessTranscriptJob::dispatch($transcript);
 

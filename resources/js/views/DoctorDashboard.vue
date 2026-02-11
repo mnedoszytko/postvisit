@@ -7,15 +7,15 @@
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white rounded-2xl border border-gray-200 p-6">
           <p class="text-sm text-gray-500">Patients</p>
-          <p class="text-3xl font-bold text-gray-900">{{ doctorStore.dashboard?.patient_count || 0 }}</p>
+          <p class="text-3xl font-bold text-gray-900">{{ doctorStore.dashboard?.stats?.total_patients || 0 }}</p>
         </div>
         <div class="bg-white rounded-2xl border border-gray-200 p-6">
           <p class="text-sm text-gray-500">Unread Messages</p>
-          <p class="text-3xl font-bold text-emerald-600">{{ doctorStore.dashboard?.unread_messages || 0 }}</p>
+          <p class="text-3xl font-bold text-emerald-600">{{ doctorStore.dashboard?.stats?.unread_notifications || 0 }}</p>
         </div>
         <div class="bg-white rounded-2xl border border-gray-200 p-6">
-          <p class="text-sm text-gray-500">Alerts</p>
-          <p class="text-3xl font-bold text-red-600">{{ doctorStore.dashboard?.alert_count || 0 }}</p>
+          <p class="text-sm text-gray-500">Total Visits</p>
+          <p class="text-3xl font-bold text-emerald-700">{{ doctorStore.dashboard?.stats?.total_visits || 0 }}</p>
         </div>
       </div>
 
@@ -43,11 +43,11 @@
             class="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors"
           >
             <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-sm font-bold text-emerald-700">
-              {{ patient.name?.[0] || '?' }}
+              {{ patient.first_name?.[0] || '?' }}
             </div>
             <div class="flex-1">
-              <p class="font-medium text-gray-900">{{ patient.name }}</p>
-              <p class="text-sm text-gray-500">Last visit: {{ patient.last_visit_date || 'N/A' }}</p>
+              <p class="font-medium text-gray-900">{{ patient.first_name }} {{ patient.last_name }}</p>
+              <p class="text-sm text-gray-500">{{ patient.visits_count || 0 }} visit{{ patient.visits_count !== 1 ? 's' : '' }}</p>
             </div>
             <NotificationBanner v-if="patient.has_unread" text="New" />
           </router-link>

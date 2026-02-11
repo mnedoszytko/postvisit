@@ -13,11 +13,23 @@ All notable changes to PostVisit.ai are documented here in reverse chronological
   - `VisitSection.vue` updated to conditionally render highlighted text when terms are available
   - `VisitView.vue` updated to pass terms data and handle `explain-term` events
   - Demo seeder includes 38 hardcoded medical terms with verified character offsets across 6 SOAP sections
+- **Demo mode on Companion Scribe** — `?demo=true` query parameter shows "Use Demo Recording" button that creates a visit with the full 26-minute cardiology transcript loaded server-side
+- **Sync transcript processing** — `/transcript/process?sync=true` parameter for synchronous AI processing without queue worker, creates VisitNote from SOAP output
+- **Doctor patient detail messaging** — Chat sessions with expandable message threads, notification display with unread badges, and inline reply functionality
 
 ### Fixed
 - URL redirect handling during Chrome testing
 - Dosage format display issues
 - Markdown rendering in chat responses
+
+### Changed
+- **Processing view uses real status polling** — Replaced fake timer-based progress animation with actual API status polling (`/transcript/status`). Steps advance based on real entity extraction and SOAP note completion
+- **Dashboard stats mapping fixed** — Doctor dashboard now correctly maps `total_patients` to patient count display. Patient names use null-safe concatenation
+- **DemoSeeder uses real transcript** — Loads actual 26-minute cardiology visit from `demo/transcript.txt` instead of placeholder text
+
+### Removed
+- `DemoMode.vue` standalone page — demo functionality consolidated into CompanionScribe via `?demo=true`
+- `/demo` route from Vue Router
 
 ### Improved
 - Processing view with step-by-step progress indicators and auto-redirect on completion

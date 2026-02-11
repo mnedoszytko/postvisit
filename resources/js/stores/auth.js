@@ -40,7 +40,9 @@ export const useAuthStore = defineStore('auth', {
             if (this.initialized) return;
             this.initialized = true;
             try {
-                await this.fetchUser();
+                const api = useApi();
+                const { data } = await api.get('/auth/user', { skipAuthRedirect: true });
+                this.user = data.data;
             } catch {
                 this.user = null;
                 this.token = null;

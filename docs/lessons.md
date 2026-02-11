@@ -61,3 +61,23 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
 - **Issue:** For the demo seeder, running AI extraction adds latency, cost, and a dependency on API availability during `db:seed`.
 - **Solution:** 38 medical terms with manually verified character offsets are hardcoded in `DemoSeeder.php`. AI extraction (`TermExtractor`) is available for production use but not called during seeding.
 - **Takeaway:** Demo data must be deterministic and self-contained. Use AI services for production flows, but hardcode critical demo data to ensure reliability during presentations.
+
+### Lesson 12: Axios 401 interceptor can hijack non-auth routes
+- **Bug:** The global axios response interceptor caught ALL 401 responses and force-redirected to `/login`. When `auth.init()` ran on the `/demo` page (which has no `requiresAuth` meta), the 401 from `GET /auth/user` caused a redirect to login — preventing the demo page from loading.
+- **Fix:** Added `skipAuthRedirect` config flag to the interceptor. `auth.init()` now passes `{ skipAuthRedirect: true }` to the initial session check, so 401s during init don't trigger navigation.
+- **Takeaway:** Global error interceptors must have escape hatches. Any interceptor that performs side effects (navigation, toasts) should check for opt-out flags.
+
+### Lesson 13: Frontend template fields must match actual API response structure
+- **Bug:** DoctorDashboard.vue used `dashboard.patient_count`, `dashboard.unread_messages`, `patient.name`, `patient.last_visit_date` — none of which exist in the API response. API returns `dashboard.stats.total_patients`, `dashboard.stats.unread_notifications`, `patient.first_name`/`patient.last_name`.
+- **Fix:** Updated template to use correct field paths from the API response.
+- **Takeaway:** When building frontend components, inspect the actual API response (or the controller return statement) before writing template bindings. Don't assume field names — verify them.
+
+### Lesson 14: DoctorPatientDetail had same field mismatch pattern as DoctorDashboard
+- **Bug:** DoctorPatientDetail.vue used `patient.name` (doesn't exist), `patient.conditions.join()` (conditions are objects, not strings → `[object Object]`), `patient.age` (doesn't exist), `visit.visit_date` (doesn't exist). Also `visit.visit_type` showed raw enum `office_visit`.
+- **Fix:** Changed to `patient.first_name`/`patient.last_name`, computed `patientAge` from `patient.dob`, mapped `conditions` to `code_display`, formatted `visit.visit_type` → "Office Visit", used `visit.started_at` for date.
+- **Takeaway:** Same lesson as #13 repeating. When any view renders model data, ALWAYS check the actual model fields (migration or `$fillable`) and the controller response. This error pattern is systematic — every new view needs a field audit.
+
+### Lesson 15: VPS agents mix unrelated changes into PRs
+- **Bug:** PR #68 was supposed to be "1-line CI fix (add id-token: write)". Instead the VPS agent added DemoSeeder renames (Dr. Nedo → Dr. Sarah Chen), auth interceptor fixes, DoctorDashboard field fixes, Pint formatting, new lessons.md entries, and CLAUDE.md TODO updates — 10 files changed instead of 1.
+- **Fix:** Closed PR #68, recreated as clean single-file PR from main.
+- **Takeaway:** VPS agents working on long-lived branches accumulate drift. When creating a PR for a specific fix, ALWAYS branch from fresh `main` and change ONLY the files relevant to the PR scope. Before pushing, verify with `git diff main..HEAD --stat` that every file in the diff is justified. This is already in CLAUDE.md (PR Discipline section) but agents ignore it — needs stronger enforcement.

@@ -21,6 +21,14 @@
         >
           {{ starting ? 'Requesting microphone...' : 'Both Parties Consent — Start Recording' }}
         </button>
+        <button
+          v-if="demoMode"
+          class="w-full py-3 border-2 border-emerald-600 text-emerald-700 rounded-xl font-medium hover:bg-emerald-50 transition-colors"
+          :disabled="demoLoading"
+          @click="useDemoTranscript"
+        >
+          {{ demoLoading ? 'Creating demo visit...' : 'Use Demo Recording (26 min cardiology visit)' }}
+        </button>
         <p v-if="error" class="text-red-600 text-sm">{{ error }}</p>
       </div>
 
@@ -76,13 +84,14 @@
 
 <script setup>
 import { ref, computed, watch, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useApi } from '@/composables/useApi';
 import { useAuthStore } from '@/stores/auth';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import ThreeVisualizer from '@/components/ThreeVisualizer.vue';
 
 const router = useRouter();
+const route = useRoute();
 const api = useApi();
 const auth = useAuthStore();
 
@@ -91,6 +100,10 @@ const seconds = ref(0);
 const starting = ref(false);
 const uploading = ref(false);
 const error = ref('');
+const demoMode = ref(false);
+const demoLoading = ref(false);
+
+demoMode.value = route.query.demo === 'true';
 let timer = null;
 let mediaRecorder = null;
 let audioChunks = [];
@@ -193,6 +206,45 @@ async function processVisit() {
     } catch (err) {
         error.value = err.response?.data?.message || err.message || 'Upload failed. Please try again.';
         uploading.value = false;
+    }
+}
+
+async function useDemoTranscript() {
+    demoLoading.value = true;
+    error.value = '';
+
+    try {
+        const patientId = auth.user?.patient_id || auth.user?.patient?.id;
+        if (!patientId) {
+            throw new Error('Patient profile not found. Please log in again.');
+        }
+
+        const practitionerId = auth.user?.patient?.visits?.[0]?.practitioner_id
+            || await getFirstPractitionerId(patientId);
+
+        const visitRes = await api.post('/visits', {
+            patient_id: patientId,
+            practitioner_id: practitionerId,
+            visit_type: 'consultation',
+            reason_for_visit: 'Demo — Companion Scribe recording',
+            started_at: new Date().toISOString(),
+        });
+
+        const visitId = visitRes.data.data.id;
+
+        await api.post(`/visits/${visitId}/transcript`, {
+            use_demo_transcript: true,
+            raw_transcript: 'demo',
+            source_type: 'ambient_device',
+            patient_consent_given: true,
+            process: true,
+        });
+
+        router.push({ path: '/processing', query: { visitId } });
+    } catch (err) {
+        error.value = err.response?.data?.message || err.message || 'Demo failed. Please try again.';
+    } finally {
+        demoLoading.value = false;
     }
 }
 

@@ -329,10 +329,15 @@ curl -s -X POST 'https://api.linear.app/graphql' \
 - [x] **Transkrypt wizyty** — DONE (`demo/transcript.txt`). Realistyczny dialog kardiolog-pacjent, PVCs, propranolol 40mg 2x/day.
 - [x] **Wypis lekarski / discharge notes** — DONE (`demo/discharge-notes.txt`). Pełny format wypisu.
 
+### Nedo — do zrobienia DZIŚ (11 Feb)
+- [ ] **Export WAV'ów z Voice Memos** — kilkanaście nagranych scenariuszy klinicznych. Share → Files/AirDrop, format m4a OK (Whisper je przyjmie). Wrzucić do `demo/audio/`.
+- [ ] Każdy WAV = osobny case kliniczny → budujemy bibliotekę demo cases
+
 ### Do wygenerowania (Claude zrobi)
 - [x] Mock lab results (cholesterol, K+, TSH) — DONE (seeded in DemoSeeder as Observations)
 - [ ] Mock Apple Watch data (HR, PVC events) — JSON
 - [ ] Mock doctor dashboard data (patient list, alerts) — JSON (dashboard endpoint now works with real data)
+- [ ] Przetworzyć WAV'y przez Whisper → transkrypty → structured visit summaries (po otrzymaniu plików)
 
 ### Dokumentacja (hackathon criterion)
 - [x] README.md — project overview, setup, demo guide — DONE
