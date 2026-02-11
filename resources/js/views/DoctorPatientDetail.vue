@@ -8,11 +8,15 @@
       <!-- Patient profile -->
       <div class="bg-white rounded-2xl border border-gray-200 p-6 flex items-center gap-6">
         <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-xl font-bold text-emerald-700">
-          {{ patient?.name?.[0] || '?' }}
+          {{ patient?.first_name?.[0] || '?' }}
         </div>
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">{{ patient?.name || 'Patient' }}</h1>
-          <p class="text-gray-500">{{ patient?.age ? `Age ${patient.age}` : '' }} {{ patient?.conditions?.join(', ') || '' }}</p>
+          <h1 class="text-2xl font-bold text-gray-900">{{ patient ? `${patient.first_name} ${patient.last_name}` : 'Patient' }}</h1>
+          <p class="text-gray-500">
+            <template v-if="patientAge">Age {{ patientAge }}</template>
+            <template v-if="patientAge && activeConditions.length"> &middot; </template>
+            {{ activeConditions.join(', ') }}
+          </p>
         </div>
       </div>
 
@@ -24,8 +28,13 @@
             No visits recorded.
           </div>
           <div v-for="visit in visits" :key="visit.id" class="p-4">
-            <p class="font-medium text-gray-900">{{ visit.visit_type || 'Visit' }}</p>
-            <p class="text-sm text-gray-500">{{ visit.visit_date }}</p>
+            <div class="flex items-center justify-between">
+              <p class="font-medium text-gray-900">{{ formatVisitType(visit.visit_type) }}</p>
+              <p class="text-sm text-gray-500">{{ formatDate(visit.started_at) }}</p>
+            </div>
+            <p v-if="visit.practitioner" class="text-sm text-gray-500">
+              Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
+            </p>
           </div>
         </div>
       </section>
@@ -50,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useApi } from '@/composables/useApi';
 import DoctorLayout from '@/layouts/DoctorLayout.vue';
@@ -59,6 +68,31 @@ const route = useRoute();
 const api = useApi();
 const patient = ref(null);
 const visits = ref([]);
+
+const patientAge = computed(() => {
+    if (!patient.value?.dob) return null;
+    const dob = new Date(patient.value.dob);
+    const now = new Date();
+    let age = now.getFullYear() - dob.getFullYear();
+    const monthDiff = now.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < dob.getDate())) age--;
+    return age;
+});
+
+const activeConditions = computed(() => {
+    if (!patient.value?.conditions?.length) return [];
+    return patient.value.conditions.map(c => c.code_display);
+});
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function formatVisitType(type) {
+    if (!type) return 'Visit';
+    return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
 
 onMounted(async () => {
     try {

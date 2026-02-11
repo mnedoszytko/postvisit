@@ -5,7 +5,7 @@
       <div class="mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Visit Summary</h1>
         <p v-if="visit" class="text-gray-500">
-          {{ formatDate(visit.started_at) }} &middot; {{ visit.visit_type }}
+          {{ formatDate(visit.started_at) }} &middot; {{ formatVisitType(visit.visit_type) }}
           <span v-if="visit.practitioner">
             &middot; Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
           </span>
@@ -235,6 +235,11 @@ const soapSections = computed(() => {
 function formatDate(dateStr) {
     if (!dateStr) return '';
     return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function formatVisitType(type) {
+    if (!type) return 'Visit';
+    return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
 function formatQuantity(val) {
