@@ -53,12 +53,14 @@ enum AiTier: string
                 'chat' => 4000,
                 'scribe' => 6000,
                 'escalation' => 0,
+                'reasoning' => 6000,
                 default => 4000,
             },
             self::Opus46 => match ($subsystem) {
                 'chat' => 8000,
                 'scribe' => 10000,
                 'escalation' => 6000,
+                'reasoning' => 10000,
                 default => 8000,
             },
         };
@@ -102,6 +104,7 @@ enum AiTier: string
             ],
             self::Opus46 => [
                 'Opus with full extended thinking',
+                'Multi-step clinical reasoning (Plan-Execute-Verify)',
                 'Clinical reasoning on safety decisions',
                 'Real clinical guidelines in context',
                 'Prompt caching across all calls',

@@ -12,6 +12,7 @@ class QaAssistant
         private ContextAssembler $contextAssembler,
         private EscalationDetector $escalationDetector,
         private AiTierManager $tierManager,
+        private ClinicalReasoningPipeline $reasoningPipeline,
     ) {}
 
     /**
@@ -19,8 +20,10 @@ class QaAssistant
      *
      * Uses extended thinking for clinical reasoning, then streams
      * the response. Yields typed arrays for thinking vs text chunks.
+     * Complex clinical questions (drug safety, dosage, symptom combinations)
+     * trigger the Plan-Execute-Verify pipeline on Opus 4.6 tier.
      *
-     * @return Generator<array{type: string, content: string}> Yields thinking/text chunks
+     * @return Generator<array{type: string, content: string}> Yields thinking/text/phase chunks
      */
     public function answer(ChatSession $session, string $question): Generator
     {
@@ -34,7 +37,31 @@ class QaAssistant
             return;
         }
 
-        // Assemble static context (loaded once per session concept)
+        $tier = $this->tierManager->current();
+
+        // Deep reasoning pipeline for complex clinical questions on Opus 4.6 tier
+        if ($tier->thinkingEnabled() && $this->reasoningPipeline->shouldUseDeepReasoning($question)) {
+            $visit->load(['patient', 'practitioner', 'visitNote', 'observations', 'conditions', 'prescriptions.medication', 'transcript']);
+
+            // Build conversation history for the pipeline
+            $historyMessages = [];
+            $history = $session->messages()
+                ->orderBy('created_at')
+                ->get();
+
+            foreach ($history as $msg) {
+                $historyMessages[] = [
+                    'role' => $msg->sender_type === 'patient' ? 'user' : 'assistant',
+                    'content' => $msg->message_text,
+                ];
+            }
+
+            yield from $this->reasoningPipeline->reason($visit, $historyMessages, $question);
+
+            return;
+        }
+
+        // Standard path: assemble context + stream response
         $context = $this->contextAssembler->assembleForVisit($visit, 'qa-assistant');
 
         // Build message array: static context + conversation history + new question
@@ -66,8 +93,6 @@ class QaAssistant
                     "Reason: {$escalation['reason']}. Address this concern appropriately in your response.]",
             ];
         }
-
-        $tier = $this->tierManager->current();
 
         if ($tier->thinkingEnabled()) {
             yield from $this->client->streamWithThinking(

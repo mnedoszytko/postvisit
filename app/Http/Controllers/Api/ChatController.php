@@ -62,6 +62,8 @@ class ChatController extends Controller
                         if ($type === 'thinking') {
                             $thinkingContent .= $content;
                             echo 'data: '.json_encode(['thinking' => $content])."\n\n";
+                        } elseif ($type === 'phase') {
+                            echo 'data: '.json_encode(['phase' => $content])."\n\n";
                         } else {
                             $fullResponse .= $content;
                             echo 'data: '.json_encode(['text' => $content])."\n\n";
