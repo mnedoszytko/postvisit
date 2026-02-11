@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ObservationController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\PrescriptionController;
 use App\Http\Controllers\Api\ReferenceController;
+use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\TranscriptController;
 use App\Http\Controllers\Api\VisitController;
 use Illuminate\Support\Facades\Route;
@@ -152,6 +153,12 @@ Route::prefix('v1')->group(function () {
         // ----- Module 8: Audit (doctor/admin role required) -----
         Route::get('audit/logs', [AuditController::class, 'index'])
             ->middleware('role:doctor,admin');
+
+        // ----- Settings -----
+        Route::prefix('settings')->group(function () {
+            Route::get('ai-tier', [SettingsController::class, 'getAiTier']);
+            Route::put('ai-tier', [SettingsController::class, 'setAiTier']);
+        });
     });
 
     // -------------------------------------------------------

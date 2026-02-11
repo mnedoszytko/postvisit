@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ChatMessage;
 use App\Models\ChatSession;
 use App\Models\Visit;
+use App\Services\AI\AiTierManager;
 use App\Services\AI\QaAssistant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -92,7 +93,7 @@ class ChatController extends Controller
                 'session_id' => $session->id,
                 'sender_type' => 'ai',
                 'message_text' => $fullResponse,
-                'ai_model_used' => config('anthropic.default_model', 'claude-opus-4-6'),
+                'ai_model_used' => app(AiTierManager::class)->current()->model(),
                 'created_at' => now(),
             ];
 

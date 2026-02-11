@@ -20,6 +20,7 @@ class EscalationDetector
     public function __construct(
         private AnthropicClient $client,
         private PromptLoader $promptLoader,
+        private AiTierManager $tierManager,
     ) {}
 
     /**
@@ -28,8 +29,8 @@ class EscalationDetector
      * First performs a fast keyword check for critical terms,
      * then uses AI for nuanced evaluation if no critical keywords found.
      *
-     * @param string $message The patient's message text
-     * @param Visit|null $visit Visit context for condition-aware evaluation
+     * @param  string  $message  The patient's message text
+     * @param  Visit|null  $visit  Visit context for condition-aware evaluation
      * @return array{is_urgent: bool, severity: string, reason: string, recommended_action: string}
      */
     public function evaluate(string $message, ?Visit $visit = null): array
@@ -73,6 +74,7 @@ class EscalationDetector
 
     private function aiEvaluate(string $message, ?Visit $visit): array
     {
+        $tier = $this->tierManager->current();
         $systemPrompt = $this->promptLoader->load('escalation-detector');
 
         $input = "Evaluate the following patient message for urgency.\n\n";
@@ -87,19 +89,32 @@ class EscalationDetector
             }
 
             if ($conditions) {
-                $input .= "Known Conditions: " . implode(', ', $conditions) . "\n";
+                $input .= 'Known Conditions: '.implode(', ', $conditions)."\n";
             }
 
-            $input .= "Visit Specialty: " . ($visit->specialty ?? 'general') . "\n";
+            $input .= 'Visit Specialty: '.($visit->specialty ?? 'general')."\n";
         }
 
         $messages = [
             ['role' => 'user', 'content' => $input],
         ];
 
-        // Use a faster/cheaper model for escalation checks
+        // Opus 4.6 tier: use extended thinking for clinical reasoning before escalation decision
+        if ($tier->escalationThinkingEnabled()) {
+            $result = $this->client->chatWithThinking($systemPrompt, $messages, [
+                'model' => $tier->model(),
+                'max_tokens' => 4096,
+                'budget_tokens' => $tier->thinkingBudget('escalation'),
+            ]);
+
+            $parsed = $this->parseJsonResponse($result['text']);
+            $parsed['clinical_reasoning'] = $result['thinking'];
+
+            return $parsed;
+        }
+
         $response = $this->client->chat($systemPrompt, $messages, [
-            'model' => config('anthropic.escalation_model', 'claude-sonnet-4-5-20250929'),
+            'model' => $tier->model(),
             'max_tokens' => 512,
         ]);
 

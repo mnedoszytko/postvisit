@@ -11,6 +11,7 @@ class QaAssistant
         private AnthropicClient $client,
         private ContextAssembler $contextAssembler,
         private EscalationDetector $escalationDetector,
+        private AiTierManager $tierManager,
     ) {}
 
     /**
@@ -66,13 +67,25 @@ class QaAssistant
             ];
         }
 
-        yield from $this->client->streamWithThinking(
-            $context['system_prompt'],
-            $messages,
-            [
-                'max_tokens' => 16000,
-                'budget_tokens' => config('anthropic.thinking.chat_budget', 8000),
-            ]
-        );
+        $tier = $this->tierManager->current();
+
+        if ($tier->thinkingEnabled()) {
+            yield from $this->client->streamWithThinking(
+                $context['system_prompt'],
+                $messages,
+                [
+                    'model' => $tier->model(),
+                    'max_tokens' => 16000,
+                    'budget_tokens' => $tier->thinkingBudget('chat'),
+                ]
+            );
+        } else {
+            foreach ($this->client->stream($context['system_prompt'], $messages, [
+                'model' => $tier->model(),
+                'max_tokens' => 4096,
+            ]) as $chunk) {
+                yield ['type' => 'text', 'content' => $chunk];
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ class ScribeProcessor
     public function __construct(
         private AnthropicClient $client,
         private PromptLoader $promptLoader,
+        private AiTierManager $tierManager,
     ) {}
 
     /**
@@ -39,15 +40,27 @@ class ScribeProcessor
             ],
         ];
 
-        $result = $this->client->chatWithThinking($systemPrompt, $messages, [
-            'max_tokens' => 16000,
-            'budget_tokens' => config('anthropic.thinking.scribe_budget', 10000),
+        $tier = $this->tierManager->current();
+
+        if ($tier->thinkingEnabled()) {
+            $result = $this->client->chatWithThinking($systemPrompt, $messages, [
+                'model' => $tier->model(),
+                'max_tokens' => 16000,
+                'budget_tokens' => $tier->thinkingBudget('scribe'),
+            ]);
+
+            $parsed = $this->parseJsonResponse($result['text']);
+            $parsed['thinking'] = $result['thinking'];
+
+            return $parsed;
+        }
+
+        $response = $this->client->chat($systemPrompt, $messages, [
+            'model' => $tier->model(),
+            'max_tokens' => 8192,
         ]);
 
-        $parsed = $this->parseJsonResponse($result['text']);
-        $parsed['thinking'] = $result['thinking'];
-
-        return $parsed;
+        return $this->parseJsonResponse($response);
     }
 
     private function parseJsonResponse(string $response): array

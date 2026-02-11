@@ -10,6 +10,7 @@
           <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
             Patient Panel
           </span>
+          <AiTierBadge />
         </div>
 
         <!-- Desktop nav -->
@@ -127,13 +128,22 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useSettingsStore } from '@/stores/settings';
 import { useRouter } from 'vue-router';
+import AiTierBadge from '@/components/AiTierBadge.vue';
 
 const auth = useAuthStore();
+const settings = useSettingsStore();
 const router = useRouter();
 const mobileOpen = ref(false);
+
+onMounted(() => {
+    if (!settings.tiers.length) {
+        settings.fetchTier();
+    }
+});
 
 const initials = computed(() => {
     if (!auth.user?.name) return '?';
