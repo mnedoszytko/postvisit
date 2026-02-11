@@ -255,9 +255,27 @@ async function processVisit() {
 
             uploadProgress.value = 90;
         } else {
-            // Multiple segments — upload each chunk, collect transcripts, submit combined text
-            const transcriptParts = [];
+            // Multiple segments — save all chunks first (safety net), then transcribe
             const ext = getMimeType().includes('webm') ? 'webm' : 'm4a';
+
+            // Phase 1: Save all audio chunks to server (prevents data loss)
+            for (let i = 0; i < segments.length; i++) {
+                uploadStatusText.value = `Saving segment ${i + 1} of ${segments.length}...`;
+                uploadDetailText.value = 'Uploading audio to server...';
+
+                const saveForm = new FormData();
+                saveForm.append('audio', segments[i], `chunk-${i}.${ext}`);
+                saveForm.append('chunk_index', String(i));
+
+                await api.post(`/visits/${visitId}/transcript/save-chunk`, saveForm, {
+                    timeout: 120000,
+                });
+
+                uploadProgress.value = 10 + Math.round(((i + 1) / segments.length) * 30);
+            }
+
+            // Phase 2: Transcribe each chunk (audio is already safe on server)
+            const transcriptParts = [];
 
             for (let i = 0; i < segments.length; i++) {
                 uploadStatusText.value = `Transcribing segment ${i + 1} of ${segments.length}...`;
@@ -273,10 +291,10 @@ async function processVisit() {
                 });
 
                 transcriptParts.push(data.data.text);
-                uploadProgress.value = 10 + Math.round(((i + 1) / segments.length) * 70);
+                uploadProgress.value = 40 + Math.round(((i + 1) / segments.length) * 40);
             }
 
-            // Combine all chunk transcripts and submit as text
+            // Phase 3: Combine all chunk transcripts and submit as text
             uploadStatusText.value = 'Processing combined transcript...';
             uploadDetailText.value = 'Analyzing with AI...';
 

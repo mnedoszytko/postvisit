@@ -203,16 +203,39 @@ class TranscriptController extends Controller
 
         $absolutePath = Storage::disk('local')->path($storagePath);
 
+        // Keep chunk file on disk — audio is preserved even if transcription fails
         $text = $stt->transcribe($absolutePath);
-
-        // Clean up chunk file after transcription
-        Storage::disk('local')->delete($storagePath);
 
         return response()->json([
             'data' => [
                 'text' => $text,
                 'chunk_index' => (int) $request->input('chunk_index'),
                 'total_chunks' => (int) $request->input('total_chunks'),
+                'stored_path' => $storagePath,
+            ],
+        ]);
+    }
+
+    /**
+     * Save an audio chunk to disk without transcribing. Returns the stored path.
+     * Used as a safety net — audio is preserved even if later transcription fails.
+     */
+    public function saveChunk(Request $request, Visit $visit): JsonResponse
+    {
+        $request->validate([
+            'audio' => ['required', 'file', 'max:102400'],
+            'chunk_index' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $storagePath = $request->file('audio')->store(
+            "transcripts/{$visit->id}/chunks",
+            'local'
+        );
+
+        return response()->json([
+            'data' => [
+                'stored_path' => $storagePath,
+                'chunk_index' => (int) $request->input('chunk_index'),
             ],
         ]);
     }
