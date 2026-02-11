@@ -5,6 +5,7 @@ All notable changes to PostVisit.ai are documented here in reverse chronological
 ## 2026-02-11
 
 ### Added
+- **Playwright E2E tests (POST-4)** — Browser smoke tests for auth flows (login form, invalid credentials, demo access, protected routes) and demo mode. Playwright config with Chromium, auto-start dev server.
 - **Medical term highlighting (tap-to-explain)** — Medical terms in SOAP notes are now highlighted and clickable. Tapping a term opens the ChatPanel with "Explain: {term}" pre-filled, triggering a contextual AI explanation. Implements PRD user story P3.
   - New `medical_terms` jsonb column on `visit_notes` table storing extracted terms with character offsets per SOAP section
   - `TermExtractor` AI service (`app/Services/AI/TermExtractor.php`) for production term extraction with offset validation
