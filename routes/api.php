@@ -9,11 +9,12 @@ use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\ExplainController;
 use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\MedicalLookupController;
-use App\Http\Controllers\Api\ReferenceController;
 use App\Http\Controllers\Api\MedicationController;
 use App\Http\Controllers\Api\ObservationController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\PrescriptionController;
+use App\Http\Controllers\Api\ReferenceController;
+use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\TranscriptController;
 use App\Http\Controllers\Api\VisitController;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,7 @@ Route::prefix('v1')->group(function () {
             Route::get('conditions', [PatientController::class, 'conditions']);
             Route::post('conditions', [PatientController::class, 'addCondition']);
             Route::get('health-record', [PatientController::class, 'healthRecord']);
+            Route::get('observations', [PatientController::class, 'observations']);
             Route::get('documents', [PatientController::class, 'documents']);
             Route::post('documents', [PatientController::class, 'uploadDocument']);
             Route::get('prescriptions', [PrescriptionController::class, 'patientPrescriptions']);
@@ -151,6 +153,12 @@ Route::prefix('v1')->group(function () {
         // ----- Module 8: Audit (doctor/admin role required) -----
         Route::get('audit/logs', [AuditController::class, 'index'])
             ->middleware('role:doctor,admin');
+
+        // ----- Settings -----
+        Route::prefix('settings')->group(function () {
+            Route::get('ai-tier', [SettingsController::class, 'getAiTier']);
+            Route::put('ai-tier', [SettingsController::class, 'setAiTier']);
+        });
     });
 
     // -------------------------------------------------------

@@ -13,6 +13,7 @@ class ContextAssembler
     public function __construct(
         private PromptLoader $promptLoader,
         private OpenFdaClient $openFda,
+        private AiTierManager $tierManager,
     ) {}
 
     /**
@@ -25,13 +26,13 @@ class ContextAssembler
      */
     public function assembleForVisit(Visit $visit, string $promptName = 'qa-assistant'): array
     {
-        $cacheEnabled = config('anthropic.cache.enabled', true);
+        $tier = $this->tierManager->current();
         $cacheTtl = config('anthropic.cache.ttl', '5m');
 
         $systemPrompt = $this->promptLoader->load($promptName);
 
-        if ($cacheEnabled) {
-            $systemBlocks = $this->buildCacheableSystemBlocks($systemPrompt, $visit, $cacheTtl);
+        if ($tier->cachingEnabled()) {
+            $systemBlocks = $this->buildCacheableSystemBlocks($systemPrompt, $visit, $cacheTtl, $tier->guidelinesEnabled());
         } else {
             $systemBlocks = $systemPrompt;
         }
@@ -88,7 +89,7 @@ class ContextAssembler
      *
      * @return TextBlockParam[]
      */
-    private function buildCacheableSystemBlocks(string $systemPrompt, Visit $visit, string $ttl): array
+    private function buildCacheableSystemBlocks(string $systemPrompt, Visit $visit, string $ttl, bool $includeGuidelines = true): array
     {
         $blocks = [];
 
@@ -98,8 +99,8 @@ class ContextAssembler
             cacheControl: CacheControlEphemeral::with(ttl: $ttl),
         );
 
-        // Block 2: Clinical guidelines (cacheable — stable reference material)
-        $guidelines = $this->loadGuidelinesContent($visit);
+        // Block 2: Clinical guidelines (cacheable — stable reference material, Opus 4.6 tier only)
+        $guidelines = $includeGuidelines ? $this->loadGuidelinesContent($visit) : null;
         if ($guidelines) {
             $blocks[] = TextBlockParam::with(
                 text: $guidelines,

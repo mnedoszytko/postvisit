@@ -10,12 +10,19 @@
           <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
             Patient Panel
           </span>
+          <AiTierBadge />
         </div>
 
         <!-- Desktop nav -->
         <nav class="hidden md:flex items-center gap-4">
           <router-link
             to="/profile"
+            class="text-sm text-gray-600 hover:text-emerald-700 transition-colors"
+          >
+            Profile
+          </router-link>
+          <router-link
+            to="/health"
             class="text-sm text-gray-600 hover:text-emerald-700 transition-colors"
           >
             My Health
@@ -75,6 +82,13 @@
             class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
             @click="mobileOpen = false"
           >
+            Profile
+          </router-link>
+          <router-link
+            to="/health"
+            class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            @click="mobileOpen = false"
+          >
             My Health
           </router-link>
           <router-link
@@ -102,17 +116,34 @@
     <main class="max-w-4xl mx-auto px-4 py-6">
       <slot />
     </main>
+
+    <!-- Disclaimer footer -->
+    <footer class="max-w-4xl mx-auto px-4 py-4 text-center">
+      <p class="text-xs text-gray-400 leading-relaxed">
+        All clinical scenarios, patient data, and medical records displayed in this application are entirely fictional,
+        created for demonstration purposes only, and do not depict any real person or actual medical encounter.
+      </p>
+    </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useSettingsStore } from '@/stores/settings';
 import { useRouter } from 'vue-router';
+import AiTierBadge from '@/components/AiTierBadge.vue';
 
 const auth = useAuthStore();
+const settings = useSettingsStore();
 const router = useRouter();
 const mobileOpen = ref(false);
+
+onMounted(() => {
+    if (!settings.tiers.length) {
+        settings.fetchTier();
+    }
+});
 
 const initials = computed(() => {
     if (!auth.user?.name) return '?';
