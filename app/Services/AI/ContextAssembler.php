@@ -3,6 +3,7 @@
 namespace App\Services\AI;
 
 use App\Models\Visit;
+use App\Services\Guidelines\GuidelinesRepository;
 use App\Services\Medications\OpenFdaClient;
 use Illuminate\Support\Facades\Log;
 
@@ -11,6 +12,7 @@ class ContextAssembler
     public function __construct(
         private PromptLoader $promptLoader,
         private OpenFdaClient $openFda,
+        private GuidelinesRepository $guidelines,
     ) {}
 
     /**
@@ -81,15 +83,15 @@ class ContextAssembler
 
     private function formatVisitContext(Visit $visit): string
     {
-        $parts = ["--- VISIT DATA ---"];
+        $parts = ['--- VISIT DATA ---'];
 
-        $parts[] = "Visit Date: " . ($visit->started_at ?? 'Unknown');
-        $parts[] = "Visit Type: " . ($visit->visit_type ?? 'General');
-        $parts[] = "Reason for Visit: " . ($visit->reason_for_visit ?? 'Not specified');
+        $parts[] = 'Visit Date: '.($visit->started_at ?? 'Unknown');
+        $parts[] = 'Visit Type: '.($visit->visit_type ?? 'General');
+        $parts[] = 'Reason for Visit: '.($visit->reason_for_visit ?? 'Not specified');
 
         if ($visit->practitioner) {
             $parts[] = "Practitioner: Dr. {$visit->practitioner->first_name} {$visit->practitioner->last_name}";
-            $parts[] = "Specialty: " . ($visit->practitioner->primary_specialty ?? 'General');
+            $parts[] = 'Specialty: '.($visit->practitioner->primary_specialty ?? 'General');
         }
 
         // Visit note (SOAP)
@@ -133,16 +135,16 @@ class ContextAssembler
                 $value = $obs->value_type === 'quantity'
                     ? "{$obs->value_quantity} {$obs->value_unit}"
                     : ($obs->value_string ?? '');
-                $parts[] = "- {$obs->code_display}: {$value}" .
-                    ($obs->interpretation ? " (interpretation: {$obs->interpretation})" : '') .
+                $parts[] = "- {$obs->code_display}: {$value}".
+                    ($obs->interpretation ? " (interpretation: {$obs->interpretation})" : '').
                     ($obs->reference_range_text ? " [ref: {$obs->reference_range_text}]" : '');
                 if ($obs->specialty_data) {
-                    $parts[] = "  Details: " . json_encode($obs->specialty_data, JSON_UNESCAPED_UNICODE);
+                    $parts[] = '  Details: '.json_encode($obs->specialty_data, JSON_UNESCAPED_UNICODE);
                 }
             }
         }
 
-        $parts[] = "--- END VISIT DATA ---";
+        $parts[] = '--- END VISIT DATA ---';
 
         return implode("\n", $parts);
     }
@@ -154,18 +156,18 @@ class ContextAssembler
             return "--- PATIENT RECORD ---\nNo patient record available.\n--- END PATIENT RECORD ---";
         }
 
-        $parts = ["--- PATIENT RECORD ---"];
+        $parts = ['--- PATIENT RECORD ---'];
         $parts[] = "Name: {$patient->first_name} {$patient->last_name}";
-        $parts[] = "Date of Birth: " . ($patient->dob ?? 'Unknown');
-        $parts[] = "Gender: " . ($patient->gender ?? 'Unknown');
+        $parts[] = 'Date of Birth: '.($patient->dob ?? 'Unknown');
+        $parts[] = 'Gender: '.($patient->gender ?? 'Unknown');
 
         // Conditions from the visit
         $conditions = $visit->conditions;
         if ($conditions && $conditions->isNotEmpty()) {
             $parts[] = "\nKnown Conditions:";
             foreach ($conditions as $condition) {
-                $parts[] = "- {$condition->code_display} ({$condition->code})" .
-                    ($condition->clinical_status ? " — status: {$condition->clinical_status}" : '') .
+                $parts[] = "- {$condition->code_display} ({$condition->code})".
+                    ($condition->clinical_status ? " — status: {$condition->clinical_status}" : '').
                     ($condition->clinical_notes ? "\n  Notes: {$condition->clinical_notes}" : '');
             }
         }
@@ -179,25 +181,27 @@ class ContextAssembler
                 foreach ($active as $rx) {
                     $med = $rx->medication;
                     $name = $med ? $med->generic_name : 'Unknown medication';
-                    $parts[] = "- {$name} {$rx->dose_quantity}{$rx->dose_unit} {$rx->frequency}" .
-                        ($rx->frequency_text ? " ({$rx->frequency_text})" : '') .
+                    $parts[] = "- {$name} {$rx->dose_quantity}{$rx->dose_unit} {$rx->frequency}".
+                        ($rx->frequency_text ? " ({$rx->frequency_text})" : '').
                         ($rx->special_instructions ? "\n  Instructions: {$rx->special_instructions}" : '');
                 }
             }
         }
 
-        $parts[] = "--- END PATIENT RECORD ---";
+        $parts[] = '--- END PATIENT RECORD ---';
 
         return implode("\n", $parts);
     }
 
     private function formatGuidelinesContext(Visit $visit): ?string
     {
-        $guidelinesTemplate = $this->promptLoader->load('context-guidelines');
+        $context = $this->guidelines->getRelevantGuidelines($visit);
 
-        // For now, return the template. In production, this would load
-        // actual guideline documents based on the visit's specialty and diagnoses.
-        return "--- CLINICAL GUIDELINES CONTEXT ---\n{$guidelinesTemplate}\n--- END GUIDELINES ---";
+        if ($context === '') {
+            return null;
+        }
+
+        return $context;
     }
 
     private function formatMedicationsContext(Visit $visit): ?string
@@ -207,7 +211,7 @@ class ContextAssembler
             return null;
         }
 
-        $parts = ["--- MEDICATIONS DATA ---"];
+        $parts = ['--- MEDICATIONS DATA ---'];
 
         foreach ($prescriptions as $rx) {
             $med = $rx->medication;
@@ -217,11 +221,11 @@ class ContextAssembler
 
             $parts[] = "\nMedication: {$med->generic_name} ({$med->display_name})";
             if ($med->brand_names) {
-                $parts[] = "Brand Names: " . implode(', ', (array) $med->brand_names);
+                $parts[] = 'Brand Names: '.implode(', ', (array) $med->brand_names);
             }
             $parts[] = "Prescribed Dose: {$rx->dose_quantity}{$rx->dose_unit}";
-            $parts[] = "Route: " . ($rx->route ?? 'oral');
-            $parts[] = "Frequency: " . ($rx->frequency ?? 'as directed');
+            $parts[] = 'Route: '.($rx->route ?? 'oral');
+            $parts[] = 'Frequency: '.($rx->frequency ?? 'as directed');
             if ($rx->special_instructions) {
                 $parts[] = "Special Instructions: {$rx->special_instructions}";
             }
@@ -232,11 +236,11 @@ class ContextAssembler
                 $parts[] = "Pregnancy Category: {$med->pregnancy_category}";
             }
             if ($med->black_box_warning) {
-                $parts[] = "WARNING: This medication has a black box warning.";
+                $parts[] = 'WARNING: This medication has a black box warning.';
             }
         }
 
-        $parts[] = "--- END MEDICATIONS DATA ---";
+        $parts[] = '--- END MEDICATIONS DATA ---';
 
         return implode("\n", $parts);
     }
@@ -248,7 +252,7 @@ class ContextAssembler
             return null;
         }
 
-        $parts = ["--- FDA SAFETY DATA ---"];
+        $parts = ['--- FDA SAFETY DATA ---'];
         $hasData = false;
 
         foreach ($prescriptions as $rx) {
@@ -273,10 +277,10 @@ class ContextAssembler
                 if (! empty($label)) {
                     $hasData = true;
                     if (! empty($label['boxed_warning'])) {
-                        $parts[] = "\nBOXED WARNING for {$med->generic_name}: " . mb_substr($label['boxed_warning'], 0, 500);
+                        $parts[] = "\nBOXED WARNING for {$med->generic_name}: ".mb_substr($label['boxed_warning'], 0, 500);
                     }
                     if (! empty($label['information_for_patients'])) {
-                        $parts[] = "\nPatient Information for {$med->generic_name}: " . mb_substr($label['information_for_patients'], 0, 500);
+                        $parts[] = "\nPatient Information for {$med->generic_name}: ".mb_substr($label['information_for_patients'], 0, 500);
                     }
                 }
             } catch (\Throwable $e) {
@@ -291,7 +295,7 @@ class ContextAssembler
             return null;
         }
 
-        $parts[] = "--- END FDA SAFETY DATA ---";
+        $parts[] = '--- END FDA SAFETY DATA ---';
 
         return implode("\n", $parts);
     }

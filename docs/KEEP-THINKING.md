@@ -307,3 +307,8 @@ The iteration count isn't vanity — it's evidence that we didn't accept the fir
 ---
 
 *Last updated: 2026-02-11 | 47 commits | 15 research documents | 26 architecture decisions | 8 AI prompts | 10 AI services | 67 tests*
+
+### Iteration 8: Clinical Guidelines Licensing Analysis and 3-Layer Architecture (Feb 11)
+**What changed:** Designed a compliance-first architecture for integrating clinical guidelines after discovering major licensing restrictions.
+**Why:** We investigated using ESC and AHA/ACC guidelines as the AI's "source of truth." ESC has invoked EU Directive 2019/790 Article 4(3) opt-out, explicitly prohibiting AI/LLM use. AHA/ACC holds full copyright with no structured data or redistribution rights. NICE requires written permission for AI use. This forced us to design around these restrictions.
+**Before → After:** Before: planned to bundle ESC/AHA guideline PDFs directly. After: 3-layer architecture — (1) Bundled open-licensed sources (WikiDoc CC-BY-SA 3.0, DailyMed public domain, CDC public domain), (2) Runtime RAG via PMC BioC API for AHA/ACC guideline full text (fetched at runtime, cached 24h, never stored in repo), (3) Our own derivative clinical summaries in prompts/guidelines/. This approach is fully compliant while still giving the AI access to high-quality clinical knowledge.
