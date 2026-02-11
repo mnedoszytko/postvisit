@@ -261,6 +261,42 @@ Before writing ANY new code — component, service, endpoint, helper, or utility
 
 **If you find existing code that overlaps with what you're about to write — STOP and refactor instead of creating a duplicate.** Duplication is a bug.
 
+### Field Audit Rule (CRITICAL — most common bug pattern)
+Before referencing ANY model field in a controller, service, or Vue template:
+1. **Check the migration** — it's the source of truth for column names, types, enums, and nullability.
+2. **Check the model's `$fillable`/`$casts`** — verify the field is accessible and properly cast.
+3. **Check the API Resource / controller response** — frontend must use the exact field paths returned by the API, not guessed ones.
+4. **For enum columns** — controller validation values MUST match migration enum values exactly.
+5. **For NOT NULL columns** — ensure every column has a value set in the controller (auto-generate or default).
+
+Common traps: `patient.name` (doesn't exist — it's `first_name`/`last_name`), `visit.visit_date` (doesn't exist — it's `started_at`), `$transcript->raw_text` (it's `raw_transcript`).
+
+### Ephemeral Data Protection
+When handling irreplaceable user data that exists only in browser memory (recordings, file uploads, unsaved forms):
+1. **Save to server FIRST, process SECOND** — never combine save+process in one atomic step. If processing fails, the data must already be on disk.
+2. **Async API safety** — browser media APIs (MediaRecorder) are event-driven. After `.stop()`, data is NOT ready until `onstop` fires. Always await the completion event.
+3. **Closure isolation** — when rotating/replacing async producers (e.g. chunk rotation), each producer must own its data via closures. Never share mutable arrays between async callbacks.
+4. **`beforeunload` protection** — any page holding ephemeral data MUST register a `beforeunload` handler during active recording/upload. Remove on unmount.
+5. **Idempotent retries** — persist intermediate resource IDs (visit ID, chunk IDs) so retries reuse existing resources instead of creating orphans.
+
+### AI Output Validation
+Never trust AI-generated structured data (character offsets, positions, counts, classifications) without programmatic validation:
+- Backend: validate every AI output field before storing (e.g. extract substring at claimed offset, compare to claimed term)
+- Frontend: validate again client-side, with fallback behavior (e.g. text search if offset is wrong)
+- Drop invalid entries with debug logging rather than crashing
+
+### Demo Seeder Completeness
+The DemoSeeder must produce **complete, feature-ready data for ALL demo scenarios**, not just the first one:
+- Every visit must have all dependent data (visit notes, medical_terms, observations, conditions, prescriptions)
+- If a feature depends on AI-generated data (e.g. term extraction), the seeder must invoke that service for all scenarios
+- Critical demo data should be hardcoded for reliability; AI services supplement but don't replace deterministic seeding
+
+### Axios Interceptor Safety
+Global axios interceptors that perform side effects (navigation, toasts) must have:
+1. **Opt-out flags** — e.g. `skipAuthRedirect: true` for requests that expect 401s (session checks on public pages)
+2. **Deduplication** — parallel requests triggering the same error (e.g. 3 concurrent 401s) must show ONE toast, not N. Use timestamp-based cooldown (5s)
+3. **Scope awareness** — don't redirect to login from pages that don't require auth
+
 ### General Rules
 - NEVER hardcode data to resolve a problem — only if explicitly instructed by user
 - Never Co-Author commits with Claude Code as author
