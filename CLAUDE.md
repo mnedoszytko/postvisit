@@ -177,6 +177,27 @@ Use for rollback if merge breaks something.
 - **User prompts in chat** come in Polish and English — both are normal, always respond in the same language the user used.
 - **Never translate or "correct" user's prompts** — the bilingual workflow is intentional and more effective.
 
+### Pre-Implementation Verification (CRITICAL)
+Before writing ANY new code — component, service, endpoint, helper, or utility — you MUST:
+
+1. **Search for existing implementations.** Use Grep/Glob to check if similar functionality already exists in the codebase. Check:
+   - `app/Services/` — is there already a service that does this or something close?
+   - `app/Http/Controllers/` — is there an endpoint that already handles this?
+   - `resources/js/components/` — is there a Vue component that does the same thing?
+   - `resources/js/composables/` — is there a composable with this logic?
+   - `resources/js/stores/` — is this state already managed somewhere?
+
+2. **Extend, don't duplicate.** If similar code exists:
+   - Add a parameter or method to the existing class — don't create a parallel one
+   - Extract shared logic into a common function — don't copy-paste
+   - If two components do 80% the same thing, refactor to one configurable component
+
+3. **Check for unused code.** Before adding a new approach, verify the old one is removed. Do not leave dead code, orphaned components, or unused imports behind.
+
+4. **Name consistently.** Before naming a new file/class/function, check how siblings are named. Follow the same pattern. If visit-related services are `VisitSummarizer`, `VisitStructurer`, don't name yours `SummarizeVisitService`.
+
+**If you find existing code that overlaps with what you're about to write — STOP and refactor instead of creating a duplicate.** Duplication is a bug.
+
 ### General Rules
 - NEVER hardcode data to resolve a problem — only if explicitly instructed by user
 - Never Co-Author commits with Claude Code as author
