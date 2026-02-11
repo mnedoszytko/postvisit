@@ -49,3 +49,15 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
   SANCTUM_STATEFUL_DOMAINS=postvisit-agentN.test
   ```
 - **Takeaway:** When creating a new git worktree for Herd, ALWAYS update `APP_URL`, `SANCTUM_STATEFUL_DOMAINS`, and `DB_DATABASE` in `.env` to match the worktree directory name. Herd serves each directory as `{dirname}.test` — if Sanctum config doesn't match, cookie auth silently fails.
+
+### Lesson 22: Tests that call DemoSeeder block the entire test suite
+- **Bug:** `herd php artisan test` hung indefinitely. Suite ran fine through DemoScenarioTest (8 tests, 0.3s) then froze — no output, no timeout, no error.
+- **Root cause:** `DemoSeederTest` runs `$this->seed(DemoSeeder::class)` in `setUp()`. DemoSeeder calls `TermExtractor` which makes a real Anthropic API call. In test env without API key or with slow response, this blocks forever. Same issue in `BloodPressureMonitoringTest` (2 `@group slow` tests) and `ReferenceTest::test_demo_seeder_creates_references`.
+- **Fix:** Deleted `DemoSeederTest.php` entirely (tests old seeder, replaced by DemoScenarioSeeder). Removed 2 slow tests from `BloodPressureMonitoringTest`. Removed 1 DemoSeeder test from `ReferenceTest`. Added PHPUnit time limits to `phpunit.xml` (10s small, 20s medium, 30s large, enforced).
+- **Result:** 167 tests, 459 assertions, 3.90s total. Zero tests over 2s.
+- **Takeaway:** NEVER call real AI services from tests. Any test calling DemoSeeder (which invokes TermExtractor) will block the suite. Use the new `DemoScenarioSeeder` which uses hardcoded config data. If a test takes >30s it must be deleted or rewritten — slow tests block all development.
+
+### Lesson 23: Enforce PHPUnit time limits in phpunit.xml
+- **Bug:** No test timeout configured — a single slow test could block the entire suite indefinitely with no feedback.
+- **Fix:** Added `enforceTimeLimit="true"` with `timeoutForSmallTests="10"` / `timeoutForMediumTests="20"` / `timeoutForLargeTests="30"` to phpunit.xml.
+- **Takeaway:** Always set PHPUnit time limits. 30 seconds max per test is the hard rule. Any test exceeding this is bad craftsmanship and must be rewritten.

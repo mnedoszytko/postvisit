@@ -400,6 +400,44 @@ return [
                 'plan' => "1. Increase Furosemide to 40mg BID\n2. Add Dapagliflozin 10mg QD (DAPA-HF trial)\n3. Continue Lisinopril 20mg QD and Carvedilol 25mg BID\n4. Daily weight monitoring\n5. Strict 1.5L/day fluid restriction\n6. Recheck labs in 1 week\n7. Follow-up in 2 weeks",
                 'follow_up' => '2 weeks for volume status reassessment.',
                 'follow_up_timeframe' => '2 weeks',
+                'medical_terms' => [
+                    'chief_complaint' => [
+                        ['term' => 'shortness of breath', 'start' => 10, 'end' => 29, 'definition' => 'Difficulty breathing or feeling like you can\'t get enough air. In heart failure, this happens because fluid backs up into your lungs.'],
+                        ['term' => 'weight gain', 'start' => 34, 'end' => 45, 'definition' => 'Rapid weight gain (2+ kg in a few days) in heart failure usually means your body is retaining fluid, not fat. Daily weighing helps catch this early.'],
+                    ],
+                    'history_of_present_illness' => [
+                        ['term' => 'HFrEF', 'start' => 52, 'end' => 57, 'definition' => 'Heart Failure with Reduced Ejection Fraction — your heart muscle is weakened and doesn\'t pump blood as efficiently as normal. "Reduced" means your EF is below 40%.'],
+                        ['term' => 'LVEF 35%', 'start' => 59, 'end' => 67, 'definition' => 'Left Ventricular Ejection Fraction of 35%. This measures how much blood your heart pumps out with each beat. Normal is 55-70%. Your 35% means your heart is pumping about half as effectively as normal.'],
+                        ['term' => 'dyspnea on exertion', 'start' => 96, 'end' => 115, 'definition' => 'Shortness of breath that occurs during physical activity like walking or climbing stairs. It happens because your heart can\'t pump enough blood to meet your body\'s demands during exercise.'],
+                    ],
+                    'physical_exam' => [
+                        ['term' => 'dyspneic', 'start' => 22, 'end' => 30, 'definition' => 'Having difficulty breathing. "Mildly dyspneic at rest" means you were slightly short of breath even while sitting still — a sign of worsening heart failure.'],
+                        ['term' => 'HR', 'start' => 48, 'end' => 50, 'definition' => 'Heart Rate — your heart beats per minute. Your HR of 88 is slightly elevated, which can happen when the heart compensates for reduced pumping power.'],
+                        ['term' => 'BP', 'start' => 55, 'end' => 57, 'definition' => 'Blood Pressure. Your reading of 142/88 is elevated (Stage 2 hypertension), which puts extra strain on your already weakened heart.'],
+                        ['term' => 'SpO2', 'start' => 72, 'end' => 76, 'definition' => 'Oxygen saturation — how much oxygen your blood is carrying. 94% is lower than ideal (normal is 95-100%), suggesting fluid in your lungs is affecting oxygen exchange.'],
+                        ['term' => 'S3 gallop', 'start' => 114, 'end' => 123, 'definition' => 'An extra heart sound heard through a stethoscope. An S3 gallop in adults is a classic sign of heart failure — it\'s caused by blood rushing into a ventricle that\'s already overfilled.'],
+                        ['term' => 'JVP elevated', 'start' => 133, 'end' => 145, 'definition' => 'Jugular Venous Pressure — the visible pulsation in the neck veins. Elevated JVP (12 cm, normal <4 cm) means blood is backing up because your heart can\'t pump it forward efficiently.'],
+                        ['term' => 'Bibasilar crackles', 'start' => 160, 'end' => 178, 'definition' => 'Crackling sounds heard at the base of both lungs through a stethoscope. These are caused by fluid that has leaked into the air sacs of your lungs — a hallmark of heart failure.'],
+                        ['term' => 'pitting edema', 'start' => 198, 'end' => 211, 'definition' => 'Swelling in the legs/ankles where pressing a finger leaves a temporary dent. "2+" means moderate severity. This is excess fluid your heart can\'t circulate properly.'],
+                    ],
+                    'assessment' => [
+                        ['term' => 'Acute-on-chronic heart failure', 'start' => 0, 'end' => 31, 'definition' => 'A sudden worsening of your ongoing (chronic) heart failure. Think of it as a flare-up — your baseline condition got worse due to a trigger (in your case, too much salt in your diet).'],
+                        ['term' => 'decompensation', 'start' => 32, 'end' => 46, 'definition' => 'When your heart can no longer compensate for its weakness. Your body was managing, but excess fluid tipped the balance — leading to swelling, breathing difficulty, and weight gain.'],
+                        ['term' => 'HFrEF', 'start' => 48, 'end' => 53, 'definition' => 'Heart Failure with Reduced Ejection Fraction. Your heart\'s pumping ability is reduced to 35% (normal is 55-70%).'],
+                        ['term' => 'NYHA Class III', 'start' => 67, 'end' => 81, 'definition' => 'New York Heart Association classification of heart failure severity. Class III means marked limitation — you\'re comfortable at rest but less than ordinary activity causes symptoms. Scale goes I (mild) to IV (severe).'],
+                        ['term' => 'sodium indiscretion', 'start' => 101, 'end' => 120, 'definition' => 'Eating more salt than recommended. Salt makes your body hold onto water, which is especially dangerous in heart failure because your heart already can\'t handle the extra fluid.'],
+                    ],
+                    'plan' => [
+                        ['term' => 'Furosemide', 'start' => 12, 'end' => 22, 'definition' => 'A powerful diuretic ("water pill") that helps your kidneys remove excess fluid from your body. Increasing to 40mg twice daily will help reduce the fluid buildup causing your swelling and breathing problems.'],
+                        ['term' => 'BID', 'start' => 31, 'end' => 34, 'definition' => '"Bis in die" — Latin for twice a day. Take one dose in the morning and one in the evening.'],
+                        ['term' => 'Dapagliflozin', 'start' => 42, 'end' => 55, 'definition' => 'An SGLT2 inhibitor originally developed for diabetes, but proven in the DAPA-HF trial to reduce hospitalizations and death in heart failure patients — even those without diabetes. This is a major addition to your treatment.'],
+                        ['term' => 'QD', 'start' => 62, 'end' => 64, 'definition' => '"Quaque die" — Latin for once daily. Take one pill per day.'],
+                        ['term' => 'DAPA-HF trial', 'start' => 66, 'end' => 79, 'definition' => 'A landmark clinical trial that proved Dapagliflozin reduces the risk of worsening heart failure and cardiovascular death by 26% in HFrEF patients.'],
+                        ['term' => 'Lisinopril', 'start' => 95, 'end' => 105, 'definition' => 'An ACE inhibitor that relaxes blood vessels and reduces the workload on your heart. It\'s a cornerstone medication for heart failure.'],
+                        ['term' => 'Carvedilol', 'start' => 117, 'end' => 127, 'definition' => 'A beta-blocker that slows your heart rate and lowers blood pressure, helping your heart pump more efficiently over time. One of the key medications for heart failure.'],
+                        ['term' => 'fluid restriction', 'start' => 184, 'end' => 201, 'definition' => 'Limiting how much liquid you drink per day to 1.5 liters. This helps prevent fluid overload when your heart can\'t pump efficiently. Includes all beverages, soups, and ice.'],
+                    ],
+                ],
             ],
 
             'chat_session' => [

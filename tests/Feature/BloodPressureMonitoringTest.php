@@ -8,7 +8,6 @@ use App\Models\Patient;
 use App\Models\Practitioner;
 use App\Models\User;
 use App\Models\Visit;
-use Database\Seeders\DemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -90,45 +89,6 @@ class BloodPressureMonitoringTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('data.0.specialty_data.htn_stage', 'stage_2');
-    }
-
-    /** @group slow */
-    public function test_seeder_creates_bp_series(): void
-    {
-        $this->seed(DemoSeeder::class);
-
-        $patient = Patient::where('email', 'patient@demo.postvisit.ai')->first();
-
-        $bpReadings = Observation::where('patient_id', $patient->id)
-            ->where('code', '85354-9')
-            ->get();
-
-        // 1 original + 9 series + 9 home readings = 19 total
-        $this->assertEquals(19, $bpReadings->count());
-
-        // Check all have specialty_data with systolic/diastolic
-        foreach ($bpReadings as $bp) {
-            $this->assertArrayHasKey('systolic', $bp->specialty_data);
-            $this->assertArrayHasKey('diastolic', $bp->specialty_data);
-        }
-    }
-
-    /** @group slow */
-    public function test_seeder_bp_series_has_correct_interpretations(): void
-    {
-        $this->seed(DemoSeeder::class);
-
-        $patient = Patient::where('email', 'patient@demo.postvisit.ai')->first();
-
-        $bpReadings = Observation::where('patient_id', $patient->id)
-            ->where('code', '85354-9')
-            ->get();
-
-        $highCount = $bpReadings->where('interpretation', 'H')->count();
-        $normalCount = $bpReadings->where('interpretation', 'N')->count();
-
-        $this->assertGreaterThan(0, $highCount, 'Should have elevated BP readings');
-        $this->assertGreaterThan(0, $normalCount, 'Should have normal BP readings');
     }
 
     public function test_patient_cannot_access_bp_observations(): void

@@ -226,22 +226,6 @@ class ReferenceTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_demo_seeder_creates_references(): void
-    {
-        $this->seed(\Database\Seeders\DemoSeeder::class);
-
-        $this->assertDatabaseCount('medical_references', 8);
-        $this->assertDatabaseHas('medical_references', [
-            'pmid' => '37622666',
-            'source_organization' => 'ESC',
-            'verified' => true,
-        ]);
-        $this->assertDatabaseHas('medical_references', [
-            'pmid' => '35363499',
-            'source_organization' => 'AHA/ACC',
-        ]);
-    }
-
     public function test_pubmed_api_failure_returns_not_found(): void
     {
         Http::fake([
