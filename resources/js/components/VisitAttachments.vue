@@ -79,47 +79,132 @@
         <div
           v-for="doc in documents"
           :key="doc.id"
-          class="flex items-center gap-3 rounded-xl border border-gray-100 p-2.5 group hover:bg-gray-50 transition-colors"
+          class="rounded-xl border border-gray-100 overflow-hidden group hover:bg-gray-50/50 transition-colors"
         >
-          <!-- Thumbnail / icon -->
-          <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
-            <img
-              v-if="doc.content_type === 'image'"
-              :src="`/api/v1/documents/${doc.id}/thumbnail`"
-              class="w-full h-full object-cover rounded-lg"
-              alt=""
-            />
-            <svg v-else class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-gray-800 truncate">{{ doc.title }}</p>
-            <p class="text-xs text-gray-400">
-              {{ formatType(doc.document_type) }}
-              &middot; {{ formatSize(doc.file_size) }}
-              &middot; {{ formatDate(doc.document_date) }}
-            </p>
-          </div>
-          <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <a
-              :href="`/api/v1/documents/${doc.id}/download`"
-              class="p-1.5 text-gray-400 hover:text-emerald-600 transition-colors"
-              title="Download"
-            >
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          <!-- Document card header -->
+          <div class="flex items-center gap-3 p-2.5">
+            <!-- Thumbnail / icon -->
+            <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
+              <img
+                v-if="doc.content_type === 'image'"
+                :src="`/api/v1/documents/${doc.id}/thumbnail`"
+                class="w-full h-full object-cover rounded-lg"
+                alt=""
+              />
+              <svg v-else class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
               </svg>
-            </a>
-            <button
-              class="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
-              title="Delete"
-              @click="deleteDocument(doc)"
-            >
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-800 truncate">{{ doc.title }}</p>
+              <p class="text-xs text-gray-400">
+                {{ formatType(doc.document_type) }}
+                &middot; {{ formatSize(doc.file_size) }}
+                &middot; {{ formatDate(doc.document_date) }}
+              </p>
+            </div>
+            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <a
+                :href="`/api/v1/documents/${doc.id}/download`"
+                class="p-1.5 text-gray-400 hover:text-emerald-600 transition-colors"
+                title="Download"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+              </a>
+              <button
+                class="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                title="Delete"
+                @click="deleteDocument(doc)"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- AI Analysis section -->
+          <div v-if="doc._analysis_status" class="border-t border-gray-100">
+            <!-- Processing state -->
+            <div v-if="doc._analysis_status === 'pending' || doc._analysis_status === 'processing'" class="px-3 py-2 flex items-center gap-2">
+              <svg class="w-4 h-4 animate-spin text-emerald-500" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
-            </button>
+              <span class="text-xs text-gray-500">Analyzing document...</span>
+            </div>
+
+            <!-- Failed state -->
+            <div v-else-if="doc._analysis_status === 'failed'" class="px-3 py-2 flex items-center gap-2">
+              <svg class="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+              <span class="text-xs text-red-500">Analysis failed</span>
+              <button class="text-xs text-emerald-600 hover:underline ml-auto" @click="pollAnalysis(doc)">Retry</button>
+            </div>
+
+            <!-- Completed state — collapsible -->
+            <div v-else-if="doc._analysis_status === 'completed' && doc._analysis">
+              <button
+                class="w-full px-3 py-2 flex items-center gap-2 text-left hover:bg-gray-50 transition-colors"
+                @click="doc._analysisExpanded = !doc._analysisExpanded"
+              >
+                <svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                </svg>
+                <span class="text-xs font-medium text-emerald-700">AI Analysis</span>
+                <span class="text-xs text-gray-400 ml-auto">{{ doc._analysisExpanded ? 'Hide' : 'Show' }}</span>
+              </button>
+
+              <div v-if="doc._analysisExpanded" class="px-3 pb-3 space-y-2.5">
+                <!-- Summary -->
+                <p class="text-sm text-gray-700">{{ doc._analysis.summary }}</p>
+
+                <!-- Findings -->
+                <div v-if="doc._analysis.findings?.length" class="space-y-1">
+                  <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Findings</p>
+                  <div v-for="(f, fi) in doc._analysis.findings" :key="fi" class="flex items-start gap-2">
+                    <span
+                      class="mt-0.5 inline-block w-2 h-2 rounded-full shrink-0"
+                      :class="significanceDot(f.significance)"
+                    ></span>
+                    <div class="min-w-0">
+                      <span class="text-sm text-gray-700">{{ f.finding }}</span>
+                      <span v-if="f.location" class="text-xs text-gray-400 ml-1">({{ f.location }})</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Key values -->
+                <div v-if="doc._analysis.key_values?.length">
+                  <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Key Values</p>
+                  <div class="grid grid-cols-2 gap-1.5">
+                    <div
+                      v-for="(kv, ki) in doc._analysis.key_values"
+                      :key="ki"
+                      class="flex items-center justify-between bg-gray-50 rounded-lg px-2.5 py-1.5"
+                    >
+                      <span class="text-xs text-gray-500">{{ kv.label }}</span>
+                      <div class="flex items-center gap-1">
+                        <span class="text-sm font-medium" :class="valueStatusColor(kv.status)">
+                          {{ kv.value }}<span v-if="kv.unit" class="text-xs font-normal text-gray-400 ml-0.5">{{ kv.unit }}</span>
+                        </span>
+                        <span v-if="kv.status && kv.status !== 'normal'" class="text-[10px] font-medium px-1 py-0.5 rounded" :class="valueStatusBadge(kv.status)">
+                          {{ kv.status.toUpperCase() }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Safety note -->
+                <p v-if="doc._analysis.safety_note" class="text-[11px] text-gray-400 italic border-t border-gray-100 pt-2">
+                  {{ doc._analysis.safety_note }}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -133,7 +218,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useApi } from '@/composables/useApi';
 
 const props = defineProps({
@@ -147,6 +232,7 @@ const uploading = ref(false);
 const dragOver = ref(false);
 const fileInput = ref(null);
 const pendingFiles = ref([]);
+const pollTimers = ref({});
 
 function triggerFileInput() {
     if (!uploading.value) {
@@ -191,7 +277,16 @@ async function uploadAll() {
 
         try {
             const { data } = await api.post(`/visits/${props.visitId}/documents`, formData);
-            documents.value.unshift(data.data);
+            const doc = data.data;
+            doc._analysis_status = doc.analysis_status || 'pending';
+            doc._analysis = doc.ai_analysis || null;
+            doc._analysisExpanded = false;
+            documents.value.unshift(doc);
+
+            // Start polling if analysis is pending/processing
+            if (['pending', 'processing'].includes(doc._analysis_status) && ['image', 'pdf'].includes(doc.content_type)) {
+                startPolling(doc);
+            }
         } catch {
             // Toast handled by api interceptor
         }
@@ -201,13 +296,76 @@ async function uploadAll() {
     uploading.value = false;
 }
 
+function startPolling(doc) {
+    if (pollTimers.value[doc.id]) return;
+
+    pollTimers.value[doc.id] = setInterval(() => pollAnalysis(doc), 3000);
+}
+
+function stopPolling(docId) {
+    if (pollTimers.value[docId]) {
+        clearInterval(pollTimers.value[docId]);
+        delete pollTimers.value[docId];
+    }
+}
+
+async function pollAnalysis(doc) {
+    try {
+        const { data } = await api.get(`/documents/${doc.id}/analysis`);
+        const result = data.data;
+
+        doc._analysis_status = result.analysis_status;
+        doc._analysis = result.ai_analysis;
+
+        if (['completed', 'failed', 'skipped'].includes(result.analysis_status)) {
+            stopPolling(doc.id);
+            if (result.analysis_status === 'completed') {
+                doc._analysisExpanded = true;
+            }
+        }
+    } catch {
+        stopPolling(doc.id);
+    }
+}
+
 async function deleteDocument(doc) {
     try {
+        stopPolling(doc.id);
         await api.delete(`/documents/${doc.id}`);
         documents.value = documents.value.filter(d => d.id !== doc.id);
     } catch {
         // Toast handled by api interceptor
     }
+}
+
+function significanceDot(significance) {
+    const map = {
+        normal: 'bg-green-400',
+        mild: 'bg-emerald-400',
+        moderate: 'bg-yellow-400',
+        significant: 'bg-orange-400',
+        critical: 'bg-red-500',
+    };
+    return map[significance] || 'bg-gray-300';
+}
+
+function valueStatusColor(status) {
+    const map = {
+        normal: 'text-gray-800',
+        low: 'text-blue-600',
+        high: 'text-red-600',
+        abnormal: 'text-orange-600',
+    };
+    return map[status] || 'text-gray-800';
+}
+
+function valueStatusBadge(status) {
+    const map = {
+        low: 'bg-blue-50 text-blue-600',
+        high: 'bg-red-50 text-red-600',
+        abnormal: 'bg-orange-50 text-orange-600',
+    };
+    return map[status] || 'bg-gray-100 text-gray-600';
 }
 
 function formatType(type) {
@@ -239,11 +397,28 @@ function formatDate(dateStr) {
 async function fetchDocuments() {
     try {
         const { data } = await api.get(`/visits/${props.visitId}/documents`);
-        documents.value = data.data || [];
+        const docs = data.data || [];
+
+        docs.forEach(doc => {
+            doc._analysis_status = doc.analysis_status || null;
+            doc._analysis = doc.ai_analysis || null;
+            doc._analysisExpanded = false;
+
+            // Resume polling for documents still being analyzed
+            if (['pending', 'processing'].includes(doc._analysis_status) && ['image', 'pdf'].includes(doc.content_type)) {
+                startPolling(doc);
+            }
+        });
+
+        documents.value = docs;
     } catch {
         // Silent — documents will be empty
     }
 }
 
 onMounted(fetchDocuments);
+
+onUnmounted(() => {
+    Object.keys(pollTimers.value).forEach(stopPolling);
+});
 </script>

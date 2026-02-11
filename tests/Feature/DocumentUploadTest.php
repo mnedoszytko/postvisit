@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Visit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -39,6 +40,7 @@ class DocumentUploadTest extends TestCase
     public function test_can_upload_image_to_visit(): void
     {
         Storage::fake('local');
+        Queue::fake();
 
         $file = UploadedFile::fake()->image('ecg-scan.jpg', 800, 600)->size(1024);
 
@@ -66,6 +68,7 @@ class DocumentUploadTest extends TestCase
     public function test_can_upload_pdf_to_visit(): void
     {
         Storage::fake('local');
+        Queue::fake();
 
         $file = UploadedFile::fake()->create('lab-results.pdf', 500, 'application/pdf');
 
@@ -85,6 +88,7 @@ class DocumentUploadTest extends TestCase
     public function test_upload_uses_original_filename_as_default_title(): void
     {
         Storage::fake('local');
+        Queue::fake();
 
         $file = UploadedFile::fake()->image('heart-echo.png', 400, 300);
 

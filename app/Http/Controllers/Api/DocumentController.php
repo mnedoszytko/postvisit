@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVisitDocumentRequest;
+use App\Jobs\AnalyzeDocumentJob;
 use App\Models\Document;
 use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
@@ -56,7 +57,24 @@ class DocumentController extends Controller
             'created_by' => $request->user()->id,
         ]);
 
+        // Dispatch AI analysis for images and PDFs
+        if (in_array($contentType, ['image', 'pdf'])) {
+            AnalyzeDocumentJob::dispatch($document);
+        }
+
         return response()->json(['data' => $document], 201);
+    }
+
+    public function analysisStatus(Document $document): JsonResponse
+    {
+        return response()->json([
+            'data' => [
+                'analysis_status' => $document->analysis_status,
+                'ai_analysis' => $document->ai_analysis,
+                'analyzed_at' => $document->analyzed_at,
+                'analysis_error' => $document->analysis_error,
+            ],
+        ]);
     }
 
     public function visitDocuments(Visit $visit): JsonResponse
