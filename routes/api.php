@@ -107,6 +107,7 @@ Route::prefix('v1')->group(function () {
             Route::get('patients/{patient}/visits', [DoctorController::class, 'patientVisits']);
             Route::get('patients/{patient}/engagement', [DoctorController::class, 'engagement']);
             Route::get('patients/{patient}/chat-audit', [DoctorController::class, 'chatAudit']);
+            Route::get('patients/{patient}/observations', [DoctorController::class, 'patientObservations']);
             Route::get('notifications', [DoctorController::class, 'notifications']);
             Route::post('messages/{message}/reply', [DoctorController::class, 'reply']);
         });

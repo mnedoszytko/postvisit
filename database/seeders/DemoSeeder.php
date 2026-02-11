@@ -157,6 +157,45 @@ class DemoSeeder extends Seeder
             'created_by' => $doctorUser->id,
         ]);
 
+        // 6b-series. Blood Pressure monitoring series (HTN scenario)
+        $bpData = [
+            ['days_ago' => 14, 'sys' => 148, 'dia' => 92, 'interp' => 'H'],
+            ['days_ago' => 12, 'sys' => 142, 'dia' => 88, 'interp' => 'H'],
+            ['days_ago' => 10, 'sys' => 138, 'dia' => 86, 'interp' => 'H'],
+            ['days_ago' => 8, 'sys' => 135, 'dia' => 84, 'interp' => 'H'],
+            ['days_ago' => 7, 'sys' => 140, 'dia' => 90, 'interp' => 'H'],
+            ['days_ago' => 5, 'sys' => 132, 'dia' => 82, 'interp' => 'H'],
+            ['days_ago' => 4, 'sys' => 128, 'dia' => 80, 'interp' => 'N'],
+            ['days_ago' => 3, 'sys' => 130, 'dia' => 84, 'interp' => 'H'],
+            ['days_ago' => 2, 'sys' => 126, 'dia' => 78, 'interp' => 'N'],
+        ];
+
+        foreach ($bpData as $bp) {
+            Observation::create([
+                'fhir_observation_id' => 'obs-bp-series-' . Str::uuid(),
+                'patient_id' => $patient->id,
+                'visit_id' => $visit->id,
+                'practitioner_id' => $practitioner->id,
+                'code_system' => 'LOINC',
+                'code' => '85354-9',
+                'code_display' => 'Blood pressure panel',
+                'category' => 'vital-signs',
+                'status' => 'final',
+                'value_type' => 'string',
+                'value_string' => "{$bp['sys']}/{$bp['dia']} mmHg",
+                'interpretation' => $bp['interp'],
+                'effective_date' => now()->subDays($bp['days_ago'])->toDateString(),
+                'issued_at' => now()->subDays($bp['days_ago']),
+                'specialty_data' => [
+                    'systolic' => ['value' => $bp['sys'], 'unit' => 'mmHg', 'code' => '8480-6'],
+                    'diastolic' => ['value' => $bp['dia'], 'unit' => 'mmHg', 'code' => '8462-4'],
+                    'monitoring_source' => 'home_device',
+                    'htn_stage' => $bp['sys'] >= 140 ? 'stage_2' : ($bp['sys'] >= 130 ? 'stage_1' : 'normal'),
+                ],
+                'created_by' => $doctorUser->id,
+            ]);
+        }
+
         // 6c. 12-Lead EKG
         Observation::create([
             'fhir_observation_id' => 'obs-ekg-' . Str::uuid(),

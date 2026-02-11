@@ -16,6 +16,9 @@
         </div>
       </div>
 
+      <!-- Blood Pressure Monitoring Chart -->
+      <BloodPressureChart v-if="bpReadings.length >= 2" :readings="bpReadings" />
+
       <!-- Visit history -->
       <section>
         <h2 class="text-lg font-semibold text-gray-800 mb-3">Visit History</h2>
@@ -50,24 +53,32 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useApi } from '@/composables/useApi';
 import DoctorLayout from '@/layouts/DoctorLayout.vue';
+import BloodPressureChart from '@/components/BloodPressureChart.vue';
 
 const route = useRoute();
 const api = useApi();
 const patient = ref(null);
 const visits = ref([]);
+const observations = ref([]);
+
+const bpReadings = computed(() => {
+  return observations.value.filter(o => o.code === '85354-9' && o.specialty_data?.systolic);
+});
 
 onMounted(async () => {
     try {
-        const [patientRes, visitsRes] = await Promise.all([
+        const [patientRes, visitsRes, obsRes] = await Promise.all([
             api.get(`/doctor/patients/${route.params.id}`),
             api.get(`/doctor/patients/${route.params.id}/visits`),
+            api.get(`/doctor/patients/${route.params.id}/observations?code=85354-9`),
         ]);
         patient.value = patientRes.data.data;
         visits.value = visitsRes.data.data;
+        observations.value = obsRes.data.data;
     } catch {
         // Handled by API interceptor
     }
