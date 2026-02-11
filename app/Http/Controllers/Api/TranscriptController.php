@@ -11,10 +11,27 @@ use App\Services\AI\ScribeProcessor;
 use App\Services\Stt\SpeechToTextProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class TranscriptController extends Controller
 {
+    /**
+     * Backup audio file outside the project directory for safekeeping.
+     */
+    private function backupAudio(string $storagePath, Visit $visit, string $label = ''): void
+    {
+        try {
+            $contents = Storage::disk('local')->get($storagePath);
+            $ext = pathinfo($storagePath, PATHINFO_EXTENSION);
+            $timestamp = now()->format('Ymd_His');
+            $backupName = "{$visit->id}/{$timestamp}" . ($label ? "_{$label}" : '') . ".{$ext}";
+            Storage::disk('audio_backup')->put($backupName, $contents);
+        } catch (\Throwable $e) {
+            Log::warning('Audio backup failed', ['path' => $storagePath, 'error' => $e->getMessage()]);
+        }
+    }
+
     public function store(Request $request, Visit $visit): JsonResponse
     {
         $validated = $request->validate([
@@ -67,6 +84,8 @@ class TranscriptController extends Controller
             "transcripts/{$visit->id}",
             'local'
         );
+
+        $this->backupAudio($storagePath, $visit, 'full');
 
         $absolutePath = Storage::disk('local')->path($storagePath);
 
@@ -231,6 +250,8 @@ class TranscriptController extends Controller
             "transcripts/{$visit->id}/chunks",
             'local'
         );
+
+        $this->backupAudio($storagePath, $visit, 'chunk' . $request->input('chunk_index'));
 
         return response()->json([
             'data' => [

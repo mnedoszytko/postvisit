@@ -47,6 +47,13 @@ return [
             'report' => false,
         ],
 
+        'audio_backup' => [
+            'driver' => 'local',
+            'root' => env('AUDIO_BACKUP_PATH', '/Users/nedo/Documents/postvisit-audio-backups'),
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
