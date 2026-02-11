@@ -30,7 +30,12 @@
         </svg>
       </div>
       <h4 class="font-semibold text-gray-800 mb-1">Your visit assistant</h4>
-      <p class="text-sm text-gray-500 mb-6 max-w-[240px]">I have the full context of your visit. Ask me anything about your diagnosis, medications, or next steps.</p>
+      <p v-if="initialContext" class="text-xs text-emerald-600 font-medium mb-2 px-3 py-1 bg-emerald-50 rounded-full inline-block">
+        Context: {{ initialContext }}
+      </p>
+      <p class="text-sm text-gray-500 mb-6 max-w-[240px]">
+        {{ initialContext ? `Ask me anything about your ${initialContext.toLowerCase()}.` : 'I have the full context of your visit. Ask me anything about your diagnosis, medications, or next steps.' }}
+      </p>
       <div class="space-y-2 w-full">
         <button
           v-for="q in suggestedQuestions"
@@ -145,12 +150,64 @@ const lastUserMessage = computed(() => {
     return userMsgs.length ? userMsgs[userMsgs.length - 1].content : '';
 });
 
-const suggestedQuestions = [
+const contextSuggestions = {
+    'Chief Complaint': [
+        'Why did the doctor focus on this issue?',
+        'Is this something I should be worried about?',
+        'How is this related to my other conditions?',
+        'What questions should I ask at my next visit?',
+    ],
+    'History of Present Illness': [
+        'Can you summarize my history in simpler terms?',
+        'How has my condition progressed?',
+        'What factors might be causing my symptoms?',
+        'What does this history mean for my treatment?',
+    ],
+    'Reported Symptoms': [
+        'Which of these symptoms are most important?',
+        'Are any of these symptoms related to each other?',
+        'When should I be concerned about these symptoms?',
+        'What can I do to manage these symptoms at home?',
+    ],
+    'Physical Examination': [
+        'What did the doctor find during the exam?',
+        'Are my vital signs normal?',
+        'What do these physical findings mean?',
+        'Should I be concerned about any of these results?',
+    ],
+    'Assessment': [
+        'What does my diagnosis mean in simple terms?',
+        'How serious is this condition?',
+        'What causes this condition?',
+        'What is the typical outlook for this diagnosis?',
+    ],
+    'Plan': [
+        'Can you explain each step of my treatment plan?',
+        'What happens if I miss a step in the plan?',
+        'How long will this treatment take?',
+        'What should I prioritize first?',
+    ],
+    'Follow-up': [
+        'When is my next appointment?',
+        'What should I prepare for the follow-up?',
+        'What tests should be done before my next visit?',
+        'What progress should I expect by then?',
+    ],
+};
+
+const defaultSuggestions = [
     'What does my diagnosis mean in simple terms?',
     'Explain my medication and side effects',
     'What should I watch out for at home?',
     'When should I call my doctor?',
 ];
+
+const suggestedQuestions = computed(() => {
+    if (props.initialContext) {
+        return contextSuggestions[props.initialContext] || defaultSuggestions;
+    }
+    return defaultSuggestions;
+});
 
 function sendQuestion(q) {
     message.value = q;
