@@ -103,7 +103,7 @@ class EscalationDetector
         if ($tier->escalationThinkingEnabled()) {
             $result = $this->client->chatWithThinking($systemPrompt, $messages, [
                 'model' => $tier->model(),
-                'max_tokens' => 4096,
+                'max_tokens' => 8000,
                 'budget_tokens' => $tier->thinkingBudget('escalation'),
             ]);
 
