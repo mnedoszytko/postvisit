@@ -45,6 +45,9 @@ class ChatController extends Controller
         // Load visit relationships for context
         $visit->load(['patient', 'practitioner', 'visitNote', 'observations', 'conditions', 'prescriptions.medication', 'transcript']);
 
+        // AI streaming can take >30s with extended thinking — remove PHP time limit
+        set_time_limit(0);
+
         return response()->stream(function () use ($session, $validated) {
             $fullResponse = '';
             $thinkingContent = '';

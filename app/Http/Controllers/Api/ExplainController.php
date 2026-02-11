@@ -23,6 +23,8 @@ class ExplainController extends Controller
 
         $visit->load(['patient', 'practitioner', 'visitNote', 'observations', 'conditions', 'prescriptions.medication', 'transcript']);
 
+        set_time_limit(0);
+
         return response()->stream(function () use ($visit, $validated) {
             try {
                 foreach ($this->explainer->explain($visit, $validated['term'], $validated['context'] ?? null) as $chunk) {
