@@ -63,7 +63,7 @@ onMounted(async () => {
         const [patientRes, obsRes, deviceRes] = await Promise.allSettled([
             api.get(`/patients/${patientId}`),
             api.get(`/patients/${patientId}/observations`),
-            fetch('/demo/apple-watch-alex.json').then(r => r.ok ? r.json() : null),
+            fetch('/data/apple-watch-alex.json').then(r => r.ok ? r.json() : null),
         ]);
 
         if (patientRes.status === 'fulfilled') {
