@@ -8,6 +8,10 @@
 
 **AI-powered post-visit care platform** that bridges the gap between what happens in the doctor's office and what happens after. Built for the [Claude AI Hackathon](https://anthropic.com) (Feb 10-16, 2026).
 
+> **Live Demo: [https://postvisit.ai](https://postvisit.ai)**
+>
+> Try the full demo flow: visit `/demo`, click "Skip to Visit Summary" (patient view) or "View Doctor Dashboard" (doctor view). No registration required -- demo mode auto-authenticates with realistic cardiology visit data.
+
 ## The Problem
 
 After a medical visit, patients forget up to 80% of what their doctor said. They struggle with medical terminology, have no way to reference what was discussed, and are left with confusing discharge papers. Doctors repeat the same explanations and lack feedback on patient understanding.
