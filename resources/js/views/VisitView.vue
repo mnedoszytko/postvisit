@@ -37,7 +37,8 @@
         <!-- LEFT COLUMN: Visit content (scrollable) -->
         <div
           :class="[
-            'flex-1 min-w-0',
+            'min-w-0 transition-all duration-300',
+            chatVisible ? 'flex-1' : 'w-full',
             mobileTab === 'chat' ? 'hidden lg:block' : ''
           ]"
         >
@@ -344,24 +345,55 @@
           </div>
         </div>
 
-        <!-- RIGHT COLUMN: Chat Panel (always visible on desktop, tab on mobile) -->
-        <div
-          :class="[
-            'lg:w-[400px] lg:shrink-0',
-            mobileTab === 'visit' ? 'hidden lg:block' : 'w-full'
-          ]"
+        <!-- RIGHT COLUMN: Chat Panel -->
+        <Transition
+          enter-active-class="transition-all duration-300 ease-out"
+          enter-from-class="opacity-0 translate-x-8 w-0"
+          enter-to-class="opacity-100 translate-x-0 lg:w-[400px]"
+          leave-active-class="transition-all duration-200 ease-in"
+          leave-from-class="opacity-100 translate-x-0 lg:w-[400px]"
+          leave-to-class="opacity-0 translate-x-8 w-0"
         >
-          <div class="lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)]">
-            <ChatPanel
-              :visit-id="route.params.id"
-              :initial-context="chatContext"
-              :highlight="chatHighlight"
-              :embedded="true"
-              @close="mobileTab = 'visit'"
-            />
+          <div
+            v-if="chatVisible || mobileTab === 'chat'"
+            :class="[
+              'lg:w-[400px] lg:shrink-0 overflow-hidden',
+              mobileTab === 'visit' ? 'hidden lg:block' : 'w-full'
+            ]"
+          >
+            <div class="lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)]">
+              <ChatPanel
+                :visit-id="route.params.id"
+                :initial-context="chatContext"
+                :highlight="chatHighlight"
+                :embedded="true"
+                @close="closeChat"
+              />
+            </div>
           </div>
-        </div>
+        </Transition>
       </div>
+
+      <!-- Floating chat button (shown when chat is closed on desktop) -->
+      <Transition
+        enter-active-class="transition-all duration-300 ease-out"
+        enter-from-class="opacity-0 scale-75"
+        enter-to-class="opacity-100 scale-100"
+        leave-active-class="transition-all duration-150 ease-in"
+        leave-from-class="opacity-100 scale-100"
+        leave-to-class="opacity-0 scale-75"
+      >
+        <button
+          v-if="!chatVisible"
+          class="hidden lg:flex fixed bottom-6 right-6 w-14 h-14 bg-emerald-600 text-white rounded-full shadow-lg items-center justify-center hover:bg-emerald-700 hover:scale-105 transition-all z-40"
+          title="Open AI Chat"
+          @click="chatVisible = true"
+        >
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+          </svg>
+        </button>
+      </Transition>
 
       <!-- Term Popover -->
       <TermPopover
@@ -390,6 +422,7 @@ import VisitAttachments from '@/components/VisitAttachments.vue';
 const route = useRoute();
 const visitStore = useVisitStore();
 const mobileTab = ref('visit');
+const chatVisible = ref(true);
 const chatContext = ref('');
 const chatHighlight = ref(false);
 const obsExpanded = ref(false);
@@ -645,8 +678,17 @@ function showTermPopover(payload) {
     popoverVisible.value = true;
 }
 
+function closeChat() {
+    if (window.innerWidth < 1024) {
+        mobileTab.value = 'visit';
+    } else {
+        chatVisible.value = false;
+    }
+}
+
 function openChat(context = '') {
     popoverVisible.value = false;
+    chatVisible.value = true;
     chatHighlight.value = true;
     setTimeout(() => { chatHighlight.value = false; }, 600);
     chatContext.value = context;
