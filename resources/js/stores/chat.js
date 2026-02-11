@@ -10,7 +10,7 @@ export const useChatStore = defineStore('chat', {
     }),
 
     actions: {
-        async sendMessage(visitId, message) {
+        async sendMessage(visitId, message, contextSources = null) {
             this.loading = true;
             this.error = null;
             this.messages.push({ role: 'user', content: message });
@@ -27,6 +27,10 @@ export const useChatStore = defineStore('chat', {
 
             try {
                 const api = useApi();
+                const body = { message };
+                if (contextSources && contextSources.length > 0) {
+                    body.context_sources = contextSources;
+                }
                 const response = await fetch(`/api/v1/visits/${visitId}/chat`, {
                     method: 'POST',
                     headers: {
@@ -36,7 +40,7 @@ export const useChatStore = defineStore('chat', {
                         'X-XSRF-TOKEN': getCsrfToken(),
                     },
                     credentials: 'include',
-                    body: JSON.stringify({ message }),
+                    body: JSON.stringify(body),
                 });
 
                 if (!response.ok) {
