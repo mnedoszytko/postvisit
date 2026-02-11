@@ -226,7 +226,7 @@ const props = defineProps({
 });
 
 const api = useApi();
-const expanded = ref(true);
+const expanded = ref(false);
 const documents = ref([]);
 const uploading = ref(false);
 const dragOver = ref(false);
