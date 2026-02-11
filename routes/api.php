@@ -58,6 +58,9 @@ Route::prefix('v1')->group(function () {
 
         // Documents (standalone)
         Route::get('documents/{document}', [DocumentController::class, 'show']);
+        Route::get('documents/{document}/download', [DocumentController::class, 'download']);
+        Route::get('documents/{document}/thumbnail', [DocumentController::class, 'thumbnail']);
+        Route::delete('documents/{document}', [DocumentController::class, 'destroy']);
 
         // ----- Module 2: Companion Scribe — Visits & Transcripts -----
         Route::post('visits', [VisitController::class, 'store']);
@@ -84,6 +87,10 @@ Route::prefix('v1')->group(function () {
 
             // Prescriptions (visit-scoped)
             Route::get('prescriptions', [PrescriptionController::class, 'visitPrescriptions']);
+
+            // Documents (visit-scoped)
+            Route::get('documents', [DocumentController::class, 'visitDocuments']);
+            Route::post('documents', [DocumentController::class, 'store']);
 
             // Feedback / Messages
             Route::post('messages', [FeedbackController::class, 'store']);
