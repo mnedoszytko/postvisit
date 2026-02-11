@@ -122,8 +122,10 @@ class DoctorController extends Controller
                 $diastolic = null;
 
                 if (is_array($obs->specialty_data)) {
-                    $systolic = $obs->specialty_data['systolic'] ?? null;
-                    $diastolic = $obs->specialty_data['diastolic'] ?? null;
+                    $sysData = $obs->specialty_data['systolic'] ?? null;
+                    $diaData = $obs->specialty_data['diastolic'] ?? null;
+                    $systolic = is_array($sysData) ? ($sysData['value'] ?? null) : $sysData;
+                    $diastolic = is_array($diaData) ? ($diaData['value'] ?? null) : $diaData;
                 }
 
                 // Fallback: if no specialty_data components, use value_quantity as systolic

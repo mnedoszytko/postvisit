@@ -71,27 +71,32 @@
           stroke-dasharray="4,3"
         />
 
-        <!-- Line path -->
-        <polyline
-          :points="pathPoints"
-          fill="none"
-          :stroke="alert ? '#ef4444' : '#10b981'"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+        <!-- Bars -->
+        <rect
+          v-for="(pt, i) in dataPoints"
+          :key="'bar-' + i"
+          :x="pt.x - barWidth / 2"
+          :y="pt.y"
+          :width="barWidth"
+          :height="Math.max(0, chartHeight + padding.top - pt.y)"
+          :fill="pt.interpretation === 'H' ? '#ef4444' : '#10b981'"
+          :opacity="0.8"
+          rx="2"
         />
 
-        <!-- Data points -->
-        <circle
+        <!-- Value labels on bars -->
+        <text
           v-for="(pt, i) in dataPoints"
-          :key="'dot-' + i"
-          :cx="pt.x"
-          :cy="pt.y"
-          r="3.5"
-          :fill="pt.interpretation === 'H' ? '#ef4444' : '#10b981'"
-          stroke="white"
-          stroke-width="1.5"
-        />
+          :key="'val-' + i"
+          :x="pt.x"
+          :y="pt.y - 5"
+          text-anchor="middle"
+          class="text-[9px]"
+          :fill="pt.interpretation === 'H' ? '#ef4444' : '#059669'"
+          font-weight="600"
+        >
+          {{ pt.value }}
+        </text>
 
         <!-- X-axis date labels -->
         <text
@@ -209,27 +214,32 @@ const alertThresholdY = computed(() => {
   return scaleY(dryWeight.value + alertThresholdKg.value);
 });
 
+const barWidth = computed(() => {
+  const sorted = sortedWeights.value;
+  if (sorted.length < 2) return 20;
+  return Math.min(30, Math.max(8, chartWidth / sorted.length * 0.7));
+});
+
 const dataPoints = computed(() => {
   const sorted = sortedWeights.value;
   if (sorted.length < 2) return [];
   return sorted.map((w, i) => ({
-    x: padding.left + (i / (sorted.length - 1)) * chartWidth,
+    x: padding.left + ((i + 0.5) / sorted.length) * chartWidth,
     y: scaleY(parseFloat(w.value_quantity)),
+    value: parseFloat(w.value_quantity).toFixed(1),
     interpretation: w.interpretation,
   }));
-});
-
-const pathPoints = computed(() => {
-  return dataPoints.value.map(p => `${p.x},${p.y}`).join(' ');
 });
 
 const xLabels = computed(() => {
   const sorted = sortedWeights.value;
   if (sorted.length < 2) return [];
-  // Show labels for first, middle, and last
-  const indices = [0, Math.floor(sorted.length / 2), sorted.length - 1];
+  // Show every label if <= 7, otherwise first/middle/last
+  const indices = sorted.length <= 7
+    ? sorted.map((_, i) => i)
+    : [0, Math.floor(sorted.length / 2), sorted.length - 1];
   return [...new Set(indices)].map(i => ({
-    x: padding.left + (i / (sorted.length - 1)) * chartWidth,
+    x: padding.left + ((i + 0.5) / sorted.length) * chartWidth,
     label: formatShortDate(sorted[i].effective_date),
   }));
 });
