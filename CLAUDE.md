@@ -142,73 +142,69 @@ System prompts in `prompts/` are versioned and reviewable. Never hardcode prompt
 
 ## Git Strategy
 
-### Branches
-- **`main`** — primary branch, all safe work goes here directly
-- **`feature/*`** — only for risky/large changes (UI overhaul, new major feature)
-- No `dev` branch — unnecessary overhead for hackathon phase
+### Hackathon Mode — Direct to Main (no PRs)
+PRs are disabled for hackathon speed. All work goes directly to `main` with discipline.
+
+### Worktree Setup
+Two worktrees only — keep it simple:
+- `/postvisit` — primary worktree (human + main agent), on `main`
+- `/postvisit-agent2` — second agent, on own branch
+
+**Never create more than 2 worktrees.** Extra worktrees accumulate stale branches that cause merge overwrites.
 
 ### Commit Rules
-- **Safe changes → commit to `main`**: docs, config, tests, small fixes, new endpoints, bug fixes
-- **Risky changes → feature branch**: PrimeVue integration, voice chat, major refactors
-- **Every commit must**: pass `herd php artisan test` (67+ tests) AND `bun run build` (frontend compiles)
+- **Every commit must**: pass `herd php artisan test` AND `bun run build`
 - **Never push to `main` if tests fail**
 - Never Co-Author commits with Claude Code as author
 - Check `storage/logs/laravel.log` for errors after making changes
 
-### Feature Branch Workflow
-```
-git checkout -b feature/xyz main
-# ... work ...
-herd php artisan test && bun run build   # must pass
-git checkout main && git merge feature/xyz
+### Agent Workflow (CRITICAL — prevents merge overwrites)
+Agents work on short-lived branches. **Always rebase before merging to main.**
+
+```bash
+# 1. Start work — fresh branch from latest main
+git fetch origin main
+git checkout -b fix/my-task FETCH_HEAD
+
+# 2. Do the work, commit
+
+# 3. Before merging — ALWAYS rebase onto latest main
+git fetch origin main
+git rebase FETCH_HEAD
+
+# 4. Merge to main (use worktree or merge FETCH_HEAD)
+git checkout main       # if main is available
+git merge fix/my-task --no-edit
 git push origin main
-git branch -d feature/xyz
+
+# 5. If main is locked by another worktree:
+git fetch origin main
+git rebase FETCH_HEAD   # rebase your branch
+git push origin fix/my-task
+# then merge from the main worktree
 ```
+
+**Why rebase is mandatory:** Without rebase, merging a branch created from old main can silently overwrite newer changes. Git sees old file versions on the branch and keeps them. Rebase replays your changes on top of current main, making conflicts visible.
 
 ### Tags (checkpoints)
-Before merging a large feature branch, tag current main:
+Before risky merges, tag current main:
 ```
-git tag v0.x-description
+git tag pre-<feature>
 ```
-Use for rollback if merge breaks something.
+Use for instant rollback if merge breaks something.
 
-### PR Discipline (CRITICAL — enforced after PRs #68 and #69 were rejected for scope violation)
-- **Every PR must be scoped to ONE topic.** Do not mix unrelated changes (e.g. animation PR must not delete API controllers).
-- **Never delete files unrelated to the PR scope.** If you notice dead code, create a separate cleanup PR.
-- **Never commit changes that "came along for the ride"** from a long-lived branch. Cherry-pick or recreate on a clean branch from `main`.
-- **Before creating a PR, verify `git diff main..HEAD --stat`** — every file in the diff must be justified by the PR description.
-- **If a feature branch has diverged significantly from main** (many unrelated deletions/additions), do NOT merge it directly. Instead: create a fresh branch from main, cherry-pick only the relevant commits, and PR that.
-- **PR title must be under 70 chars**, description must list changed files and explain why each changed.
-
-**MANDATORY WORKFLOW for single-purpose PRs (especially from VPS agents):**
-```bash
-# 1. ALWAYS start from fresh main
-git fetch origin main
-git checkout -b fix/my-specific-fix FETCH_HEAD
-
-# 2. Make ONLY the targeted changes — nothing else
-
-# 3. VERIFY scope before committing
-git diff --stat          # Must show ONLY files relevant to this PR
-git diff                 # Read every line — no surprises
-
-# 4. If you see unexpected files — STOP. You are on a dirty branch.
-#    Delete it and start over from step 1.
-```
-**Why this exists:** PRs #68 and #69 were both rejected because VPS agents branched from long-lived workspace branches instead of fresh `main`. The workspace had accumulated days of unrelated changes that leaked into the PRs (10 files changed instead of 1). See `docs/lessons.md` Lesson 15.
-
-### Safe Merge Strategy
-1. Always create PRs — never push directly to `main` for non-trivial changes
-2. Before merging, review the diff one more time: `gh pr diff <number>`
-3. Use **squash merge** for feature branches to keep main history clean
-4. After merge, delete the remote feature branch
-5. If unsure about a merge — tag main first: `git tag pre-merge-<feature>`
+### Branch Hygiene
+- **Short-lived branches only** — branch, work, merge within minutes/hours, not days
+- Delete branches after merge: `git branch -d fix/my-task`
+- Never let a branch diverge more than a few hours from main
+- If a branch is old, **rebase it** before doing anything: `git fetch origin main && git rebase FETCH_HEAD`
 
 ### Multi-Agent Safety
-- Agents working in parallel MUST use separate feature branches
-- Only one agent merges to `main` at a time
-- After merge, other agents rebase: `git pull --rebase origin main`
+- Max 2 agents working in parallel
+- Agents MUST work on separate files when possible (e.g. agent1: backend, agent2: frontend)
+- **Always rebase before merge** — this is the single most important rule
 - If merge conflict: resolve on feature branch, never force-push main
+- Only one agent merges to `main` at a time
 
 ### VPS Deployment (when Forge is ready)
 - Forge will auto-deploy from `main`
