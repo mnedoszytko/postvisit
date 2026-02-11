@@ -1,13 +1,12 @@
 # Demo Scenarios — Clinical Visit Library
 
-PostVisit.ai demo scenarios based on real cardiology consultations. Each visit was recorded live, transcribed via OpenAI Whisper, labeled with Doctor/Patient speaker attribution, and re-synthesized using ElevenLabs Text-to-Dialogue TTS with distinct voices for doctor and patient.
+PostVisit.ai demo scenarios based on sample cardiology patient cases. Each dialogue was generated from a clinical scenario template, labeled with Doctor/Patient speaker attribution, and synthesized using ElevenLabs Text-to-Dialogue TTS with distinct voices for doctor and patient.
 
 ## Pipeline
 
 ```
-Live Recording (webm/m4a)
-    → OpenAI Whisper STT (raw-transcript.txt)
-    → Claude Opus speaker labeling (dialogue.txt)
+Clinical Scenario Template
+    → Dialogue script (dialogue.txt)
     → ElevenLabs v3 Text-to-Dialogue (dialogue-tts.mp3)
 ```
 
@@ -29,7 +28,7 @@ Live Recording (webm/m4a)
 ```
 demo/visits/
 ├── visit-01-coronarography-stenosis/
-│   ├── raw-transcript.txt      # Whisper STT output
+│   ├── raw-transcript.txt      # Raw scenario narrative
 │   ├── dialogue.txt            # Doctor:/Patient: labeled dialogue
 │   └── dialogue-tts.mp3        # ElevenLabs TTS (George + Sarah voices)
 ├── visit-02-gastric-bypass-preop/
