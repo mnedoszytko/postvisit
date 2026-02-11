@@ -132,7 +132,7 @@
                     </span>
                     <h3 class="font-semibold text-gray-800">Doctor's Recommendations</h3>
                   </div>
-                  <AskAiButton @click="openChat('Doctor\'s Recommendations')" />
+                  <AskAiButton @ask="openChat('Doctor\'s Recommendations')" />
                 </div>
                 <div class="space-y-2">
                   <div
@@ -161,7 +161,7 @@
                     </span>
                     <h3 class="font-semibold text-gray-800">Next Actions</h3>
                   </div>
-                  <AskAiButton @click="openChat('Next Actions')" />
+                  <AskAiButton @ask="openChat('Next Actions')" />
                 </div>
                 <div class="space-y-1.5">
                   <label
@@ -195,7 +195,7 @@
                   </span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <AskAiButton @click.stop="openChat('Test Results & Observations')" />
+                  <AskAiButton @ask="openChat('Test Results & Observations')" />
                   <span class="text-gray-400 text-sm">{{ obsExpanded ? 'Collapse' : 'Expand' }}</span>
                 </div>
               </button>
@@ -209,7 +209,7 @@
               <button class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors" @click="condExpanded = !condExpanded">
                 <h3 class="font-semibold text-gray-800">Diagnosis</h3>
                 <div class="flex items-center gap-2">
-                  <AskAiButton @click.stop="openChat('Diagnosis')" />
+                  <AskAiButton @ask="openChat('Diagnosis')" />
                   <span class="text-gray-400 text-sm">{{ condExpanded ? 'Collapse' : 'Expand' }}</span>
                 </div>
               </button>
@@ -229,7 +229,7 @@
               <button class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors" @click="rxExpanded = !rxExpanded">
                 <h3 class="font-semibold text-gray-800">Medications Prescribed</h3>
                 <div class="flex items-center gap-2">
-                  <AskAiButton @click.stop="openChat('Medications Prescribed')" />
+                  <AskAiButton @ask="openChat('Medications Prescribed')" />
                   <span class="text-gray-400 text-sm">{{ rxExpanded ? 'Collapse' : 'Expand' }}</span>
                 </div>
               </button>
@@ -253,7 +253,7 @@
                   <span class="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">AI</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <AskAiButton @click.stop="openChat('AI-Extracted Clinical Entities')" />
+                  <AskAiButton @ask="openChat('AI-Extracted Clinical Entities')" />
                   <span class="text-gray-400 text-sm">{{ entitiesExpanded ? 'Collapse' : 'Expand' }}</span>
                 </div>
               </button>
@@ -344,7 +344,7 @@
                   </span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <AskAiButton @click.stop="openChat('Visit Transcript')" />
+                  <AskAiButton @ask="openChat('Visit Transcript')" />
                   <span class="text-gray-400 text-sm">{{ transcriptExpanded ? 'Collapse' : 'Expand' }}</span>
                 </div>
               </button>
