@@ -18,7 +18,6 @@
             <span v-if="visit.practitioner.primary_specialty" class="text-blue-500">&middot; {{ visit.practitioner.primary_specialty }}</span>
           </span>
         </div>
-        <p v-if="visit?.reason_for_visit" class="text-gray-600 mt-2 text-sm">{{ visit.reason_for_visit }}</p>
       </div>
 
       <!-- Loading state -->
