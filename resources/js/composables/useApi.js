@@ -53,8 +53,10 @@ api.interceptors.response.use(
         if (status === 401) {
             const auth = useAuthStore();
             auth.user = null;
-            router.push({ name: 'login' });
-            toast.warning(ERROR_MESSAGES[401]);
+            if (!error.config?.skipAuthRedirect) {
+                router.push({ name: 'login' });
+                toast.warning(ERROR_MESSAGES[401]);
+            }
             return Promise.reject(error);
         }
 

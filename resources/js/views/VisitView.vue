@@ -49,7 +49,7 @@
                 </span>
               </div>
               <p class="text-sm text-gray-600">
-                <template v-if="obs.value_type === 'quantity'">{{ obs.value_quantity }} {{ obs.value_unit }}</template>
+                <template v-if="obs.value_type === 'quantity'">{{ formatQuantity(obs.value_quantity) }} {{ obs.value_unit }}</template>
                 <template v-else>{{ obs.value_string }}</template>
               </p>
               <p v-if="obs.reference_range_text" class="text-xs text-gray-400">Ref: {{ obs.reference_range_text }}</p>
@@ -235,6 +235,12 @@ const soapSections = computed(() => {
 function formatDate(dateStr) {
     if (!dateStr) return '';
     return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function formatQuantity(val) {
+    const num = parseFloat(val);
+    if (isNaN(num)) return val;
+    return Number.isInteger(num) ? num.toString() : parseFloat(num.toFixed(2)).toString();
 }
 
 function interpretationClass(interp) {

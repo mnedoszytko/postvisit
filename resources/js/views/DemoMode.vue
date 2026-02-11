@@ -48,7 +48,7 @@
       <h2 class="text-2xl font-bold text-gray-900">Cardiology Visit — PVCs</h2>
       <p class="text-gray-500">Propranolol 40mg 2x/day, with full visit context</p>
       <router-link
-        to="/visits/demo"
+        :to="`/visits/${demoVisitId}`"
         class="block w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors"
       >
         Open Visit Summary
@@ -61,22 +61,50 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { useApi } from '@/composables/useApi';
 
 const router = useRouter();
 const auth = useAuthStore();
 const step = ref('welcome');
+const demoVisitId = ref(null);
+const loading = ref(false);
 
-function startDemo(mode) {
-    auth.setDemoUser('patient');
-    if (mode === 'skip') {
-        step.value = 'loaded';
-    } else {
-        router.push({ name: 'companion-scribe' });
+async function loginDemo(role) {
+    const api = useApi();
+    const { data } = await api.post('/demo/start', { role });
+    const payload = data.data;
+    auth.user = payload.user;
+    auth.token = payload.token;
+    auth.initialized = true;
+    return payload.visit;
+}
+
+async function startDemo(mode) {
+    loading.value = true;
+    try {
+        const visit = await loginDemo('patient');
+        if (mode === 'skip') {
+            demoVisitId.value = visit?.id;
+            step.value = 'loaded';
+        } else {
+            router.push({ name: 'companion-scribe' });
+        }
+    } catch (err) {
+        console.error('Demo start failed:', err);
+    } finally {
+        loading.value = false;
     }
 }
 
-function switchToDoctor() {
-    auth.setDemoUser('doctor');
-    router.push({ name: 'doctor-dashboard' });
+async function switchToDoctor() {
+    loading.value = true;
+    try {
+        await loginDemo('doctor');
+        router.push({ name: 'doctor-dashboard' });
+    } catch (err) {
+        console.error('Demo start failed:', err);
+    } finally {
+        loading.value = false;
+    }
 }
 </script>

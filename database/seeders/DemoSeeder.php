@@ -37,9 +37,9 @@ class DemoSeeder extends Seeder
 
         // 2. Practitioner
         $practitioner = Practitioner::create([
-            'fhir_practitioner_id' => 'practitioner-' . Str::uuid(),
-            'first_name' => 'Nedo',
-            'last_name' => 'Dr.',
+            'fhir_practitioner_id' => 'practitioner-'.Str::uuid(),
+            'first_name' => 'Sarah',
+            'last_name' => 'Chen',
             'email' => 'doctor@demo.postvisit.ai',
             'npi' => '1234567890',
             'license_number' => 'CA-CARD-2024-001',
@@ -51,7 +51,7 @@ class DemoSeeder extends Seeder
 
         // 3. Patient
         $patient = Patient::create([
-            'fhir_patient_id' => 'patient-' . Str::uuid(),
+            'fhir_patient_id' => 'patient-'.Str::uuid(),
             'first_name' => 'Alex',
             'last_name' => 'Johnson',
             'dob' => '1985-03-15',
@@ -88,7 +88,7 @@ class DemoSeeder extends Seeder
         // 5. Visit
         $visitStart = now()->subDay();
         $visit = Visit::create([
-            'fhir_encounter_id' => 'encounter-' . Str::uuid(),
+            'fhir_encounter_id' => 'encounter-'.Str::uuid(),
             'patient_id' => $patient->id,
             'practitioner_id' => $practitioner->id,
             'organization_id' => $org->id,
@@ -114,7 +114,7 @@ class DemoSeeder extends Seeder
 
         // 6a. Heart Rate
         Observation::create([
-            'fhir_observation_id' => 'obs-hr-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-hr-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -136,7 +136,7 @@ class DemoSeeder extends Seeder
 
         // 6b. Blood Pressure (systolic/diastolic as string with components in specialty_data)
         Observation::create([
-            'fhir_observation_id' => 'obs-bp-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-bp-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -159,7 +159,7 @@ class DemoSeeder extends Seeder
 
         // 6c. 12-Lead EKG
         Observation::create([
-            'fhir_observation_id' => 'obs-ekg-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-ekg-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -190,7 +190,7 @@ class DemoSeeder extends Seeder
 
         // 6d. Echocardiogram
         Observation::create([
-            'fhir_observation_id' => 'obs-echo-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-echo-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -222,7 +222,7 @@ class DemoSeeder extends Seeder
 
         // 6e. Total Cholesterol
         Observation::create([
-            'fhir_observation_id' => 'obs-chol-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-chol-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -245,7 +245,7 @@ class DemoSeeder extends Seeder
 
         // 6f. Potassium
         Observation::create([
-            'fhir_observation_id' => 'obs-k-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-k-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -268,7 +268,7 @@ class DemoSeeder extends Seeder
 
         // 6g. TSH
         Observation::create([
-            'fhir_observation_id' => 'obs-tsh-' . Str::uuid(),
+            'fhir_observation_id' => 'obs-tsh-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'practitioner_id' => $practitioner->id,
@@ -291,7 +291,7 @@ class DemoSeeder extends Seeder
 
         // 7. Condition: PVCs
         Condition::create([
-            'fhir_condition_id' => 'condition-' . Str::uuid(),
+            'fhir_condition_id' => 'condition-'.Str::uuid(),
             'patient_id' => $patient->id,
             'visit_id' => $visit->id,
             'code_system' => 'ICD-10-CM',
@@ -326,7 +326,7 @@ class DemoSeeder extends Seeder
 
         // 9. Prescription: Propranolol 40mg BID
         Prescription::create([
-            'fhir_medication_request_id' => 'rx-' . Str::uuid(),
+            'fhir_medication_request_id' => 'rx-'.Str::uuid(),
             'patient_id' => $patient->id,
             'practitioner_id' => $practitioner->id,
             'visit_id' => $visit->id,
