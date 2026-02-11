@@ -23,6 +23,13 @@ class Patient extends Model
         'phone',
         'preferred_language',
         'timezone',
+        'height_cm',
+        'weight_kg',
+        'blood_type',
+        'allergies',
+        'emergency_contact_name',
+        'emergency_contact_phone',
+        'emergency_contact_relationship',
         'mrn',
         'ssn_encrypted',
         'consent_given',
@@ -36,6 +43,9 @@ class Patient extends Model
     {
         return [
             'dob' => 'date',
+            'height_cm' => 'decimal:1',
+            'weight_kg' => 'decimal:1',
+            'allergies' => 'array',
             'consent_given' => 'boolean',
             'consent_date' => 'datetime',
             'data_sharing_consent' => 'boolean',

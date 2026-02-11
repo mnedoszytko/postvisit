@@ -14,6 +14,7 @@ const api = axios.create({
 });
 
 let csrfFetched = false;
+let lastAuthRedirectAt = 0;
 
 api.interceptors.request.use(async (config) => {
     if (['post', 'put', 'patch', 'delete'].includes(config.method) && !csrfFetched) {
@@ -52,7 +53,9 @@ api.interceptors.response.use(
         if (status === 401) {
             const auth = useAuthStore();
             auth.user = null;
-            if (!error.config?.skipAuthRedirect) {
+            const now = Date.now();
+            if (!error.config?.skipAuthRedirect && now - lastAuthRedirectAt > 5000) {
+                lastAuthRedirectAt = now;
                 router.push({ name: 'login' });
                 toast.warning(ERROR_MESSAGES[401]);
             }

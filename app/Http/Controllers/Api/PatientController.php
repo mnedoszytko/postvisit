@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdatePatientRequest;
 use App\Models\Patient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,9 +17,11 @@ class PatientController extends Controller
         return response()->json(['data' => $patient]);
     }
 
-    public function update(Request $request, Patient $patient): JsonResponse
+    public function update(UpdatePatientRequest $request, Patient $patient): JsonResponse
     {
-        return response()->json(['message' => 'Not implemented yet', 'endpoint' => 'patients.update']);
+        $patient->update($request->validated());
+
+        return response()->json(['data' => $patient->fresh()]);
     }
 
     public function visits(Patient $patient): JsonResponse
