@@ -59,6 +59,13 @@ Return a JSON object with:
 }
 ```
 
+## Language Policy
+
+- The raw transcript may be in ANY language. Preserve the original language in `clean_transcript`.
+- ALL structured output (extracted_entities, soap_note, unclear_sections) MUST be in English, regardless of the transcript language.
+- Translate medical findings, symptoms, and diagnoses into standard English medical terminology.
+- If a term has no direct English equivalent, keep the original with an English explanation in parentheses.
+
 ## Quality Standards
 
 - Medical terms must be spelled correctly (correct STT errors like "propanol" to "propranolol")
