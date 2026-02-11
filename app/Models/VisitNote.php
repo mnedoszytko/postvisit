@@ -27,6 +27,7 @@ class VisitNote extends Model
         'follow_up',
         'follow_up_timeframe',
         'additional_sections',
+        'medical_terms',
         'is_signed',
         'signed_at',
     ];
@@ -36,6 +37,7 @@ class VisitNote extends Model
         return [
             'assessment_codes' => 'array',
             'additional_sections' => 'array',
+            'medical_terms' => 'array',
             'is_signed' => 'boolean',
             'signed_at' => 'datetime',
         ];

@@ -26,7 +26,10 @@
           :key="section.key"
           :title="section.title"
           :content="section.content"
+          :terms="section.terms"
+          :section-key="section.sectionKey"
           @explain="openChat(section.title)"
+          @term-click="showTermPopover"
         />
 
         <!-- Observations / Test Results -->
@@ -87,6 +90,16 @@
         </div>
       </div>
 
+      <!-- Term Popover -->
+      <TermPopover
+        :visible="popoverVisible"
+        :term="popoverTerm"
+        :definition="popoverDefinition"
+        :anchor-rect="popoverAnchorRect"
+        @close="popoverVisible = false"
+        @ask-more="(term) => openChat(term)"
+      />
+
       <!-- Chat Panel -->
       <ChatPanel
         v-if="chatOpen"
@@ -114,6 +127,7 @@ import { useVisitStore } from '@/stores/visit';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import VisitSection from '@/components/VisitSection.vue';
 import ChatPanel from '@/components/ChatPanel.vue';
+import TermPopover from '@/components/TermPopover.vue';
 
 const route = useRoute();
 const visitStore = useVisitStore();
@@ -123,20 +137,41 @@ const obsExpanded = ref(false);
 const condExpanded = ref(false);
 const rxExpanded = ref(false);
 
+// Term popover state
+const popoverVisible = ref(false);
+const popoverTerm = ref('');
+const popoverDefinition = ref('');
+const popoverAnchorRect = ref(null);
+
 const visit = computed(() => visitStore.currentVisit);
+
+const sectionFieldMap = {
+    cc: 'chief_complaint',
+    hpi: 'history_of_present_illness',
+    ros: 'review_of_systems',
+    pe: 'physical_exam',
+    assessment: 'assessment',
+    plan: 'plan',
+    followup: 'follow_up',
+};
 
 const soapSections = computed(() => {
     const note = visit.value?.visit_note;
     if (!note) return [];
     return [
-        { key: 'cc', title: 'Chief Complaint', content: note.chief_complaint },
-        { key: 'hpi', title: 'History of Present Illness', content: note.history_of_present_illness },
-        { key: 'ros', title: 'Review of Systems', content: note.review_of_systems },
-        { key: 'pe', title: 'Physical Examination', content: note.physical_exam },
-        { key: 'assessment', title: 'Assessment', content: note.assessment },
-        { key: 'plan', title: 'Plan', content: note.plan },
-        { key: 'followup', title: 'Follow-up', content: note.follow_up },
-    ].filter(s => s.content);
+        { key: 'cc', title: 'Chief Complaint' },
+        { key: 'hpi', title: 'History of Present Illness' },
+        { key: 'ros', title: 'Review of Systems' },
+        { key: 'pe', title: 'Physical Examination' },
+        { key: 'assessment', title: 'Assessment' },
+        { key: 'plan', title: 'Plan' },
+        { key: 'followup', title: 'Follow-up' },
+    ].map(s => ({
+        ...s,
+        sectionKey: sectionFieldMap[s.key],
+        content: note[sectionFieldMap[s.key]],
+        terms: note.medical_terms?.[sectionFieldMap[s.key]] || [],
+    })).filter(s => s.content);
 });
 
 function formatDate(dateStr) {
@@ -151,7 +186,15 @@ function interpretationClass(interp) {
     return 'bg-gray-100 text-gray-600';
 }
 
+function showTermPopover(payload) {
+    popoverTerm.value = payload.term;
+    popoverDefinition.value = payload.definition;
+    popoverAnchorRect.value = payload.anchorRect;
+    popoverVisible.value = true;
+}
+
 function openChat(context = '') {
+    popoverVisible.value = false;
     chatContext.value = context;
     chatOpen.value = true;
 }

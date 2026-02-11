@@ -44,3 +44,15 @@ Co 3-5 iteracji robimy rewizję i najważniejsze wnioski przenosimy do CLAUDE.md
 - **Bug:** `AuthController::logout()` called `$request->user()->currentAccessToken()->delete()` which crashes with cookie-based SPA auth because Sanctum returns a `TransientToken` (not a `PersonalAccessToken`)
 - **Fix:** Check `method_exists($token, 'delete')` before calling. Also invalidate session + regenerate CSRF for cookie auth.
 - **Takeaway:** Sanctum SPA auth uses sessions, not tokens. Always handle both auth modes (token + session) in logout.
+
+## 2026-02-11
+
+### Lesson 9: Character offset validation is essential for AI-generated positional data
+- **Issue:** AI models (even Opus 4.6) can produce slightly wrong character offsets when extracting medical terms from text. Off-by-one errors, Unicode miscounts, or hallucinated positions are common.
+- **Solution:** Backend (`TermExtractor`) validates every offset by extracting the substring and comparing it to the claimed term (case-insensitive). Invalid offsets are dropped with a debug log. Frontend (`HighlightedText.vue`) also validates offsets client-side and falls back to string search if the offset doesn't match.
+- **Takeaway:** Never trust AI-generated positional data without validation. Build defense in depth — validate on both backend and frontend.
+
+### Lesson 10: Hardcode demo data offsets rather than relying on AI for demo reliability
+- **Issue:** For the demo seeder, running AI extraction adds latency, cost, and a dependency on API availability during `db:seed`.
+- **Solution:** 38 medical terms with manually verified character offsets are hardcoded in `DemoSeeder.php`. AI extraction (`TermExtractor`) is available for production use but not called during seeding.
+- **Takeaway:** Demo data must be deterministic and self-contained. Use AI services for production flows, but hardcode critical demo data to ensure reliability during presentations.

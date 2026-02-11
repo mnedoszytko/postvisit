@@ -140,6 +140,30 @@ Full visit with all relationships: patient, practitioner, organization, observat
 
 **Response:** `200` `{ data: { id, ..., observations, conditions, prescriptions, visit_note } }`
 
+The `visit_note` object includes a `medical_terms` field (jsonb) containing extracted medical terms with character offsets, keyed by SOAP section name:
+
+```json
+{
+  "visit_note": {
+    "chief_complaint": "...",
+    "assessment": "...",
+    "medical_terms": {
+      "chief_complaint": [
+        { "term": "palpitations", "start": 6, "end": 18 }
+      ],
+      "assessment": [
+        { "term": "Premature ventricular contractions", "start": 0, "end": 35 }
+      ]
+    }
+  }
+}
+```
+
+The frontend uses these offsets to render clickable highlighted terms. Each entry contains:
+- `term` (string) -- the exact text from the section
+- `start` (int) -- 0-based index of the first character
+- `end` (int) -- 0-based index one past the last character (end = start + length)
+
 ### GET /visits/{visit}/summary
 Condensed visit summary with selected fields for display.
 
