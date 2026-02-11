@@ -41,6 +41,11 @@
         </button>
       </form>
 
+      <p class="text-center text-sm text-gray-500 mt-4">
+        Don't have an account?
+        <router-link to="/register" class="text-emerald-600 font-medium hover:text-emerald-700">Sign up</router-link>
+      </p>
+
       <div class="mt-6 space-y-2">
         <p class="text-center text-xs text-gray-400 uppercase tracking-wide">Demo Access</p>
         <div class="flex gap-2">

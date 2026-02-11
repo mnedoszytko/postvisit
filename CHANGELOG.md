@@ -5,6 +5,7 @@ All notable changes to PostVisit.ai are documented here in reverse chronological
 ## 2026-02-11
 
 ### Added
+- **Registration form (POST-19)** — Full registration flow with role selection (patient/doctor), password confirmation, field validation with server-side error display, and "Sign up" link from login page. Auto-authenticates on successful registration.
 - **Medical term highlighting (tap-to-explain)** — Medical terms in SOAP notes are now highlighted and clickable. Tapping a term opens the ChatPanel with "Explain: {term}" pre-filled, triggering a contextual AI explanation. Implements PRD user story P3.
   - New `medical_terms` jsonb column on `visit_notes` table storing extracted terms with character offsets per SOAP section
   - `TermExtractor` AI service (`app/Services/AI/TermExtractor.php`) for production term extraction with offset validation
