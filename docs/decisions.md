@@ -218,3 +218,25 @@ MediaRecorder in browser → POST to Laravel → proxy to OpenAI Whisper API for
 **Status:** Przyjęte (2026-02-10)
 
 67 feature tests, 175 assertions, <1s runtime. SQLite in-memory for speed. PostgreSQL-specific features (ilike) handled with conditional logic for test compatibility.
+
+## Data: 2026-02-11
+
+### Decyzja 27: Medical term highlighting — jsonb offsets, not inline HTML or real-time extraction
+**Status:** Przyjęte (2026-02-11)
+
+**Problem:** PRD user story P3 requires individual medical terms in SOAP notes to be highlighted and clickable (tap-to-explain). Three approaches considered.
+
+**Options:**
+- **A) Store terms with character offsets in jsonb** — AI extracts terms once when note is created, stores them as `{term, start, end}` objects in a `medical_terms` jsonb column on `visit_notes`. Frontend renders highlights at display time using offsets.
+- **B) Inline HTML in SOAP text** — Wrap terms in `<span>` tags directly in the stored SOAP text. Simpler frontend but corrupts the signed clinical note text, makes search/export unreliable, and mixes presentation with data.
+- **C) Real-time AI extraction on each page load** — No stored terms; call AI every time the patient views the note. Consistent but expensive (~$0.05 per view), adds 2-3s latency, and results may vary between calls.
+
+**Decision:** Option A — jsonb offsets.
+
+**Rationale:**
+- One-time AI cost per note (extraction at processing time or hardcoded in demo seed)
+- Zero latency on page load — terms are pre-computed and delivered with the visit response
+- Terms tied to immutable signed notes — offsets are stable because SOAP text never changes after signing
+- Clean separation of data (SOAP text) and metadata (term positions)
+- Frontend validates offsets client-side with fallback to string search for robustness
+- Survives server restarts, works offline, no AI dependency at read time
