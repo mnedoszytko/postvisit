@@ -8,7 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Pełna dokumentacja projektu: `docs/seed.md`
 Log decyzji: `docs/decisions.md`
-Log błędów i poprawek: `docs/lessons.md`
+Log błędów i poprawek (dev/tooling): `docs/lessons.md`
+Log iteracji i głębi klinicznej: `docs/KEEP-THINKING.md`
 Tracker licencji i compliance: `docs/licenses.md`
 
 ## Incremental Documentation (CRITICAL — hackathon judging criterion)
@@ -33,7 +34,35 @@ Documentation is a **core evaluation criterion** of this hackathon. Build it inc
 
 ## Continuous Improvement Process
 
-When the user corrects a mistake, **immediately** log it in `docs/lessons.md` with: what went wrong, the correction, and the takeaway. Every 3-5 iterations, review `docs/lessons.md` and promote recurring patterns into this CLAUDE.md file.
+### Two logs — different purposes
+
+1. **`docs/lessons.md`** — dev/tooling lessons only. Bugs in code, SDK quirks, migration gotchas, test failures, CLI pitfalls. These are engineering corrections.
+
+2. **`docs/KEEP-THINKING.md`** — project-level iterations and clinical depth. Log here when:
+   - You discover a deeper understanding of the clinical process or patient experience
+   - An AI prompt is revised because the previous version misunderstood medical nuance
+   - A context assembly approach is changed (e.g. "we added transcript as highest-priority context because discharge notes miss conversational nuance")
+   - A design decision is reconsidered after learning more about how real clinical workflows operate
+   - A guardrail is refined (e.g. "the escalation detector was too aggressive — normal post-visit descriptions were flagged")
+   - You iterate on demo data quality (e.g. "AI-generated SOAP note felt artificial, physician rewrote it")
+   - A compliance or safety consideration leads to an architectural change
+   - You research a new clinical data source, drug database, or guideline set
+
+   **Format for new entries:**
+   ```
+   ### Iteration N: [Short title] (date)
+   **What changed:** [1-2 sentences]
+   **Why:** [The clinical/product insight that drove the change]
+   **Before → After:** [What was the old approach vs the new one]
+   ```
+
+### Routing rule
+- If the lesson is about **how to use a tool, fix a bug, or avoid a dev mistake** → `docs/lessons.md`
+- If the lesson is about **understanding the problem deeper, improving clinical accuracy, or iterating on product design** → `docs/KEEP-THINKING.md`
+- When in doubt: if a hackathon judge would find it interesting, it goes in KEEP-THINKING.
+
+### Promotion
+Every 3-5 iterations, review `docs/lessons.md` and promote recurring dev patterns into this CLAUDE.md file. The KEEP-THINKING log is never "promoted" — it grows as a living narrative of the project's depth.
 
 ## Stack
 
