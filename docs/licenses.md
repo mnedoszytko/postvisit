@@ -57,6 +57,9 @@
 
 | Zasób | Licencja | Czy można w repo? | Status |
 |-------|----------|-------------------|--------|
+| PVC management reference (demo/guidelines/) | Original work, CC-BY 4.0 ref | ✅ Written in own words | ✅ OK |
+| Propranolol drug reference (demo/guidelines/) | Original work, public PI ref | ✅ Written in own words | ✅ OK |
+| Attachaipanich et al. 2024, J Clin Med | CC-BY 4.0 | ✅ z atrybucją | ✅ OK |
 | ESC guidelines (z journala) | CC-BY | ✅ z atrybucją | ✅ OK |
 | AHA guidelines (z journala) | CC-BY | ✅ z atrybucją | ✅ OK |
 | WHO guidelines | CC-BY 3.0 IGO | ✅ z atrybucją | ✅ OK |

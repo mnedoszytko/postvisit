@@ -24,14 +24,14 @@ class VisitSummarizer
 
         $messages[] = [
             'role' => 'user',
-            'content' => 'Generate a patient-friendly summary of this visit. ' .
+            'content' => 'Generate a patient-friendly summary of this visit. '.
                 'Follow the output format specified in your instructions.',
         ];
 
         return $this->client->chat(
             $context['system_prompt'],
             $messages,
-            ['max_tokens' => 4096]
+            ['max_tokens' => 16384]
         );
     }
 }

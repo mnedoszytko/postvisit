@@ -46,11 +46,28 @@ class ChatController extends Controller
 
         return response()->stream(function () use ($session, $validated) {
             $fullResponse = '';
+            $thinkingContent = '';
 
             try {
                 foreach ($this->qaAssistant->answer($session, $validated['message']) as $chunk) {
-                    $fullResponse .= $chunk;
-                    echo "data: " . json_encode(['text' => $chunk]) . "\n\n";
+                    // Handle both array chunks (new) and string chunks (legacy/mock)
+                    if (is_array($chunk)) {
+                        $type = $chunk['type'] ?? 'text';
+                        $content = $chunk['content'] ?? '';
+
+                        if ($type === 'thinking') {
+                            $thinkingContent .= $content;
+                            echo 'data: '.json_encode(['thinking' => $content])."\n\n";
+                        } else {
+                            $fullResponse .= $content;
+                            echo 'data: '.json_encode(['text' => $content])."\n\n";
+                        }
+                    } else {
+                        // Legacy string chunks (from mocks or simple stream)
+                        $fullResponse .= $chunk;
+                        echo 'data: '.json_encode(['text' => $chunk])."\n\n";
+                    }
+
                     if (ob_get_level()) {
                         ob_flush();
                     }
@@ -58,7 +75,7 @@ class ChatController extends Controller
                 }
             } catch (\Throwable $e) {
                 $fullResponse = 'I apologize, but I encountered an error processing your question. Please try again.';
-                echo "data: " . json_encode(['text' => $fullResponse, 'error' => true]) . "\n\n";
+                echo 'data: '.json_encode(['text' => $fullResponse, 'error' => true])."\n\n";
                 if (ob_get_level()) {
                     ob_flush();
                 }
@@ -70,14 +87,22 @@ class ChatController extends Controller
                 ]);
             }
 
-            // Save the complete AI response
-            ChatMessage::create([
+            // Save the complete AI response with thinking metadata
+            $messageData = [
                 'session_id' => $session->id,
                 'sender_type' => 'ai',
                 'message_text' => $fullResponse,
                 'ai_model_used' => config('anthropic.default_model', 'claude-opus-4-6'),
                 'created_at' => now(),
-            ]);
+            ];
+
+            if ($thinkingContent) {
+                $messageData['referenced_entities'] = [
+                    'thinking' => mb_substr($thinkingContent, 0, 10000),
+                ];
+            }
+
+            ChatMessage::create($messageData);
 
             echo "data: [DONE]\n\n";
             if (ob_get_level()) {
@@ -109,6 +134,7 @@ class ChatController extends Controller
                 'id' => $msg->id,
                 'role' => $msg->sender_type === 'patient' ? 'user' : 'assistant',
                 'content' => $msg->message_text,
+                'thinking' => $msg->referenced_entities['thinking'] ?? null,
                 'created_at' => $msg->created_at,
             ]);
 

@@ -32,6 +32,7 @@ class ProcessTranscriptJob implements ShouldQueue
             $this->transcript->update([
                 'entities_extracted' => $scribeResult['extracted_entities'] ?? [],
                 'soap_note' => $scribeResult['soap_note'] ?? [],
+                'summary' => $scribeResult['thinking'] ?? null,
                 'processing_status' => 'completed',
             ]);
 

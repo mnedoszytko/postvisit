@@ -17,7 +17,13 @@ export const useChatStore = defineStore('chat', {
 
             // Add streaming placeholder for AI response
             const aiIndex = this.messages.length;
-            this.messages.push({ role: 'assistant', content: '', streaming: true });
+            this.messages.push({
+                role: 'assistant',
+                content: '',
+                thinking: '',
+                thinkingPhase: true,
+                streaming: true,
+            });
 
             try {
                 const api = useApi();
@@ -55,7 +61,13 @@ export const useChatStore = defineStore('chat', {
                             if (payload === '[DONE]') continue;
                             try {
                                 const parsed = JSON.parse(payload);
-                                if (parsed.text) {
+                                if (parsed.thinking) {
+                                    this.messages[aiIndex].thinking += parsed.thinking;
+                                } else if (parsed.text) {
+                                    // First text chunk means thinking phase is done
+                                    if (this.messages[aiIndex].thinkingPhase) {
+                                        this.messages[aiIndex].thinkingPhase = false;
+                                    }
                                     this.messages[aiIndex].content += parsed.text;
                                 }
                             } catch {
@@ -66,9 +78,11 @@ export const useChatStore = defineStore('chat', {
                 }
 
                 this.messages[aiIndex].streaming = false;
+                this.messages[aiIndex].thinkingPhase = false;
             } catch (err) {
                 this.messages[aiIndex].content = this.messages[aiIndex].content || 'Failed to get a response. Please try again.';
                 this.messages[aiIndex].streaming = false;
+                this.messages[aiIndex].thinkingPhase = false;
                 this.error = err.message || 'Failed to send message';
             } finally {
                 this.loading = false;
@@ -84,6 +98,7 @@ export const useChatStore = defineStore('chat', {
                 this.messages = (data.data.messages || []).map(msg => ({
                     role: msg.role,
                     content: msg.content,
+                    thinking: msg.thinking || '',
                 }));
             } catch (err) {
                 this.error = err.response?.data?.error?.message || 'Failed to load chat history';

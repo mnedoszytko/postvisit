@@ -58,8 +58,12 @@
               : 'bg-gray-100 text-gray-800'
           ]"
         >
-          <!-- Streaming with no content yet = thinking -->
-          <ThinkingIndicator v-if="msg.streaming && !msg.content" :query="lastUserMessage" />
+          <!-- Streaming with thinking active -->
+          <ThinkingIndicator
+            v-if="msg.streaming && !msg.content"
+            :query="lastUserMessage"
+            :thinking-active="msg.thinkingPhase"
+          />
           <StreamingMessage v-else-if="msg.streaming" :text="stripSources(msg.content)" />
           <div v-else-if="msg.role === 'assistant'" class="prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
           <p v-else>{{ msg.content }}</p>
@@ -70,6 +74,34 @@
           :sources="parseSources(msg.content)"
           class="mt-1.5"
         />
+        <!-- Collapsible AI Reasoning for completed messages with thinking -->
+        <div
+          v-if="msg.role === 'assistant' && !msg.streaming && msg.thinking"
+          class="mt-2"
+        >
+          <button
+            class="flex items-center gap-1 text-xs text-amber-700 hover:text-amber-900 transition-colors"
+            @click="toggleThinking(i)"
+          >
+            <svg
+              class="w-3 h-3 transition-transform"
+              :class="{ 'rotate-90': expandedThinking[i] }"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+            AI Reasoning
+          </button>
+          <div
+            v-if="expandedThinking[i]"
+            class="mt-1.5 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 max-h-48 overflow-y-auto"
+          >
+            <pre class="text-[11px] text-amber-900 font-mono whitespace-pre-wrap break-words leading-relaxed">{{ msg.thinking }}</pre>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -98,7 +130,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick, watch } from 'vue';
+import { ref, computed, onMounted, nextTick, watch, reactive } from 'vue';
 import { useChatStore } from '@/stores/chat';
 import { marked } from 'marked';
 import StreamingMessage from '@/components/StreamingMessage.vue';
@@ -139,6 +171,7 @@ defineEmits(['close']);
 const chatStore = useChatStore();
 const message = ref('');
 const messagesContainer = ref(null);
+const expandedThinking = reactive({});
 
 const lastUserMessage = computed(() => {
     const userMsgs = chatStore.messages.filter(m => m.role === 'user');
@@ -151,6 +184,10 @@ const suggestedQuestions = [
     'What should I watch out for at home?',
     'When should I call my doctor?',
 ];
+
+function toggleThinking(index) {
+    expandedThinking[index] = !expandedThinking[index];
+}
 
 function sendQuestion(q) {
     message.value = q;
