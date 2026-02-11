@@ -8,6 +8,10 @@
           {{ failed ? 'Processing failed' : 'Analyzing your visit...' }}
         </h1>
         <p class="text-gray-500 text-sm">{{ currentStep.label }}</p>
+        <p v-if="!failed" class="text-gray-400 text-xs">
+          {{ elapsedFormatted }} elapsed
+          <span v-if="activeStep > 0 && activeStep < steps.length" class="ml-1">&middot; usually takes about a minute</span>
+        </p>
       </div>
 
       <!-- Progress steps -->
@@ -69,7 +73,15 @@ const steps = [
 
 const activeStep = ref(0);
 const failed = ref(false);
+const elapsedSeconds = ref(0);
 let pollInterval = null;
+let timerInterval = null;
+
+const elapsedFormatted = computed(() => {
+    const m = Math.floor(elapsedSeconds.value / 60);
+    const s = elapsedSeconds.value % 60;
+    return m > 0 ? `${m}m ${s.toString().padStart(2, '0')}s` : `${s}s`;
+});
 
 const currentStep = computed(() => steps[activeStep.value] || steps[steps.length - 1]);
 
@@ -93,6 +105,7 @@ async function pollStatus() {
 
             if (status === 'completed') {
                 clearInterval(pollInterval);
+                clearInterval(timerInterval);
                 // Mark all steps as complete
                 activeStep.value = steps.length;
                 // Short delay to show all checkmarks before redirect
@@ -101,6 +114,7 @@ async function pollStatus() {
                 }, 1000);
             } else if (status === 'failed') {
                 clearInterval(pollInterval);
+                clearInterval(timerInterval);
                 failed.value = true;
             } else if (hasSoapNote) {
                 // SOAP note built — checking medications
@@ -141,10 +155,14 @@ function startSimulation() {
 }
 
 onMounted(() => {
+    timerInterval = setInterval(() => {
+        elapsedSeconds.value++;
+    }, 1000);
     pollStatus();
 });
 
 onUnmounted(() => {
     clearInterval(pollInterval);
+    clearInterval(timerInterval);
 });
 </script>
