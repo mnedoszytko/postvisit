@@ -5,6 +5,7 @@ All notable changes to PostVisit.ai are documented here in reverse chronological
 ## 2026-02-11
 
 ### Added
+- **Medical Lookup API (POST-21)** — New `/api/v1/lookup/` endpoints exposing NIH Clinical Tables and DailyMed APIs for ICD-10 conditions, drugs, procedures, and drug labels. Includes validation, auth guards, and graceful error handling for external API failures.
 - **Medical term highlighting (tap-to-explain)** — Medical terms in SOAP notes are now highlighted and clickable. Tapping a term opens the ChatPanel with "Explain: {term}" pre-filled, triggering a contextual AI explanation. Implements PRD user story P3.
   - New `medical_terms` jsonb column on `visit_notes` table storing extracted terms with character offsets per SOAP section
   - `TermExtractor` AI service (`app/Services/AI/TermExtractor.php`) for production term extraction with offset validation
