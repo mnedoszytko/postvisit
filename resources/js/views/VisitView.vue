@@ -4,14 +4,21 @@
       <!-- Visit header -->
       <div class="mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Visit Summary</h1>
-        <p v-if="visit" class="text-gray-500">
-          {{ formatDate(visit.started_at) }} &middot; {{ formatVisitType(visit.visit_type) }}
-          <span v-if="visit.practitioner">
-            &middot; Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
-            <span v-if="visit.practitioner.primary_specialty" class="text-gray-400">, {{ visit.practitioner.primary_specialty }}</span>
+        <div v-if="visit" class="flex flex-wrap items-center gap-2 mt-2">
+          <span class="inline-flex items-center gap-1.5 text-sm text-gray-600">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            {{ formatDate(visit.started_at) }}
           </span>
-        </p>
-        <p v-if="visit?.reason_for_visit" class="text-gray-600 mt-1">{{ visit.reason_for_visit }}</p>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+            {{ formatVisitType(visit.visit_type) }}
+          </span>
+          <span v-if="visit.practitioner" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
+            <span v-if="visit.practitioner.primary_specialty" class="text-blue-500">&middot; {{ visit.practitioner.primary_specialty }}</span>
+          </span>
+        </div>
+        <p v-if="visit?.reason_for_visit" class="text-gray-600 mt-2 text-sm">{{ visit.reason_for_visit }}</p>
       </div>
 
       <!-- Loading state -->
