@@ -380,6 +380,65 @@ curl -s -X POST 'https://api.linear.app/graphql' \
 - Pipe output through `python3 -m json.tool` for readable formatting
 - Linear API docs: https://developers.linear.app/docs/graphql/working-with-the-graphql-api
 
+## Craft (Documentation / Knowledge Base)
+
+Craft is used for project documentation, planning, and knowledge sharing. Access via REST API.
+
+### Connection
+- **Base URL**: `https://connect.craft.do/links/3SxffBwjsYS/api/v1`
+- **Space ID**: `22c77e8f-27ff-3921-2f71-1d1f300aad2f`
+- **Auth**: No API key needed — authenticated via the connection link
+- **Timezone**: `Europe/Brussels`
+
+### Key Concepts
+- **Document ID = root block ID** — use document ID with `GET /blocks?id={docId}` to fetch content
+- **Locations**: Documents live in folders or built-in locations: `unsorted`, `templates`, `trash`
+- Use `Accept: application/json` for structured data, `Accept: text/markdown` for rendered content
+
+### Common Operations
+
+```bash
+BASE="https://connect.craft.do/links/3SxffBwjsYS/api/v1"
+
+# Discover folder structure
+curl -s "$BASE/folders" | python3 -m json.tool
+
+# List documents in a folder
+curl -s "$BASE/documents?folderIds=FOLDER_ID" | python3 -m json.tool
+
+# Read document content (as markdown)
+curl -s -H "Accept: text/markdown" "$BASE/blocks?id=DOCUMENT_ID"
+
+# Read document content (as JSON)
+curl -s "$BASE/blocks?id=DOCUMENT_ID" | python3 -m json.tool
+
+# Search documents
+curl -s "$BASE/documents/search?query=SEARCH_TERM" | python3 -m json.tool
+
+# Create document
+curl -s -X POST "$BASE/documents" \
+  -H "Content-Type: application/json" \
+  -d '{"documents":[{"title":"Doc Title"}],"destination":{"folderId":"FOLDER_ID"}}'
+
+# Add content to document (markdown)
+curl -s -X POST "$BASE/blocks" \
+  -H "Content-Type: application/json" \
+  -d '{"documentId":"DOC_ID","blocks":[{"type":"text","markdown":"Content here"}]}'
+
+# Get active tasks
+curl -s "$BASE/tasks?scope=active" | python3 -m json.tool
+```
+
+### Safety Rules
+- **Production data** — this connects to real user documents. Only safe operations.
+- Safe: `GET` requests, creating test content that you delete immediately
+- Unsafe: permanent deletions, modifications without backup
+
+### Tips
+- Always start with `GET /folders` to discover the space structure
+- Use `GET /documents` with location filter before creating new docs
+- MCP tools (`mcp__claude_ai_Craft__*`) are also available as an alternative interface
+
 ## TODO — PRZYPOMNIENIA DLA NEDO
 
 ### BLOKUJĄCE (bez tego demo nie ruszy)
