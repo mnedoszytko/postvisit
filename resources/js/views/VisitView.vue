@@ -87,7 +87,7 @@
                 Start Recording
               </router-link>
             </div>
-            <VisitAttachments :visit-id="route.params.id" />
+            <VisitAttachments :visit-id="route.params.id" :terms="allMedicalTerms" @term-click="showTermPopover" />
           </div>
 
           <!-- Visit sections (has content) -->
@@ -227,7 +227,7 @@
             </div>
 
             <!-- Patient Attachments -->
-            <VisitAttachments :visit-id="route.params.id" />
+            <VisitAttachments :visit-id="route.params.id" :terms="allMedicalTerms" @term-click="showTermPopover" />
 
             <!-- AI-Extracted Entities (from transcript analysis) -->
             <div v-if="entities && Object.keys(entities).length" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
@@ -510,6 +510,28 @@ const soapSections = computed(() => {
         content: note[sectionFieldMap[s.key]],
         terms: note.medical_terms?.[sectionFieldMap[s.key]] || [],
     })).filter(s => s.content);
+});
+
+// Flattened medical terms from all SOAP sections — used for attachment highlighting
+const allMedicalTerms = computed(() => {
+    const note = visit.value?.visit_note;
+    if (!note?.medical_terms) return [];
+
+    const seen = new Set();
+    const terms = [];
+
+    for (const sectionTerms of Object.values(note.medical_terms)) {
+        if (!Array.isArray(sectionTerms)) continue;
+        for (const t of sectionTerms) {
+            const key = t.term?.toLowerCase();
+            if (key && !seen.has(key)) {
+                seen.add(key);
+                terms.push(t);
+            }
+        }
+    }
+
+    return terms;
 });
 
 function formatDate(dateStr) {

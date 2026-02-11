@@ -159,10 +159,18 @@
               </button>
 
               <div v-if="doc._analysisExpanded" class="px-3 pb-3 space-y-2.5">
-                <!-- Summary -->
-                <p class="text-sm text-gray-700">{{ doc._analysis.summary }}</p>
+                <!-- Summary (with term highlighting) -->
+                <HighlightedText
+                  v-if="doc._analysis.summary && matchTermsInText(doc._analysis.summary).length"
+                  :content="doc._analysis.summary"
+                  :terms="matchTermsInText(doc._analysis.summary)"
+                  section-key="attachment_analysis"
+                  class="text-sm"
+                  @term-click="(payload) => emit('term-click', payload)"
+                />
+                <p v-else-if="doc._analysis.summary" class="text-sm text-gray-700">{{ doc._analysis.summary }}</p>
 
-                <!-- Findings -->
+                <!-- Findings (with term highlighting on finding text) -->
                 <div v-if="doc._analysis.findings?.length" class="space-y-1">
                   <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Findings</p>
                   <div v-for="(f, fi) in doc._analysis.findings" :key="fi" class="flex items-start gap-2">
@@ -171,7 +179,15 @@
                       :class="significanceDot(f.significance)"
                     ></span>
                     <div class="min-w-0">
-                      <span class="text-sm text-gray-700">{{ f.finding }}</span>
+                      <HighlightedText
+                        v-if="matchTermsInText(f.finding).length"
+                        :content="f.finding"
+                        :terms="matchTermsInText(f.finding)"
+                        section-key="attachment_finding"
+                        class="inline text-sm"
+                        @term-click="(payload) => emit('term-click', payload)"
+                      />
+                      <span v-else class="text-sm text-gray-700">{{ f.finding }}</span>
                       <span v-if="f.location" class="text-xs text-gray-400 ml-1">({{ f.location }})</span>
                     </div>
                   </div>
@@ -276,13 +292,57 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import { useApi } from '@/composables/useApi';
 import QrcodeVue from 'qrcode.vue';
+import HighlightedText from '@/components/HighlightedText.vue';
 
 const props = defineProps({
     visitId: { type: String, required: true },
+    terms: { type: Array, default: () => [] },
 });
+
+const emit = defineEmits(['term-click']);
+
+/**
+ * Match visit-level medical terms against a given text string.
+ * Returns term objects with start/end positions for HighlightedText.
+ */
+function matchTermsInText(text) {
+    if (!text || !props.terms?.length) return [];
+
+    const matched = [];
+    const lowerText = text.toLowerCase();
+
+    for (const t of props.terms) {
+        const termStr = t.term;
+        if (!termStr) continue;
+
+        const idx = lowerText.indexOf(termStr.toLowerCase());
+        if (idx !== -1) {
+            // Use the actual text casing from the content
+            matched.push({
+                term: text.substring(idx, idx + termStr.length),
+                definition: t.definition || '',
+                start: idx,
+                end: idx + termStr.length,
+            });
+        }
+    }
+
+    // Sort by position and remove overlaps
+    matched.sort((a, b) => a.start - b.start);
+    const filtered = [];
+    let lastEnd = 0;
+    for (const m of matched) {
+        if (m.start >= lastEnd) {
+            filtered.push(m);
+            lastEnd = m.end;
+        }
+    }
+
+    return filtered;
+}
 
 const api = useApi();
 const expanded = ref(false);
@@ -537,7 +597,7 @@ async function fetchDocuments() {
         docs.forEach(doc => {
             doc._analysis_status = doc.analysis_status || null;
             doc._analysis = doc.ai_analysis || null;
-            doc._analysisExpanded = false;
+            doc._analysisExpanded = doc.analysis_status === 'completed';
         });
 
         // Assign first so Vue wraps items in reactive proxies

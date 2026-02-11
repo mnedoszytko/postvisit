@@ -29,7 +29,7 @@
               :to="`/visits/${visit.id}`"
               class="block p-4 hover:bg-gray-50 transition-colors"
             >
-              <p class="font-medium text-gray-900">{{ visit.reason_for_visit || visit.visit_type || 'Visit' }}</p>
+              <p class="font-medium text-gray-900">{{ shortTitle(visit) }}</p>
               <div class="flex flex-wrap items-center gap-2 mt-1.5">
                 <span v-if="visit.started_at" class="inline-flex items-center gap-1.5 text-sm text-gray-500">
                   <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -56,19 +56,27 @@
         </div>
       </section>
 
-      <!-- Quick actions -->
+      <!-- Record New Visit (primary action) -->
+      <router-link
+        to="/scribe"
+        class="block w-full text-center py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors"
+      >
+        Record New Visit
+      </router-link>
+
+      <!-- Quick links -->
       <section class="space-y-3">
         <router-link
           to="/health"
           class="block w-full text-center py-3 bg-white text-emerald-700 border border-emerald-200 rounded-xl font-medium hover:bg-emerald-50 transition-colors"
         >
-          View Health Dashboard
+          Health Dashboard
         </router-link>
         <router-link
-          to="/scribe"
-          class="block w-full text-center py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors"
+          to="/library"
+          class="block w-full text-center py-3 bg-white text-emerald-700 border border-emerald-200 rounded-xl font-medium hover:bg-emerald-50 transition-colors"
         >
-          Record New Visit
+          Medical Library
         </router-link>
       </section>
     </div>
@@ -106,6 +114,12 @@ function formatDate(dateStr) {
 function formatVisitType(type) {
     if (!type) return '';
     return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function shortTitle(visit) {
+    const raw = visit.reason_for_visit || visit.visit_type || 'Visit';
+    if (raw.length <= 60) return raw;
+    return raw.slice(0, 57) + '...';
 }
 
 onMounted(() => {

@@ -57,20 +57,37 @@ class TranscriptController extends Controller
         $shouldProcess = $validated['process'] ?? false;
         unset($validated['process'], $validated['use_demo_transcript']);
 
+        // Quality gate: evaluate transcript before storing
+        $quality = ScribeProcessor::evaluateQuality($validated['raw_transcript'] ?? '');
+
         $validated['visit_id'] = $visit->id;
         $validated['patient_id'] = $visit->patient_id;
         $validated['stt_provider'] = $validated['stt_provider'] ?? 'none';
         $validated['audio_duration_seconds'] = $validated['audio_duration_seconds'] ?? 0;
-        $validated['processing_status'] = $shouldProcess ? 'processing' : 'pending';
         $validated['consent_timestamp'] = $validated['patient_consent_given'] ? now() : null;
 
+        if (! $quality['sufficient']) {
+            // Still save the transcript but mark as insufficient
+            $validated['processing_status'] = 'insufficient_content';
+            $transcript = Transcript::create($validated);
+
+            return response()->json([
+                'data' => $transcript,
+                'quality' => $quality,
+            ], 201);
+        }
+
+        $validated['processing_status'] = $shouldProcess ? 'processing' : 'pending';
         $transcript = Transcript::create($validated);
 
         if ($shouldProcess) {
             ProcessTranscriptJob::dispatch($transcript);
         }
 
-        return response()->json(['data' => $transcript], 201);
+        return response()->json([
+            'data' => $transcript,
+            'quality' => $quality,
+        ], 201);
     }
 
     public function uploadAudio(Request $request, Visit $visit, SpeechToTextProvider $stt): JsonResponse

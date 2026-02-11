@@ -27,7 +27,7 @@ return new class extends Migration
             $table->jsonb('entities_extracted')->nullable();
             $table->jsonb('soap_note')->nullable();
             $table->text('summary')->nullable();
-            $table->enum('processing_status', ['pending', 'processing', 'completed', 'failed']);
+            $table->enum('processing_status', ['pending', 'processing', 'completed', 'failed', 'insufficient_content']);
 
             // Consent
             $table->boolean('patient_consent_given');

@@ -6,11 +6,69 @@ use App\Models\Transcript;
 
 class ScribeProcessor
 {
+    /** Minimum word count for a transcript to be considered clinically useful. */
+    private const MIN_WORD_COUNT = 30;
+
+    /** Clinical keywords that indicate meaningful medical content. */
+    private const CLINICAL_KEYWORDS = [
+        'patient', 'symptoms', 'diagnosis', 'medication', 'prescri',
+        'treatment', 'blood', 'pressure', 'heart', 'pain', 'mg',
+        'dose', 'history', 'exam', 'lab', 'test', 'follow',
+        'condition', 'chronic', 'acute', 'doctor', 'nurse',
+    ];
+
+    /** Minimum number of clinical keywords required. */
+    private const MIN_CLINICAL_KEYWORDS = 3;
+
     public function __construct(
         private AnthropicClient $client,
         private PromptLoader $promptLoader,
         private AiTierManager $tierManager,
     ) {}
+
+    /**
+     * Evaluate whether a transcript has enough clinical content to process.
+     *
+     * @return array{sufficient: bool, word_count: int, clinical_keyword_count: int, reason: string|null}
+     */
+    public static function evaluateQuality(string $rawTranscript): array
+    {
+        $text = trim($rawTranscript);
+        $wordCount = str_word_count($text);
+
+        if ($wordCount < self::MIN_WORD_COUNT) {
+            return [
+                'sufficient' => false,
+                'word_count' => $wordCount,
+                'clinical_keyword_count' => 0,
+                'reason' => 'insufficient_length',
+            ];
+        }
+
+        $lowerText = strtolower($text);
+        $clinicalKeywordCount = 0;
+        foreach (self::CLINICAL_KEYWORDS as $keyword) {
+            if (str_contains($lowerText, $keyword)) {
+                $clinicalKeywordCount++;
+            }
+        }
+
+        if ($clinicalKeywordCount < self::MIN_CLINICAL_KEYWORDS) {
+            return [
+                'sufficient' => false,
+                'word_count' => $wordCount,
+                'clinical_keyword_count' => $clinicalKeywordCount,
+                'reason' => 'insufficient_clinical_content',
+            ];
+        }
+
+        return [
+            'sufficient' => true,
+            'word_count' => $wordCount,
+            'clinical_keyword_count' => $clinicalKeywordCount,
+            'reason' => null,
+        ];
+    }
 
     /**
      * Process a raw transcript into structured clinical data.

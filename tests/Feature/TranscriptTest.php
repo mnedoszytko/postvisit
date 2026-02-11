@@ -22,6 +22,9 @@ class TranscriptTest extends TestCase
 
     private Visit $visit;
 
+    /** A clinically-rich transcript that passes the quality gate. */
+    private string $clinicalTranscript = 'Doctor: How are you feeling today? Patient: I have been experiencing heart palpitations and chest pain for three weeks. Doctor: Any history of blood pressure issues or medication use? Patient: I take aspirin. Doctor: Let me do an exam and check your symptoms. We will order a lab test and review your diagnosis. The treatment plan includes a new prescription for medication to manage your chronic condition.';
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,14 +43,15 @@ class TranscriptTest extends TestCase
     public function test_can_upload_transcript(): void
     {
         $response = $this->actingAs($this->user)->postJson("/api/v1/visits/{$this->visit->id}/transcript", [
-            'raw_transcript' => 'Doctor: How are you feeling today? Patient: I have been experiencing headaches.',
+            'raw_transcript' => $this->clinicalTranscript,
             'source_type' => 'manual_upload',
             'patient_consent_given' => true,
         ]);
 
         $response->assertStatus(201)
             ->assertJsonPath('data.processing_status', 'pending')
-            ->assertJsonPath('data.visit_id', $this->visit->id);
+            ->assertJsonPath('data.visit_id', $this->visit->id)
+            ->assertJsonPath('quality.sufficient', true);
     }
 
     public function test_can_view_transcript(): void
@@ -113,6 +117,40 @@ class TranscriptTest extends TestCase
             ->assertJsonPath('data.has_summary', true);
     }
 
+    public function test_quality_gate_rejects_short_transcript(): void
+    {
+        $response = $this->actingAs($this->user)->postJson("/api/v1/visits/{$this->visit->id}/transcript", [
+            'raw_transcript' => 'Hello, how are you?',
+            'source_type' => 'manual_upload',
+            'patient_consent_given' => true,
+        ]);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('quality.sufficient', false)
+            ->assertJsonPath('quality.reason', 'insufficient_length')
+            ->assertJsonPath('data.processing_status', 'insufficient_content');
+    }
+
+    public function test_quality_gate_rejects_non_clinical_transcript(): void
+    {
+        // Long enough but no clinical keywords
+        $nonClinical = 'Today we talked about the weather and sports. '
+            .'The game was really exciting and everyone enjoyed the sunshine. '
+            .'We also discussed vacation plans and our favorite restaurants in town. '
+            .'The food was absolutely delicious last time we went there together.';
+
+        $response = $this->actingAs($this->user)->postJson("/api/v1/visits/{$this->visit->id}/transcript", [
+            'raw_transcript' => $nonClinical,
+            'source_type' => 'manual_upload',
+            'patient_consent_given' => true,
+        ]);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('quality.sufficient', false)
+            ->assertJsonPath('quality.reason', 'insufficient_clinical_content')
+            ->assertJsonPath('data.processing_status', 'insufficient_content');
+    }
+
     public function test_transcript_upload_validates_consent(): void
     {
         $response = $this->actingAs($this->user)->postJson("/api/v1/visits/{$this->visit->id}/transcript", [
@@ -129,7 +167,7 @@ class TranscriptTest extends TestCase
         Queue::fake();
 
         $response = $this->actingAs($this->user)->postJson("/api/v1/visits/{$this->visit->id}/transcript", [
-            'raw_transcript' => 'Doctor: How are you? Patient: Fine, thank you.',
+            'raw_transcript' => $this->clinicalTranscript,
             'source_type' => 'manual_upload',
             'patient_consent_given' => true,
             'process' => true,

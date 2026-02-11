@@ -90,13 +90,16 @@ class DemoScenarioSeeder
 
     private function createPatient(array $data): Patient
     {
+        $namePart = strtolower($data['first_name']).'.'.strtolower($data['last_name']);
+        $suffix = substr(md5(Str::uuid()->toString()), 0, 3);
+
         return Patient::create([
             'fhir_patient_id' => 'patient-'.Str::uuid(),
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'dob' => $data['dob'],
             'gender' => $data['gender'],
-            'email' => 'demo-'.Str::random(8).'@postvisit.ai',
+            'email' => "{$namePart}.{$suffix}@demo.postvisit.ai",
             'phone' => $data['phone'],
             'preferred_language' => $data['preferred_language'],
             'timezone' => $data['timezone'],
@@ -117,11 +120,11 @@ class DemoScenarioSeeder
     private function createPatientUser(Patient $patient, string $scenarioKey): User
     {
         $namePart = strtolower($patient->first_name).'.'.strtolower($patient->last_name);
-        $random = Str::random(6);
+        $suffix = substr(md5(Str::uuid()->toString()), 0, 3);
 
         return User::create([
             'name' => $patient->first_name.' '.$patient->last_name,
-            'email' => "{$namePart}.{$random}@demo.postvisit.ai",
+            'email' => "{$namePart}.{$suffix}@demo.postvisit.ai",
             'password' => 'password',
             'role' => 'patient',
             'patient_id' => $patient->id,

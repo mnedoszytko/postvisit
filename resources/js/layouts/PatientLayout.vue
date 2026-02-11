@@ -1,5 +1,24 @@
 <template>
   <div class="min-h-screen bg-gray-50">
+    <!-- Demo mode banner -->
+    <div v-if="isDemoUser" class="bg-amber-400 text-amber-900 text-sm font-medium sticky top-0 z-50">
+      <div class="max-w-4xl mx-auto px-4 h-10 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          <span>Demo Mode</span>
+          <span class="hidden sm:inline text-amber-700">&mdash; {{ auth.user?.name }}</span>
+        </div>
+        <router-link
+          to="/demo/scenarios"
+          class="px-3 py-1 bg-amber-900/10 hover:bg-amber-900/20 rounded-lg text-xs font-semibold transition-colors"
+        >
+          Switch Scenario
+        </router-link>
+      </div>
+    </div>
+
     <!-- Header -->
     <header class="bg-white border-b border-emerald-200 sticky top-0 z-40">
       <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -192,6 +211,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     document.removeEventListener('click', closeDropdown);
+});
+
+const isDemoUser = computed(() => {
+    return auth.user?.email?.endsWith('@demo.postvisit.ai') ?? false;
 });
 
 const initials = computed(() => {
