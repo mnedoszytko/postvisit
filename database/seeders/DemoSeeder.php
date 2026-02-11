@@ -289,6 +289,50 @@ class DemoSeeder extends Seeder
             'created_by' => $doctorUser->id,
         ]);
 
+        // 6h. Body Weight series (HF weight monitoring scenario)
+        $weightData = [
+            ['days_ago' => 10, 'weight' => 82.0],
+            ['days_ago' => 9, 'weight' => 82.1],
+            ['days_ago' => 8, 'weight' => 82.3],
+            ['days_ago' => 7, 'weight' => 82.5],
+            ['days_ago' => 6, 'weight' => 82.8],
+            ['days_ago' => 5, 'weight' => 83.2],
+            ['days_ago' => 4, 'weight' => 83.6],
+            ['days_ago' => 3, 'weight' => 84.1],
+            ['days_ago' => 2, 'weight' => 84.7],
+            ['days_ago' => 1, 'weight' => 85.3],
+        ];
+
+        foreach ($weightData as $w) {
+            Observation::create([
+                'fhir_observation_id' => 'obs-wt-' . Str::uuid(),
+                'patient_id' => $patient->id,
+                'visit_id' => $visit->id,
+                'practitioner_id' => $practitioner->id,
+                'code_system' => 'LOINC',
+                'code' => '29463-7',
+                'code_display' => 'Body weight',
+                'category' => 'vital-signs',
+                'status' => 'final',
+                'value_type' => 'quantity',
+                'value_quantity' => $w['weight'],
+                'value_unit' => 'kg',
+                'reference_range_low' => 75,
+                'reference_range_high' => 90,
+                'reference_range_text' => 'Target: 80-84 kg',
+                'interpretation' => $w['weight'] > 84 ? 'H' : 'N',
+                'effective_date' => now()->subDays($w['days_ago'])->toDateString(),
+                'issued_at' => now()->subDays($w['days_ago']),
+                'specialty_data' => [
+                    'monitoring_context' => 'heart_failure',
+                    'dry_weight' => 82.0,
+                    'alert_threshold_kg' => 2.0,
+                    'alert_threshold_days' => 3,
+                ],
+                'created_by' => $doctorUser->id,
+            ]);
+        }
+
         // 7. Condition: PVCs
         Condition::create([
             'fhir_condition_id' => 'condition-' . Str::uuid(),
