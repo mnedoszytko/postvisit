@@ -119,7 +119,6 @@ let timer = null;
 let chunkTimer = null;
 let mediaRecorder = null;
 let mediaStream = null;
-let currentChunkData = [];
 
 // Completed audio segments (blobs) — one per CHUNK_DURATION_SEC window
 const audioSegments = ref([]);
@@ -138,18 +137,18 @@ function getMimeType() {
 }
 
 function createRecorder(stream) {
-    currentChunkData = [];
+    const chunkData = []; // each recorder gets its own data array
     const recorder = new MediaRecorder(stream, { mimeType: getMimeType() });
 
     recorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-            currentChunkData.push(event.data);
+            chunkData.push(event.data);
         }
     };
 
     recorder.onstop = () => {
-        if (currentChunkData.length > 0) {
-            const blob = new Blob(currentChunkData, { type: recorder.mimeType });
+        if (chunkData.length > 0) {
+            const blob = new Blob(chunkData, { type: recorder.mimeType });
             audioSegments.value.push(blob);
         }
     };
