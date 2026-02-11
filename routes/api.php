@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\ExplainController;
 use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\MedicationController;
+use App\Http\Controllers\Api\ReferenceController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\PrescriptionController;
 use App\Http\Controllers\Api\TranscriptController;
@@ -98,6 +99,14 @@ Route::prefix('v1')->group(function () {
         Route::get('medications/{rxnormCode}/interactions', [MedicationController::class, 'interactions']);
         Route::get('medications/{rxnormCode}/adverse-events', [MedicationController::class, 'adverseEvents']);
         Route::get('medications/{rxnormCode}/label', [MedicationController::class, 'label']);
+
+        // ----- Module 9: Medical References -----
+        Route::prefix('references')->group(function () {
+            Route::get('/', [ReferenceController::class, 'index']);
+            Route::get('{reference}', [ReferenceController::class, 'show']);
+            Route::post('{reference}/verify', [ReferenceController::class, 'verify']);
+            Route::post('verify-pmid', [ReferenceController::class, 'verifyPmid']);
+        });
 
         // ----- Module 7: Doctor Dashboard (doctor role required) -----
         Route::prefix('doctor')->middleware('role:doctor,admin')->group(function () {

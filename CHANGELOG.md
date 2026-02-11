@@ -5,6 +5,7 @@ All notable changes to PostVisit.ai are documented here in reverse chronological
 ## 2026-02-11
 
 ### Added
+- **Medical Reference Verification (POST-45)** — New `MedicalReference` model with PMID/DOI tracking, PubMed E-utilities integration for runtime verification, and 8 seeded cardiology references from ESC/AHA/ACC guidelines. API endpoints for listing, filtering, and verifying references. Updated context-guidelines prompt to require PMID/DOI for all citations.
 - **Medical term highlighting (tap-to-explain)** — Medical terms in SOAP notes are now highlighted and clickable. Tapping a term opens the ChatPanel with "Explain: {term}" pre-filled, triggering a contextual AI explanation. Implements PRD user story P3.
   - New `medical_terms` jsonb column on `visit_notes` table storing extracted terms with character offsets per SOAP section
   - `TermExtractor` AI service (`app/Services/AI/TermExtractor.php`) for production term extraction with offset validation

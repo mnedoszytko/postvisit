@@ -319,6 +319,44 @@ Reply to a patient message.
 
 ---
 
+## Medical References
+
+All reference endpoints require authentication.
+
+### GET /references
+List medical references with optional filters.
+
+**Query params:**
+| Param | Type | Notes |
+|-------|------|-------|
+| specialty | string | Filter by specialty (cardiology, etc.) |
+| category | string | guideline, meta_analysis, rct, review |
+| verified | boolean | Only verified references |
+
+**Response:** `200` `{ data: [{ id, title, authors, journal, year, doi, pmid, url, source_organization, category, specialty, verified }] }`
+
+### GET /references/{reference}
+Get a single reference by ID.
+
+**Response:** `200` `{ data: { id, title, authors, journal, year, doi, pmid, url, verified, verified_at } }`
+
+### POST /references/{reference}/verify
+Verify a reference against PubMed and update its verification status.
+
+**Response:** `200` `{ data: { reference, pubmed_result, verified } }`
+
+### POST /references/verify-pmid
+Verify a PMID exists in PubMed without storing it.
+
+**Body:**
+| Field | Type | Required |
+|-------|------|----------|
+| pmid | string | yes |
+
+**Response:** `200` `{ data: { exists, pmid, title, authors, journal, year, doi, url } }`
+
+---
+
 ## Audit
 
 Requires `role:doctor,admin`.

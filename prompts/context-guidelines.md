@@ -17,6 +17,9 @@ Each guideline block should follow this structure:
 Source: [Organization, e.g., ESC, AHA]
 Title: [Full guideline title]
 Year: [Publication year]
+DOI: [Digital Object Identifier]
+PMID: [PubMed ID]
+URL: [Direct link to publication]
 Relevance: [Why this guideline is included for this visit]
 Specialty: [cardiology|endocrinology|general|...]
 
@@ -35,6 +38,19 @@ Specialty: [cardiology|endocrinology|general|...]
 --- END GUIDELINE ---
 ```
 
+## Citation Requirements
+
+Every medical reference MUST include at least one of:
+- **PMID** — PubMed ID (e.g., `37622666`)
+- **DOI** — Digital Object Identifier (e.g., `10.1093/eurheartj/ehad195`)
+
+References without PMID or DOI are considered unverified and should not be cited in patient-facing responses.
+
+Citation format for responses:
+```
+(McDonagh TA et al., Eur Heart J 2023; PMID: 37622666)
+```
+
 ## Usage Notes
 
 - Guidelines are loaded once per chat session as static context
@@ -42,12 +58,30 @@ Specialty: [cardiology|endocrinology|general|...]
 - The 1M token context window can accommodate 4-8 full guideline documents
 - Guidelines should be pre-processed to extract the most relevant sections rather than loading entire documents
 - Source citations must be preserved for transparency in patient-facing responses
+- All PMID references can be verified at runtime via PubMed E-utilities API
 
-## Available Guidelines (Demo)
+## Available Guidelines (Demo — Cardiology)
 
 For the cardiology demo scenario (PVCs, propranolol):
-1. ESC Guidelines on Ventricular Arrhythmias and Prevention of Sudden Cardiac Death
-2. AHA/ACC Guidelines for Management of Patients with Ventricular Arrhythmias
-3. ESC Guidelines on Cardiovascular Disease Prevention
 
-These will be loaded as context when a cardiology visit is active.
+1. **ESC Guidelines on Ventricular Arrhythmias and Prevention of SCD**
+   - Zeppenfeld K et al., Eur Heart J 2022
+   - DOI: 10.1093/eurheartj/ehac262 | PMID: 36017572
+
+2. **2023 ESC Focused Update — Acute and Chronic Heart Failure**
+   - McDonagh TA et al., Eur Heart J 2023
+   - DOI: 10.1093/eurheartj/ehad195 | PMID: 37622666
+
+3. **2022 AHA/ACC/HFSA Guideline for Heart Failure Management**
+   - Heidenreich PA et al., Circulation 2022
+   - DOI: 10.1161/CIR.0000000000001063 | PMID: 35363499
+
+4. **ESC/EAS Dyslipidaemia Guidelines 2019**
+   - Mach F et al., Eur Heart J 2020
+   - DOI: 10.1093/eurheartj/ehz455 | PMID: 31504418
+
+5. **ESC CVD Prevention Guidelines 2021**
+   - Visseren FLJ et al., Eur Heart J 2021
+   - DOI: 10.1093/eurheartj/ehab484 | PMID: 34458905
+
+These are loaded as context when a cardiology visit is active.
