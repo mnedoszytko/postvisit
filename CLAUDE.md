@@ -143,6 +143,21 @@ git tag v0.x-description
 ```
 Use for rollback if merge breaks something.
 
+### PR Discipline (CRITICAL)
+- **Every PR must be scoped to ONE topic.** Do not mix unrelated changes (e.g. animation PR must not delete API controllers).
+- **Never delete files unrelated to the PR scope.** If you notice dead code, create a separate cleanup PR.
+- **Never commit changes that "came along for the ride"** from a long-lived branch. Cherry-pick or recreate on a clean branch from `main`.
+- **Before creating a PR, verify `git diff main..HEAD --stat`** — every file in the diff must be justified by the PR description.
+- **If a feature branch has diverged significantly from main** (many unrelated deletions/additions), do NOT merge it directly. Instead: create a fresh branch from main, cherry-pick only the relevant commits, and PR that.
+- **PR title must be under 70 chars**, description must list changed files and explain why each changed.
+
+### Safe Merge Strategy
+1. Always create PRs — never push directly to `main` for non-trivial changes
+2. Before merging, review the diff one more time: `gh pr diff <number>`
+3. Use **squash merge** for feature branches to keep main history clean
+4. After merge, delete the remote feature branch
+5. If unsure about a merge — tag main first: `git tag pre-merge-<feature>`
+
 ### Multi-Agent Safety
 - Agents working in parallel MUST use separate feature branches
 - Only one agent merges to `main` at a time
