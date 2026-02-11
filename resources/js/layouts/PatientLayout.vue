@@ -1,13 +1,19 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <header class="bg-white border-b border-emerald-200 sticky top-0 z-40">
       <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-        <router-link to="/profile" class="text-xl font-semibold text-emerald-700">
-          PostVisit.ai
-        </router-link>
+        <div class="flex items-center gap-3">
+          <router-link to="/profile" class="text-xl font-semibold text-emerald-700">
+            PostVisit.ai
+          </router-link>
+          <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+            Patient Panel
+          </span>
+        </div>
 
-        <nav class="flex items-center gap-4">
+        <!-- Desktop nav -->
+        <nav class="hidden md:flex items-center gap-4">
           <router-link
             to="/profile"
             class="text-sm text-gray-600 hover:text-emerald-700 transition-colors"
@@ -20,6 +26,12 @@
           >
             Record Visit
           </router-link>
+          <div v-if="auth.user" class="flex items-center gap-2 pl-3 border-l border-gray-200">
+            <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
+              {{ initials }}
+            </div>
+            <span class="text-sm text-gray-700 font-medium">{{ auth.user.name }}</span>
+          </div>
           <button
             class="text-sm text-gray-400 hover:text-red-500 transition-colors"
             @click="handleLogout"
@@ -27,6 +39,54 @@
             Log Out
           </button>
         </nav>
+
+        <!-- Mobile hamburger -->
+        <button
+          class="md:hidden p-2 text-gray-600 hover:text-emerald-700 transition-colors"
+          @click="mobileOpen = !mobileOpen"
+        >
+          <svg v-if="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile menu -->
+      <div v-if="mobileOpen" class="md:hidden border-t border-emerald-100 bg-white">
+        <div class="px-4 py-3 space-y-1">
+          <div v-if="auth.user" class="flex items-center gap-3 px-3 py-2 mb-1 border-b border-gray-100">
+            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">
+              {{ initials }}
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-900">{{ auth.user.name }}</p>
+              <p class="text-xs text-emerald-600 font-medium">Patient Panel</p>
+            </div>
+          </div>
+          <router-link
+            to="/profile"
+            class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            @click="mobileOpen = false"
+          >
+            My Health
+          </router-link>
+          <router-link
+            to="/scribe"
+            class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            @click="mobileOpen = false"
+          >
+            Record Visit
+          </router-link>
+          <button
+            class="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-red-500 transition-colors"
+            @click="handleLogout"
+          >
+            Log Out
+          </button>
+        </div>
       </div>
     </header>
 
@@ -38,13 +98,21 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 
 const auth = useAuthStore();
 const router = useRouter();
+const mobileOpen = ref(false);
+
+const initials = computed(() => {
+    if (!auth.user?.name) return '?';
+    return auth.user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+});
 
 async function handleLogout() {
+    mobileOpen.value = false;
     await auth.logout();
     router.push({ name: 'landing' });
 }
