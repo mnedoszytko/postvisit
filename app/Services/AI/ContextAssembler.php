@@ -5,6 +5,7 @@ namespace App\Services\AI;
 use Anthropic\Messages\CacheControlEphemeral;
 use Anthropic\Messages\TextBlockParam;
 use App\Models\Visit;
+use App\Services\Guidelines\GuidelinesRepository;
 use App\Services\Medications\OpenFdaClient;
 use Illuminate\Support\Facades\Log;
 
@@ -14,6 +15,7 @@ class ContextAssembler
         private PromptLoader $promptLoader,
         private OpenFdaClient $openFda,
         private AiTierManager $tierManager,
+        private GuidelinesRepository $guidelines,
     ) {}
 
     /**
@@ -120,40 +122,13 @@ class ContextAssembler
      */
     private function loadGuidelinesContent(Visit $visit): ?string
     {
-        $guidelinesPath = base_path('demo/guidelines');
+        $context = $this->guidelines->getRelevantGuidelines($visit);
 
-        if (! is_dir($guidelinesPath)) {
-            // Fallback to the template format
-            $template = $this->promptLoader->load('context-guidelines');
-
-            return "--- CLINICAL GUIDELINES CONTEXT ---\n{$template}\n--- END GUIDELINES ---";
-        }
-
-        $files = glob($guidelinesPath.'/*.md');
-        if (empty($files)) {
+        if ($context === '') {
             return null;
         }
 
-        $parts = ["--- CLINICAL GUIDELINES CONTEXT ---\n"];
-
-        foreach ($files as $file) {
-            $content = file_get_contents($file);
-            if ($content) {
-                $parts[] = $content;
-                $parts[] = "\n---\n";
-            }
-        }
-
-        $parts[] = '--- END CLINICAL GUIDELINES ---';
-
-        $combined = implode("\n", $parts);
-
-        Log::channel('ai')->debug('Loaded clinical guidelines into system prompt', [
-            'files' => array_map('basename', $files),
-            'total_chars' => strlen($combined),
-        ]);
-
-        return $combined;
+        return $context;
     }
 
     private function formatVisitContext(Visit $visit): string

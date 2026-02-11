@@ -57,11 +57,6 @@
 
 | Zasób | Licencja | Czy można w repo? | Status |
 |-------|----------|-------------------|--------|
-| PVC management reference (demo/guidelines/) | Original work, CC-BY 4.0 ref | ✅ Written in own words | ✅ OK |
-| Propranolol drug reference (demo/guidelines/) | Original work, public PI ref | ✅ Written in own words | ✅ OK |
-| Attachaipanich et al. 2024, J Clin Med | CC-BY 4.0 | ✅ z atrybucją | ✅ OK |
-| ESC guidelines (z journala) | CC-BY | ✅ z atrybucją | ✅ OK |
-| AHA guidelines (z journala) | CC-BY | ✅ z atrybucją | ✅ OK |
 | WHO guidelines | CC-BY 3.0 IGO | ✅ z atrybucją | ✅ OK |
 | RxNorm data | Public domain (NLM) | ✅ | ✅ OK |
 | OpenFDA data | Public domain | ✅ | ✅ OK |
@@ -72,7 +67,6 @@
 
 | Zasób | Licencja | Dlaczego nie | Status |
 |-------|----------|--------------|--------|
-| NICE guidelines | CC-BY-NC | Non-commercial — ryzykowne | ❌ NIE |
 | UpToDate content | Proprietary | Subscription, copyright | ❌ NIE |
 | DynaMed content | Proprietary | Subscription, copyright | ❌ NIE |
 | BMJ Best Practice | Proprietary | Subscription, copyright | ❌ NIE |
@@ -171,3 +165,25 @@ Plik `LICENSE` w root repo.
 - [ ] Puścić Opusa jako "judge" na nasze repo — ocena wg 4 kryteriów
 - [ ] Poprawić najsłabsze punkty
 - [ ] Sprawdzić czy README/video odpowiadają na pytania sędziów
+
+## Clinical Guidelines Knowledge Base
+
+### Licensing Analysis
+
+We conducted a thorough analysis of clinical practice guideline licensing for AI/LLM use. Key findings:
+
+- **ESC Guidelines**: Copyrighted with explicit AI opt-out under EU Directive 2019/790 Article 4(3). Cannot be used for training, RAG, or bundling without a formal license agreement.
+- **AHA/ACC Guidelines**: Full copyright held by ACC Foundation and AHA. No structured/machine-readable data available. No redistribution permitted.
+- **NICE Guidelines**: UK Open Content Licence for UK use, but AI use explicitly requires written permission and a signed license agreement.
+
+This forced us to design a 3-layer compliance-first architecture:
+
+| Source | License | Usage | Bundled in Repo? |
+|--------|---------|-------|-----------------|
+| WikiDoc | CC-BY-SA 3.0 | Cardiology reference articles | Yes — `demo/guidelines/wikidoc/` |
+| DailyMed (NLM) | Public Domain (US Gov) | Drug label summaries | Yes — `demo/guidelines/dailymed/` |
+| PMC Open Access (NLM) | CC-BY / CC-BY-NC per article | Runtime guideline RAG via BioC API | No — fetched at runtime, cached 24h |
+| Own clinical summaries | Original work | Derivative summaries in `prompts/guidelines/` | Yes |
+| ESC Guidelines | Copyrighted + EU AI opt-out | **NOT USED** | No |
+| AHA/ACC Guidelines | Copyrighted | **NOT USED** directly — PMC OA versions fetched at runtime only | No |
+| NICE Guidelines | Requires written AI license | **NOT USED** | No |

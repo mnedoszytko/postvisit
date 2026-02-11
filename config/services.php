@@ -42,4 +42,10 @@ return [
         'whisper_model' => env('WHISPER_MODEL', 'whisper-1'),
     ],
 
+    'pmc' => [
+        'cache_ttl' => env('PMC_CACHE_TTL', 86400),
+        'base_url' => 'https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi',
+        'eutils_url' => 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils',
+    ],
+
 ];
