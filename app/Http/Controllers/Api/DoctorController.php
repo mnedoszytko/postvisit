@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ChatSession;
 use App\Models\Notification;
+use App\Models\Observation;
 use App\Models\Patient;
 use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class DoctorController extends Controller
 {
@@ -46,6 +48,129 @@ class DoctorController extends Controller
         ]);
     }
 
+    public function alerts(Request $request): JsonResponse
+    {
+        $practitioner = $request->user()->practitioner;
+
+        if (! $practitioner) {
+            return response()->json(['error' => ['message' => 'No practitioner profile linked']], 403);
+        }
+
+        $patientIds = Visit::where('practitioner_id', $practitioner->id)
+            ->distinct('patient_id')
+            ->pluck('patient_id');
+
+        $alerts = [];
+
+        // Weight gain alerts: >= 2kg in 3 days (code 29463-7)
+        $threeDaysAgo = Carbon::now()->subDays(3)->startOfDay();
+        $weightObservations = Observation::whereIn('patient_id', $patientIds)
+            ->where('code', '29463-7')
+            ->where('effective_date', '>=', $threeDaysAgo)
+            ->with('patient:id,first_name,last_name')
+            ->orderBy('effective_date')
+            ->get()
+            ->groupBy('patient_id');
+
+        foreach ($weightObservations as $patientId => $observations) {
+            if ($observations->count() < 2) {
+                continue;
+            }
+
+            $earliest = $observations->first();
+            $latest = $observations->last();
+            $delta = (float) $latest->value_quantity - (float) $earliest->value_quantity;
+
+            if ($delta >= 2.0) {
+                $patient = $earliest->patient;
+                $alerts[] = [
+                    'type' => 'weight_gain',
+                    'severity' => 'high',
+                    'patient_id' => $patientId,
+                    'patient_name' => $patient->first_name.' '.$patient->last_name,
+                    'message' => sprintf(
+                        'Weight gain of %.1f kg in %d days (%.1f → %.1f kg)',
+                        $delta,
+                        $earliest->effective_date->diffInDays($latest->effective_date),
+                        $earliest->value_quantity,
+                        $latest->value_quantity,
+                    ),
+                    'data' => [
+                        'delta_kg' => round($delta, 1),
+                        'from' => (float) $earliest->value_quantity,
+                        'to' => (float) $latest->value_quantity,
+                        'period_days' => $earliest->effective_date->diffInDays($latest->effective_date),
+                    ],
+                ];
+            }
+        }
+
+        // BP trend alerts: 3+ consecutive elevated readings (code 85354-9, systolic >= 140 or diastolic >= 90)
+        $bpObservations = Observation::whereIn('patient_id', $patientIds)
+            ->where('code', '85354-9')
+            ->with('patient:id,first_name,last_name')
+            ->orderBy('effective_date')
+            ->get()
+            ->groupBy('patient_id');
+
+        foreach ($bpObservations as $patientId => $observations) {
+            $consecutiveElevated = 0;
+            $elevatedReadings = [];
+
+            foreach ($observations as $obs) {
+                $systolic = null;
+                $diastolic = null;
+
+                if (is_array($obs->specialty_data)) {
+                    $systolic = $obs->specialty_data['systolic'] ?? null;
+                    $diastolic = $obs->specialty_data['diastolic'] ?? null;
+                }
+
+                // Fallback: if no specialty_data components, use value_quantity as systolic
+                if ($systolic === null && $obs->value_quantity !== null) {
+                    $systolic = (float) $obs->value_quantity;
+                }
+
+                $isElevated = ($systolic !== null && $systolic >= 140) || ($diastolic !== null && $diastolic >= 90);
+
+                if ($isElevated) {
+                    $consecutiveElevated++;
+                    $elevatedReadings[] = [
+                        'date' => $obs->effective_date->toDateString(),
+                        'systolic' => $systolic,
+                        'diastolic' => $diastolic,
+                    ];
+                } else {
+                    $consecutiveElevated = 0;
+                    $elevatedReadings = [];
+                }
+            }
+
+            if ($consecutiveElevated >= 3) {
+                $patient = $observations->first()->patient;
+                $alerts[] = [
+                    'type' => 'elevated_bp',
+                    'severity' => 'medium',
+                    'patient_id' => $patientId,
+                    'patient_name' => $patient->first_name.' '.$patient->last_name,
+                    'message' => sprintf(
+                        '%d consecutive elevated BP readings',
+                        $consecutiveElevated,
+                    ),
+                    'data' => [
+                        'consecutive_count' => $consecutiveElevated,
+                        'readings' => array_slice($elevatedReadings, -3),
+                    ],
+                ];
+            }
+        }
+
+        // Sort alerts: high severity first
+        usort($alerts, fn ($a, $b) => $a['severity'] === 'high' ? -1 : 1);
+
+        return response()->json(['data' => $alerts]);
+    }
+
     public function patients(Request $request): JsonResponse
     {
         $practitioner = $request->user()->practitioner;
@@ -59,7 +184,16 @@ class DoctorController extends Controller
             ->pluck('patient_id');
 
         $query = Patient::whereIn('id', $patientIds)
-            ->withCount('visits');
+            ->withCount('visits')
+            ->with([
+                'conditions' => fn ($q) => $q->where('clinical_status', 'active')
+                    ->orderByDesc('onset_date')
+                    ->limit(1),
+                'visits' => fn ($q) => $q->where('practitioner_id', $practitioner->id)
+                    ->orderByDesc('started_at')
+                    ->limit(1)
+                    ->select('id', 'patient_id', 'started_at', 'visit_status'),
+            ]);
 
         if ($search = $request->query('search')) {
             $term = '%'.strtolower($search).'%';
@@ -70,6 +204,16 @@ class DoctorController extends Controller
         }
 
         $patients = $query->orderBy('last_name')->get();
+
+        // Append computed fields for the dashboard
+        $alertPatientIds = collect($this->getAlertPatientIds($practitioner));
+        $patients->each(function ($patient) use ($alertPatientIds) {
+            $patient->primary_condition = $patient->conditions->first()?->code_display;
+            $patient->last_visit_date = $patient->visits->first()?->started_at?->toDateString();
+            $patient->last_visit_status = $patient->visits->first()?->visit_status;
+            $patient->status = $alertPatientIds->contains($patient->id) ? 'alert' : 'stable';
+            unset($patient->conditions, $patient->visits);
+        });
 
         return response()->json(['data' => $patients]);
     }
@@ -165,5 +309,59 @@ class DoctorController extends Controller
         ]);
 
         return response()->json(['data' => $reply], 201);
+    }
+
+    /**
+     * Get patient IDs that have active alerts (weight gain or elevated BP).
+     *
+     * @return array<string>
+     */
+    private function getAlertPatientIds(\App\Models\Practitioner $practitioner): array
+    {
+        $patientIds = Visit::where('practitioner_id', $practitioner->id)
+            ->distinct('patient_id')
+            ->pluck('patient_id');
+
+        $alertIds = [];
+
+        // Weight alerts
+        $threeDaysAgo = Carbon::now()->subDays(3)->startOfDay();
+        $weightObs = Observation::whereIn('patient_id', $patientIds)
+            ->where('code', '29463-7')
+            ->where('effective_date', '>=', $threeDaysAgo)
+            ->orderBy('effective_date')
+            ->get()
+            ->groupBy('patient_id');
+
+        foreach ($weightObs as $pid => $obs) {
+            if ($obs->count() >= 2) {
+                $delta = (float) $obs->last()->value_quantity - (float) $obs->first()->value_quantity;
+                if ($delta >= 2.0) {
+                    $alertIds[] = $pid;
+                }
+            }
+        }
+
+        // BP alerts
+        $bpObs = Observation::whereIn('patient_id', $patientIds)
+            ->where('code', '85354-9')
+            ->orderBy('effective_date')
+            ->get()
+            ->groupBy('patient_id');
+
+        foreach ($bpObs as $pid => $obs) {
+            $consecutive = 0;
+            foreach ($obs as $o) {
+                $systolic = $o->specialty_data['systolic'] ?? ((float) $o->value_quantity ?: null);
+                $diastolic = $o->specialty_data['diastolic'] ?? null;
+                $elevated = ($systolic !== null && $systolic >= 140) || ($diastolic !== null && $diastolic >= 90);
+                $consecutive = $elevated ? $consecutive + 1 : 0;
+            }
+            if ($consecutive >= 3) {
+                $alertIds[] = $pid;
+            }
+        }
+
+        return array_unique($alertIds);
     }
 }

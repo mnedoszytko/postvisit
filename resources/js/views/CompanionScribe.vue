@@ -78,6 +78,15 @@
         >
           Stop Recording
         </button>
+        <button
+          v-if="demoMode && showDemoRecordingBtn"
+          class="w-full py-2.5 border border-emerald-300 text-emerald-700 rounded-xl text-sm font-medium hover:bg-emerald-50 transition-all duration-500"
+          :class="demoRecordingBtnVisible ? 'opacity-100' : 'opacity-0'"
+          :disabled="demoLoading"
+          @click="useDemoRecordingDuringCapture"
+        >
+          {{ demoLoading ? 'Loading demo...' : 'Use Demo Recording Instead' }}
+        </button>
       </div>
 
       <!-- Post-recording / uploading step -->
@@ -135,6 +144,9 @@ const uploading = ref(false);
 const error = ref('');
 const demoMode = ref(false);
 const demoLoading = ref(false);
+const showDemoRecordingBtn = ref(false);
+const demoRecordingBtnVisible = ref(false);
+let demoRecordingTimer = null;
 
 // Visit info form
 const practitioners = ref([]);
@@ -437,6 +449,26 @@ async function useDemoTranscript() {
     }
 }
 
+async function useDemoRecordingDuringCapture() {
+    // Stop the active recording, discard it, and use demo transcript instead
+    clearInterval(timer);
+    clearInterval(chunkTimer);
+    clearTimeout(demoRecordingTimer);
+
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        if (recorderStopPromise) await recorderStopPromise;
+    }
+    if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream = null;
+    }
+
+    // Clear captured segments — we are using demo data
+    audioSegments.value = [];
+    await useDemoTranscript();
+}
+
 async function getFirstPractitionerId(patientId) {
     try {
         const { data } = await api.get(`/patients/${patientId}/visits`);
@@ -492,6 +524,13 @@ watch(step, (val) => {
     if (val === 'recording') {
         seconds.value = 0;
         timer = setInterval(() => seconds.value++, 1000);
+        // Show "Use Demo Recording Instead" button after 2s delay
+        if (demoMode.value) {
+            demoRecordingTimer = setTimeout(() => {
+                showDemoRecordingBtn.value = true;
+                requestAnimationFrame(() => { demoRecordingBtnVisible.value = true; });
+            }, 2000);
+        }
     }
 });
 
@@ -499,6 +538,7 @@ onUnmounted(() => {
     window.removeEventListener('beforeunload', onBeforeUnload);
     clearInterval(timer);
     clearInterval(chunkTimer);
+    clearTimeout(demoRecordingTimer);
     if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
     }

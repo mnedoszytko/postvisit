@@ -1,7 +1,10 @@
 <template>
   <div
     :class="[
-      'fixed inset-y-0 right-0 w-full sm:w-96 bg-white border-l shadow-xl z-50 flex flex-col transition-all duration-500',
+      'bg-white flex flex-col transition-all duration-500',
+      embedded
+        ? 'w-full h-full rounded-2xl border shadow-sm'
+        : 'fixed inset-y-0 right-0 w-full sm:w-96 border-l shadow-xl z-50',
       highlight ? 'border-emerald-400 shadow-emerald-200/50 ring-2 ring-emerald-300' : 'border-gray-200'
     ]"
   >
@@ -175,6 +178,7 @@ const props = defineProps({
     visitId: { type: String, required: true },
     initialContext: { type: String, default: '' },
     highlight: { type: Boolean, default: false },
+    embedded: { type: Boolean, default: false },
 });
 
 defineEmits(['close']);
@@ -239,6 +243,7 @@ const defaultSuggestions = [
     'Explain my medication and side effects',
     'What should I watch out for at home?',
     'When should I call my doctor?',
+    'Can I drink alcohol with my medication?',
 ];
 
 const suggestedQuestions = computed(() => {

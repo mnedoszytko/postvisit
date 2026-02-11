@@ -145,6 +145,7 @@ Route::prefix('v1')->group(function () {
         // ----- Module 7: Doctor Dashboard (doctor role required) -----
         Route::prefix('doctor')->middleware('role:doctor,admin')->group(function () {
             Route::get('dashboard', [DoctorController::class, 'dashboard']);
+            Route::get('alerts', [DoctorController::class, 'alerts']);
             Route::get('patients', [DoctorController::class, 'patients']);
             Route::get('patients/{patient}', [DoctorController::class, 'patientDetail']);
             Route::get('patients/{patient}/visits', [DoctorController::class, 'patientVisits']);

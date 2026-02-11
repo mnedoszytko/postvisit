@@ -152,12 +152,12 @@
     </header>
 
     <!-- Main content -->
-    <main class="max-w-4xl mx-auto px-4 py-6">
+    <main :class="[wide ? 'max-w-7xl' : 'max-w-4xl', 'mx-auto px-4 py-6']">
       <slot />
     </main>
 
     <!-- Disclaimer footer -->
-    <footer class="max-w-4xl mx-auto px-4 py-4 text-center">
+    <footer :class="[wide ? 'max-w-7xl' : 'max-w-4xl', 'mx-auto px-4 py-4 text-center']">
       <p class="text-xs text-gray-400 leading-relaxed">
         All clinical scenarios, patient data, and medical records displayed in this application are entirely fictional,
         created for demonstration purposes only, and do not depict any real person or actual medical encounter.
@@ -170,6 +170,10 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
+
+defineProps({
+    wide: { type: Boolean, default: false },
+});
 
 const auth = useAuthStore();
 const router = useRouter();
