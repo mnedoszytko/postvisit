@@ -77,6 +77,11 @@ const routes = [
         name: 'demo-mode',
         component: DemoMode,
     },
+    {
+        path: '/medical-lookup',
+        name: 'medical-lookup',
+        component: () => import('@/views/MedicalLookupDemo.vue'),
+    },
 ];
 
 const router = createRouter({
