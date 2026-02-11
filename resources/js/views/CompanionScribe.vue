@@ -229,7 +229,8 @@ async function useDemoTranscript() {
         const visitId = visitRes.data.data.id;
 
         await api.post(`/visits/${visitId}/transcript`, {
-            raw_transcript: '[Demo transcript — loaded from seed data]',
+            use_demo_transcript: true,
+            raw_transcript: 'demo',
             source_type: 'ambient_device',
             patient_consent_given: true,
             process: true,

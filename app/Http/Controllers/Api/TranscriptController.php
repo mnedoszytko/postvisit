@@ -18,7 +18,8 @@ class TranscriptController extends Controller
     public function store(Request $request, Visit $visit): JsonResponse
     {
         $validated = $request->validate([
-            'raw_transcript' => ['required', 'string'],
+            'raw_transcript' => ['required_without:use_demo_transcript', 'string'],
+            'use_demo_transcript' => ['nullable', 'boolean'],
             'source_type' => ['required', 'in:ambient_phone,ambient_device,manual_upload'],
             'stt_provider' => ['nullable', 'string'],
             'audio_duration_seconds' => ['nullable', 'integer'],
@@ -26,8 +27,17 @@ class TranscriptController extends Controller
             'process' => ['nullable', 'boolean'],
         ]);
 
+        if ($request->boolean('use_demo_transcript')) {
+            $demoPath = database_path('../demo/transcript.txt');
+            $validated['raw_transcript'] = file_exists($demoPath)
+                ? file_get_contents($demoPath)
+                : $validated['raw_transcript'] ?? 'Demo transcript not found';
+            $validated['audio_duration_seconds'] = 1590;
+            $validated['stt_provider'] = 'whisper';
+        }
+
         $shouldProcess = $validated['process'] ?? false;
-        unset($validated['process']);
+        unset($validated['process'], $validated['use_demo_transcript']);
 
         $validated['visit_id'] = $visit->id;
         $validated['patient_id'] = $visit->patient_id;
