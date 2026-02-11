@@ -28,6 +28,9 @@
       <!-- Weight Monitoring Chart -->
       <WeightChart v-if="weightObservations.length >= 2" :weights="weightObservations" />
 
+      <!-- Blood Pressure Monitoring Chart -->
+      <BloodPressureChart v-if="bpReadings.length >= 2" :readings="bpReadings" />
+
       <!-- Visit history -->
       <section>
         <h2 class="text-lg font-semibold text-gray-800 mb-3">Visit History</h2>
@@ -191,6 +194,7 @@ import { useRoute } from 'vue-router';
 import { useApi } from '@/composables/useApi';
 import DoctorLayout from '@/layouts/DoctorLayout.vue';
 import WeightChart from '@/components/WeightChart.vue';
+import BloodPressureChart from '@/components/BloodPressureChart.vue';
 
 const route = useRoute();
 const api = useApi();
@@ -198,9 +202,13 @@ const api = useApi();
 const patient = ref(null);
 const visits = ref([]);
 const observations = ref([]);
+const bpObservations = ref([]);
 
 const weightObservations = computed(() => {
   return observations.value.filter(o => o.code === '29463-7');
+});
+const bpReadings = computed(() => {
+  return bpObservations.value.filter(o => o.code === '85354-9');
 });
 const chatSessions = ref([]);
 const engagement = ref(null);
@@ -228,18 +236,20 @@ const activeConditions = computed(() => {
 
 onMounted(async () => {
     try {
-        const [patientRes, visitsRes, engagementRes, chatAuditRes, obsRes] = await Promise.all([
+        const [patientRes, visitsRes, engagementRes, chatAuditRes, obsRes, bpRes] = await Promise.all([
             api.get(`/doctor/patients/${route.params.id}`),
             api.get(`/doctor/patients/${route.params.id}/visits`),
             api.get(`/doctor/patients/${route.params.id}/engagement`),
             api.get(`/doctor/patients/${route.params.id}/chat-audit`),
             api.get(`/doctor/patients/${route.params.id}/observations?code=29463-7`),
+            api.get(`/doctor/patients/${route.params.id}/observations?code=85354-9`),
         ]);
         patient.value = patientRes.data.data;
         visits.value = visitsRes.data.data;
         engagement.value = engagementRes.data.data;
         chatSessions.value = chatAuditRes.data.data;
         observations.value = obsRes.data.data;
+        bpObservations.value = bpRes.data.data;
     } catch {
         // Handled by API interceptor
     }

@@ -559,6 +559,44 @@ class DemoSeeder extends Seeder
             ]);
         }
 
+        // 6q. Blood Pressure series (HTN monitoring scenario)
+        $bpSeries = [
+            ['days_ago' => 9, 'sys' => 142, 'dia' => 90, 'interp' => 'H', 'stage' => 'stage_2'],
+            ['days_ago' => 8, 'sys' => 138, 'dia' => 88, 'interp' => 'H', 'stage' => 'stage_1'],
+            ['days_ago' => 7, 'sys' => 135, 'dia' => 86, 'interp' => 'H', 'stage' => 'stage_1'],
+            ['days_ago' => 6, 'sys' => 132, 'dia' => 84, 'interp' => 'H', 'stage' => 'stage_1'],
+            ['days_ago' => 5, 'sys' => 128, 'dia' => 82, 'interp' => 'N', 'stage' => 'elevated'],
+            ['days_ago' => 4, 'sys' => 136, 'dia' => 87, 'interp' => 'H', 'stage' => 'stage_1'],
+            ['days_ago' => 3, 'sys' => 125, 'dia' => 80, 'interp' => 'N', 'stage' => 'elevated'],
+            ['days_ago' => 2, 'sys' => 122, 'dia' => 78, 'interp' => 'N', 'stage' => 'normal'],
+            ['days_ago' => 1, 'sys' => 130, 'dia' => 84, 'interp' => 'H', 'stage' => 'stage_1'],
+        ];
+
+        foreach ($bpSeries as $bp) {
+            Observation::create([
+                'fhir_observation_id' => 'obs-bp-' . Str::uuid(),
+                'patient_id' => $patient->id,
+                'visit_id' => $visit->id,
+                'practitioner_id' => $practitioner->id,
+                'code_system' => 'LOINC',
+                'code' => '85354-9',
+                'code_display' => 'Blood pressure panel',
+                'category' => 'vital-signs',
+                'status' => 'final',
+                'value_type' => 'string',
+                'value_string' => "{$bp['sys']}/{$bp['dia']} mmHg",
+                'interpretation' => $bp['interp'],
+                'effective_date' => now()->subDays($bp['days_ago'])->toDateString(),
+                'issued_at' => now()->subDays($bp['days_ago']),
+                'specialty_data' => [
+                    'systolic' => ['value' => $bp['sys'], 'unit' => 'mmHg', 'code' => '8480-6'],
+                    'diastolic' => ['value' => $bp['dia'], 'unit' => 'mmHg', 'code' => '8462-4'],
+                    'htn_stage' => $bp['stage'],
+                ],
+                'created_by' => $doctorUser->id,
+            ]);
+        }
+
         // 7. Condition: PVCs
         Condition::create([
             'fhir_condition_id' => 'condition-'.Str::uuid(),
