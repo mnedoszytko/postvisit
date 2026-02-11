@@ -19,8 +19,11 @@ class DoctorTest extends TestCase
     use RefreshDatabase;
 
     private User $doctorUser;
+
     private Practitioner $practitioner;
+
     private Organization $organization;
+
     private Patient $patient;
 
     protected function setUp(): void
@@ -64,6 +67,50 @@ class DoctorTest extends TestCase
 
         $response->assertOk()
             ->assertJsonCount(1, 'data');
+    }
+
+    public function test_doctor_can_search_patients_by_name(): void
+    {
+        $patient2 = Patient::factory()->create(['first_name' => 'Maria', 'last_name' => 'Santos']);
+        $patient3 = Patient::factory()->create(['first_name' => 'James', 'last_name' => 'Williams']);
+
+        Visit::factory()->create([
+            'patient_id' => $this->patient->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+        ]);
+        Visit::factory()->create([
+            'patient_id' => $patient2->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+        ]);
+        Visit::factory()->create([
+            'patient_id' => $patient3->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+        ]);
+
+        // Search by first name (case-insensitive)
+        $response = $this->actingAs($this->doctorUser)->getJson('/api/v1/doctor/patients?search=maria');
+        $response->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.first_name', 'Maria');
+
+        // Search by last name (case-insensitive)
+        $response = $this->actingAs($this->doctorUser)->getJson('/api/v1/doctor/patients?search=Williams');
+        $response->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.last_name', 'Williams');
+
+        // Search with no match returns empty
+        $response = $this->actingAs($this->doctorUser)->getJson('/api/v1/doctor/patients?search=nonexistent');
+        $response->assertOk()
+            ->assertJsonCount(0, 'data');
+
+        // Empty search returns all patients
+        $response = $this->actingAs($this->doctorUser)->getJson('/api/v1/doctor/patients');
+        $response->assertOk()
+            ->assertJsonCount(3, 'data');
     }
 
     public function test_doctor_can_view_patient_detail(): void

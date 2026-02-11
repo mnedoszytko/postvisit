@@ -58,10 +58,18 @@ class DoctorController extends Controller
             ->distinct('patient_id')
             ->pluck('patient_id');
 
-        $patients = Patient::whereIn('id', $patientIds)
-            ->withCount('visits')
-            ->orderBy('last_name')
-            ->get();
+        $query = Patient::whereIn('id', $patientIds)
+            ->withCount('visits');
+
+        if ($search = $request->query('search')) {
+            $term = '%'.strtolower($search).'%';
+            $query->where(function ($q) use ($term) {
+                $q->whereRaw('LOWER(first_name) LIKE ?', [$term])
+                    ->orWhereRaw('LOWER(last_name) LIKE ?', [$term]);
+            });
+        }
+
+        $patients = $query->orderBy('last_name')->get();
 
         return response()->json(['data' => $patients]);
     }
@@ -151,7 +159,7 @@ class DoctorController extends Controller
             'user_id' => $message->user_id,
             'visit_id' => $message->visit_id,
             'type' => 'doctor_reply',
-            'title' => 'Reply from Dr. ' . $request->user()->name,
+            'title' => 'Reply from Dr. '.$request->user()->name,
             'body' => $validated['body'],
             'data' => ['original_notification_id' => $message->id],
         ]);

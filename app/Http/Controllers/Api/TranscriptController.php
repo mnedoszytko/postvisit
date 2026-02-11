@@ -26,7 +26,7 @@ class TranscriptController extends Controller
             $contents = Storage::disk('local')->get($storagePath);
             $ext = pathinfo($storagePath, PATHINFO_EXTENSION);
             $timestamp = now()->format('Ymd_His');
-            $backupName = "{$visit->id}/{$timestamp}" . ($label ? "_{$label}" : '') . ".{$ext}";
+            $backupName = "{$visit->id}/{$timestamp}".($label ? "_{$label}" : '').".{$ext}";
             Storage::disk('audio_backup')->put($backupName, $contents);
         } catch (\Throwable $e) {
             Log::warning('Audio backup failed', ['path' => $storagePath, 'error' => $e->getMessage()]);
@@ -158,13 +158,22 @@ class TranscriptController extends Controller
 
                 // Update visit reason from chief complaint if still default
                 $soap = $scribeResult['soap_note'] ?? [];
-                $chiefComplaint = $soap['subjective'] ?? null;
+                $chiefComplaint = $soap['chief_complaint'] ?? null;
                 if ($chiefComplaint && str_contains($visit->reason_for_visit ?? '', 'Companion Scribe')) {
                     $reason = strtok(trim($chiefComplaint), "\n");
                     if (strlen($reason) > 120) {
                         $reason = substr($reason, 0, 117).'...';
                     }
                     $visit->update(['reason_for_visit' => $reason]);
+                }
+
+                // Build plan text, appending current_medications if present
+                $planText = $soap['plan'] ?? null;
+                $medsText = $soap['current_medications'] ?? null;
+                if ($medsText && $planText) {
+                    $planText .= "\n\nCurrent Medications:\n".$medsText;
+                } elseif ($medsText && ! $planText) {
+                    $planText = "Current Medications:\n".$medsText;
                 }
 
                 VisitNote::updateOrCreate(
@@ -174,12 +183,12 @@ class TranscriptController extends Controller
                         'author_practitioner_id' => $transcript->visit->practitioner_id,
                         'composition_type' => 'progress_note',
                         'status' => 'preliminary',
-                        'chief_complaint' => $soap['subjective'] ?? null,
-                        'history_of_present_illness' => $soap['subjective'] ?? null,
+                        'chief_complaint' => $chiefComplaint,
+                        'history_of_present_illness' => $soap['history_of_present_illness'] ?? null,
                         'assessment' => $soap['assessment'] ?? null,
-                        'plan' => $soap['plan'] ?? null,
-                        'review_of_systems' => $soap['objective'] ?? null,
-                        'physical_exam' => $soap['objective'] ?? null,
+                        'plan' => $planText,
+                        'review_of_systems' => $soap['review_of_systems'] ?? null,
+                        'physical_exam' => $soap['physical_exam'] ?? null,
                     ]
                 );
 
@@ -265,7 +274,7 @@ class TranscriptController extends Controller
             'local'
         );
 
-        $this->backupAudio($storagePath, $visit, 'chunk' . $request->input('chunk_index'));
+        $this->backupAudio($storagePath, $visit, 'chunk'.$request->input('chunk_index'));
 
         return response()->json([
             'data' => [

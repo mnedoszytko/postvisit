@@ -283,9 +283,10 @@ async function uploadAll() {
             doc._analysisExpanded = false;
             documents.value.unshift(doc);
 
-            // Start polling if analysis is pending/processing
-            if (['pending', 'processing'].includes(doc._analysis_status) && ['image', 'pdf'].includes(doc.content_type)) {
-                startPolling(doc);
+            // Start polling using the reactive proxy (documents.value[0]) not the raw object
+            const reactiveDoc = documents.value[0];
+            if (['pending', 'processing'].includes(reactiveDoc._analysis_status) && ['image', 'pdf'].includes(reactiveDoc.content_type)) {
+                startPolling(reactiveDoc);
             }
         } catch {
             // Toast handled by api interceptor
@@ -403,14 +404,17 @@ async function fetchDocuments() {
             doc._analysis_status = doc.analysis_status || null;
             doc._analysis = doc.ai_analysis || null;
             doc._analysisExpanded = false;
+        });
 
-            // Resume polling for documents still being analyzed
+        // Assign first so Vue wraps items in reactive proxies
+        documents.value = docs;
+
+        // Resume polling using reactive proxy objects, not raw ones
+        documents.value.forEach(doc => {
             if (['pending', 'processing'].includes(doc._analysis_status) && ['image', 'pdf'].includes(doc.content_type)) {
                 startPolling(doc);
             }
         });
-
-        documents.value = docs;
     } catch {
         // Silent — documents will be empty
     }

@@ -44,7 +44,7 @@ class ProcessTranscriptJob implements ShouldQueue
             // Update visit reason from chief complaint if still default
             $visit = $this->transcript->visit;
             $soap = $scribeResult['soap_note'] ?? [];
-            $chiefComplaint = $soap['subjective'] ?? null;
+            $chiefComplaint = $soap['chief_complaint'] ?? $soap['subjective'] ?? null;
             if ($visit && $chiefComplaint && str_contains($visit->reason_for_visit ?? '', 'Companion Scribe')) {
                 // Extract first sentence as a concise reason
                 $reason = strtok(trim($chiefComplaint), "\n");
@@ -61,12 +61,12 @@ class ProcessTranscriptJob implements ShouldQueue
                     'author_practitioner_id' => $this->transcript->visit->practitioner_id,
                     'composition_type' => 'progress_note',
                     'status' => 'preliminary',
-                    'chief_complaint' => $soap['subjective'] ?? null,
-                    'history_of_present_illness' => $soap['subjective'] ?? null,
+                    'chief_complaint' => $soap['chief_complaint'] ?? $soap['subjective'] ?? null,
+                    'history_of_present_illness' => $soap['history_of_present_illness'] ?? $soap['subjective'] ?? null,
+                    'review_of_systems' => $soap['review_of_systems'] ?? null,
+                    'physical_exam' => $soap['physical_exam'] ?? $soap['objective'] ?? null,
                     'assessment' => $soap['assessment'] ?? null,
                     'plan' => $soap['plan'] ?? null,
-                    'review_of_systems' => $soap['objective'] ?? null,
-                    'physical_exam' => $soap['objective'] ?? null,
                 ]
             );
 

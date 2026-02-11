@@ -173,7 +173,7 @@ class ContextAssembler
         // Transcript
         if ($visit->transcript) {
             $transcript = $visit->transcript->clean_transcript ?? $visit->transcript->raw_transcript ?? '';
-            if ($transcript && $transcript !== 'PLACEHOLDER - Awaiting real transcript from Dr. Nedo') {
+            if ($transcript && ! str_starts_with($transcript, 'PLACEHOLDER')) {
                 $parts[] = "\nVisit Transcript:\n{$transcript}";
             }
         }

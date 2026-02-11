@@ -25,7 +25,7 @@ class DemoSeeder extends Seeder
     /**
      * Seed the database with a complete cardiology demo scenario.
      *
-     * Visit transcript and discharge notes BLOCKED -- awaiting Dr. Nedo input (Feb 11)
+     * Seeds complete cardiology demo with 3 patient scenarios.
      */
     public function run(): void
     {

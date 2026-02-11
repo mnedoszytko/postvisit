@@ -50,10 +50,13 @@ Return a JSON object with:
     "procedures": []
   },
   "soap_note": {
-    "subjective": "",
-    "objective": "",
-    "assessment": "",
-    "plan": ""
+    "chief_complaint": "Brief 1-2 sentence reason for visit",
+    "history_of_present_illness": "Detailed patient history, symptoms timeline, relevant medical/family/social history",
+    "review_of_systems": "Systematic review of symptoms by organ system (Constitutional, Cardiovascular, Respiratory, GI, etc.). NO medications, NO treatment plans here — only symptoms reported by the patient.",
+    "physical_exam": "ONLY physical examination findings: inspection, palpation, auscultation, vitals. NO medications, NO treatment plans here — only what the doctor observed/measured.",
+    "assessment": "Clinical assessment, diagnoses, impressions. NO medications here.",
+    "plan": "Treatment plan including ALL prescriptions, medication changes, lifestyle modifications, follow-up instructions, and tests ordered.",
+    "current_medications": "List of ALL medications discussed during the visit (name, dose, frequency, status: new/continued/changed/discontinued)"
   },
   "unclear_sections": []
 }
@@ -65,6 +68,15 @@ Return a JSON object with:
 - ALL structured output (extracted_entities, soap_note, unclear_sections) MUST be in English, regardless of the transcript language.
 - Translate medical findings, symptoms, and diagnoses into standard English medical terminology.
 - If a term has no direct English equivalent, keep the original with an English explanation in parentheses.
+
+## SOAP Section Separation (CRITICAL)
+
+Medications MUST ONLY appear in `plan` and `current_medications`. NEVER place medication names, dosages, or prescription details in:
+- `chief_complaint` — only the reason for visit
+- `history_of_present_illness` — patient history and symptoms only (mention of "patient takes X" for context is OK, but not dosing/prescribing details)
+- `review_of_systems` — only patient-reported symptoms by organ system
+- `physical_exam` — only physical findings (vitals, auscultation, inspection, palpation results)
+- `assessment` — only diagnoses and clinical impressions
 
 ## SOAP Note Formatting
 
