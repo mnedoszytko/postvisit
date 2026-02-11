@@ -15,6 +15,7 @@ class TermExtractor
         'physical_exam',
         'assessment',
         'plan',
+        'follow_up',
     ];
 
     public function __construct(
