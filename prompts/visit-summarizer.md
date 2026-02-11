@@ -55,6 +55,10 @@ Generate a markdown-formatted summary with these sections:
 Tap on any section above to learn more, or ask me anything about your visit.
 ```
 
+## Language Policy
+
+- Always generate the summary in English, regardless of the source transcript language.
+
 ## Tone
 
 - Empathetic but not patronizing

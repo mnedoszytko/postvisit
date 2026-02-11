@@ -33,7 +33,6 @@ class WhisperProvider implements SpeechToTextProvider
             ->attach('file', file_get_contents($audioPath), basename($audioPath))
             ->post($this->apiUrl, [
                 'model' => $this->model,
-                'language' => 'en',
                 'response_format' => 'text',
             ]);
 
