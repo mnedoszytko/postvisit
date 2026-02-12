@@ -53,7 +53,7 @@ class DemoSeeder extends Seeder
         // 2. Practitioner
         $practitioner = Practitioner::create([
             'fhir_practitioner_id' => 'practitioner-'.Str::uuid(),
-            'first_name' => 'Michael',
+            'first_name' => 'Michał',
             'last_name' => 'Nedoszytko',
             'email' => 'doctor@demo.postvisit.ai',
             'npi' => '1234567890',
@@ -93,7 +93,7 @@ class DemoSeeder extends Seeder
 
         // 4. Users
         $doctorUser = User::create([
-            'name' => 'Dr. Michael Nedoszytko',
+            'name' => 'Dr. Michał Nedoszytko',
             'email' => 'doctor@demo.postvisit.ai',
             'password' => 'password',
             'role' => 'doctor',

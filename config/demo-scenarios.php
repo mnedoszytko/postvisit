@@ -14,9 +14,9 @@ return [
     */
 
     'doctor' => [
-        'name' => 'Dr. Michael Nedoszytko',
+        'name' => 'Dr. Michał Nedoszytko',
         'email' => 'doctor@demo.postvisit.ai',
-        'first_name' => 'Michael',
+        'first_name' => 'Michał',
         'last_name' => 'Nedoszytko',
         'npi' => '1234567890',
         'license_number' => 'CA-CARD-2024-001',
