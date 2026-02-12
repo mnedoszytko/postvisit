@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'bg-white flex flex-col transition-all duration-500',
+      'bg-white flex flex-col transition-all duration-500 relative',
       embedded
         ? 'w-full h-full rounded-2xl border shadow-sm'
         : 'fixed inset-y-0 right-0 w-full sm:w-96 border-l shadow-xl z-50',
@@ -22,12 +22,29 @@
           <p v-else class="text-[10px] text-gray-400">Ask anything about your visit</p>
         </div>
       </div>
-      <button
-        class="text-gray-400 hover:text-gray-600 transition-colors text-xl leading-none"
-        @click="$emit('close')"
-      >
-        &times;
-      </button>
+      <div class="flex items-center gap-1">
+        <button
+          v-if="embedded"
+          class="text-gray-400 hover:text-emerald-600 transition-colors p-1 rounded-lg hover:bg-emerald-50"
+          :title="maximized ? 'Restore chat size' : 'Maximize chat'"
+          @click="$emit('toggle-maximize')"
+        >
+          <!-- Maximize icon -->
+          <svg v-if="!maximized" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+          </svg>
+          <!-- Restore icon -->
+          <svg v-else class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+          </svg>
+        </button>
+        <button
+          class="text-gray-400 hover:text-gray-600 transition-colors text-xl leading-none p-1"
+          @click="$emit('close')"
+        >
+          &times;
+        </button>
+      </div>
     </div>
 
     <!-- Welcome message when empty -->
@@ -45,6 +62,16 @@
         {{ initialContext ? `Ask me anything about your ${initialContext.toLowerCase()}.` : 'I have the full context of your visit. Ask me anything about your diagnosis, medications, or next steps.' }}
       </p>
       <div class="space-y-2 w-full">
+        <div class="flex items-center gap-1.5 mb-1 px-1">
+          <span
+            class="text-[10px] font-medium px-2 py-0.5 rounded-full"
+            :class="suggestionSource.isDefault
+              ? 'bg-gray-100 text-gray-500'
+              : 'bg-emerald-50 text-emerald-600'"
+          >
+            {{ suggestionLabel }}
+          </span>
+        </div>
         <button
           v-for="q in suggestedQuestions"
           :key="q"
@@ -68,7 +95,7 @@
             'rounded-2xl px-4 py-3 text-sm',
             msg.role === 'user'
               ? 'bg-emerald-600 text-white'
-              : 'bg-gray-100 text-gray-800'
+              : 'bg-amber-50 text-gray-800 border border-amber-100'
           ]"
         >
           <!-- Thinking indicator (before content arrives) -->
@@ -88,7 +115,10 @@
           <div v-else-if="msg.role === 'assistant'" class="prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
 
           <!-- User message -->
-          <p v-else>{{ msg.content }}</p>
+          <template v-else>
+            <span v-if="extractContext(msg.content)" class="inline-block text-[10px] font-medium bg-white/20 rounded px-1.5 py-0.5 mb-1 mr-1">{{ extractContext(msg.content) }}</span>
+            <p class="inline">{{ stripContext(msg.content) }}</p>
+          </template>
         </div>
         <!-- Source chips for completed assistant messages -->
         <SourceChips
@@ -97,10 +127,10 @@
           class="mt-1.5"
           @source-click="handleSourceClick"
         />
-        <!-- Powered by badge for completed assistant messages -->
+        <!-- Powered by badge + share actions for completed assistant messages -->
         <div
           v-if="msg.role === 'assistant' && !msg.streaming && msg.content"
-          class="mt-1.5 flex items-center gap-1"
+          class="mt-1.5 flex items-center gap-2"
         >
           <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 text-[9px] font-medium border border-amber-200/50">
             <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -108,6 +138,39 @@
             </svg>
             Powered by Opus 4.6
           </span>
+          <div class="flex items-center gap-0.5 ml-auto">
+            <!-- Copy -->
+            <button
+              class="p-1 rounded text-gray-300 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+              title="Copy response"
+              @click="copyResponse(msg)"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+              </svg>
+            </button>
+            <!-- Print -->
+            <button
+              class="p-1 rounded text-gray-300 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+              title="Print response"
+              @click="printResponse(msg)"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
+              </svg>
+            </button>
+            <!-- Share (native) -->
+            <button
+              v-if="canShare"
+              class="p-1 rounded text-gray-300 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+              title="Share response"
+              @click="shareResponse(msg)"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -128,6 +191,13 @@
         </div>
       </div>
     </div>
+
+    <!-- Copy toast -->
+    <Transition name="fade">
+      <div v-if="copyToast" class="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 bg-gray-900 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-lg">
+        {{ copyToast }}
+      </div>
+    </Transition>
 
     <!-- Input -->
     <form class="border-t border-gray-200 p-3 flex items-end gap-2 shrink-0" @submit.prevent="send">
@@ -158,11 +228,11 @@
         >
           <div
             v-if="showContextMenu"
-            class="absolute bottom-12 left-0 w-64 bg-white rounded-xl shadow-lg border border-gray-200 p-3 z-50"
+            class="absolute bottom-12 left-0 w-60 bg-white rounded-xl shadow-lg border border-gray-200 p-3 z-50"
           >
             <div class="flex items-center justify-between mb-2">
               <span class="text-xs font-semibold text-gray-700">Context Sources</span>
-              <span class="text-[10px] text-gray-400 font-mono">{{ contextTokenEstimate }}</span>
+              <span class="text-[10px] text-gray-400">{{ selectedSources.length }}/{{ contextSources.length }}</span>
             </div>
             <div class="space-y-1">
               <label
@@ -181,27 +251,9 @@
                   <div class="text-sm font-medium text-gray-800">{{ src.label }}</div>
                   <div class="text-[10px] text-gray-400">{{ src.description }}</div>
                 </div>
-                <span class="text-[10px] text-gray-400 font-mono shrink-0">{{ src.tokens }}</span>
               </label>
             </div>
-            <!-- Token usage bar -->
-            <div class="mt-2.5 pt-2 border-t border-gray-100">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-[10px] text-gray-500">Context loaded</span>
-                <span class="text-[10px] font-mono font-medium" :class="contextPercentage > 50 ? 'text-emerald-600' : 'text-gray-400'">
-                  {{ contextTokenEstimate }} / 1M tokens
-                </span>
-              </div>
-              <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  class="h-full rounded-full transition-all duration-500 ease-out"
-                  :class="contextPercentage > 50 ? 'bg-emerald-500' : 'bg-emerald-400'"
-                  :style="{ width: Math.max(contextPercentage, 1) + '%' }"
-                ></div>
-              </div>
-              <p class="text-[9px] text-gray-400 mt-1">Powered by Claude Opus 4.6 — 1M token context window</p>
-            </div>
-            <div class="mt-2 flex justify-between">
+            <div class="mt-2 pt-2 border-t border-gray-100 flex justify-between">
               <button
                 type="button"
                 class="text-[11px] text-emerald-600 hover:text-emerald-700 font-medium"
@@ -267,6 +319,17 @@ function stripSources(text) {
     return text.replace(/\[sources\][\s\S]*?\[\/sources\]/g, '').trim();
 }
 
+function extractContext(text) {
+    if (!text) return '';
+    const match = text.match(/^\[Context:\s*(.*?)\]\s*/);
+    return match ? match[1] : '';
+}
+
+function stripContext(text) {
+    if (!text) return text;
+    return text.replace(/^\[Context:\s*.*?\]\s*\n*/, '').trim();
+}
+
 function parseSources(text) {
     if (!text) return [];
     const match = text.match(/\[sources\]([\s\S]*?)\[\/sources\]/);
@@ -292,9 +355,10 @@ const props = defineProps({
     initialContext: { type: String, default: '' },
     highlight: { type: Boolean, default: false },
     embedded: { type: Boolean, default: false },
+    maximized: { type: Boolean, default: false },
 });
 
-defineEmits(['close']);
+defineEmits(['close', 'toggle-maximize']);
 
 const router = useRouter();
 const chatStore = useChatStore();
@@ -305,33 +369,56 @@ const showContextMenu = ref(false);
 const sendButton = ref(null);
 const sendGlow = ref(false);
 const inlineSuggestions = ref([]);
+const pendingContext = ref('');
 
 const contextSources = reactive([
-    { id: 'visit', label: 'Visit Notes', shortLabel: 'Visit', icon: '📋', description: 'SOAP notes, transcript', tokens: '~12K', selected: true },
-    { id: 'health', label: 'Health Data', shortLabel: 'Health', icon: '❤️', description: 'Biometrics, vitals, labs, allergies, device data', tokens: '~8K', selected: true },
-    { id: 'medications', label: 'Medications', shortLabel: 'Meds', icon: '💊', description: 'Prescriptions, FDA data', tokens: '~6K', selected: true },
-    { id: 'references', label: 'Medical References', shortLabel: 'Refs', icon: '📚', description: 'Guidelines, conditions', tokens: '~45K', selected: true },
-    { id: 'documents', label: 'Documents', shortLabel: 'Docs', icon: '📄', description: 'Uploaded files, reports', tokens: '~15K', selected: false },
+    { id: 'visit', label: 'Visit Notes', icon: '📋', description: 'SOAP notes, transcript', selected: true },
+    { id: 'health', label: 'Health Data', icon: '❤️', description: 'Biometrics, vitals, labs, device data', selected: true },
+    { id: 'medications', label: 'Medications', icon: '💊', description: 'Prescriptions, drug info', selected: true },
+    { id: 'references', label: 'Medical References', icon: '📚', description: 'Guidelines, conditions', selected: true },
+    { id: 'documents', label: 'Documents', icon: '📄', description: 'Uploaded files, reports', selected: false },
 ]);
 
+// Map context keys to which sources should be prioritized (selected)
+const contextSourcePresets = {
+    '': ['visit', 'health', 'medications', 'references'], // General — all main
+    'visit': ['visit', 'health', 'medications'],
+    'health': ['health', 'medications', 'documents'],
+    'health record': ['health', 'medications', 'documents'],
+    'vitals': ['health'],
+    'lab': ['health', 'documents'],
+    'apple watch': ['health'],
+    'reference': ['references', 'medications'],
+    'condition:': ['references', 'medications', 'health'],
+    'medication:': ['medications', 'references'],
+    'document:': ['documents', 'health'],
+    // SOAP sections → visit focused
+    'chief_complaint': ['visit'],
+    'history_of_present_illness': ['visit'],
+    'review_of_systems': ['visit', 'health'],
+    'physical_exam': ['visit', 'health'],
+    'assessment': ['visit', 'references'],
+    'plan': ['visit', 'medications', 'references'],
+    'follow_up': ['visit', 'medications'],
+};
+
+function applySourcePreset(context) {
+    const lower = (context || '').toLowerCase();
+    // Find matching preset: exact → prefix → fallback to all
+    let preset = contextSourcePresets[lower];
+    if (!preset) {
+        for (const key of Object.keys(contextSourcePresets)) {
+            if (key.endsWith(':') && lower.startsWith(key)) {
+                preset = contextSourcePresets[key];
+                break;
+            }
+        }
+    }
+    if (!preset) preset = contextSourcePresets[''];
+    contextSources.forEach(s => { s.selected = preset.includes(s.id); });
+}
+
 const selectedSources = computed(() => contextSources.filter(s => s.selected));
-
-const contextTokensRaw = computed(() => {
-    return selectedSources.value.reduce((sum, s) => {
-        const num = parseInt(s.tokens.replace(/[^0-9]/g, ''));
-        return sum + (num * 1000);
-    }, 0);
-});
-
-const contextTokenEstimate = computed(() => {
-    const total = contextTokensRaw.value;
-    if (total >= 1000000) return `${(total / 1000000).toFixed(1)}M`;
-    return `${Math.round(total / 1000)}K`;
-});
-
-const contextPercentage = computed(() => {
-    return (contextTokensRaw.value / 1000000) * 100;
-});
 
 function selectAllSources() {
     contextSources.forEach(s => s.selected = true);
@@ -343,47 +430,71 @@ const lastUserMessage = computed(() => {
 });
 
 const contextSuggestions = {
+    // Visit-level context (default when entering a visit)
+    'visit': [
+        'Summarize this visit for me in simple terms',
+        'What are the key takeaways from this visit?',
+        'What should I do before my next appointment?',
+        'Explain my diagnosis and treatment plan',
+        'What medications were prescribed and why?',
+        'What warning signs should I watch for?',
+        'What questions should I ask at my follow-up?',
+    ],
     'Chief Complaint': [
         'Why did the doctor focus on this issue?',
         'Is this something I should be worried about?',
         'How is this related to my other conditions?',
         'What questions should I ask at my next visit?',
+        'What could happen if this issue is not treated?',
+        'How common is this complaint?',
     ],
     'History of Present Illness': [
         'Can you summarize my history in simpler terms?',
         'How has my condition progressed?',
         'What factors might be causing my symptoms?',
         'What does this history mean for my treatment?',
+        'Has anything in my history changed since my last visit?',
+        'What patterns should I be aware of?',
     ],
     'Reported Symptoms': [
         'Which of these symptoms are most important?',
         'Are any of these symptoms related to each other?',
         'When should I be concerned about these symptoms?',
         'What can I do to manage these symptoms at home?',
+        'Are these symptoms typical for my condition?',
+        'Should I keep a symptom diary?',
     ],
     'Physical Examination': [
         'What did the doctor find during the exam?',
         'Are my vital signs normal?',
         'What do these physical findings mean?',
         'Should I be concerned about any of these results?',
+        'How do my results compare to the last exam?',
+        'What does the doctor look for during this type of exam?',
     ],
     'Assessment': [
         'What does my diagnosis mean in simple terms?',
         'How serious is this condition?',
         'What causes this condition?',
         'What is the typical outlook for this diagnosis?',
+        'Are there different stages of this condition?',
+        'How will this condition affect my daily life?',
     ],
     'Plan': [
         'Can you explain each step of my treatment plan?',
         'What happens if I miss a step in the plan?',
         'How long will this treatment take?',
         'What should I prioritize first?',
+        'Are there alternative treatment options?',
+        'What lifestyle changes does this plan require?',
     ],
     'Follow-up': [
         'When is my next appointment?',
         'What should I prepare for the follow-up?',
         'What tests should be done before my next visit?',
         'What progress should I expect by then?',
+        'Can I reschedule if I feel better?',
+        'What should I track between now and the follow-up?',
     ],
     // Health Profile sections (matched by keyword)
     'biometrics': [
@@ -391,18 +502,24 @@ const contextSuggestions = {
         'Is my weight healthy for my height?',
         'What should my target weight be?',
         'How does my blood type affect my health?',
+        'How are my biometrics trending over time?',
+        'What biometric targets should I aim for?',
     ],
     'diagnos': [
         'What does my diagnosis mean in simple terms?',
         'How serious is this condition?',
         'What lifestyle changes should I make?',
         'What are the treatment options?',
+        'How is this condition typically monitored?',
+        'What are the early warning signs of worsening?',
     ],
     'allerg': [
         'What should I avoid with my allergies?',
         'What are the symptoms of an allergic reaction?',
         'Should I carry an EpiPen?',
         'Can my allergies change over time?',
+        'How do I manage allergies when traveling?',
+        'Are there any cross-reactivities I should know about?',
     ],
     'visit': [
         'What happened during my last visit?',
@@ -410,12 +527,15 @@ const contextSuggestions = {
         'What was the conclusion?',
         'Summarize my last visit',
         'Give me the most important points',
+        'What follow-up actions were recommended?',
     ],
     'medication': [
         'Explain my medication and side effects',
         'Can I drink alcohol with my medication?',
         'What happens if I miss a dose?',
         'Are there any food interactions?',
+        'How long do I need to take this medication?',
+        'What should I do if I experience side effects?',
     ],
     // Vitals tab sections
     'blood pressure': [
@@ -423,36 +543,58 @@ const contextSuggestions = {
         'What do my BP trends show?',
         'Should I be concerned about my blood pressure readings?',
         'How can I improve my blood pressure?',
+        'What foods help lower blood pressure?',
+        'When should I measure my blood pressure at home?',
     ],
     'heart rate': [
         'Is my heart rate healthy?',
         'What do my heart rate trends mean?',
         'Should I be concerned about my resting heart rate?',
         'What affects heart rate?',
+        'What is a normal heart rate range for my age?',
+        'How does exercise affect my heart rate trends?',
     ],
     'heart rate variability': [
         'What does my HRV data mean?',
         'Is my HRV normal for my age?',
         'How can I improve my HRV?',
         'What does low HRV indicate?',
+        'How does stress affect my HRV?',
+        'What lifestyle changes improve HRV?',
     ],
     'weight': [
         'Is my weight trend concerning?',
         'What does my weight change mean?',
         'Is my current BMI healthy?',
         'What should my target weight be?',
+        'How fast should I lose or gain weight?',
+        'What factors besides diet affect my weight?',
     ],
     'sleep': [
         'Am I getting enough sleep?',
         'What do my sleep patterns show?',
         'How can I improve my sleep quality?',
         'Is my deep sleep duration normal?',
+        'How does sleep affect my condition?',
+        'What sleep hygiene habits should I follow?',
     ],
     'apple watch': [
         'What does my Apple Watch data show?',
         'Are there any concerning patterns in my device data?',
         'How do my step counts compare to recommendations?',
         'What do my SpO2 readings mean?',
+        'Should I share this device data with my doctor?',
+        'What health metrics should I monitor daily?',
+    ],
+    // Health dashboard / patient record
+    'health': [
+        'Give me an overview of my health record',
+        'What are the key things in my medical history?',
+        'Are there any concerning trends in my health data?',
+        'What lab results should I pay attention to?',
+        'Summarize my current conditions and medications',
+        'What preventive screenings am I due for?',
+        'How has my health changed over time?',
     ],
     // Lab results
     'lab': [
@@ -460,6 +602,38 @@ const contextSuggestions = {
         'What do my lab trends show?',
         'Which results should I be concerned about?',
         'Explain my cholesterol levels',
+        'How often should these labs be repeated?',
+        'What can I do to improve my results?',
+    ],
+    // Clinical references (MH-13)
+    'reference': [
+        'What clinical guidelines apply to my condition?',
+        'Is this treatment supported by current evidence?',
+        'What do the latest studies say about my diagnosis?',
+        'Are there newer treatment approaches available?',
+        'What professional organizations published these guidelines?',
+        'How often are these guidelines updated?',
+        'Where can I find reliable information about my condition?',
+    ],
+    // Prefix-matched: condition-specific (MH-13)
+    'condition:': [
+        'What are the treatment guidelines for this condition?',
+        'What lifestyle changes help manage this condition?',
+        'How is this condition monitored over time?',
+        'Are there clinical trials for this condition?',
+        'What is the long-term outlook for this condition?',
+        'What are the most common complications?',
+        'When should I seek emergency care?',
+    ],
+    // Prefix-matched: medication-specific (MH-13)
+    'medication:': [
+        'What are the common side effects of this medication?',
+        'Are there known drug interactions I should watch for?',
+        'What is the recommended dosage schedule?',
+        'When should I contact my doctor about this medication?',
+        'How long until this medication takes effect?',
+        'Can I take this medication with food?',
+        'What happens if I stop taking this medication suddenly?',
     ],
 };
 
@@ -469,23 +643,109 @@ const defaultSuggestions = [
     'What should I watch out for at home?',
     'When should I call my doctor?',
     'Can I drink alcohol with my medication?',
+    'What lifestyle changes should I make?',
+    'What questions should I ask at my next visit?',
 ];
 
-const suggestedQuestions = computed(() => {
-    if (props.initialContext) {
-        // Exact match first (SOAP sections from VisitView)
-        if (contextSuggestions[props.initialContext]) {
-            return contextSuggestions[props.initialContext];
-        }
-        // Keyword match (Health Profile sections, etc.)
-        const lower = props.initialContext.toLowerCase();
-        for (const [key, suggestions] of Object.entries(contextSuggestions)) {
-            if (lower.includes(key.toLowerCase())) {
-                return suggestions;
-            }
+// Track previously shown suggestions to avoid repeats
+const shownSuggestions = ref(new Set());
+
+function pickRandom(pool, count) {
+    const available = pool.filter(q => !shownSuggestions.value.has(q));
+    const source = available.length >= count ? available : pool;
+    const shuffled = [...source].sort(() => Math.random() - 0.5);
+    const picked = shuffled.slice(0, count);
+    picked.forEach(q => shownSuggestions.value.add(q));
+    return picked;
+}
+
+// Aliases for context matching (e.g., "health record" → "health")
+const contextAliases = {
+    'health record': 'health',
+    'patient record': 'health',
+    'my health': 'health',
+    'medical library': 'reference',
+    'library': 'reference',
+};
+
+function findSuggestionsForContext(context) {
+    if (!context) return { pool: defaultSuggestions, isDefault: true };
+
+    const lower = context.toLowerCase();
+
+    // Check aliases first
+    const aliased = contextAliases[lower];
+    if (aliased && contextSuggestions[aliased]) {
+        return { pool: contextSuggestions[aliased], isDefault: false };
+    }
+
+    // Exact match (SOAP sections from VisitView, 'reference', 'health', etc.)
+    if (contextSuggestions[context]) {
+        return { pool: contextSuggestions[context], isDefault: false };
+    }
+    // Case-insensitive exact match
+    if (contextSuggestions[lower]) {
+        return { pool: contextSuggestions[lower], isDefault: false };
+    }
+
+    // Prefix match for 'condition:', 'medication:', 'document:' keys
+    for (const key of ['condition:', 'medication:', 'document:']) {
+        if (lower.startsWith(key)) {
+            return { pool: contextSuggestions[key] || defaultSuggestions, isDefault: false };
         }
     }
-    return defaultSuggestions;
+
+    // Keyword match (Health Profile sections, vitals, etc.)
+    for (const [key, suggestions] of Object.entries(contextSuggestions)) {
+        if (key.endsWith(':')) continue; // skip prefix keys in keyword match
+        if (lower.includes(key.toLowerCase())) {
+            return { pool: suggestions, isDefault: false };
+        }
+    }
+
+    return { pool: defaultSuggestions, isDefault: true };
+}
+
+const suggestionSource = computed(() => findSuggestionsForContext(props.initialContext));
+const suggestedQuestions = computed(() => pickRandom(suggestionSource.value.pool, 3));
+const contextLabelMap = {
+    'visit': 'Visit Summary',
+    'health': 'Patient Record',
+    'health record': 'Patient Record',
+    'reference': 'Reference',
+    'lab': 'Lab Results',
+    'vitals': 'Vitals',
+    'sleep': 'Sleep',
+    'weight': 'Weight',
+    'heart_rate': 'Heart Rate',
+    'hrv': 'HRV',
+    'apple watch': 'Apple Watch',
+};
+
+const suggestionLabel = computed(() => {
+    if (suggestionSource.value.isDefault) return 'General';
+    const ctx = (props.initialContext || '').toLowerCase();
+    // Check label map first
+    if (contextLabelMap[ctx]) return contextLabelMap[ctx];
+    // Prefix match: "condition: X" → "X", "medication: Y" → "Y"
+    for (const prefix of ['condition:', 'medication:', 'document:']) {
+        if (ctx.startsWith(prefix)) {
+            return props.initialContext.slice(prefix.length).trim();
+        }
+    }
+    // SOAP sections
+    const soapLabels = {
+        'chief_complaint': 'Chief Complaint',
+        'history_of_present_illness': 'History',
+        'review_of_systems': 'Review of Systems',
+        'physical_exam': 'Physical Exam',
+        'assessment': 'Assessment',
+        'plan': 'Plan',
+        'follow_up': 'Follow-up',
+    };
+    if (soapLabels[ctx]) return soapLabels[ctx];
+    // Fallback: use the raw context but capitalize
+    return props.initialContext || 'General';
 });
 
 function handleSourceClick(source) {
@@ -507,10 +767,17 @@ function sendQuestion(q) {
 
 async function send() {
     if (!message.value.trim()) return;
-    const text = message.value;
+    let text = message.value;
     message.value = '';
     showContextMenu.value = false;
     inlineSuggestions.value = [];
+
+    // Inject pending context into the message so the AI knows what we're asking about
+    if (pendingContext.value) {
+        text = `[Context: ${pendingContext.value}]\n\n${text}`;
+        pendingContext.value = '';
+    }
+
     const sources = selectedSources.value.map(s => s.id);
     await chatStore.sendMessage(props.visitId, text, sources);
     scrollToBottom();
@@ -536,17 +803,68 @@ function triggerSendGlow() {
     });
 }
 
-// When context changes while chat is already open, show inline suggestions (keep messages)
+// When context changes while chat is already open, sync sources + suggestions
 watch(() => props.initialContext, (newCtx) => {
-    if (newCtx && chatStore.messages.length > 0) {
-        // Show new suggestions inline at the bottom of the conversation
-        inlineSuggestions.value = suggestedQuestions.value;
-        message.value = '';
-        scrollToBottom();
+    if (newCtx) {
+        pendingContext.value = newCtx;
+        applySourcePreset(newCtx);
+
+        if (chatStore.messages.length > 0) {
+            const { pool } = findSuggestionsForContext(newCtx);
+            inlineSuggestions.value = pickRandom(pool, 3);
+            message.value = '';
+            scrollToBottom();
+        }
     }
 });
 
+// --- Share actions ---
+const copyToast = ref('');
+const canShare = typeof navigator !== 'undefined' && !!navigator.share;
+
+function getPlainText(msg) {
+    return stripSources(msg.content);
+}
+
+async function copyResponse(msg) {
+    try {
+        await navigator.clipboard.writeText(getPlainText(msg));
+        copyToast.value = 'Copied!';
+        setTimeout(() => { copyToast.value = ''; }, 2000);
+    } catch {
+        // fallback: select nothing
+    }
+}
+
+function printResponse(msg) {
+    const html = renderMarkdown(getPlainText(msg));
+    const win = window.open('', '_blank', 'width=700,height=900');
+    if (!win) return;
+    win.document.write(`<!DOCTYPE html><html><head><title>PostVisit AI Response</title>
+<style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;color:#1f2937;line-height:1.6}
+h1,h2,h3{margin-top:1.5em}ul,ol{padding-left:1.5em}code{background:#f3f4f6;padding:2px 6px;border-radius:4px;font-size:0.9em}
+.footer{margin-top:3em;padding-top:1em;border-top:1px solid #e5e7eb;font-size:0.75em;color:#9ca3af;text-align:center}</style></head>
+<body>${html}<div class="footer">Generated by PostVisit AI &middot; Powered by Claude Opus 4.6<br>This is an AI-generated summary and should not replace professional medical advice.</div></body></html>`);
+    win.document.close();
+    win.print();
+}
+
+async function shareResponse(msg) {
+    try {
+        await navigator.share({
+            title: 'PostVisit AI Analysis',
+            text: getPlainText(msg),
+        });
+    } catch {
+        // user cancelled or not supported
+    }
+}
+
 onMounted(() => {
     chatStore.clearMessages();
+    if (props.initialContext) {
+        pendingContext.value = props.initialContext;
+    }
+    applySourcePreset(props.initialContext);
 });
 </script>

@@ -56,7 +56,7 @@
                   </div>
                   <button
                     class="shrink-0 inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 transition-colors"
-                    @click="openGlobalChat(`Tell me about my diagnosis: ${cond.code_display}`)"
+                    @click="openGlobalChat(`condition: ${cond.code_display}`)"
                   >
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" /></svg>
                     Ask AI
@@ -100,7 +100,7 @@
                   </div>
                   <button
                     class="shrink-0 inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 transition-colors"
-                    @click="openGlobalChat(`Tell me about my medication: ${rx.medication?.display_name || rx.medication?.generic_name}`)"
+                    @click="openGlobalChat(`medication: ${rx.medication?.display_name || rx.medication?.generic_name}`)"
                   >
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" /></svg>
                     Ask AI
@@ -120,152 +120,149 @@
           </div>
 
           <!-- Medical References -->
-          <div v-if="references.length" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <div v-if="allReferences.length || showAddRefForm" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
             <div class="p-4 border-b border-gray-100">
-              <div class="flex items-center gap-2">
-                <span class="w-6 h-6 flex items-center justify-center rounded-lg bg-violet-50">
-                  <svg class="w-3.5 h-3.5 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 flex items-center justify-center rounded-lg bg-violet-50">
+                    <svg class="w-3.5 h-3.5 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    </svg>
+                  </span>
+                  <h2 class="font-semibold text-gray-800">Clinical References</h2>
+                  <span class="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">{{ allReferences.length }}</span>
+                </div>
+                <button
+                  class="inline-flex items-center gap-1 text-xs font-medium text-violet-600 hover:text-violet-700 px-2.5 py-1.5 rounded-lg hover:bg-violet-50 transition-colors"
+                  @click="showAddRefForm = !showAddRefForm"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
-                </span>
-                <h2 class="font-semibold text-gray-800">Clinical References</h2>
-                <span class="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">{{ references.length }}</span>
+                  Add Reference
+                </button>
               </div>
             </div>
+
+            <!-- Add Reference Form -->
+            <div v-if="showAddRefForm" class="p-4 border-b border-gray-100 bg-violet-50/30">
+              <form class="space-y-3" @submit.prevent="addCustomReference">
+                <div>
+                  <input
+                    v-model="newRef.title"
+                    type="text"
+                    placeholder="Title *"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
+                  />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <input
+                    v-model="newRef.authors"
+                    type="text"
+                    placeholder="Authors"
+                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
+                  />
+                  <input
+                    v-model="newRef.journal"
+                    type="text"
+                    placeholder="Journal / Source"
+                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
+                  />
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                  <input
+                    v-model="newRef.year"
+                    type="number"
+                    min="1900"
+                    max="2030"
+                    placeholder="Year"
+                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
+                  />
+                  <input
+                    v-model="newRef.url"
+                    type="url"
+                    placeholder="URL"
+                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
+                  />
+                  <select
+                    v-model="newRef.category"
+                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
+                  >
+                    <option value="">Type</option>
+                    <option value="guideline">Guideline</option>
+                    <option value="meta_analysis">Meta-analysis</option>
+                    <option value="review">Review</option>
+                  </select>
+                </div>
+                <div class="flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    class="px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors"
+                    @click="showAddRefForm = false; resetNewRef()"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    :disabled="!newRef.title?.trim()"
+                    class="px-4 py-1.5 bg-violet-600 text-white text-xs rounded-lg font-medium hover:bg-violet-700 transition-colors disabled:opacity-40"
+                  >
+                    Add
+                  </button>
+                </div>
+              </form>
+            </div>
+
             <div class="divide-y divide-gray-100">
-              <div v-for="ref in references" :key="ref.id" class="p-4">
+              <div v-for="r in allReferences" :key="r.id" class="p-4">
                 <div class="flex items-start gap-3">
                   <div class="min-w-0 flex-1">
-                    <p class="font-medium text-gray-900 text-sm">{{ ref.title }}</p>
-                    <p v-if="ref.authors" class="text-xs text-gray-500 mt-0.5">{{ ref.authors }}</p>
+                    <p class="font-medium text-gray-900 text-sm">{{ r.title }}</p>
+                    <p v-if="r.authors" class="text-xs text-gray-500 mt-0.5">{{ r.authors }}</p>
                     <div class="flex items-center gap-2 mt-1.5">
-                      <span v-if="ref.journal" class="text-xs text-gray-500 italic">{{ ref.journal }}</span>
-                      <span v-if="ref.year" class="text-xs text-gray-400">({{ ref.year }})</span>
-                      <span v-if="ref.verified" class="inline-flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                      <span v-if="r.journal" class="text-xs text-gray-500 italic">{{ r.journal }}</span>
+                      <span v-if="r.year" class="text-xs text-gray-400">({{ r.year }})</span>
+                      <span v-if="r.verified" class="inline-flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.403 12.652a3 3 0 010-5.304 3 3 0 00-3.75-3.751 3 3 0 00-5.305 0 3 3 0 00-3.751 3.75 3 3 0 000 5.305 3 3 0 003.75 3.751 3 3 0 005.305 0 3 3 0 003.751-3.75zm-2.546-4.46a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
                         PubMed Verified
                       </span>
-                      <span v-if="ref.category" class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{{ ref.category }}</span>
+                      <span v-if="r.category" class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{{ r.category }}</span>
+                      <span v-if="r._custom" class="text-xs bg-violet-100 text-violet-600 px-2 py-0.5 rounded-full">Custom</span>
                     </div>
                   </div>
-                  <a
-                    v-if="ref.url || ref.doi"
-                    :href="ref.url || `https://doi.org/${ref.doi}`"
-                    target="_blank"
-                    rel="noopener"
-                    class="shrink-0 text-xs text-blue-600 hover:text-blue-700 font-medium px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
-                  >
-                    View source
-                  </a>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <a
+                      v-if="r.url || r.doi"
+                      :href="r.url || `https://doi.org/${r.doi}`"
+                      target="_blank"
+                      rel="noopener"
+                      class="text-xs text-blue-600 hover:text-blue-700 font-medium px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+                    >
+                      View source
+                    </a>
+                    <button
+                      v-if="r._custom"
+                      class="p-1.5 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors"
+                      title="Remove reference"
+                      @click="removeCustomReference(r.id)"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-                <p v-if="ref.summary" class="text-sm text-gray-600 mt-2 leading-relaxed">{{ ref.summary }}</p>
+                <p v-if="r.summary" class="text-sm text-gray-600 mt-2 leading-relaxed">{{ r.summary }}</p>
               </div>
             </div>
           </div>
 
           <!-- Empty state -->
-          <div v-if="!conditions.length && !medications.length && !references.length" class="bg-white rounded-2xl border border-gray-200 p-8 text-center">
+          <div v-if="!conditions.length && !medications.length && !allReferences.length" class="bg-white rounded-2xl border border-gray-200 p-8 text-center">
             <p class="text-gray-500">No personalized references available yet. Complete a visit to see relevant medical information here.</p>
           </div>
         </template>
-      </div>
-
-      <!-- Tab: Ask (EBM) — OpenEvidence mockup -->
-      <div v-if="activeTab === 'ask'" class="space-y-4">
-        <!-- OpenEvidence powered search -->
-        <div class="bg-white rounded-2xl border border-gray-200 p-4">
-          <form class="space-y-3" @submit.prevent="askOpenEvidence">
-            <div class="relative">
-              <svg class="absolute left-3 top-3 w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-              </svg>
-              <input
-                v-model="oeQuery"
-                type="text"
-                placeholder="Ask a clinical question..."
-                class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-shadow"
-              />
-            </div>
-            <div class="flex items-center justify-between">
-              <p class="text-[11px] text-gray-400">Answers cross-referenced with your visit context and EBM sources</p>
-              <button
-                type="submit"
-                :disabled="oeLoading || !oeQuery?.trim()"
-                class="px-5 py-2 bg-indigo-600 text-white text-sm rounded-xl font-medium hover:bg-indigo-700 transition-colors disabled:opacity-40 shrink-0"
-              >
-                {{ oeLoading ? 'Searching...' : 'Ask' }}
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Suggested questions from visit context -->
-        <div v-if="!oeResult && !oeLoading" class="space-y-3">
-          <p class="text-xs font-medium text-gray-400 uppercase tracking-wide px-1">Suggested from your visit</p>
-          <button
-            v-for="(sq, i) in suggestedQuestions"
-            :key="i"
-            class="w-full text-left bg-white rounded-xl border border-gray-200 p-3.5 hover:border-indigo-200 hover:bg-indigo-50/30 transition-colors group"
-            @click="oeQuery = sq.question; askOpenEvidence()"
-          >
-            <p class="text-sm font-medium text-gray-800 group-hover:text-indigo-900">{{ sq.question }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">{{ sq.context }}</p>
-          </button>
-        </div>
-
-        <!-- Loading state -->
-        <div v-if="oeLoading" class="bg-white rounded-2xl border border-gray-200 p-6 text-center space-y-3">
-          <div class="w-8 h-8 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto" />
-          <p class="text-sm text-gray-500">Searching evidence-based sources...</p>
-          <p class="text-xs text-gray-400">Cross-referencing PubMed, Cochrane, and clinical guidelines</p>
-        </div>
-
-        <!-- Mock result -->
-        <div v-if="oeResult" class="space-y-4">
-          <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-            <div class="p-4 border-b border-gray-100 bg-gradient-to-r from-indigo-50/50 to-transparent">
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-                </svg>
-                <p class="text-sm font-semibold text-indigo-900">Evidence-Based Answer</p>
-              </div>
-            </div>
-            <div class="p-4 space-y-3">
-              <p class="text-sm text-gray-800 leading-relaxed">{{ oeResult.answer }}</p>
-
-              <div v-if="oeResult.confidence" class="flex items-center gap-2">
-                <span class="text-xs font-medium text-gray-500">Evidence strength:</span>
-                <div class="flex gap-0.5">
-                  <div v-for="n in 5" :key="n" class="w-4 h-1.5 rounded-full" :class="n <= oeResult.confidence ? 'bg-indigo-500' : 'bg-gray-200'" />
-                </div>
-                <span class="text-xs text-gray-400">{{ oeResult.evidenceLevel }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Sources -->
-          <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-            <div class="p-3 border-b border-gray-100">
-              <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Sources ({{ oeResult.sources.length }})</p>
-            </div>
-            <div class="divide-y divide-gray-100">
-              <div v-for="(src, i) in oeResult.sources" :key="i" class="p-3 flex items-start gap-2">
-                <span class="shrink-0 w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] font-bold mt-0.5">{{ i + 1 }}</span>
-                <div class="min-w-0">
-                  <p class="text-xs font-medium text-gray-800">{{ src.title }}</p>
-                  <p class="text-[11px] text-gray-500 mt-0.5">{{ src.journal }} ({{ src.year }})</p>
-                  <span v-if="src.type" class="inline-block mt-1 text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">{{ src.type }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Disclaimer -->
-          <p class="text-[11px] text-gray-400 text-center px-4">
-            Powered by OpenEvidence. Answers are generated from peer-reviewed literature and clinical guidelines. Always verify with your healthcare provider.
-          </p>
-        </div>
       </div>
 
       <!-- Tab: Search -->
@@ -683,14 +680,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, inject, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import { useApi } from '@/composables/useApi';
 import { useAuthStore } from '@/stores/auth';
+import { useChatBus } from '@/composables/useChatBus';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import type { LibraryItem, LibraryProcessingStatus, PipelineStep } from '@/types/library';
 import type {
     Condition, Prescription, Reference, ConditionMatch,
-    OeResult, OeSource, DrugLabelResult, SearchResultItem,
+    DrugLabelResult, SearchResultItem,
 } from '@/types/medical';
 
 interface ConditionLookup {
@@ -703,11 +701,6 @@ interface DrugLabelLookup {
     result: DrugLabelResult | null;
 }
 
-interface SuggestedQuestion {
-    question: string;
-    context: string;
-}
-
 interface Tab {
     id: string;
     label: string;
@@ -715,11 +708,10 @@ interface Tab {
 
 const api = useApi();
 const auth = useAuthStore();
-const openGlobalChat = inject<(context: string) => void>('openGlobalChat', () => {});
+const { openGlobalChat } = useChatBus();
 
 const tabs: Tab[] = [
     { id: 'relevant', label: 'Relevant for You' },
-    { id: 'ask', label: 'Ask (EBM)' },
     { id: 'search', label: 'Search Databases' },
     { id: 'my-library', label: 'My Library' },
 ];
@@ -757,6 +749,76 @@ async function loadRelevantData(): Promise<void> {
     }
 }
 
+// --- Custom References (localStorage) ---
+interface CustomReference extends Reference {
+    _custom: boolean;
+}
+
+const CUSTOM_REFS_KEY = 'postvisit_custom_references';
+const customReferences = ref<CustomReference[]>(loadCustomReferences());
+const showAddRefForm = ref<boolean>(false);
+const newRef = reactive({
+    title: '',
+    authors: '',
+    journal: '',
+    year: null as number | null,
+    url: '',
+    category: '',
+});
+
+function loadCustomReferences(): CustomReference[] {
+    try {
+        const stored = localStorage.getItem(CUSTOM_REFS_KEY);
+        return stored ? JSON.parse(stored) : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveCustomReferences(): void {
+    localStorage.setItem(CUSTOM_REFS_KEY, JSON.stringify(customReferences.value));
+}
+
+const allReferences = computed<(Reference & { _custom?: boolean })[]>(() => {
+    return [...references.value, ...customReferences.value];
+});
+
+function addCustomReference(): void {
+    if (!newRef.title?.trim()) return;
+    const ref: CustomReference = {
+        id: `custom-${Date.now()}`,
+        title: newRef.title.trim(),
+        authors: newRef.authors?.trim() || null,
+        journal: newRef.journal?.trim() || null,
+        year: newRef.year || null,
+        url: newRef.url?.trim() || null,
+        doi: null,
+        pmid: null,
+        summary: null,
+        category: newRef.category || null,
+        verified: false,
+        _custom: true,
+    };
+    customReferences.value.push(ref);
+    saveCustomReferences();
+    resetNewRef();
+    showAddRefForm.value = false;
+}
+
+function removeCustomReference(id: string): void {
+    customReferences.value = customReferences.value.filter(r => r.id !== id);
+    saveCustomReferences();
+}
+
+function resetNewRef(): void {
+    newRef.title = '';
+    newRef.authors = '';
+    newRef.journal = '';
+    newRef.year = null;
+    newRef.url = '';
+    newRef.category = '';
+}
+
 async function searchCondition(name: string): Promise<void> {
     const cond = conditions.value.find(c => c.code_display === name);
     if (!cond) return;
@@ -783,70 +845,6 @@ async function lookupDrugLabel(rx: Prescription): Promise<void> {
     } catch {
         drugLabels[rx.id] = { loading: false, result: null };
     }
-}
-
-// --- Ask (OpenEvidence mockup) ---
-const oeQuery = ref<string>('');
-const oeLoading = ref<boolean>(false);
-const oeResult = ref<OeResult | null>(null);
-
-const suggestedQuestions = computed<SuggestedQuestion[]>(() => {
-    const questions: SuggestedQuestion[] = [];
-    if (conditions.value.length) {
-        const cond = conditions.value[0];
-        questions.push({
-            question: `What are the latest guidelines for managing ${cond.code_display}?`,
-            context: 'Based on your diagnosis',
-        });
-    }
-    if (medications.value.length) {
-        const rx = medications.value[0];
-        const name = rx.medication?.display_name || rx.medication?.generic_name;
-        questions.push({
-            question: `What are the common side effects of ${name} I should watch for?`,
-            context: 'Based on your current medication',
-        });
-        if (conditions.value.length) {
-            questions.push({
-                question: `Is ${name} first-line therapy for ${conditions.value[0].code_display}?`,
-                context: 'Cross-referencing your medication and diagnosis',
-            });
-        }
-    }
-    if (!questions.length) {
-        questions.push(
-            { question: 'What lifestyle changes help manage premature ventricular contractions?', context: 'Common cardiology question' },
-            { question: 'When should I seek emergency care for heart palpitations?', context: 'Safety information' },
-            { question: 'How does propranolol work for PVCs?', context: 'Medication mechanism' },
-        );
-    }
-    return questions;
-});
-
-const mockAnswers: Record<string, OeResult> = {
-    default: {
-        answer: 'Based on current clinical evidence, beta-blockers such as propranolol are considered first-line therapy for symptomatic premature ventricular contractions (PVCs). The ACC/AHA 2024 guidelines recommend a starting dose of 10-40mg two to three times daily, titrated to symptom control. Lifestyle modifications including caffeine reduction, stress management, and adequate sleep are also strongly recommended as adjunctive measures. If PVC burden exceeds 15-20% on Holter monitoring, catheter ablation should be discussed.',
-        confidence: 4,
-        evidenceLevel: 'Level A — Strong',
-        sources: [
-            { title: 'ACC/AHA Guideline for Management of Ventricular Arrhythmias', journal: 'Circulation', year: '2024', type: 'Clinical Guideline' },
-            { title: 'Beta-blocker therapy for premature ventricular complexes: systematic review', journal: 'Heart Rhythm', year: '2023', type: 'Systematic Review' },
-            { title: 'PVC burden and cardiomyopathy risk: a prospective cohort study', journal: 'JACC', year: '2023', type: 'Cohort Study' },
-            { title: 'Lifestyle interventions for arrhythmia management', journal: 'European Heart Journal', year: '2024', type: 'Review Article' },
-        ],
-    },
-};
-
-async function askOpenEvidence(): Promise<void> {
-    if (!oeQuery.value?.trim()) return;
-    oeLoading.value = true;
-    oeResult.value = null;
-
-    // Simulate API call delay
-    await new Promise<void>(resolve => setTimeout(resolve, 2500));
-
-    oeResult.value = { ...mockAnswers.default };
-    oeLoading.value = false;
 }
 
 // --- Search tab ---
@@ -893,6 +891,193 @@ async function runSearch(): Promise<void> {
 }
 
 // --- My Library ---
+const demoLibraryItems: LibraryItem[] = [
+    {
+        id: 'demo-who-cvd',
+        title: 'WHO Cardiovascular Risk Assessment and Management',
+        source_type: 'url_scrape',
+        source_url: 'https://www.who.int/publications/i/item/9789240073951',
+        processing_status: 'completed',
+        processing_error: null,
+        ai_analysis: {
+            title: 'WHO Cardiovascular Risk Assessment and Management',
+            summary: 'WHO technical package for cardiovascular disease risk assessment and management in primary health care. Covers risk stratification, lifestyle modification, and pharmacological intervention thresholds for hypertension, diabetes, and dyslipidemia.',
+            key_findings: [
+                'Total cardiovascular risk assessment is more effective than treating individual risk factors in isolation',
+                'Lifestyle interventions should be the foundation of CVD prevention for all risk levels',
+                'Pharmacological treatment thresholds should be based on overall CVD risk rather than single biomarker values',
+            ],
+            recommendations: [
+                'Assess total cardiovascular risk using validated prediction charts',
+                'Prioritize smoking cessation, physical activity, and dietary modifications',
+                'Consider statin therapy for patients with 10-year CVD risk above 20%',
+            ],
+            publication_info: { publisher: 'World Health Organization', year: 2024, license: 'CC-BY-NC-SA 3.0 IGO' },
+            categories: {
+                medical_topics: ['Cardiovascular Disease', 'Risk Assessment', 'Primary Prevention', 'Hypertension'],
+                evidence_level: 'A',
+                evidence_description: 'WHO guideline based on systematic reviews',
+                specialty_areas: ['Cardiology', 'Primary Care'],
+                document_type: 'Clinical Guideline',
+                icd10_codes: ['I25.1', 'I10', 'E78.5'],
+            },
+            patient_relevance: {
+                relevance_score: 0.85,
+                relevance_explanation: 'Directly relevant to your cardiovascular health assessment. The risk stratification framework helps understand how your conditions and medications fit into the overall prevention strategy.',
+                matching_conditions: ['Premature ventricular contractions'],
+                matching_medications: ['Propranolol'],
+                actionable_insights: [
+                    'Your beta-blocker therapy aligns with WHO recommendations for cardiovascular risk reduction',
+                    'Regular physical activity (150 min/week moderate intensity) is recommended alongside medication',
+                ],
+            },
+            verification: { verified: true, issues: [], confidence: 'high' },
+            pipeline_version: '1.0',
+            processed_at: '2026-02-10T14:00:00Z',
+        },
+        created_at: '2026-02-10T14:00:00Z',
+        updated_at: '2026-02-10T14:00:00Z',
+    },
+    {
+        id: 'demo-aha-pvcs',
+        title: 'AHA Patient Education: Premature Ventricular Contractions (PVCs)',
+        source_type: 'url_scrape',
+        source_url: 'https://www.heart.org/en/health-topics/arrhythmia/about-arrhythmia/premature-ventricular-contractions-pvcs',
+        processing_status: 'completed',
+        processing_error: null,
+        ai_analysis: {
+            title: 'AHA Patient Education: Premature Ventricular Contractions (PVCs)',
+            summary: 'American Heart Association patient education resource explaining premature ventricular contractions, their causes, symptoms, and when to seek medical attention. Covers the difference between benign and concerning PVCs.',
+            key_findings: [
+                'PVCs are very common and often harmless, occurring in many healthy individuals',
+                'Caffeine, alcohol, stress, and lack of sleep can trigger or worsen PVCs',
+                'PVCs become a concern when they are very frequent (over 10-15% of all heartbeats) or cause symptoms',
+            ],
+            recommendations: [
+                'Track symptoms and potential triggers in a journal',
+                'Reduce caffeine and alcohol intake if PVCs are bothersome',
+                'Seek medical evaluation if PVCs cause dizziness, fainting, or significant chest discomfort',
+            ],
+            publication_info: { publisher: 'American Heart Association', year: 2024 },
+            categories: {
+                medical_topics: ['Premature Ventricular Contractions', 'Arrhythmia', 'Patient Education'],
+                evidence_level: 'B',
+                evidence_description: 'AHA patient education based on clinical guidelines',
+                specialty_areas: ['Cardiology', 'Electrophysiology'],
+                document_type: 'Patient Education',
+                icd10_codes: ['I49.3'],
+            },
+            patient_relevance: {
+                relevance_score: 0.95,
+                relevance_explanation: 'Directly matches your diagnosed condition of premature ventricular contractions. This resource helps you understand your diagnosis and what lifestyle changes can help manage symptoms.',
+                matching_conditions: ['Premature ventricular contractions'],
+                matching_medications: ['Propranolol'],
+                actionable_insights: [
+                    'Understanding your PVC triggers can help you manage symptoms alongside your propranolol therapy',
+                    'Keeping a symptom diary will help your doctor optimize your treatment plan at follow-up visits',
+                ],
+            },
+            verification: { verified: true, issues: [], confidence: 'high' },
+            pipeline_version: '1.0',
+            processed_at: '2026-02-10T15:00:00Z',
+        },
+        created_at: '2026-02-10T15:00:00Z',
+        updated_at: '2026-02-10T15:00:00Z',
+    },
+    {
+        id: 'demo-nih-arrhythmia',
+        title: 'NIH MedlinePlus: Heart Arrhythmia Guide',
+        source_type: 'url_scrape',
+        source_url: 'https://medlineplus.gov/arrhythmia.html',
+        processing_status: 'completed',
+        processing_error: null,
+        ai_analysis: {
+            title: 'NIH MedlinePlus: Heart Arrhythmia Guide',
+            summary: 'Comprehensive NIH patient guide covering types of heart arrhythmias, diagnostic approaches (ECG, Holter monitoring, event monitors), treatment options, and living with arrhythmia. Published by the National Library of Medicine.',
+            key_findings: [
+                'Arrhythmias range from harmless to life-threatening; proper diagnosis determines the approach',
+                'Holter monitoring and event recorders are key tools for capturing intermittent arrhythmias',
+                'Treatment options include lifestyle changes, medications, ablation, and implantable devices depending on severity',
+            ],
+            recommendations: [
+                'Follow up with your cardiologist for periodic rhythm monitoring',
+                'Learn to take your own pulse and recognize irregular patterns',
+                'Carry a list of your medications and conditions for emergency situations',
+            ],
+            publication_info: { publisher: 'National Library of Medicine / NIH', year: 2025 },
+            categories: {
+                medical_topics: ['Arrhythmia', 'Heart Rhythm Disorders', 'Cardiac Monitoring', 'Treatment Options'],
+                evidence_level: 'B',
+                evidence_description: 'NIH reviewed patient education material',
+                specialty_areas: ['Cardiology'],
+                document_type: 'Patient Education',
+                icd10_codes: ['I49.9', 'I49.3'],
+            },
+            patient_relevance: {
+                relevance_score: 0.88,
+                relevance_explanation: 'Provides broader context for your PVC diagnosis within the spectrum of heart arrhythmias. Helps you understand the monitoring and treatment landscape relevant to your condition.',
+                matching_conditions: ['Premature ventricular contractions'],
+                matching_medications: ['Propranolol'],
+                actionable_insights: [
+                    'Understanding the different types of arrhythmia monitoring helps you prepare for future cardiology appointments',
+                    'Learning to check your own pulse can help you detect changes between doctor visits',
+                ],
+            },
+            verification: { verified: true, issues: [], confidence: 'high' },
+            pipeline_version: '1.0',
+            processed_at: '2026-02-10T16:00:00Z',
+        },
+        created_at: '2026-02-10T16:00:00Z',
+        updated_at: '2026-02-10T16:00:00Z',
+    },
+    {
+        id: 'demo-cdc-physical-activity',
+        title: 'CDC Physical Activity Guidelines for Adults with Chronic Conditions',
+        source_type: 'url_scrape',
+        source_url: 'https://www.cdc.gov/physical-activity-basics/guidelines/adults.html',
+        processing_status: 'completed',
+        processing_error: null,
+        ai_analysis: {
+            title: 'CDC Physical Activity Guidelines for Adults with Chronic Conditions',
+            summary: 'Federal guidelines on physical activity for adults, with specific considerations for those managing chronic health conditions including cardiovascular disease. Recommends 150 minutes of moderate-intensity or 75 minutes of vigorous-intensity aerobic activity per week.',
+            key_findings: [
+                'Adults should aim for at least 150 minutes of moderate-intensity aerobic activity per week',
+                'Muscle-strengthening activities on 2 or more days per week provide additional health benefits',
+                'Adults with chronic conditions who cannot meet the full guidelines should be as physically active as their abilities allow',
+            ],
+            recommendations: [
+                'Start slowly and gradually increase activity duration and intensity',
+                'Choose activities you enjoy to maintain long-term adherence',
+                'Consult your healthcare provider about exercise intensity limits specific to your condition',
+            ],
+            publication_info: { publisher: 'Centers for Disease Control and Prevention', year: 2024 },
+            categories: {
+                medical_topics: ['Physical Activity', 'Exercise Guidelines', 'Chronic Disease Management', 'Cardiovascular Health'],
+                evidence_level: 'A',
+                evidence_description: 'Federal guidelines based on systematic evidence review',
+                specialty_areas: ['Preventive Medicine', 'Cardiology', 'Primary Care'],
+                document_type: 'Clinical Guideline',
+                icd10_codes: ['Z71.3'],
+            },
+            patient_relevance: {
+                relevance_score: 0.78,
+                relevance_explanation: 'Regular physical activity is a key component of managing your cardiovascular health alongside medication. These guidelines help you set safe and effective exercise goals.',
+                matching_conditions: ['Premature ventricular contractions'],
+                matching_medications: ['Propranolol'],
+                actionable_insights: [
+                    'Start with low-intensity activities like walking and gradually increase based on your tolerance',
+                    'Beta-blockers like propranolol may affect exercise heart rate; discuss target heart rate zones with your doctor',
+                ],
+            },
+            verification: { verified: true, issues: [], confidence: 'high' },
+            pipeline_version: '1.0',
+            processed_at: '2026-02-10T17:00:00Z',
+        },
+        created_at: '2026-02-10T17:00:00Z',
+        updated_at: '2026-02-10T17:00:00Z',
+    },
+];
+
 const libraryItems = ref<LibraryItem[]>([]);
 const loadingLibrary = ref<boolean>(false);
 const uploadingFile = ref<boolean>(false);
@@ -915,14 +1100,17 @@ async function loadLibraryItems(): Promise<void> {
     loadingLibrary.value = true;
     try {
         const { data } = await api.get('/library');
-        libraryItems.value = data.data?.data || data.data || [];
+        const items: LibraryItem[] = data.data?.data || data.data || [];
+        // Show demo items when API returns empty (demo mode)
+        libraryItems.value = items.length > 0 ? items : [...demoLibraryItems];
         libraryItems.value.forEach((item: LibraryItem) => {
             if (!(['completed', 'failed'] as string[]).includes(item.processing_status)) {
                 startPolling(item.id);
             }
         });
     } catch {
-        // Non-blocking
+        // Fallback to demo items on API failure
+        libraryItems.value = [...demoLibraryItems];
     } finally {
         loadingLibrary.value = false;
     }

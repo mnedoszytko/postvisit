@@ -148,15 +148,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, inject } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useVisitStore } from '@/stores/visit';
 import { useApi } from '@/composables/useApi';
+import { useChatBus } from '@/composables/useChatBus';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import VisitDateBadge from '@/components/VisitDateBadge.vue';
 import AskAiButton from '@/components/AskAiButton.vue';
 
-const openGlobalChat = inject('openGlobalChat', () => {});
+const { openGlobalChat } = useChatBus();
 
 const auth = useAuthStore();
 const visitStore = useVisitStore();

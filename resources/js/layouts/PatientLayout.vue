@@ -226,7 +226,9 @@
         :visit-id="latestVisitId"
         :initial-context="chatContext"
         :embedded="true"
+        :maximized="chatMaximized"
         @close="chatOpen = false"
+        @toggle-maximize="toggleMaximize"
       />
     </div>
 
@@ -275,6 +277,7 @@ import { useAuthStore } from '@/stores/auth';
 import { useVisitStore } from '@/stores/visit';
 import { useApi } from '@/composables/useApi';
 import { useRouter, useRoute } from 'vue-router';
+import { useChatBus } from '@/composables/useChatBus';
 import ChatPanel from '@/components/ChatPanel.vue';
 
 defineProps({
@@ -295,7 +298,20 @@ const chatOpen = ref(window.innerWidth >= 1024);
 const chatContext = ref('');
 const latestVisitId = ref(null);
 const chatWidth = ref(384); // default w-96
+const chatMaximized = ref(false);
+const chatWidthBeforeMax = ref(384);
 const isResizing = ref(false);
+
+function toggleMaximize() {
+    if (chatMaximized.value) {
+        chatWidth.value = chatWidthBeforeMax.value;
+        chatMaximized.value = false;
+    } else {
+        chatWidthBeforeMax.value = chatWidth.value;
+        chatWidth.value = Math.max(600, Math.round(window.innerWidth / 2));
+        chatMaximized.value = true;
+    }
+}
 
 function openGlobalChat(context = '') {
     chatContext.value = '';
@@ -305,6 +321,15 @@ function openGlobalChat(context = '') {
     });
 }
 provide('openGlobalChat', openGlobalChat);
+provide('setChatContext', (ctx) => { chatContext.value = ctx; });
+
+// Listen for chat requests from the global bus (used by views where inject can't reach)
+const { chatContextRequest } = useChatBus();
+watch(chatContextRequest, (req) => {
+    if (req.timestamp > 0) {
+        openGlobalChat(req.context);
+    }
+});
 
 // Hide global chat on pages that have their own chat or where it doesn't make sense
 const hideChatRoutes = ['visit-view', 'meds-detail', 'companion-scribe', 'processing', 'feedback'];
@@ -312,11 +337,34 @@ const showGlobalChat = computed(() => {
     return !hideChatRoutes.includes(route.name);
 });
 
-// Close chat when navigating to a page with its own chat
+// Map routes to default chat contexts
+const routeContextMap = {
+    'health-dashboard': 'health',
+    'medical-library': 'reference',
+    'patient-profile': '',
+    'settings': '',
+};
+
+// Set initial context based on current route
+function updateContextForRoute(routeName) {
+    if (!routeName) return;
+    const defaultCtx = routeContextMap[routeName];
+    if (defaultCtx !== undefined) {
+        chatContext.value = defaultCtx;
+    }
+}
+
+// Set context on initial load
+updateContextForRoute(route.name);
+
+// Close chat when navigating to a page with its own chat, and auto-update context per route
 watch(() => route.name, (newRoute) => {
     if (hideChatRoutes.includes(newRoute)) {
         chatOpen.value = false;
+        return;
     }
+    // Auto-set default context based on current route
+    updateContextForRoute(newRoute);
 });
 
 function closeDropdown(e) {
@@ -370,7 +418,9 @@ function startResize(e) {
     const startX = e.clientX;
     const startWidth = chatWidth.value;
     function onMove(ev) {
-        const newWidth = Math.min(700, Math.max(320, startWidth + (startX - ev.clientX)));
+        const maxWidth = Math.round(window.innerWidth * 0.7);
+        const newWidth = Math.min(maxWidth, Math.max(320, startWidth + (startX - ev.clientX)));
+        chatMaximized.value = false;
         chatWidth.value = newWidth;
     }
     function onUp() {
