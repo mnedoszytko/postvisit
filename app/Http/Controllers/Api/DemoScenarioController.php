@@ -71,6 +71,9 @@ class DemoScenarioController extends Controller
                     'language' => $s['patient']['preferred_language'] ?? 'en',
                     'bmi' => $s['patient']['bmi'] ?? null,
                     'photo_url' => $hasPhoto ? "/api/v1/demo/scenarios/{$s['key']}/photo" : null,
+                    'animation_url' => $photoDir && file_exists(base_path($photoDir.'/patient-animation.mp4'))
+                        ? "/api/v1/demo/scenarios/{$s['key']}/animation"
+                        : null,
                     'has_audio' => false,
                 ];
             })
