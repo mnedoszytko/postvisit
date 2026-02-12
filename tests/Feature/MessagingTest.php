@@ -72,6 +72,11 @@ class MessagingTest extends TestCase
         $replyResponse->assertStatus(201)
             ->assertJsonPath('data.type', 'doctor_reply');
 
+        $replyId = $replyResponse->json('data.id');
+        $reply = Notification::find($replyId);
+        $this->assertNotNull($reply);
+        $this->assertEquals($this->patientUser->id, $reply->user_id, 'Doctor reply should be addressed to the patient user');
+
         // 4. Patient sees both the original message and the reply in visit messages
         $messagesResponse = $this->actingAs($this->patientUser)
             ->getJson("/api/v1/visits/{$this->visit->id}/messages");

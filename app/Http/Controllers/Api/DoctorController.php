@@ -7,6 +7,7 @@ use App\Models\ChatSession;
 use App\Models\Notification;
 use App\Models\Observation;
 use App\Models\Patient;
+use App\Models\User;
 use App\Models\Visit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -314,14 +315,40 @@ class DoctorController extends Controller
             'body' => ['required', 'string', 'max:5000'],
         ]);
 
+        // Replies should notify the patient, not the practitioner (recipient of the original feedback).
+        $recipientUserId = null;
+
+        if (is_array($message->data)) {
+            $fromUserId = $message->data['from_user_id'] ?? null;
+            if (is_string($fromUserId) && $fromUserId !== '') {
+                $recipientUserId = $fromUserId;
+            }
+        }
+
+        if (! $recipientUserId && $message->visit_id) {
+            $visit = Visit::query()->select(['id', 'patient_id'])->find($message->visit_id);
+            if ($visit) {
+                $recipientUserId = User::query()
+                    ->where('role', 'patient')
+                    ->where('patient_id', $visit->patient_id)
+                    ->value('id');
+            }
+        }
+
+        $recipientUserId ??= $message->user_id;
+
         // Create a reply notification for the patient
         $reply = Notification::create([
-            'user_id' => $message->user_id,
+            'user_id' => $recipientUserId,
             'visit_id' => $message->visit_id,
             'type' => 'doctor_reply',
             'title' => 'Reply from Dr. '.$request->user()->name,
             'body' => $validated['body'],
-            'data' => ['original_notification_id' => $message->id],
+            'data' => [
+                'original_notification_id' => $message->id,
+                'from_doctor_user_id' => $request->user()->id,
+                'from_doctor_name' => $request->user()->name,
+            ],
         ]);
 
         return response()->json(['data' => $reply], 201);
