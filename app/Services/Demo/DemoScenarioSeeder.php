@@ -403,45 +403,49 @@ class DemoScenarioSeeder
     private function createPatient(array $data): Patient
     {
         $namePart = strtolower($data['first_name']).'.'.strtolower($data['last_name']);
-        $suffix = substr(md5(Str::uuid()->toString()), 0, 3);
 
-        return Patient::create([
-            'fhir_patient_id' => 'patient-'.Str::uuid(),
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'dob' => $data['dob'],
-            'gender' => $data['gender'],
-            'email' => "{$namePart}.{$suffix}@demo.postvisit.ai",
-            'phone' => $data['phone'],
-            'preferred_language' => $data['preferred_language'],
-            'timezone' => $data['timezone'],
-            'mrn' => $data['mrn'].'-'.Str::random(4),
-            'height_cm' => $data['height_cm'],
-            'weight_kg' => $data['weight_kg'],
-            'blood_type' => $data['blood_type'] ?? null,
-            'allergies' => $data['allergies'] ?? [],
-            'emergency_contact_name' => $data['emergency_contact_name'] ?? null,
-            'emergency_contact_phone' => $data['emergency_contact_phone'] ?? null,
-            'emergency_contact_relationship' => $data['emergency_contact_relationship'] ?? null,
-            'consent_given' => true,
-            'consent_date' => now(),
-            'data_sharing_consent' => true,
-        ]);
+        return Patient::firstOrCreate(
+            [
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'dob' => $data['dob'],
+            ],
+            [
+                'fhir_patient_id' => 'patient-'.Str::uuid(),
+                'gender' => $data['gender'],
+                'email' => "{$namePart}@demo.postvisit.ai",
+                'phone' => $data['phone'],
+                'preferred_language' => $data['preferred_language'],
+                'timezone' => $data['timezone'],
+                'mrn' => $data['mrn'],
+                'height_cm' => $data['height_cm'],
+                'weight_kg' => $data['weight_kg'],
+                'blood_type' => $data['blood_type'] ?? null,
+                'allergies' => $data['allergies'] ?? [],
+                'emergency_contact_name' => $data['emergency_contact_name'] ?? null,
+                'emergency_contact_phone' => $data['emergency_contact_phone'] ?? null,
+                'emergency_contact_relationship' => $data['emergency_contact_relationship'] ?? null,
+                'consent_given' => true,
+                'consent_date' => now(),
+                'data_sharing_consent' => true,
+            ],
+        );
     }
 
     private function createPatientUser(Patient $patient, string $scenarioKey): User
     {
         $namePart = strtolower($patient->first_name).'.'.strtolower($patient->last_name);
-        $suffix = substr(md5(Str::uuid()->toString()), 0, 3);
 
-        return User::create([
-            'name' => $patient->first_name.' '.$patient->last_name,
-            'email' => "{$namePart}.{$suffix}@demo.postvisit.ai",
-            'password' => 'password',
-            'role' => 'patient',
-            'patient_id' => $patient->id,
-            'is_active' => true,
-        ]);
+        return User::firstOrCreate(
+            ['patient_id' => $patient->id],
+            [
+                'name' => $patient->first_name.' '.$patient->last_name,
+                'email' => "{$namePart}@demo.postvisit.ai",
+                'password' => 'password',
+                'role' => 'patient',
+                'is_active' => true,
+            ],
+        );
     }
 
     private function createVisit(array $data, Patient $patient, Practitioner $practitioner, Organization $org, User $doctor): Visit

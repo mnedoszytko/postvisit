@@ -405,8 +405,8 @@ function scrollToBottom() {
 watch(() => chatStore.messages, scrollToBottom, { deep: true });
 
 // When context changes while chat is already open, pre-fill the new context
-watch(() => props.initialContext, (newCtx, oldCtx) => {
-    if (newCtx && newCtx !== oldCtx) {
+watch(() => props.initialContext, (newCtx) => {
+    if (newCtx) {
         message.value = `Explain: ${newCtx}`;
     }
 });

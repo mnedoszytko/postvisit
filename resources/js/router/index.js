@@ -51,6 +51,10 @@ const routes = [
         meta: { requiresAuth: true, role: 'patient' },
     },
     {
+        path: '/record',
+        redirect: '/scribe',
+    },
+    {
         path: '/processing',
         name: 'processing',
         component: Processing,
