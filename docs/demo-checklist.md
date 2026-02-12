@@ -207,6 +207,8 @@
 | Documents list — status badges look mockup-ish | TODO | MUST | Need polished design |
 | **Each document = database entry** | ✅ DONE | MUST | Document model exists, stored in DB |
 | **Each document usable as chat context** | ✅ DONE | MUST | ContextAssembler loads library items; ChatPanel has Documents context source |
+| **Upload/add documents from Documents tab** | TODO | MUST | User can upload PDFs, photos from My Health → Documents |
+| **Mobile: upload via camera/photos (no QR)** | TODO | MUST | On mobile, skip QR code — direct photo/file upload from phone |
 
 ---
 
@@ -264,7 +266,7 @@
 
 ### Status Counts
 - **MUST items DONE:** ~45 (landing, login, scenario picker, visit detail SOAP + summary + recommendations + next actions + term highlighting + ask-about-this, chat two-column + suggestions + streaming, recording + quality gate, doctor dashboard alerts + patient cards + search + actions, health vitals/labs split + time filter, library custom docs + per-profile, settings audit + permissions, global chat panel)
-- **MUST items TODO:** ~18 (visit titles shorter, profile layout reorder, mobile chat tab, health profile expansion, HRV chart, sleep info, weight bar chart patient-side, labs trend charts, labs PDF upload, "ask about this" on health/labs/library, sparklines, doctor actions panel, shared docs to doctor, alert detail view, document icons, analyzing progress, SOAP bug #2/#3, Fatima bug)
+- **MUST items TODO:** ~20 (visit titles shorter, profile layout reorder, mobile chat tab, health profile expansion, HRV chart, sleep info, weight bar chart patient-side, labs trend charts, labs PDF upload, "ask about this" on health/labs/library, sparklines, doctor actions panel, shared docs to doctor, alert detail view, document icons, analyzing progress, SOAP bug #2/#3, Fatima bug, upload docs from My Health, mobile camera/file upload without QR)
 - **MUST items PARTIAL:** 5 (patient health in doctor view, alert detail, weight chart, labs browser, health profile expansion)
 - **NICE items:** ~12 (text selection explain, connected services polish, ElevenLabs playback, smoother animations, photo scan upload, patient timeline, AI insights, notification bell, connected services mock data)
 - **SKIP items:** 1 (Search Databases ICD-10 only)
