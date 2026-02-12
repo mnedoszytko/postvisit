@@ -61,6 +61,10 @@ Deadline: **15:00 EST**
 - [ ] Health dashboard charts render with demo data
 - [ ] Medication interactions visible
 - [ ] Document AI analysis auto-refreshes (no manual reload)
+- [ ] Lab Results & Vitals: medical term explainer (tap-to-explain) on lab/vital names
+
+#### Nice to have
+- [ ] Lab Results: trend lines and charts for mock demo data (e.g. cholesterol over time, K+ levels, TSH history)
 
 ---
 
