@@ -113,7 +113,9 @@ class DocumentController extends Controller
 
         return Storage::disk('local')->response($document->file_path, null, [
             'Content-Type' => $mime,
-            'Cache-Control' => 'max-age=86400',
+            // Medical documents can contain PHI; avoid caching in shared caches.
+            'Cache-Control' => 'private, no-store, max-age=0',
+            'X-Content-Type-Options' => 'nosniff',
         ]);
     }
 

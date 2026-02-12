@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Middleware\AuditMiddleware;
+use App\Http\Middleware\EnsureDocumentAccess;
+use App\Http\Middleware\EnsureNotificationAccess;
+use App\Http\Middleware\EnsurePatientAccess;
+use App\Http\Middleware\EnsureVisitAccess;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,6 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'audit' => AuditMiddleware::class,
+            'patient.access' => EnsurePatientAccess::class,
+            'visit.access' => EnsureVisitAccess::class,
+            'document.access' => EnsureDocumentAccess::class,
+            'notification.access' => EnsureNotificationAccess::class,
         ]);
 
         $middleware->trustProxies(at: '*');

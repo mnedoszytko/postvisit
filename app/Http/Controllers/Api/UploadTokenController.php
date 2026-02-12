@@ -33,6 +33,18 @@ class UploadTokenController extends Controller
     {
         $uploadToken = UploadToken::where('token', $token)->firstOrFail();
 
+        $user = request()->user();
+        if ($user && method_exists($user, 'isAdmin') && $user->isAdmin()) {
+            // ok
+        } elseif (! $user || $uploadToken->created_by !== $user->id) {
+            return response()->json([
+                'error' => [
+                    'code' => 'FORBIDDEN',
+                    'message' => 'You do not have access to this upload token.',
+                ],
+            ], 403);
+        }
+
         if ($uploadToken->used_at) {
             $uploadToken->load('document');
 

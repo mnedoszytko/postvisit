@@ -49,7 +49,7 @@ Route::prefix('v1')->group(function () {
         });
 
         // ----- Module 1: Core Health — Patients -----
-        Route::prefix('patients/{patient}')->middleware('audit')->group(function () {
+        Route::prefix('patients/{patient}')->middleware(['audit', 'patient.access'])->group(function () {
             Route::get('/', [PatientController::class, 'show']);
             Route::patch('/', [PatientController::class, 'update']);
             Route::get('visits', [PatientController::class, 'visits']);
@@ -64,7 +64,7 @@ Route::prefix('v1')->group(function () {
         });
 
         // Documents (standalone)
-        Route::middleware('audit')->group(function () {
+        Route::middleware(['audit', 'document.access'])->group(function () {
             Route::get('documents/{document}', [DocumentController::class, 'show']);
             Route::get('documents/{document}/download', [DocumentController::class, 'download']);
             Route::get('documents/{document}/thumbnail', [DocumentController::class, 'thumbnail']);
@@ -79,7 +79,7 @@ Route::prefix('v1')->group(function () {
         // ----- Module 2: Companion Scribe — Visits & Transcripts -----
         Route::post('visits', [VisitController::class, 'store'])->middleware('audit');
 
-        Route::prefix('visits/{visit}')->middleware('audit')->group(function () {
+        Route::prefix('visits/{visit}')->middleware(['audit', 'visit.access'])->group(function () {
             // Module 3: PostVisit AI
             Route::get('/', [VisitController::class, 'show']);
             Route::get('summary', [VisitController::class, 'summary']);
@@ -120,7 +120,8 @@ Route::prefix('v1')->group(function () {
         });
 
         // Mark message as read
-        Route::patch('messages/{message}/read', [FeedbackController::class, 'markRead'])->middleware('audit');
+        Route::patch('messages/{message}/read', [FeedbackController::class, 'markRead'])
+            ->middleware(['audit', 'notification.access']);
 
         // ----- Module 5: Medications -----
         Route::middleware('audit')->group(function () {
@@ -152,13 +153,13 @@ Route::prefix('v1')->group(function () {
             Route::get('dashboard', [DoctorController::class, 'dashboard']);
             Route::get('alerts', [DoctorController::class, 'alerts']);
             Route::get('patients', [DoctorController::class, 'patients']);
-            Route::get('patients/{patient}', [DoctorController::class, 'patientDetail']);
-            Route::get('patients/{patient}/visits', [DoctorController::class, 'patientVisits']);
-            Route::get('patients/{patient}/engagement', [DoctorController::class, 'engagement']);
-            Route::get('patients/{patient}/chat-audit', [DoctorController::class, 'chatAudit']);
-            Route::get('patients/{patient}/observations', [DoctorController::class, 'patientObservations']);
+            Route::get('patients/{patient}', [DoctorController::class, 'patientDetail'])->middleware('patient.access');
+            Route::get('patients/{patient}/visits', [DoctorController::class, 'patientVisits'])->middleware('patient.access');
+            Route::get('patients/{patient}/engagement', [DoctorController::class, 'engagement'])->middleware('patient.access');
+            Route::get('patients/{patient}/chat-audit', [DoctorController::class, 'chatAudit'])->middleware('patient.access');
+            Route::get('patients/{patient}/observations', [DoctorController::class, 'patientObservations'])->middleware('patient.access');
             Route::get('notifications', [DoctorController::class, 'notifications']);
-            Route::post('messages/{message}/reply', [DoctorController::class, 'reply']);
+            Route::post('messages/{message}/reply', [DoctorController::class, 'reply'])->middleware('notification.access');
         });
 
         // ----- Module 8: Audit (doctor/admin role required) -----
