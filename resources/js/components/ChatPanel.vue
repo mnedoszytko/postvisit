@@ -89,8 +89,9 @@
               </span>
             </div>
             <p class="text-sm leading-relaxed">{{ msg.quickContent }}</p>
+            <p v-if="msg.quickDone" class="text-[11px] text-gray-400 mt-2 italic">Hold on — a more detailed analysis is on the way.</p>
 
-            <div v-if="msg.quickDone" class="mt-3 pt-3 border-t border-gray-200/60">
+            <div v-if="msg.quickDone" class="mt-2 pt-2 border-t border-gray-200/60">
               <DeepAnalysisIndicator
                 :status-text="msg.statusText"
                 :thinking="msg.thinking"
@@ -101,19 +102,59 @@
 
           <!-- Phase 3: Opus answer streaming (deep analysis in progress) -->
           <div v-else-if="msg.streaming && msg.content">
-            <div class="flex items-center gap-1.5 mb-2">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-medium">
-                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
-                </svg>
-                Detailed clinical analysis
-              </span>
+            <!-- Keep quick answer visible above -->
+            <div v-if="msg.quickContent" class="mb-3">
+              <div class="flex items-center gap-1.5 mb-1">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-200/60 text-gray-500 text-[10px] font-medium">
+                  <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  </svg>
+                  Quick answer
+                </span>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed">{{ msg.quickContent }}</p>
             </div>
-            <StreamingMessage :text="stripSources(msg.content)" />
+            <!-- Opus answer on amber background -->
+            <div class="bg-amber-50/80 border border-amber-200/60 rounded-xl px-3 py-2.5 -mx-1">
+              <div class="flex items-center gap-1.5 mb-2">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-medium">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+                  </svg>
+                  Detailed clinical analysis
+                </span>
+              </div>
+              <StreamingMessage :text="stripSources(msg.content)" />
+            </div>
           </div>
 
-          <!-- Phase 4: Completed message -->
-          <div v-else-if="msg.role === 'assistant'" class="prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
+          <!-- Phase 4: Completed message — keep quick + opus visible -->
+          <div v-else-if="msg.role === 'assistant'">
+            <!-- Quick answer stays visible (faded) -->
+            <div v-if="msg.quickContent" class="mb-3">
+              <div class="flex items-center gap-1.5 mb-1">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-200/60 text-gray-500 text-[10px] font-medium">
+                  <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  </svg>
+                  Quick answer
+                </span>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed">{{ msg.quickContent }}</p>
+            </div>
+            <!-- Full Opus answer on amber background -->
+            <div :class="msg.quickContent ? 'bg-amber-50/80 border border-amber-200/60 rounded-xl px-3 py-2.5 -mx-1' : ''">
+              <div v-if="msg.quickContent" class="flex items-center gap-1.5 mb-2">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-medium">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+                  </svg>
+                  Detailed clinical analysis
+                </span>
+              </div>
+              <div class="prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
+            </div>
+          </div>
 
           <!-- User message -->
           <p v-else>{{ msg.content }}</p>
