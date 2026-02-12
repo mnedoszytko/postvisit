@@ -23,10 +23,10 @@ const hintIndex = ref(0);
 let interval = null;
 
 const thinkingHints = [
-    'Deep analysis in progress...',
-    'Reasoning through clinical context...',
-    'Cross-referencing guidelines...',
-    'Evaluating medical evidence...',
+    'Let me think...',
+    'Reviewing your visit data...',
+    'Let me think...',
+    'Reading clinical notes...',
 ];
 
 const contextualHints = computed(() => {
@@ -73,9 +73,9 @@ const contextualHints = computed(() => {
         ];
     }
     return [
-        'Reading your visit context...',
-        'Analyzing clinical notes...',
-        'Preparing your answer...',
+        'Let me think...',
+        'Reading your visit notes...',
+        'Let me think...',
     ];
 });
 
