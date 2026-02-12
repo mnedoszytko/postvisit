@@ -48,4 +48,8 @@ return [
         'eutils_url' => 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils',
     ],
 
+    'openfda' => [
+        'timeout' => env('OPENFDA_TIMEOUT', 5),
+    ],
+
 ];
