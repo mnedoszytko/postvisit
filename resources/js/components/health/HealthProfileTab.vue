@@ -172,7 +172,10 @@
 
     <!-- Recent Visits -->
     <div class="bg-white rounded-2xl border border-gray-200 p-5">
-      <h3 class="font-semibold text-gray-900 mb-3">Recent Visits</h3>
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-semibold text-gray-900">Recent Visits</h3>
+        <AskAiButton v-if="visits.length > 0" @ask="openGlobalChat('Tell me about my recent visits — what happened and what should I remember?')" />
+      </div>
       <div v-if="visits.length > 0" class="space-y-2">
         <router-link
           v-for="visit in visits"

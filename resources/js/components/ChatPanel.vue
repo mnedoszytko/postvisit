@@ -439,6 +439,38 @@ const contextSuggestions = {
         'What tests should be done before my next visit?',
         'What progress should I expect by then?',
     ],
+    // Health Profile sections (matched by keyword)
+    'biometrics': [
+        'What does my BMI mean?',
+        'Is my weight healthy for my height?',
+        'What should my target weight be?',
+        'How does my blood type affect my health?',
+    ],
+    'diagnos': [
+        'What does my diagnosis mean in simple terms?',
+        'How serious is this condition?',
+        'What lifestyle changes should I make?',
+        'What are the treatment options?',
+    ],
+    'allerg': [
+        'What should I avoid with my allergies?',
+        'What are the symptoms of an allergic reaction?',
+        'Should I carry an EpiPen?',
+        'Can my allergies change over time?',
+    ],
+    'visit': [
+        'What happened during my last visit?',
+        'What was discussed?',
+        'What was the conclusion?',
+        'Summarize my last visit',
+        'Give me the most important points',
+    ],
+    'medication': [
+        'Explain my medication and side effects',
+        'Can I drink alcohol with my medication?',
+        'What happens if I miss a dose?',
+        'Are there any food interactions?',
+    ],
 };
 
 const defaultSuggestions = [
@@ -451,7 +483,17 @@ const defaultSuggestions = [
 
 const suggestedQuestions = computed(() => {
     if (props.initialContext) {
-        return contextSuggestions[props.initialContext] || defaultSuggestions;
+        // Exact match first (SOAP sections from VisitView)
+        if (contextSuggestions[props.initialContext]) {
+            return contextSuggestions[props.initialContext];
+        }
+        // Keyword match (Health Profile sections, etc.)
+        const lower = props.initialContext.toLowerCase();
+        for (const [key, suggestions] of Object.entries(contextSuggestions)) {
+            if (lower.includes(key.toLowerCase())) {
+                return suggestions;
+            }
+        }
     }
     return defaultSuggestions;
 });
