@@ -34,7 +34,13 @@ Deadline: **15:00 EST**
 - [ ] Frontend tests exist and pass
 - [ ] No skipped or broken tests
 
-### 4. Demo polish — nothing forgotten
+### 4. Stale branches — nothing forgotten
+- [ ] Review all unmerged branches (`git branch -r --no-merged main`)
+- [ ] Check if any contain work we forgot to merge
+- [ ] Delete confirmed-stale branches (clean up remote)
+- [ ] Verify worktree branches (agent3, agent4, agent5) are synced with main
+
+### 5. Demo polish — nothing forgotten
 - [ ] All key features visible in demo flow without digging
 - [ ] Medical term highlighting works and is obvious
 - [ ] AI chat suggestions cover common patient questions
@@ -47,29 +53,29 @@ Deadline: **15:00 EST**
 
 ## Landing — deploy & go live
 
-### 5. Production — deployed, secured, working
+### 6. Production — deployed, secured, working
 - [ ] Deployed on Forge, HTTPS enforced, `APP_DEBUG=false`
 - [ ] Rate limiting on public endpoints
 - [ ] Bot protection active (Cloudflare WAF, `robots.txt`)
 - [ ] No debug/stack traces leaking in error responses
 - [ ] Remove IP whitelist / access restrictions — publicly accessible for judges
 
-### 6. Server — performance, data freshness
+### 7. Server — performance, data freshness
 - [ ] Pages load fast, AI chat streams within 2s
 - [ ] Demo data seeded and up to date
 - [ ] No 500 errors in logs
 - [ ] Queue worker running
 
-### 7. Cleanup — no dev artifacts, no doc duplicates
+### 8. Cleanup — no dev artifacts, no doc duplicates
 - [ ] Remove temp scripts, scratch files, agent worktree leftovers
 - [ ] No `console.log()` / `dd()` / `dump()` in production code
 - [ ] No duplicate or outdated docs
 - [ ] README concise and scannable
 - [ ] Markdown ratio < 20%
 
-### 8. Smoke test — full judge flow
+### 9. Smoke test — full judge flow
 - [ ] Try Demo → scenario → visit summary → tap term → AI chat → doctor dashboard
 
-### 9. Offline installation (Docker)
+### 10. Offline installation (Docker)
 - [ ] Verify `docker compose up` works from clean clone
 - [ ] App runs and demo flow works in Docker environment
