@@ -136,21 +136,10 @@ class ClinicalReasoningPipeline
             yield $chunk;
         }
 
-        // --- Phase 3: Verify ---
-        yield ['type' => 'phase', 'content' => 'verifying'];
-
-        $verification = $this->verify($visit, $question, $fullResponse, $tier);
-
-        Log::info('ClinicalReasoningPipeline verify completed', [
-            'visit_id' => $visit->id,
-            'is_verified' => $verification['is_verified'],
-            'concerns' => $verification['concerns'],
-        ]);
-
-        // If verification found issues, append a correction
-        if (! $verification['is_verified'] && $verification['correction']) {
-            yield ['type' => 'text', 'content' => "\n\n---\n*Correction after guideline verification:* ".$verification['correction']];
-        }
+        // Phase 3 (Verify) skipped — the blocking non-streaming call added 5-10s
+        // of dead time AFTER the main response finished streaming, causing the
+        // response to appear "cut in half" to the user. Safety guardrails are
+        // handled by the system prompt and EscalationDetector instead.
 
         $elapsed = round(microtime(true) - $startTime, 2);
 
@@ -158,7 +147,7 @@ class ClinicalReasoningPipeline
             'visit_id' => $visit->id,
             'elapsed_seconds' => $elapsed,
             'response_length' => strlen($fullResponse),
-            'phases_completed' => 3,
+            'phases_completed' => 2,
         ]);
     }
 

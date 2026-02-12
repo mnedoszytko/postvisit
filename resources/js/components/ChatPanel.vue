@@ -88,7 +88,7 @@
                 Let me think...
               </span>
             </div>
-            <p class="text-sm leading-relaxed">{{ msg.quickContent }}</p>
+            <StreamingMessage :text="msg.quickContent" />
 
             <div v-if="msg.quickDone" class="mt-2 pt-2 border-t border-gray-200/60">
               <DeepAnalysisIndicator
@@ -111,7 +111,7 @@
                   Let me think...
                 </span>
               </div>
-              <p class="text-xs text-gray-500 leading-relaxed">{{ msg.quickContent }}</p>
+              <div class="text-xs text-gray-500 leading-relaxed prose prose-sm max-w-none prose-p:text-gray-500 prose-strong:text-gray-500" v-html="renderMarkdown(msg.quickContent)" />
             </div>
             <!-- Opus answer on amber background -->
             <div ref="opusAnswerEl" class="bg-amber-50/80 border border-amber-200/60 rounded-xl px-3 py-2.5 -mx-1">
@@ -139,7 +139,7 @@
                   Let me think...
                 </span>
               </div>
-              <p class="text-xs text-gray-500 leading-relaxed">{{ msg.quickContent }}</p>
+              <div class="text-xs text-gray-500 leading-relaxed prose prose-sm max-w-none prose-p:text-gray-500 prose-strong:text-gray-500" v-html="renderMarkdown(msg.quickContent)" />
             </div>
             <!-- Full Opus answer on amber background -->
             <div :class="msg.quickContent ? 'bg-amber-50/80 border border-amber-200/60 rounded-xl px-3 py-2.5 -mx-1' : ''">
@@ -163,6 +163,7 @@
           v-if="msg.role === 'assistant' && !msg.streaming && parseSources(msg.content).length"
           :sources="parseSources(msg.content)"
           class="mt-1.5"
+          @source-click="handleSourceClick"
         />
         <!-- Powered by badge for completed assistant messages -->
         <div
@@ -299,7 +300,9 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick, watch, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 import { useChatStore } from '@/stores/chat';
+import { useVisitStore } from '@/stores/visit';
 import { marked } from 'marked';
 import StreamingMessage from '@/components/StreamingMessage.vue';
 import ThinkingIndicator from '@/components/ThinkingIndicator.vue';
@@ -326,6 +329,12 @@ function parseSources(text) {
         .filter(line => line.includes('|'))
         .map(line => {
             const [label, key] = line.split('|').map(s => s.trim());
+            // Add visit date to practitioner badge for clarity
+            if (key === 'practitioner' && visitStore.currentVisit?.started_at) {
+                const date = new Date(visitStore.currentVisit.started_at);
+                const formatted = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                return { label: `${label} · ${formatted}`, key };
+            }
             return { label, key };
         });
 }
@@ -339,7 +348,9 @@ const props = defineProps({
 
 defineEmits(['close']);
 
+const router = useRouter();
 const chatStore = useChatStore();
+const visitStore = useVisitStore();
 const message = ref('');
 const messagesContainer = ref(null);
 const expandedThinking = reactive({});
@@ -444,6 +455,18 @@ const suggestedQuestions = computed(() => {
     }
     return defaultSuggestions;
 });
+
+function handleSourceClick(source) {
+    const actions = {
+        visit_notes: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+        practitioner: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+        openfda: () => window.open('https://open.fda.gov', '_blank'),
+        guidelines: () => router.push({ name: 'medical-library' }),
+        patient_record: () => router.push({ name: 'health-dashboard' }),
+    };
+    const action = actions[source.key];
+    if (action) action();
+}
 
 function toggleThinking(index) {
     expandedThinking[index] = !expandedThinking[index];

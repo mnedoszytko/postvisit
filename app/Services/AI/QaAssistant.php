@@ -47,7 +47,7 @@ class QaAssistant
 
         foreach ($this->client->stream($context['system_prompt'], $messages, [
             'model' => 'claude-haiku-4-5-20251001',
-            'max_tokens' => 300,
+            'max_tokens' => 150,
         ]) as $chunk) {
             yield ['type' => 'quick', 'content' => $chunk];
         }

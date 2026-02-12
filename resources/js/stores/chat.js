@@ -88,6 +88,13 @@ export const useChatStore = defineStore('chat', {
                                     this.messages[aiIndex].thinkingPhase = true;
                                 } else if (parsed.status) {
                                     this.messages[aiIndex].statusText = parsed.status;
+                                } else if (parsed.phase) {
+                                    // Map pipeline phase events to user-facing status
+                                    const phaseLabels = {
+                                        planning: 'Planning clinical analysis...',
+                                        reasoning: 'Deep clinical reasoning...',
+                                    };
+                                    this.messages[aiIndex].statusText = phaseLabels[parsed.phase] || parsed.phase;
                                 } else if (parsed.deep_ready) {
                                     this.messages[aiIndex].deepReady = true;
                                 } else if (parsed.thinking) {
