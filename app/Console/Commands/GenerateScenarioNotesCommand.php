@@ -232,11 +232,10 @@ class GenerateScenarioNotesCommand extends Command
                 $length = $end - $start;
 
                 if ($length <= 0 || $start < 0 || $end > strlen($text)) {
-                    // Try fallback search
-                    $pos = stripos($text, $entry['term']);
-                    if ($pos !== false) {
-                        $start = $pos;
-                        $end = $pos + strlen($entry['term']);
+                    // Try fallback search using word boundaries
+                    if (preg_match('/\b'.preg_quote($entry['term'], '/').'\b/iu', $text, $m, PREG_OFFSET_CAPTURE)) {
+                        $start = $m[0][1];
+                        $end = $start + strlen($m[0][0]);
                     } else {
                         continue;
                     }
@@ -246,11 +245,10 @@ class GenerateScenarioNotesCommand extends Command
                 $matched = strtolower($actual) === strtolower($entry['term']);
 
                 if (! $matched) {
-                    $pos = stripos($text, $entry['term']);
-                    if ($pos !== false) {
-                        $start = $pos;
-                        $end = $pos + strlen($entry['term']);
-                        $actual = substr($text, $start, strlen($entry['term']));
+                    if (preg_match('/\b'.preg_quote($entry['term'], '/').'\b/iu', $text, $m, PREG_OFFSET_CAPTURE)) {
+                        $start = $m[0][1];
+                        $end = $start + strlen($m[0][0]);
+                        $actual = $m[0][0];
                         $matched = true;
                     }
                 }

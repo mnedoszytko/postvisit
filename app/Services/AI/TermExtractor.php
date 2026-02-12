@@ -103,13 +103,12 @@ class TermExtractor
                 $actual = substr($text, $start, $length);
                 $matched = strtolower($actual) === strtolower($entry['term']);
 
-                // Fallback: if offset is wrong, search for the term in the text
+                // Fallback: if offset is wrong, search for the term using word boundaries
                 if (! $matched) {
-                    $pos = stripos($text, $entry['term']);
-                    if ($pos !== false) {
-                        $start = $pos;
-                        $end = $pos + strlen($entry['term']);
-                        $actual = substr($text, $start, strlen($entry['term']));
+                    if (preg_match('/\b'.preg_quote($entry['term'], '/').'\b/iu', $text, $m, PREG_OFFSET_CAPTURE)) {
+                        $start = $m[0][1];
+                        $end = $start + strlen($m[0][0]);
+                        $actual = $m[0][0];
                         $matched = true;
                     }
                 }
