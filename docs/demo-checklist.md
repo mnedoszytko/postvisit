@@ -169,6 +169,7 @@
 | **Doctor actions panel** | TODO | MUST | "Send message", "Schedule follow-up", "Renew prescription", "Add recommendation" — doctor-in-the-loop response actions |
 | **Alert detail view** — when clicking alert from dashboard | TODO | MUST | Shows full context: what triggered alert, relevant data trend, suggested action |
 | **Patient timeline** — unified chronological view | TODO | NICE | Single timeline combining: visits, abnormal vitals, AI chat sessions, messages — instead of separate sections |
+| **Follow-up / Prescription / Message actions actually work** | TODO | NICE | Doctor panel action buttons (Follow-up, Prescription, Message) should do something real: (1) Follow-up — invite patient to next visit, show scheduling screen. (2) Prescription — show patient's current meds, allow renew/new prescription with simple form. (3) Message — compose and send message to patient with channel picker (in-app, email, SMS). Currently buttons are present but non-functional |
 
 ---
 
