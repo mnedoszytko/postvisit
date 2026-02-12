@@ -462,6 +462,7 @@ curl -s "$BASE/tasks?scope=active" | python3 -m json.tool
 - [ ] Mock Apple Watch data (HR, PVC events) — JSON
 - [ ] Mock doctor dashboard data (patient list, alerts) — JSON (dashboard endpoint now works with real data)
 - [ ] Przetworzyć WAV'y przez Whisper → transkrypty → structured visit summaries (po otrzymaniu plików)
+- [x] **Generate animated patient portraits** — all 12 scenarios done via MiniMax Video 01 Live (~$6.50 total). Hover-to-play on scenario picker.
 
 ### Dokumentacja (hackathon criterion)
 - [x] README.md — project overview, setup, demo guide — DONE
