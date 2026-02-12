@@ -61,7 +61,7 @@
               </div>
 
               <!-- Visit reason (subtitle) -->
-              <p v-if="visit.reason_for_visit" class="text-sm text-gray-500 leading-snug line-clamp-2">
+              <p v-if="visit.reason_for_visit" class="text-sm text-gray-500 leading-snug line-clamp-1">
                 {{ visit.reason_for_visit }}
               </p>
 
@@ -95,7 +95,7 @@
           to="/health"
           class="block w-full text-center py-3 bg-white text-emerald-700 border border-emerald-200 rounded-xl font-medium hover:bg-emerald-50 transition-colors"
         >
-          Health Dashboard
+          Health Record
         </router-link>
         <router-link
           to="/library"

@@ -92,6 +92,25 @@
         </div>
       </div>
 
+      <!-- Quick Actions -->
+      <section>
+        <h2 class="text-lg font-semibold text-gray-800 mb-3">Quick Actions</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <button
+            v-for="action in quickActions"
+            :key="action.label"
+            class="group bg-white rounded-2xl border border-gray-200 p-5 flex flex-col items-center gap-3 hover:border-emerald-400 hover:shadow-md transition-all text-center"
+            @click="handleQuickAction(action.label)"
+          >
+            <span
+              class="w-11 h-11 rounded-xl flex items-center justify-center bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100 transition-colors"
+              v-html="action.icon"
+            ></span>
+            <span class="text-sm font-medium text-gray-700 group-hover:text-emerald-700 transition-colors">{{ action.label }}</span>
+          </button>
+        </div>
+      </section>
+
       <!-- Patient list -->
       <section>
         <div class="flex items-center justify-between mb-4">
@@ -174,10 +193,35 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useDoctorStore } from '@/stores/doctor';
+import { useToastStore } from '@/stores/toast';
 import DoctorLayout from '@/layouts/DoctorLayout.vue';
 
 const doctorStore = useDoctorStore();
+const toast = useToastStore();
 const search = ref('');
+
+const quickActions = [
+    {
+        label: 'Schedule Follow-up',
+        icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>',
+    },
+    {
+        label: 'Renew Prescription',
+        icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>',
+    },
+    {
+        label: 'Send Recommendation',
+        icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>',
+    },
+    {
+        label: 'Request Labs',
+        icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>',
+    },
+];
+
+function handleQuickAction(label) {
+    toast.info(`${label} — coming soon`);
+}
 
 let debounceTimer = null;
 function handleSearch() {

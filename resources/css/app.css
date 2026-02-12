@@ -11,3 +11,28 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* AI document analysis — pulsing background */
+@keyframes analysing-pulse {
+    0%, 100% { background-color: rgb(236 253 245 / 0.6); }
+    50% { background-color: rgb(209 250 229 / 0.8); }
+}
+
+/* AI document analysis — indeterminate progress bar */
+@keyframes analysing-bar {
+    0% { width: 0%; margin-left: 0%; }
+    50% { width: 60%; margin-left: 20%; }
+    100% { width: 0%; margin-left: 100%; }
+}
+
+/* Send button glow when chat opens with pre-filled context */
+@keyframes send-glow {
+    0% { box-shadow: 0 0 0 0 rgb(16 185 129 / 0.7); }
+    40% { box-shadow: 0 0 0 8px rgb(16 185 129 / 0.3); }
+    70% { box-shadow: 0 0 0 12px rgb(16 185 129 / 0); }
+    100% { box-shadow: 0 0 0 0 rgb(16 185 129 / 0); }
+}
+
+.animate-send-glow {
+    animation: send-glow 1.5s ease-out 1;
+}

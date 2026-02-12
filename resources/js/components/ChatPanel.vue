@@ -218,9 +218,13 @@
         :disabled="chatStore.loading"
       />
       <button
+        ref="sendButton"
         type="submit"
         :disabled="!message.trim() || chatStore.loading"
-        class="px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+        :class="[
+          'px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0',
+          sendGlow ? 'animate-send-glow' : ''
+        ]"
       >
         <svg v-if="chatStore.loading" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
@@ -278,6 +282,8 @@ const message = ref('');
 const messagesContainer = ref(null);
 const expandedThinking = reactive({});
 const showContextMenu = ref(false);
+const sendButton = ref(null);
+const sendGlow = ref(false);
 
 const contextSources = reactive([
     { id: 'visit', label: 'Visit Notes', shortLabel: 'Visit', icon: '📋', description: 'SOAP notes, transcript', tokens: '~12K', selected: true },
@@ -404,10 +410,19 @@ function scrollToBottom() {
 
 watch(() => chatStore.messages, scrollToBottom, { deep: true });
 
+function triggerSendGlow() {
+    sendGlow.value = false;
+    nextTick(() => {
+        sendGlow.value = true;
+        setTimeout(() => { sendGlow.value = false; }, 1600);
+    });
+}
+
 // When context changes while chat is already open, pre-fill the new context
 watch(() => props.initialContext, (newCtx) => {
     if (newCtx) {
         message.value = `Explain: ${newCtx}`;
+        triggerSendGlow();
     }
 });
 
@@ -415,6 +430,7 @@ onMounted(() => {
     chatStore.clearMessages();
     if (props.initialContext) {
         message.value = `Explain: ${props.initialContext}`;
+        triggerSendGlow();
     }
 });
 </script>

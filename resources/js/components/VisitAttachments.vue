@@ -128,12 +128,27 @@
           <!-- AI Analysis section -->
           <div v-if="doc._analysis_status" class="border-t border-gray-100">
             <!-- Processing state -->
-            <div v-if="doc._analysis_status === 'pending' || doc._analysis_status === 'processing'" class="px-3 py-2 flex items-center gap-2">
-              <svg class="w-4 h-4 animate-spin text-emerald-500" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              <span class="text-xs text-gray-500">Analyzing document...</span>
+            <div
+              v-if="doc._analysis_status === 'pending' || doc._analysis_status === 'processing'"
+              class="px-3 py-3 bg-emerald-50/60 border-l-4 border-emerald-400 animate-[analysing-pulse_2s_ease-in-out_infinite]"
+            >
+              <div class="flex items-center gap-3">
+                <div class="relative shrink-0">
+                  <svg class="w-6 h-6 animate-spin text-emerald-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping"></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-semibold text-emerald-800">AI is analyzing this document...</p>
+                  <p class="text-xs text-emerald-600 mt-0.5">Extracting findings and key values</p>
+                </div>
+              </div>
+              <!-- Progress bar animation -->
+              <div class="mt-2.5 w-full h-1.5 bg-emerald-200/50 rounded-full overflow-hidden">
+                <div class="h-full bg-emerald-500 rounded-full animate-[analysing-bar_2.5s_ease-in-out_infinite]"></div>
+              </div>
             </div>
 
             <!-- Failed state -->
@@ -616,6 +631,11 @@ async function fetchDocuments() {
 
         // Assign first so Vue wraps items in reactive proxies
         documents.value = docs;
+
+        // Auto-expand section if any documents have completed analysis
+        if (docs.some(d => d.analysis_status === 'completed')) {
+            expanded.value = true;
+        }
 
         // Resume polling using reactive proxy objects, not raw ones
         documents.value.forEach(doc => {
