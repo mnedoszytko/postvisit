@@ -7,6 +7,48 @@
 
 ---
 
+## Implementation Run: 13 Must-Haves (2026-02-12 evening)
+
+### Implemented (6 parallel agents)
+
+| #     | Item                                                           | Status | Verified |
+|-------|----------------------------------------------------------------|--------|----------|
+| MH-1  | Ask button → top-right in LabResultsTab + global Ask           | DONE   | [ ]      |
+| MH-2  | Lab charts verified (4 readings per marker in demo data)       | DONE   | [ ]      |
+| MH-3  | Lab results uploader (PDF/photo) with drag-drop                | DONE   | [ ]      |
+| MH-4  | Agents tab in My Health — API mockup, token gen, MCP config    | DONE   | [ ]      |
+| MH-5  | Documents tab rebuilt — real backend, upload, AI analysis      | DONE   | [ ]      |
+| MH-6  | All visit section icons unified to emerald                     | DONE   | [ ]      |
+| MH-7  | Audio playback section + backend streaming endpoint            | DONE   | [ ]      |
+| MH-8  | Chat suggestions randomized from expanded pools, fallback badge| DONE   | [ ]      |
+| MH-9  | Ask EBM tab removed from Reference                             | DONE   | [ ]      |
+| MH-10 | Clinical References add/remove with localStorage               | DONE   | [ ]      |
+| MH-11 | My Library seeded with 4 copyright-friendly demo items         | DONE   | [ ]      |
+| MH-13 | Reference/condition/medication chat suggestions                | DONE   | [ ]      |
+| MH-17 | Legal links (Terms, Privacy, Legal Notice) in Settings         | DONE   | [ ]      |
+
+### Post-implementation fixes
+
+| Fix | Description                                                    | Status |
+|-----|----------------------------------------------------------------|--------|
+| F-1 | Agents moved from top nav → My Health tab                      | DONE   |
+| F-2 | Key Findings in Documents: formatted cards instead of raw JSON | DONE   |
+| F-3 | Ask button moved to right side + global Ask in Lab Results     | DONE   |
+
+### Backlog (nice-to-haves from this run)
+
+| #  | Item                                                | Status  |
+|----|-----------------------------------------------------|---------|
+| N5 | Ask button hover → highlights context card           | Pending |
+| N6 | Lab Results — QR code / mobile phone upload          | Pending |
+| N7 | My Library — document parsing/caching for context    | Pending |
+
+### Build & Tests
+- `bun run build` — passes
+- `herd php artisan test` — 231 passed (679 assertions)
+
+---
+
 ## Screen 1: Landing Page (`/`)
 
 | Element | Status | Category | Notes |

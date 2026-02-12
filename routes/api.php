@@ -94,6 +94,7 @@ Route::prefix('v1')->group(function () {
             Route::get('transcript', [TranscriptController::class, 'show']);
             Route::post('transcript/process', [TranscriptController::class, 'process']);
             Route::get('transcript/status', [TranscriptController::class, 'status']);
+            Route::get('transcript/audio', [TranscriptController::class, 'audio']);
 
             // Chat
             Route::post('chat', [ChatController::class, 'sendMessage']);

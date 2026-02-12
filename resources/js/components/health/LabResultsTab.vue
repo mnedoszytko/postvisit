@@ -1,18 +1,92 @@
 <template>
   <div class="space-y-6">
+    <!-- Upload drop zone -->
+    <div
+      class="relative border-2 border-dashed rounded-2xl p-6 text-center transition-colors"
+      :class="isDragging ? 'border-emerald-400 bg-emerald-50' : 'border-gray-200 bg-white'"
+      @dragover.prevent="isDragging = true"
+      @dragleave.prevent="isDragging = false"
+      @drop.prevent="handleDrop"
+    >
+      <input
+        ref="fileInput"
+        type="file"
+        accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,.webp"
+        multiple
+        class="hidden"
+        @change="handleFileSelect"
+      />
+      <div class="flex flex-col items-center gap-2">
+        <svg class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+        </svg>
+        <p class="text-sm text-gray-500">
+          Drag &amp; drop lab results here, or
+          <button type="button" class="text-emerald-600 font-medium hover:text-emerald-700" @click="fileInput?.click()">browse files</button>
+        </p>
+        <p class="text-xs text-gray-400">PDF, JPG, PNG, HEIC — max 10 MB per file</p>
+      </div>
+      <!-- Upload progress -->
+      <div v-if="uploading" class="mt-3">
+        <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div class="h-full bg-emerald-500 rounded-full transition-all duration-300" :style="{ width: uploadProgress + '%' }"></div>
+        </div>
+        <p class="text-xs text-gray-400 mt-1">Uploading...</p>
+      </div>
+    </div>
+
+    <!-- Uploaded documents list -->
+    <div v-if="labDocuments.length > 0" class="space-y-2">
+      <h3 class="text-sm font-semibold text-gray-700">Uploaded Lab Results</h3>
+      <div v-for="doc in labDocuments" :key="doc.id" class="flex items-center gap-3 bg-white rounded-xl border border-gray-200 px-4 py-3">
+        <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+        </svg>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-medium text-gray-900 truncate">{{ doc.title }}</p>
+          <p class="text-xs text-gray-400">{{ formatDate(doc.document_date || doc.created_at) }}</p>
+        </div>
+        <span
+          v-if="doc.analysis_status"
+          class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full shrink-0"
+          :class="{
+            'bg-yellow-100 text-yellow-700': doc.analysis_status === 'pending',
+            'bg-emerald-100 text-emerald-700': doc.analysis_status === 'completed',
+            'bg-red-100 text-red-700': doc.analysis_status === 'failed',
+          }"
+        >
+          {{ doc.analysis_status === 'pending' ? 'Analyzing...' : doc.analysis_status === 'completed' ? 'Analyzed' : 'Error' }}
+        </span>
+      </div>
+    </div>
+
     <!-- Time Range Filter -->
     <TimeRangeFilter v-model="selectedRange" />
 
+    <!-- Global Ask button -->
+    <div v-if="sortedGroups.length > 0" class="flex items-center justify-between">
+      <h3 class="text-sm font-semibold text-gray-700">Lab Results</h3>
+      <AskAiButton @ask="openGlobalChat('all my lab results')" />
+    </div>
+
     <!-- Marker cards -->
-    <div v-for="group in sortedGroups" :key="group.code" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div v-for="group in sortedGroups" :key="group.code" class="bg-white rounded-2xl border border-gray-200 overflow-hidden relative group/card">
+      <!-- Ask button — top-right corner, subtle, visible on hover -->
+      <button
+        class="absolute top-2 right-2 z-10 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium text-emerald-600 bg-emerald-50/80 hover:bg-emerald-100 opacity-50 group-hover/card:opacity-100 transition-all cursor-pointer"
+        title="Ask AI about this result"
+        @click="openGlobalChat(group.name)"
+      >
+        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+        </svg>
+        Ask
+      </button>
       <!-- Header: marker name, latest value, badge -->
-      <div class="flex items-center justify-between px-5 py-4">
-        <div class="flex items-center gap-2">
-          <div>
-            <h3 class="font-semibold text-gray-900 text-sm">{{ group.name }}</h3>
-            <p class="text-xs text-gray-400 mt-0.5">{{ formatDate(group.latest.effective_date) }}</p>
-          </div>
-          <AskAiButton @ask="openGlobalChat(group.name)" />
+      <div class="flex items-center justify-between px-5 py-4 pr-14">
+        <div>
+          <h3 class="font-semibold text-gray-900 text-sm">{{ group.name }}</h3>
+          <p class="text-xs text-gray-400 mt-0.5">{{ formatDate(group.latest.effective_date) }}</p>
         </div>
         <div class="text-right">
           <p class="text-lg font-bold" :class="interpColor(group.latest.interpretation)">
@@ -40,7 +114,7 @@
     </div>
 
     <!-- Empty state -->
-    <div v-if="sortedGroups.length === 0" class="text-center py-12 text-gray-400">
+    <div v-if="sortedGroups.length === 0 && labDocuments.length === 0" class="text-center py-12 text-gray-400">
       No lab results available yet.
     </div>
   </div>
@@ -61,14 +135,104 @@ import {
 } from 'chart.js';
 import TimeRangeFilter from './TimeRangeFilter.vue';
 import AskAiButton from '@/components/AskAiButton.vue';
+import { useApi } from '@/composables/useApi';
+import { useAuthStore } from '@/stores/auth';
+import { useToastStore } from '@/stores/toast';
 
 const openGlobalChat = inject<(topic: string) => void>('openGlobalChat', () => {});
+const api = useApi();
+const auth = useAuthStore();
+const toast = useToastStore();
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler);
 
 const props = defineProps({
     observations: { type: Array, default: () => [] },
+    documents: { type: Array, default: () => [] },
 });
+
+// Upload state
+const fileInput = ref<HTMLInputElement | null>(null);
+const isDragging = ref(false);
+const uploading = ref(false);
+const uploadProgress = ref(0);
+const uploadedDocs = ref<any[]>([]);
+
+const labDocuments = computed(() => {
+    const fromProps = (props.documents as any[]).filter(d => d.document_type === 'lab_result');
+    const combined = [...fromProps, ...uploadedDocs.value];
+    // Deduplicate by id
+    const seen = new Set<string>();
+    return combined.filter(d => {
+        if (seen.has(d.id)) return false;
+        seen.add(d.id);
+        return true;
+    });
+});
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const ACCEPTED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
+
+function handleDrop(e: DragEvent): void {
+    isDragging.value = false;
+    const files = e.dataTransfer?.files;
+    if (files?.length) uploadFiles(Array.from(files));
+}
+
+function handleFileSelect(e: Event): void {
+    const input = e.target as HTMLInputElement;
+    if (input.files?.length) {
+        uploadFiles(Array.from(input.files));
+        input.value = '';
+    }
+}
+
+async function uploadFiles(files: File[]): Promise<void> {
+    const patientId = auth.user?.patient_id || auth.user?.patient?.id;
+    if (!patientId) {
+        toast.error('Patient context not available.');
+        return;
+    }
+
+    const validFiles = files.filter(f => {
+        if (f.size > MAX_FILE_SIZE) {
+            toast.error(`${f.name} exceeds 10 MB limit.`);
+            return false;
+        }
+        if (!ACCEPTED_TYPES.includes(f.type) && !f.name.match(/\.(pdf|jpe?g|png|heic|heif|webp)$/i)) {
+            toast.error(`${f.name} is not a supported file type.`);
+            return false;
+        }
+        return true;
+    });
+
+    if (!validFiles.length) return;
+
+    uploading.value = true;
+    uploadProgress.value = 0;
+
+    for (let i = 0; i < validFiles.length; i++) {
+        const formData = new FormData();
+        formData.append('file', validFiles[i]);
+        formData.append('document_type', 'lab_result');
+        formData.append('title', validFiles[i].name);
+
+        try {
+            const res = await api.post(`/patients/${patientId}/documents`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            uploadedDocs.value.unshift(res.data.data);
+            uploadProgress.value = Math.round(((i + 1) / validFiles.length) * 100);
+        } catch {
+            toast.error(`Failed to upload ${validFiles[i].name}.`);
+        }
+    }
+
+    uploading.value = false;
+    if (uploadedDocs.value.length) {
+        toast.success('Lab results uploaded successfully.');
+    }
+}
 
 const selectedRange = ref('1y');
 

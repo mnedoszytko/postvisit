@@ -331,6 +331,47 @@ class TranscriptController extends Controller
         ]);
     }
 
+    /**
+     * Stream the audio file for the visit's transcript.
+     */
+    public function audio(Visit $visit): \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\JsonResponse
+    {
+        $transcript = $visit->transcript;
+
+        if (! $transcript || ! $transcript->audio_file_path) {
+            return response()->json(['error' => ['message' => 'No audio file found for this visit']], 404);
+        }
+
+        $disk = config('filesystems.upload');
+
+        if (! Storage::disk($disk)->exists($transcript->audio_file_path)) {
+            return response()->json(['error' => ['message' => 'Audio file not found on disk']], 404);
+        }
+
+        $mimeType = 'audio/wav';
+        $ext = strtolower(pathinfo($transcript->audio_file_path, PATHINFO_EXTENSION));
+        if ($ext === 'mp3') {
+            $mimeType = 'audio/mpeg';
+        } elseif ($ext === 'webm') {
+            $mimeType = 'audio/webm';
+        } elseif ($ext === 'ogg') {
+            $mimeType = 'audio/ogg';
+        }
+
+        $size = Storage::disk($disk)->size($transcript->audio_file_path);
+
+        return response()->stream(function () use ($disk, $transcript) {
+            $stream = Storage::disk($disk)->readStream($transcript->audio_file_path);
+            fpassthru($stream);
+            fclose($stream);
+        }, 200, [
+            'Content-Type' => $mimeType,
+            'Content-Length' => $size,
+            'Accept-Ranges' => 'bytes',
+            'Cache-Control' => 'private, max-age=3600',
+        ]);
+    }
+
     public function status(Visit $visit): JsonResponse
     {
         $transcript = $visit->transcript;
