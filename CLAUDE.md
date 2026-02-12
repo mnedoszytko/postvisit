@@ -491,6 +491,21 @@ curl -s "$BASE/tasks?scope=active" | python3 -m json.tool
 - [ ] docs/demo-guide.md — step-by-step demo walkthrough
 - [ ] CHANGELOG.md — feature changelog
 
+### Pre-landing checklist (przed submission)
+- [ ] **Dead code audit** — przejrzeć repo pod kątem: nieużywanych komponentów Vue, osieroconých kontrolerów/metod, zakomentowanego kodu, plików testowych/debug wrzuconych przypadkiem, nieużywanych importów, pustych plików
+- [ ] **Console.log / dd() cleanup** — usunąć wszystkie debug logi z frontendu i backendu
+- [ ] **Unused dependencies** — sprawdzić `composer.json` i `package.json` pod kątem paczek, które nie są już używane
+- [ ] **Unused routes** — porównać `routes/api.php` z rzeczywistymi kontrolerami, usunąć martwe endpointy
+- [ ] **Orphaned migrations** — sprawdzić czy nie ma migracji tworzących tabele, które nie mają modeli
+- [ ] **Test fixtures / temp files** — usunąć pliki testowe, tymczasowe dane, stare mocki z repo
+- [ ] **TODO/FIXME/HACK comments** — przejrzeć i rozwiązać lub udokumentować
+- [ ] **.env.example** — upewnić się, że zawiera wszystkie wymagane zmienne
+- [ ] **README.md audit** — kompletna weryfikacja: czy opis projektu odpowiada aktualnemu stanowi, czy setup instructions działają od zera, czy lista features jest kompletna i aktualna, czy architektura/stack się zgadzają, czy screenshoty/demo instructions odzwierciedlają obecny UI
+- [ ] **Dokumentacja docs/** — przejrzeć wszystkie pliki w `docs/`: `api.md` (czy pokrywa wszystkie endpointy), `architecture.md` (czy diagram jest aktualny), `decisions.md` (czy ostatnie decyzje są udokumentowane), `ai-prompts.md` (czy prompty się zgadzają z kodem), `demo-guide.md` (czy krok po kroku działa), `licenses.md` (czy nowe zależności są dodane)
+- [ ] **CHANGELOG.md** — uzupełnić brakujące wpisy, upewnić się że pokrywa wszystkie features od początku projektu
+- [ ] **Pint** — `./vendor/bin/pint` finalne formatowanie
+- [ ] **Build clean** — `bun run build` bez errorów i warnings (oprócz chunk size)
+
 ===
 
 <laravel-boost-guidelines>
