@@ -192,20 +192,18 @@
     </header>
 
     <!-- Main content — add right margin on desktop when chat is open -->
-    <main :class="[
-      wide ? 'max-w-7xl' : 'max-w-4xl',
-      'mx-auto px-4 py-6',
-      showGlobalChat && latestVisitId && chatOpen ? 'lg:mr-96' : ''
-    ]">
+    <main
+      :class="[wide ? 'max-w-7xl' : 'max-w-4xl', 'mx-auto px-4 py-6']"
+      :style="chatMarginStyle"
+    >
       <slot />
     </main>
 
     <!-- Disclaimer footer -->
-    <footer :class="[
-      wide ? 'max-w-7xl' : 'max-w-4xl',
-      'mx-auto px-4 py-4 text-center',
-      showGlobalChat && latestVisitId && chatOpen ? 'lg:mr-96' : ''
-    ]">
+    <footer
+      :class="[wide ? 'max-w-7xl' : 'max-w-4xl', 'mx-auto px-4 py-4 text-center']"
+      :style="chatMarginStyle"
+    >
       <p class="text-xs text-gray-400 leading-relaxed">
         All clinical scenarios, patient data, and medical records displayed in this application are entirely fictional,
         created for demonstration purposes only, and do not depict any real person or actual medical encounter.
@@ -216,9 +214,14 @@
     <!-- Desktop: fixed chat panel (right side, below headers) -->
     <div
       v-if="showGlobalChat && latestVisitId && chatOpen"
-      class="hidden lg:flex fixed right-0 w-96 border-l border-gray-200 bg-white z-30 flex-col"
-      :style="{ top: chatTopOffset + 'px', height: 'calc(100vh - ' + chatTopOffset + 'px)' }"
+      class="hidden lg:flex fixed right-0 border-l border-gray-200 bg-white z-30 flex-col"
+      :style="{ top: chatTopOffset + 'px', height: 'calc(100vh - ' + chatTopOffset + 'px)', width: chatWidth + 'px' }"
     >
+      <!-- Drag handle to resize -->
+      <div
+        class="absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-emerald-400/40 active:bg-emerald-400/60 transition-colors z-10"
+        @mousedown.prevent="startResize"
+      />
       <ChatPanel
         :visit-id="latestVisitId"
         :embedded="true"
@@ -288,6 +291,8 @@ const dropdownOpen = ref(false);
 const switchingRole = ref(false);
 const chatOpen = ref(window.innerWidth >= 1024);
 const latestVisitId = ref(null);
+const chatWidth = ref(384); // default w-96
+const isResizing = ref(false);
 
 // Hide global chat on pages that have their own chat or where it doesn't make sense
 const hideChatRoutes = ['visit-view', 'meds-detail', 'companion-scribe', 'processing', 'feedback'];
@@ -338,6 +343,36 @@ const isDemoUser = computed(() => {
 const chatTopOffset = computed(() => {
     return isDemoUser.value ? 104 : 64;
 });
+
+// Dynamic margin for main content when chat is open (desktop only)
+const chatMarginStyle = computed(() => {
+    if (showGlobalChat.value && latestVisitId.value && chatOpen.value && window.innerWidth >= 1024) {
+        return { marginRight: chatWidth.value + 'px' };
+    }
+    return {};
+});
+
+// Resize drag logic
+function startResize(e) {
+    isResizing.value = true;
+    const startX = e.clientX;
+    const startWidth = chatWidth.value;
+    function onMove(ev) {
+        const newWidth = Math.min(700, Math.max(320, startWidth + (startX - ev.clientX)));
+        chatWidth.value = newWidth;
+    }
+    function onUp() {
+        isResizing.value = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+    }
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+}
 
 const initials = computed(() => {
     if (!auth.user?.name) return '?';

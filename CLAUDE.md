@@ -151,6 +151,13 @@ PRs are disabled for hackathon speed. All work goes directly to `main` with disc
 
 Each agent worktree gets its own branch (`agentN-workspace`). **Never delete another agent's worktree** — other Claude Code sessions may be using it.
 
+**Worktree .env (CRITICAL):** Each worktree needs its own `.env` with domain matching the Herd directory name. If these don't match, Sanctum cookie auth silently fails (cookies not sent).
+```
+APP_URL=http://postvisit-agentN.test
+SANCTUM_STATEFUL_DOMAINS=postvisit-agentN.test
+DB_DATABASE=postvisit_agentN
+```
+
 ### Commit Rules
 - **Every commit must**: pass `herd php artisan test` AND `bun run build`
 - **Never push to `main` if tests fail**
@@ -290,6 +297,19 @@ The DemoSeeder must produce **complete, feature-ready data for ALL demo scenario
 - Every visit must have all dependent data (visit notes, medical_terms, observations, conditions, prescriptions)
 - If a feature depends on AI-generated data (e.g. term extraction), the seeder must invoke that service for all scenarios
 - Critical demo data should be hardcoded for reliability; AI services supplement but don't replace deterministic seeding
+
+### AI Generation Cost Guard
+Before running ANY AI generation (SOAP notes, term extraction, transcript processing, image/video generation):
+1. **Check for existing output** — if `soap-note.json`, `medical-terms.json`, or `patient-animation.mp4` already exists, skip. Never use `--force` unless explicitly asked.
+2. **Ask before batch operations** — "This will call Claude Opus for N scenarios, ~X minutes. Proceed?" Hackathon time is the scarcest resource.
+3. **Never regenerate existing AI content** — each scenario costs ~2-3 min of Opus time. Unnecessary regeneration wastes tokens and money.
+
+### No Real AI Services in Automated Tests
+Automated tests (PHPUnit) must NEVER call real AI services (Anthropic API, FAL, Whisper). A single real API call can block the test suite indefinitely.
+- Mock AI services in tests, or use hardcoded fixtures
+- PHPUnit time limits are enforced: 10s small, 20s medium, 30s large
+- Any test taking >30s must be rewritten — slow tests block all development
+- Use `DemoScenarioSeeder` (hardcoded config) instead of `DemoSeeder` (calls TermExtractor) in tests
 
 ### Axios Interceptor Safety
 Global axios interceptors that perform side effects (navigation, toasts) must have:
