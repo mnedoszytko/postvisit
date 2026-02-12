@@ -1,5 +1,5 @@
 <template>
-  <PatientLayout>
+  <component :is="layout">
     <div class="space-y-6">
       <h1 class="text-2xl font-bold text-gray-900">Settings</h1>
 
@@ -11,10 +11,16 @@
         </div>
       </section>
     </div>
-  </PatientLayout>
+  </component>
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { useAuthStore } from '@/stores/auth';
 import PatientLayout from '@/layouts/PatientLayout.vue';
+import DoctorLayout from '@/layouts/DoctorLayout.vue';
 import AiTierSelector from '@/components/AiTierSelector.vue';
+
+const auth = useAuthStore();
+const layout = computed(() => auth.isDoctor ? DoctorLayout : PatientLayout);
 </script>

@@ -91,10 +91,16 @@ const routes = [
         meta: { requiresAuth: true, role: 'doctor' },
     },
     {
+        path: '/doctor/audit',
+        name: 'doctor-audit-log',
+        component: () => import('@/views/DoctorAuditLog.vue'),
+        meta: { requiresAuth: true, role: 'doctor' },
+    },
+    {
         path: '/settings',
         name: 'settings',
         component: () => import('@/views/Settings.vue'),
-        meta: { requiresAuth: true, role: 'patient' },
+        meta: { requiresAuth: true },
     },
     {
         path: '/demo',

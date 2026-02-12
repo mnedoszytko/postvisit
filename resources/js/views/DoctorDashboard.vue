@@ -73,7 +73,7 @@
       </section>
 
       <div v-else-if="!doctorStore.alertsLoading" class="bg-emerald-50 rounded-2xl border border-emerald-200 p-4 text-sm text-emerald-700">
-        No alerts — all patients are stable.
+        No alerts at this time.
       </div>
 
       <!-- Stats overview -->
@@ -121,19 +121,7 @@
                 {{ patient.first_name?.[0] || '?' }}
               </div>
               <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-1">
-                  <p class="font-semibold text-gray-900 truncate">{{ patient.first_name }} {{ patient.last_name }}</p>
-                  <span
-                    :class="[
-                      'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shrink-0',
-                      patient.status === 'alert'
-                        ? 'bg-red-100 text-red-700'
-                        : 'bg-emerald-100 text-emerald-700'
-                    ]"
-                  >
-                    {{ patient.status === 'alert' ? 'Needs Review' : 'Stable' }}
-                  </span>
-                </div>
+                <p class="font-semibold text-gray-900 truncate mb-1">{{ patient.first_name }} {{ patient.last_name }}</p>
 
                 <p v-if="patient.primary_condition" class="text-sm text-gray-600 truncate">
                   {{ patient.primary_condition }}
