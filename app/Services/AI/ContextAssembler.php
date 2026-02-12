@@ -7,6 +7,7 @@ use Anthropic\Messages\TextBlockParam;
 use App\Models\Visit;
 use App\Services\Guidelines\GuidelinesRepository;
 use App\Services\Medications\OpenFdaClient;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class ContextAssembler
@@ -28,6 +29,9 @@ class ContextAssembler
      */
     public function assembleForVisit(Visit $visit, string $promptName = 'qa-assistant'): array
     {
+        // Eager load all relationships upfront to prevent N+1 queries
+        $visit->loadMissing(['practitioner', 'visitNote', 'observations', 'transcript', 'conditions', 'prescriptions.medication']);
+
         $tier = $this->tierManager->current();
         $cacheTtl = config('anthropic.cache.ttl', '5m');
 
@@ -300,33 +304,10 @@ class ContextAssembler
                 continue;
             }
 
-            try {
-                // Get top adverse events from OpenFDA FAERS database
-                $adverse = $this->openFda->getAdverseEvents($med->generic_name, 5);
-                if (! empty($adverse['events'])) {
-                    $hasData = true;
-                    $parts[] = "\nFDA Adverse Event Reports for {$med->generic_name}:";
-                    foreach ($adverse['events'] as $event) {
-                        $parts[] = "- {$event['reaction']}: {$event['count']} reports";
-                    }
-                }
-
-                // Get key label sections
-                $label = $this->openFda->getDrugLabel($med->generic_name);
-                if (! empty($label)) {
-                    $hasData = true;
-                    if (! empty($label['boxed_warning'])) {
-                        $parts[] = "\nBOXED WARNING for {$med->generic_name}: ".mb_substr($label['boxed_warning'], 0, 500);
-                    }
-                    if (! empty($label['information_for_patients'])) {
-                        $parts[] = "\nPatient Information for {$med->generic_name}: ".mb_substr($label['information_for_patients'], 0, 500);
-                    }
-                }
-            } catch (\Throwable $e) {
-                Log::warning('Failed to fetch FDA data for context', [
-                    'medication' => $med->generic_name,
-                    'error' => $e->getMessage(),
-                ]);
+            $medSafetyContext = $this->getFdaSafetyForMedication($med->generic_name);
+            if ($medSafetyContext) {
+                $hasData = true;
+                $parts[] = $medSafetyContext;
             }
         }
 
@@ -337,5 +318,54 @@ class ContextAssembler
         $parts[] = '--- END FDA SAFETY DATA ---';
 
         return implode("\n", $parts);
+    }
+
+    /**
+     * Get cached FDA safety context for a single medication.
+     *
+     * Caches the formatted safety string for 24 hours to avoid repeated
+     * FDA API calls across chat sessions for the same medication.
+     */
+    private function getFdaSafetyForMedication(string $genericName): ?string
+    {
+        $cacheKey = 'fda_safety:'.mb_strtolower($genericName);
+
+        return Cache::remember($cacheKey, 86400, function () use ($genericName): ?string {
+            $parts = [];
+
+            try {
+                $adverse = $this->openFda->getAdverseEvents($genericName, 5);
+                if (! empty($adverse['events'])) {
+                    $parts[] = "\nFDA Adverse Event Reports for {$genericName}:";
+                    foreach ($adverse['events'] as $event) {
+                        $parts[] = "- {$event['reaction']}: {$event['count']} reports";
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::warning('FDA adverse events lookup failed, skipping', [
+                    'medication' => $genericName,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            try {
+                $label = $this->openFda->getDrugLabel($genericName);
+                if (! empty($label)) {
+                    if (! empty($label['boxed_warning'])) {
+                        $parts[] = "\nBOXED WARNING for {$genericName}: ".mb_substr($label['boxed_warning'], 0, 500);
+                    }
+                    if (! empty($label['information_for_patients'])) {
+                        $parts[] = "\nPatient Information for {$genericName}: ".mb_substr($label['information_for_patients'], 0, 500);
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::warning('FDA drug label lookup failed, skipping', [
+                    'medication' => $genericName,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            return $parts !== [] ? implode("\n", $parts) : null;
+        });
     }
 }

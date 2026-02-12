@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 class OpenFdaClient
 {
     private const BASE_URL = 'https://api.fda.gov/drug';
+
     private const CACHE_TTL = 86400; // 24 hours
 
     /**
@@ -18,12 +19,12 @@ class OpenFdaClient
      */
     public function getAdverseEvents(string $drugName, int $limit = 10): array
     {
-        $cacheKey = 'openfda_adverse_' . md5($drugName . $limit);
+        $cacheKey = 'openfda_adverse_'.md5($drugName.$limit);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($drugName, $limit) {
-            $response = Http::timeout(15)
-                ->get(self::BASE_URL . '/event.json', [
-                    'search' => 'patient.drug.openfda.generic_name:"' . $drugName . '"',
+            $response = Http::timeout((int) config('services.openfda.timeout', 5))
+                ->get(self::BASE_URL.'/event.json', [
+                    'search' => 'patient.drug.openfda.generic_name:"'.$drugName.'"',
                     'count' => 'patient.reaction.reactionmeddrapt.exact',
                     'limit' => $limit,
                 ]);
@@ -48,12 +49,12 @@ class OpenFdaClient
      */
     public function getDrugLabel(string $drugName): array
     {
-        $cacheKey = 'openfda_label_' . md5($drugName);
+        $cacheKey = 'openfda_label_'.md5($drugName);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($drugName) {
-            $response = Http::timeout(15)
-                ->get(self::BASE_URL . '/label.json', [
-                    'search' => 'openfda.generic_name:"' . $drugName . '"',
+            $response = Http::timeout((int) config('services.openfda.timeout', 5))
+                ->get(self::BASE_URL.'/label.json', [
+                    'search' => 'openfda.generic_name:"'.$drugName.'"',
                     'limit' => 1,
                 ]);
 
