@@ -467,36 +467,26 @@ curl -s "$BASE/tasks?scope=active" | python3 -m json.tool
 - Use `GET /documents` with location filter before creating new docs
 - MCP tools (`mcp__claude_ai_Craft__*`) are also available as an alternative interface
 
-## TODO — PRZYPOMNIENIA DLA NEDO
-
-### BLOKUJĄCE (bez tego demo nie ruszy)
-- [x] **Transkrypt wizyty** — DONE (`demo/transcript.txt`). Realistyczny dialog kardiolog-pacjent, PVCs, propranolol 40mg 2x/day.
-- [x] **Wypis lekarski / discharge notes** — DONE (`demo/discharge-notes.txt`). Pełny format wypisu.
+## TODO
 
 ### Production deployment checklist
-- [ ] **UPLOAD_DISK=s3** — on production set `UPLOAD_DISK=s3` in `.env` (default is `local` for dev). Requires `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET` to be configured. Without this, uploaded documents/audio are stored on local disk and will be lost on redeploy.
+- [ ] **UPLOAD_DISK=s3** — on production set `UPLOAD_DISK=s3` in `.env`
 - [ ] **ANTHROPIC_API_KEY** — required for AI chat, analysis, term extraction
 - [ ] **OPENAI_API_KEY** — required for Whisper STT (voice recording)
-- [ ] **APP_URL** — set to `https://postvisit.ai` (or `https://app.postvisit.ai` for staging)
+- [ ] **APP_URL** — set to `https://postvisit.ai`
 - [ ] **SANCTUM_STATEFUL_DOMAINS** — must match production domain
 - [ ] **SESSION_DOMAIN** — set to `.postvisit.ai`
 
-### Nedo — do zrobienia DZIŚ (11 Feb)
-- [ ] **Export WAV'ów z Voice Memos** — kilkanaście nagranych scenariuszy klinicznych. Share → Files/AirDrop, format m4a OK (Whisper je przyjmie). Wrzucić do `demo/audio/`.
-- [ ] Każdy WAV = osobny case kliniczny → budujemy bibliotekę demo cases
-
-### Do wygenerowania (Claude zrobi)
-- [x] Mock lab results (cholesterol, K+, TSH) — DONE (seeded in DemoSeeder as Observations)
-- [ ] Mock Apple Watch data (HR, PVC events) — JSON
-- [ ] Mock doctor dashboard data (patient list, alerts) — JSON (dashboard endpoint now works with real data)
-- [ ] Przetworzyć WAV'y przez Whisper → transkrypty → structured visit summaries (po otrzymaniu plików)
-- [x] **Generate animated patient portraits** — all 12 scenarios done via MiniMax Video 01 Live (~$6.50 total). Hover-to-play on scenario picker.
+### Nice-to-have
+- [ ] **Voice readout of chat responses** — TTS to read AI answers aloud to the patient
+- [ ] **Voice input for chat** — dictate questions to the chat instead of typing
+- [ ] **Link WAV files to seeded visits** — WAV recordings exported, but not yet linked to demo scenario visits in seeder
 
 ### Dokumentacja (hackathon criterion)
-- [x] README.md — project overview, setup, demo guide — DONE
-- [x] docs/api.md — full API documentation (45 endpoints) — DONE
-- [x] docs/decisions.md — updated with all 26 decisions — DONE
-- [x] docs/licenses.md — updated with current deps — DONE
+- [x] README.md — DONE
+- [x] docs/api.md — DONE
+- [x] docs/decisions.md — DONE
+- [x] docs/licenses.md — DONE
 - [ ] docs/architecture.md — system architecture, data flow, AI pipeline
 - [ ] docs/demo-guide.md — step-by-step demo walkthrough
 - [ ] CHANGELOG.md — feature changelog

@@ -74,11 +74,7 @@ class ChatController extends Controller
                         $type = $chunk['type'] ?? 'text';
                         $content = $chunk['content'] ?? '';
 
-                        if ($type === 'quick') {
-                            echo 'data: '.json_encode(['quick' => $content])."\n\n";
-                        } elseif ($type === 'quick_done') {
-                            echo 'data: '.json_encode(['quick_done' => true])."\n\n";
-                        } elseif ($type === 'status') {
+                        if ($type === 'status') {
                             echo 'data: '.json_encode(['status' => $content])."\n\n";
                         } elseif ($type === 'thinking') {
                             $thinkingContent .= $content;

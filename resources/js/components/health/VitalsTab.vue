@@ -8,10 +8,11 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <div>
+        <div class="flex-1">
           <h2 class="font-semibold text-gray-900">{{ deviceData.device.type }}</h2>
           <p class="text-xs text-gray-500">Last sync: {{ formatDateTime(deviceData.device.last_sync) }}</p>
         </div>
+        <AskAiButton @ask="openGlobalChat('apple watch data')" />
       </div>
       <div class="grid grid-cols-3 gap-3">
         <div class="bg-gray-50 rounded-xl p-3 text-center">
@@ -46,7 +47,10 @@
 
     <!-- BP Trend Chart -->
     <div v-if="bpData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
-      <h2 class="font-semibold text-gray-900 mb-4">Blood Pressure Trend</h2>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-gray-900">Blood Pressure Trend</h2>
+        <AskAiButton @ask="openGlobalChat('blood pressure')" />
+      </div>
       <div class="h-64">
         <Line :data="bpChartData" :options="bpChartOptions" />
       </div>
@@ -54,7 +58,10 @@
 
     <!-- HR Trend Chart -->
     <div v-if="hrData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
-      <h2 class="font-semibold text-gray-900 mb-4">Heart Rate Trend</h2>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-gray-900">Heart Rate Trend</h2>
+        <AskAiButton @ask="openGlobalChat('heart rate')" />
+      </div>
       <div class="h-64">
         <Line :data="hrChartData" :options="hrChartOptions" />
       </div>
@@ -62,7 +69,10 @@
 
     <!-- HRV Chart -->
     <div v-if="hrvData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
-      <h2 class="font-semibold text-gray-900 mb-4">HRV — Heart Rate Variability</h2>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-gray-900">HRV — Heart Rate Variability</h2>
+        <AskAiButton @ask="openGlobalChat('heart rate variability')" />
+      </div>
       <div class="h-64">
         <Line :data="hrvChartData" :options="hrvChartOptions" />
       </div>
@@ -83,6 +93,7 @@
           >
             {{ parseFloat(weightDelta) > 0 ? '+' : '' }}{{ weightDelta }} kg
           </span>
+          <AskAiButton @ask="openGlobalChat('weight')" />
         </div>
       </div>
       <div class="h-64">
@@ -92,7 +103,10 @@
 
     <!-- Sleep Duration Chart -->
     <div v-if="sleepData.length > 0 || sleepDeviceData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
-      <h2 class="font-semibold text-gray-900 mb-4">Sleep Duration</h2>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-gray-900">Sleep Duration</h2>
+        <AskAiButton @ask="openGlobalChat('sleep')" />
+      </div>
       <div class="h-64">
         <Bar :data="sleepChartData" :options="sleepChartOptions" />
       </div>
@@ -106,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, inject } from 'vue';
 import { Line, Bar } from 'vue-chartjs';
 import {
     Chart as ChartJS,
@@ -121,6 +135,9 @@ import {
     Filler,
 } from 'chart.js';
 import TimeRangeFilter from './TimeRangeFilter.vue';
+import AskAiButton from '@/components/AskAiButton.vue';
+
+const openGlobalChat = inject<(topic: string) => void>('openGlobalChat', () => {});
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler);
 

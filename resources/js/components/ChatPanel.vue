@@ -71,89 +71,21 @@
               : 'bg-gray-100 text-gray-800'
           ]"
         >
-          <!-- Phase 1: Initial thinking (before quick answer arrives) -->
+          <!-- Thinking indicator (before content arrives) -->
           <ThinkingIndicator
-            v-if="msg.streaming && !msg.quickContent && !msg.content"
+            v-if="msg.streaming && !msg.content"
             :query="lastUserMessage"
             :thinking-active="msg.thinkingPhase"
           />
 
-          <!-- Phase 2: Quick answer streaming / displayed -->
-          <div v-else-if="msg.streaming && msg.quickContent && !msg.content">
-            <div class="flex items-center gap-1.5 mb-2">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-medium">
-                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                </svg>
-                Let me think...
-              </span>
-            </div>
-            <StreamingMessage :text="msg.quickContent" />
+          <!-- Streaming response -->
+          <StreamingMessage
+            v-else-if="msg.streaming && msg.content"
+            :text="stripSources(msg.content)"
+          />
 
-            <div v-if="msg.quickDone" class="mt-2 pt-2 border-t border-gray-200/60">
-              <DeepAnalysisIndicator
-                :status-text="msg.statusText"
-                :thinking="msg.thinking"
-                :thinking-active="msg.thinkingPhase"
-              />
-            </div>
-          </div>
-
-          <!-- Phase 3: Opus answer streaming (deep analysis in progress) -->
-          <div v-else-if="msg.streaming && msg.content">
-            <!-- Keep quick answer visible above -->
-            <div v-if="msg.quickContent" class="mb-3">
-              <div class="flex items-center gap-1.5 mb-1">
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-200/60 text-gray-500 text-[10px] font-medium">
-                  <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                  </svg>
-                  Let me think...
-                </span>
-              </div>
-              <div class="text-xs text-gray-500 leading-relaxed prose prose-sm max-w-none prose-p:text-gray-500 prose-strong:text-gray-500" v-html="renderMarkdown(msg.quickContent)" />
-            </div>
-            <!-- Opus answer on amber background -->
-            <div ref="opusAnswerEl" class="bg-amber-50/80 border border-amber-200/60 rounded-xl px-3 py-2.5 -mx-1">
-              <div class="flex items-center gap-1.5 mb-2">
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-medium">
-                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
-                  </svg>
-                  Detailed clinical analysis
-                </span>
-              </div>
-              <StreamingMessage :text="stripSources(msg.content)" />
-            </div>
-          </div>
-
-          <!-- Phase 4: Completed message — keep quick + opus visible -->
-          <div v-else-if="msg.role === 'assistant'">
-            <!-- Quick answer stays visible (faded) -->
-            <div v-if="msg.quickContent" class="mb-3">
-              <div class="flex items-center gap-1.5 mb-1">
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-200/60 text-gray-500 text-[10px] font-medium">
-                  <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                  </svg>
-                  Let me think...
-                </span>
-              </div>
-              <div class="text-xs text-gray-500 leading-relaxed prose prose-sm max-w-none prose-p:text-gray-500 prose-strong:text-gray-500" v-html="renderMarkdown(msg.quickContent)" />
-            </div>
-            <!-- Full Opus answer on amber background -->
-            <div :class="msg.quickContent ? 'bg-amber-50/80 border border-amber-200/60 rounded-xl px-3 py-2.5 -mx-1' : ''">
-              <div v-if="msg.quickContent" class="flex items-center gap-1.5 mb-2">
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-medium">
-                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
-                  </svg>
-                  Detailed clinical analysis
-                </span>
-              </div>
-              <div class="prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
-            </div>
-          </div>
+          <!-- Completed assistant message -->
+          <div v-else-if="msg.role === 'assistant'" class="prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
 
           <!-- User message -->
           <p v-else>{{ msg.content }}</p>
@@ -176,6 +108,23 @@
             </svg>
             Powered by Opus 4.6
           </span>
+        </div>
+      </div>
+
+      <!-- Inline suggestions when context changes mid-conversation -->
+      <div v-if="inlineSuggestions.length" class="mt-2 pt-3 border-t border-gray-100">
+        <p v-if="initialContext" class="text-[10px] text-emerald-600 font-medium mb-2 px-1">
+          New context: {{ initialContext }}
+        </p>
+        <div class="space-y-1.5">
+          <button
+            v-for="q in inlineSuggestions"
+            :key="q"
+            class="w-full text-left text-xs px-3 py-2 rounded-lg border border-emerald-200 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300 transition-all"
+            @click="sendQuestion(q)"
+          >
+            {{ q }}
+          </button>
         </div>
       </div>
     </div>
@@ -307,7 +256,6 @@ import { marked } from 'marked';
 import StreamingMessage from '@/components/StreamingMessage.vue';
 import ThinkingIndicator from '@/components/ThinkingIndicator.vue';
 import SourceChips from '@/components/SourceChips.vue';
-import DeepAnalysisIndicator from '@/components/DeepAnalysisIndicator.vue';
 
 marked.setOptions({ breaks: true, gfm: true });
 function renderMarkdown(text) {
@@ -353,12 +301,10 @@ const chatStore = useChatStore();
 const visitStore = useVisitStore();
 const message = ref('');
 const messagesContainer = ref(null);
-const expandedThinking = reactive({});
 const showContextMenu = ref(false);
 const sendButton = ref(null);
 const sendGlow = ref(false);
-const opusAnswerEl = ref(null);
-const hasScrolledToOpus = ref(false);
+const inlineSuggestions = ref([]);
 
 const contextSources = reactive([
     { id: 'visit', label: 'Visit Notes', shortLabel: 'Visit', icon: '📋', description: 'SOAP notes, transcript', tokens: '~12K', selected: true },
@@ -471,6 +417,50 @@ const contextSuggestions = {
         'What happens if I miss a dose?',
         'Are there any food interactions?',
     ],
+    // Vitals tab sections
+    'blood pressure': [
+        'Is my blood pressure normal?',
+        'What do my BP trends show?',
+        'Should I be concerned about my blood pressure readings?',
+        'How can I improve my blood pressure?',
+    ],
+    'heart rate': [
+        'Is my heart rate healthy?',
+        'What do my heart rate trends mean?',
+        'Should I be concerned about my resting heart rate?',
+        'What affects heart rate?',
+    ],
+    'heart rate variability': [
+        'What does my HRV data mean?',
+        'Is my HRV normal for my age?',
+        'How can I improve my HRV?',
+        'What does low HRV indicate?',
+    ],
+    'weight': [
+        'Is my weight trend concerning?',
+        'What does my weight change mean?',
+        'Is my current BMI healthy?',
+        'What should my target weight be?',
+    ],
+    'sleep': [
+        'Am I getting enough sleep?',
+        'What do my sleep patterns show?',
+        'How can I improve my sleep quality?',
+        'Is my deep sleep duration normal?',
+    ],
+    'apple watch': [
+        'What does my Apple Watch data show?',
+        'Are there any concerning patterns in my device data?',
+        'How do my step counts compare to recommendations?',
+        'What do my SpO2 readings mean?',
+    ],
+    // Lab results
+    'lab': [
+        'Are my lab results normal?',
+        'What do my lab trends show?',
+        'Which results should I be concerned about?',
+        'Explain my cholesterol levels',
+    ],
 };
 
 const defaultSuggestions = [
@@ -510,10 +500,6 @@ function handleSourceClick(source) {
     if (action) action();
 }
 
-function toggleThinking(index) {
-    expandedThinking[index] = !expandedThinking[index];
-}
-
 function sendQuestion(q) {
     message.value = q;
     send();
@@ -524,7 +510,7 @@ async function send() {
     const text = message.value;
     message.value = '';
     showContextMenu.value = false;
-    hasScrolledToOpus.value = false;
+    inlineSuggestions.value = [];
     const sources = selectedSources.value.map(s => s.id);
     await chatStore.sendMessage(props.visitId, text, sources);
     scrollToBottom();
@@ -538,35 +524,8 @@ function scrollToBottom() {
     });
 }
 
-function scrollToOpusAnswer() {
-    nextTick(() => {
-        if (opusAnswerEl.value) {
-            opusAnswerEl.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            hasScrolledToOpus.value = true;
-        }
-    });
-}
-
 watch(() => chatStore.messages, () => {
-    const last = chatStore.messages[chatStore.messages.length - 1];
-    if (!last) return;
-
-    // When Opus content first appears and we haven't scrolled yet — scroll to its start
-    if (last.streaming && last.content && !hasScrolledToOpus.value) {
-        scrollToOpusAnswer();
-        return;
-    }
-
-    // When streaming finishes — scroll to Opus answer start
-    if (!last.streaming && last.deepReady && last.quickContent) {
-        scrollToOpusAnswer();
-        return;
-    }
-
-    // Default: scroll to bottom (for user messages, quick answer, etc.)
-    if (!hasScrolledToOpus.value) {
-        scrollToBottom();
-    }
+    scrollToBottom();
 }, { deep: true });
 
 function triggerSendGlow() {
@@ -577,11 +536,13 @@ function triggerSendGlow() {
     });
 }
 
-// When context changes while chat is already open, reset to show new suggestions
+// When context changes while chat is already open, show inline suggestions (keep messages)
 watch(() => props.initialContext, (newCtx) => {
-    if (newCtx) {
-        chatStore.clearMessages();
+    if (newCtx && chatStore.messages.length > 0) {
+        // Show new suggestions inline at the bottom of the conversation
+        inlineSuggestions.value = suggestedQuestions.value;
         message.value = '';
+        scrollToBottom();
     }
 });
 

@@ -7,9 +7,12 @@
     <div v-for="group in sortedGroups" :key="group.code" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
       <!-- Header: marker name, latest value, badge -->
       <div class="flex items-center justify-between px-5 py-4">
-        <div>
-          <h3 class="font-semibold text-gray-900 text-sm">{{ group.name }}</h3>
-          <p class="text-xs text-gray-400 mt-0.5">{{ formatDate(group.latest.effective_date) }}</p>
+        <div class="flex items-center gap-2">
+          <div>
+            <h3 class="font-semibold text-gray-900 text-sm">{{ group.name }}</h3>
+            <p class="text-xs text-gray-400 mt-0.5">{{ formatDate(group.latest.effective_date) }}</p>
+          </div>
+          <AskAiButton @ask="openGlobalChat(group.name)" />
         </div>
         <div class="text-right">
           <p class="text-lg font-bold" :class="interpColor(group.latest.interpretation)">
@@ -44,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, inject } from 'vue';
 import { Line } from 'vue-chartjs';
 import {
     Chart as ChartJS,
@@ -57,6 +60,9 @@ import {
     Filler,
 } from 'chart.js';
 import TimeRangeFilter from './TimeRangeFilter.vue';
+import AskAiButton from '@/components/AskAiButton.vue';
+
+const openGlobalChat = inject<(topic: string) => void>('openGlobalChat', () => {});
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler);
 

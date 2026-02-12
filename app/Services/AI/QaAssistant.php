@@ -4,7 +4,6 @@ namespace App\Services\AI;
 
 use App\Models\ChatSession;
 use Generator;
-use Illuminate\Support\Facades\Log;
 
 class QaAssistant
 {
@@ -61,11 +60,7 @@ class QaAssistant
      * Complex clinical questions (drug safety, dosage, symptom combinations)
      * trigger the Plan-Execute-Verify pipeline on Opus 4.6 tier.
      *
-     * When thinking is enabled, a quick Haiku response is streamed first,
-     * followed by status events during context assembly, then the full
-     * Opus response.
-     *
-     * @return Generator<array{type: string, content: string}> Yields quick/status/thinking/text/phase chunks
+     * @return Generator<array{type: string, content: string}> Yields status/thinking/text/phase chunks
      */
     public function answer(ChatSession $session, string $question): Generator
     {
@@ -81,18 +76,8 @@ class QaAssistant
 
         $tier = $this->tierManager->current();
 
-        // --- Quick first response via Haiku (only when thinking/Opus is enabled) ---
+        // Send status events during context assembly
         if ($tier->thinkingEnabled()) {
-            try {
-                yield from $this->quickAnswer($session, $question);
-                yield ['type' => 'quick_done', 'content' => ''];
-            } catch (\Throwable $e) {
-                Log::warning('Quick answer failed, continuing to full answer', [
-                    'error' => $e->getMessage(),
-                ]);
-            }
-
-            // Send status events during context assembly
             yield ['type' => 'status', 'content' => 'Loading clinical data...'];
         }
 

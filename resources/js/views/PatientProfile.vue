@@ -14,6 +14,7 @@
         </div>
         <div class="min-w-0 flex-1">
           <h1 class="text-2xl font-bold text-gray-900 truncate">{{ auth.user?.name || 'Patient' }}</h1>
+          <p v-if="ageGenderLine" class="text-sm text-gray-600">{{ ageGenderLine }}</p>
           <p class="text-gray-500 truncate">{{ auth.user?.email }}</p>
         </div>
         <svg class="w-5 h-5 ml-auto text-gray-300 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
@@ -21,7 +22,10 @@
 
       <!-- Visit history -->
       <section>
-        <h2 class="text-lg font-semibold text-gray-800 mb-3">Visit History</h2>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-lg font-semibold text-gray-800">Visit History</h2>
+          <AskAiButton v-if="visitStore.visits.length > 0" @ask="openGlobalChat('visits')" />
+        </div>
         <div class="space-y-3">
           <div v-if="visitStore.loading" class="bg-white rounded-2xl border border-gray-200 p-6 text-center text-gray-400">
             Loading visits...
@@ -100,47 +104,59 @@
 
       <!-- Quick links — side by side -->
       <section class="grid grid-cols-2 gap-3">
-        <router-link
-          to="/health"
-          class="flex flex-col items-center gap-2 py-5 bg-white border border-emerald-200 rounded-2xl hover:bg-emerald-50 hover:border-emerald-300 hover:shadow-md transition-all group"
-        >
-          <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-            <svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
-            </svg>
+        <div class="relative bg-white border border-emerald-200 rounded-2xl hover:bg-emerald-50 hover:border-emerald-300 hover:shadow-md transition-all group">
+          <div class="absolute top-2 right-2 z-10" @click.prevent.stop>
+            <AskAiButton @ask="openGlobalChat('health record')" />
           </div>
-          <span class="text-sm font-semibold text-emerald-700">Health Record</span>
-          <span v-if="healthRecordCount > 0" class="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full font-medium">
-            {{ healthRecordCount }} {{ healthRecordCount === 1 ? 'entry' : 'entries' }}
-          </span>
-        </router-link>
-        <router-link
-          to="/library"
-          class="flex flex-col items-center gap-2 py-5 bg-white border border-indigo-200 rounded-2xl hover:bg-indigo-50 hover:border-indigo-300 hover:shadow-md transition-all group"
-        >
-          <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
-            <svg class="w-5 h-5 text-indigo-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-            </svg>
+          <router-link
+            to="/health"
+            class="flex flex-col items-center gap-2 py-5"
+          >
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
+              <svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+              </svg>
+            </div>
+            <span class="text-sm font-semibold text-emerald-700">Health Record</span>
+            <span v-if="healthRecordCount > 0" class="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full font-medium">
+              {{ healthRecordCount }} {{ healthRecordCount === 1 ? 'entry' : 'entries' }}
+            </span>
+          </router-link>
+        </div>
+        <div class="relative bg-white border border-indigo-200 rounded-2xl hover:bg-indigo-50 hover:border-indigo-300 hover:shadow-md transition-all group">
+          <div class="absolute top-2 right-2 z-10" @click.prevent.stop>
+            <AskAiButton @ask="openGlobalChat('reference')" />
           </div>
-          <span class="text-sm font-semibold text-indigo-700">Reference</span>
-          <span v-if="libraryCount > 0" class="text-xs bg-indigo-100 text-indigo-700 px-2.5 py-0.5 rounded-full font-medium">
-            {{ libraryCount }} {{ libraryCount === 1 ? 'reference' : 'references' }}
-          </span>
-        </router-link>
+          <router-link
+            to="/library"
+            class="flex flex-col items-center gap-2 py-5"
+          >
+            <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+              <svg class="w-5 h-5 text-indigo-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              </svg>
+            </div>
+            <span class="text-sm font-semibold text-indigo-700">Reference</span>
+            <span v-if="libraryCount > 0" class="text-xs bg-indigo-100 text-indigo-700 px-2.5 py-0.5 rounded-full font-medium">
+              {{ libraryCount }} {{ libraryCount === 1 ? 'reference' : 'references' }}
+            </span>
+          </router-link>
+        </div>
       </section>
     </div>
   </PatientLayout>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, inject } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useVisitStore } from '@/stores/visit';
 import { useApi } from '@/composables/useApi';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import VisitDateBadge from '@/components/VisitDateBadge.vue';
+import AskAiButton from '@/components/AskAiButton.vue';
 
+const openGlobalChat = inject('openGlobalChat', () => {});
 
 const auth = useAuthStore();
 const visitStore = useVisitStore();
@@ -160,6 +176,32 @@ const displayedVisits = computed(() => {
 const initials = computed(() => {
     const name = auth.user?.name || '';
     return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+});
+
+const patientAge = computed(() => {
+    const dob = auth.user?.patient?.dob;
+    if (!dob) return null;
+    const birth = new Date(dob);
+    const now = new Date();
+    let age = now.getFullYear() - birth.getFullYear();
+    const monthDiff = now.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < birth.getDate())) {
+        age--;
+    }
+    return age;
+});
+
+const patientGender = computed(() => {
+    const g = auth.user?.patient?.gender;
+    if (!g) return null;
+    return g.charAt(0).toUpperCase() + g.slice(1);
+});
+
+const ageGenderLine = computed(() => {
+    const parts = [];
+    if (patientGender.value) parts.push(patientGender.value);
+    if (patientAge.value !== null) parts.push(`${patientAge.value} y.o.`);
+    return parts.join(', ');
 });
 
 function formatDate(dateStr) {
