@@ -164,33 +164,17 @@
           :sources="parseSources(msg.content)"
           class="mt-1.5"
         />
-        <!-- Collapsible AI Reasoning for completed messages with thinking -->
+        <!-- Powered by badge for completed assistant messages -->
         <div
-          v-if="msg.role === 'assistant' && !msg.streaming && msg.thinking"
-          class="mt-2"
+          v-if="msg.role === 'assistant' && !msg.streaming && msg.content"
+          class="mt-1.5 flex items-center gap-1"
         >
-          <button
-            class="flex items-center gap-1 text-xs text-amber-700 hover:text-amber-900 transition-colors"
-            @click="toggleThinking(i)"
-          >
-            <svg
-              class="w-3 h-3 transition-transform"
-              :class="{ 'rotate-90': expandedThinking[i] }"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 text-[9px] font-medium border border-amber-200/50">
+            <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
             </svg>
-            AI Reasoning
-          </button>
-          <div
-            v-if="expandedThinking[i]"
-            class="mt-1.5 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 max-h-48 overflow-y-auto"
-          >
-            <pre class="text-[11px] text-amber-900 font-mono whitespace-pre-wrap break-words leading-relaxed">{{ msg.thinking }}</pre>
-          </div>
+            Powered by Opus 4.6
+          </span>
         </div>
       </div>
     </div>
