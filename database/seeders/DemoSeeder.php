@@ -1867,6 +1867,7 @@ class DemoSeeder extends Seeder
             }
 
             // Visit-level children
+            Notification::whereIn('visit_id', $allVisitIds)->delete();
             UploadToken::whereIn('visit_id', $allVisitIds)->delete();
             Document::whereIn('visit_id', $allVisitIds)->delete();
             Transcript::whereIn('visit_id', $allVisitIds)->delete();
