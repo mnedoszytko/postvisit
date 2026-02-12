@@ -39,12 +39,21 @@ Deadline: **15:00 EST**
 - [ ] Check config, .env, and hardcoded model references
 - [ ] Especially: chat, visit processing, document analysis, term extraction
 
-### 5. Stale branches — verify nothing forgotten
+### 5. Performance audit
+- [ ] No oversized files in repo (`git ls-files` — flag anything >1MB that shouldn't be there)
+- [ ] Frontend bundle size reasonable (`bun run build` — check chunk sizes)
+- [ ] No unoptimized images served to browser (compress PNGs, use WebP where possible)
+- [ ] Lighthouse audit on landing page — target 90+ performance score
+- [ ] No N+1 queries on main demo flow (check Laravel Debugbar or logs)
+- [ ] API response times < 500ms for non-AI endpoints
+- [ ] No heavy JS libraries loaded unnecessarily (check bundle analyzer)
+
+### 6. Stale branches — verify nothing forgotten
 - [ ] List unmerged branches (`git branch -r --no-merged main`)
 - [ ] Verify none contain forgotten work — report to Nedo if found
 - [ ] Do NOT merge or delete anything — verification only
 
-### 5. Demo polish — nothing forgotten
+### 7. Demo polish — nothing forgotten
 - [ ] All key features visible in demo flow without digging
 - [ ] Medical term highlighting works and is obvious
 - [ ] AI chat suggestions cover common patient questions
@@ -57,33 +66,33 @@ Deadline: **15:00 EST**
 
 ## Landing — deploy & go live
 
-### 7. Repository public
+### 8. Repository public
 - [ ] GitHub repo set to **Public** (judges must access code)
 - [ ] Verify repo URL works in incognito browser
 
-### 8. Production — deployed, secured, working
+### 9. Production — deployed, secured, working
 - [ ] Deployed on Forge, HTTPS enforced, `APP_DEBUG=false`
 - [ ] Rate limiting on public endpoints
 - [ ] Bot protection active (Cloudflare WAF, `robots.txt`)
 - [ ] No debug/stack traces leaking in error responses
 - [ ] Remove IP whitelist / access restrictions — publicly accessible for judges
 
-### 9. Server — performance, data freshness
+### 10. Server — performance, data freshness
 - [ ] Pages load fast, AI chat streams within 2s
 - [ ] Demo data seeded and up to date
 - [ ] No 500 errors in logs
 - [ ] Queue worker running
 
-### 10. Cleanup — no dev artifacts, no doc duplicates
+### 11. Cleanup — no dev artifacts, no doc duplicates
 - [ ] Remove temp scripts, scratch files, agent worktree leftovers
 - [ ] No `console.log()` / `dd()` / `dump()` in production code
 - [ ] No duplicate or outdated docs
 - [ ] README concise and scannable
 - [ ] Markdown ratio < 20%
 
-### 11. Smoke test — full judge flow
+### 12. Smoke test — full judge flow
 - [ ] Try Demo → scenario → visit summary → tap term → AI chat → doctor dashboard
 
-### 12. Offline installation (Docker)
+### 13. Offline installation (Docker)
 - [ ] Verify `docker compose up` works from clean clone
 - [ ] App runs and demo flow works in Docker environment
