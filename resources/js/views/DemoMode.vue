@@ -49,7 +49,7 @@
       <p class="text-gray-500">Propranolol 40mg 2x/day, with full visit context</p>
       <router-link
         :to="`/visits/${demoVisitId}`"
-        class="block w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors"
+        class="block w-full py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors"
       >
         Open Visit Summary
       </router-link>

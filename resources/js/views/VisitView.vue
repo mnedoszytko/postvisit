@@ -46,10 +46,7 @@
           <div class="mb-6">
             <h1 class="text-2xl font-bold text-gray-900">Visit Summary</h1>
             <div v-if="visit" class="flex flex-wrap items-center gap-2 mt-2">
-              <span class="inline-flex items-center gap-1.5 text-sm text-gray-600">
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                {{ formatDate(visit.started_at) }}
-              </span>
+              <VisitDateBadge :date="visit.started_at" size="sm" />
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
                 {{ formatVisitType(visit.visit_type) }}
               </span>
@@ -437,6 +434,7 @@ import ChatPanel from '@/components/ChatPanel.vue';
 import TermPopover from '@/components/TermPopover.vue';
 import VisitAttachments from '@/components/VisitAttachments.vue';
 import AskAiButton from '@/components/AskAiButton.vue';
+import VisitDateBadge from '@/components/VisitDateBadge.vue';
 
 const route = useRoute();
 const visitStore = useVisitStore();

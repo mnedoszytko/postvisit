@@ -34,48 +34,46 @@
               v-for="visit in displayedVisits"
               :key="visit.id"
               :to="`/visits/${visit.id}`"
-              class="block bg-white rounded-2xl border border-gray-200 p-5 hover:border-emerald-300 hover:shadow-md transition-all duration-200 group"
+              class="flex items-center gap-4 bg-indigo-50/50 rounded-2xl border border-indigo-100 p-5 hover:bg-indigo-50 hover:border-indigo-200 hover:shadow-md transition-all duration-200 group"
             >
-              <!-- Top row: Date + Visit type -->
-              <div class="flex items-center justify-between mb-2">
-                <span v-if="visit.started_at" class="text-sm font-semibold text-gray-900">
-                  {{ formatDate(visit.started_at) }}
-                </span>
-                <span v-if="visit.visit_type" class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                  {{ formatVisitType(visit.visit_type) }}
-                </span>
-              </div>
+              <VisitDateBadge :date="visit.started_at" />
 
-              <!-- Doctor name + specialty (prominent) -->
-              <div v-if="visit.practitioner" class="flex items-center gap-2.5 mb-2">
-                <img
-                  v-if="visit.practitioner.photo_url"
-                  :src="visit.practitioner.photo_url"
-                  :alt="`Dr. ${visit.practitioner.first_name} ${visit.practitioner.last_name}`"
-                  class="w-9 h-9 rounded-full object-cover shrink-0"
-                />
-                <div v-else class="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                  <svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+              <div class="flex-1 min-w-0">
+                <!-- Visit type badge -->
+                <div class="flex items-center justify-between mb-2">
+                  <span v-if="visit.visit_type" class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+                    {{ formatVisitType(visit.visit_type) }}
+                  </span>
                 </div>
-                <div>
-                  <p class="text-base font-bold text-gray-900 leading-tight">
-                    Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
-                  </p>
-                  <p v-if="visit.practitioner.primary_specialty" class="text-sm text-blue-600 capitalize">
-                    {{ visit.practitioner.primary_specialty }}
-                  </p>
+
+                <!-- Doctor name + specialty -->
+                <div v-if="visit.practitioner" class="flex items-center gap-2.5 mb-1">
+                  <img
+                    v-if="visit.practitioner.photo_url"
+                    :src="visit.practitioner.photo_url"
+                    :alt="`Dr. ${visit.practitioner.first_name} ${visit.practitioner.last_name}`"
+                    class="w-9 h-9 rounded-full object-cover shrink-0"
+                  />
+                  <div v-else class="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                    <svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  </div>
+                  <div>
+                    <p class="text-base font-bold text-gray-900 leading-tight">
+                      Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
+                    </p>
+                    <p v-if="visit.practitioner.primary_specialty" class="text-sm text-blue-600 capitalize">
+                      {{ visit.practitioner.primary_specialty }}
+                    </p>
+                  </div>
                 </div>
+
+                <!-- Visit reason -->
+                <p v-if="visit.reason_for_visit" class="text-sm text-gray-500 leading-snug line-clamp-1">
+                  {{ visit.reason_for_visit }}
+                </p>
               </div>
 
-              <!-- Visit reason (subtitle) -->
-              <p v-if="visit.reason_for_visit" class="text-sm text-gray-500 leading-snug line-clamp-1">
-                {{ visit.reason_for_visit }}
-              </p>
-
-              <!-- Chevron hint -->
-              <div class="flex justify-end mt-1">
-                <svg class="w-5 h-5 text-gray-300 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-              </div>
+              <svg class="w-5 h-5 text-indigo-300 group-hover:text-indigo-500 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
             </router-link>
             <button
               v-if="visitStore.visits.length > visibleCount && !showAll"
@@ -100,19 +98,35 @@
         Record New Visit
       </router-link>
 
-      <!-- Quick links -->
-      <section class="space-y-3">
+      <!-- Quick links — side by side -->
+      <section class="grid grid-cols-2 gap-3">
         <router-link
           to="/health"
-          class="block w-full text-center py-3 bg-white text-emerald-700 border border-emerald-200 rounded-xl font-medium hover:bg-emerald-50 transition-colors"
+          class="flex flex-col items-center gap-2 py-5 bg-white border border-emerald-200 rounded-2xl hover:bg-emerald-50 hover:border-emerald-300 hover:shadow-md transition-all group"
         >
-          Health Record
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
+            <svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-emerald-700">Health Record</span>
+          <span v-if="healthRecordCount > 0" class="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full font-medium">
+            {{ healthRecordCount }} {{ healthRecordCount === 1 ? 'entry' : 'entries' }}
+          </span>
         </router-link>
         <router-link
           to="/library"
-          class="block w-full text-center py-3 bg-white text-emerald-700 border border-emerald-200 rounded-xl font-medium hover:bg-emerald-50 transition-colors"
+          class="flex flex-col items-center gap-2 py-5 bg-white border border-indigo-200 rounded-2xl hover:bg-indigo-50 hover:border-indigo-300 hover:shadow-md transition-all group"
         >
-          Medical Library
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+            <svg class="w-5 h-5 text-indigo-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-indigo-700">Reference Library</span>
+          <span v-if="libraryCount > 0" class="text-xs bg-indigo-100 text-indigo-700 px-2.5 py-0.5 rounded-full font-medium">
+            {{ libraryCount }} {{ libraryCount === 1 ? 'reference' : 'references' }}
+          </span>
         </router-link>
       </section>
     </div>
@@ -123,11 +137,17 @@
 import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useVisitStore } from '@/stores/visit';
+import { useApi } from '@/composables/useApi';
 import PatientLayout from '@/layouts/PatientLayout.vue';
+import VisitDateBadge from '@/components/VisitDateBadge.vue';
 
 
 const auth = useAuthStore();
 const visitStore = useVisitStore();
+const api = useApi();
+
+const healthRecordCount = ref(0);
+const libraryCount = ref(0);
 
 const visibleCount = 5;
 const showAll = ref(false);
@@ -158,10 +178,27 @@ function shortTitle(visit) {
     return raw.slice(0, 57) + '...';
 }
 
-onMounted(() => {
+onMounted(async () => {
     const patientId = auth.user?.patient_id || auth.user?.patient?.id;
     if (patientId) {
         visitStore.fetchVisits(patientId);
+
+        // Fetch counts for quick links
+        const [condRes, rxRes, libRes] = await Promise.allSettled([
+            api.get(`/patients/${patientId}/conditions`),
+            api.get(`/patients/${patientId}/prescriptions`),
+            api.get('/library'),
+        ]);
+
+        const condCount = condRes.status === 'fulfilled' ? (condRes.value.data.data || []).length : 0;
+        const rxCount = rxRes.status === 'fulfilled' ? (rxRes.value.data.data || []).length : 0;
+        healthRecordCount.value = condCount + rxCount;
+
+        // Reference Library shows conditions + medications + user uploads
+        const uploadCount = libRes.status === 'fulfilled'
+            ? (libRes.value.data.data?.total ?? (libRes.value.data.data?.data || libRes.value.data.data || []).length)
+            : 0;
+        libraryCount.value = condCount + rxCount + uploadCount;
     }
 });
 </script>

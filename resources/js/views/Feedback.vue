@@ -5,9 +5,9 @@
         <h1 class="text-2xl font-bold text-gray-900">Contact Your Doctor</h1>
         <router-link
           :to="`/visits/${route.params.id}`"
-          class="text-sm text-emerald-600 hover:text-emerald-700"
+          class="text-sm text-indigo-600 hover:text-indigo-700"
         >
-          Back to Visit
+          &larr; Back to Visit
         </router-link>
       </div>
 

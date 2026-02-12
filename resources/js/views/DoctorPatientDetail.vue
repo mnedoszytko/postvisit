@@ -90,19 +90,21 @@
       <!-- Visit history -->
       <section>
         <h2 class="text-lg font-semibold text-gray-800 mb-3">Visit History</h2>
-        <div class="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100">
+        <div class="bg-white rounded-2xl border border-indigo-100 divide-y divide-indigo-50">
           <div v-if="visits.length === 0" class="p-6 text-center text-gray-400">
             No visits recorded.
           </div>
-          <div v-for="visit in visits" :key="visit.id" class="p-4">
-            <div class="flex items-center justify-between">
-              <p class="font-medium text-gray-900">{{ formatVisitType(visit.visit_type) }}</p>
-              <p class="text-sm text-gray-500">{{ formatDate(visit.started_at) }}</p>
+          <div v-for="visit in visits" :key="visit.id" class="p-4 flex items-start gap-3">
+            <VisitDateBadge :date="visit.started_at" size="sm" />
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <p class="font-medium text-gray-900">{{ formatVisitType(visit.visit_type) }}</p>
+              </div>
+              <p v-if="visit.practitioner" class="text-sm text-gray-500">
+                Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
+              </p>
+              <p v-if="visit.reason_for_visit" class="text-sm text-gray-400 mt-1">{{ visit.reason_for_visit }}</p>
             </div>
-            <p v-if="visit.practitioner" class="text-sm text-gray-500">
-              Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
-            </p>
-            <p v-if="visit.reason_for_visit" class="text-sm text-gray-400 mt-1">{{ visit.reason_for_visit }}</p>
           </div>
         </div>
       </section>
@@ -252,6 +254,7 @@ import DoctorLayout from '@/layouts/DoctorLayout.vue';
 import WeightChart from '@/components/WeightChart.vue';
 import BloodPressureChart from '@/components/BloodPressureChart.vue';
 import { useDoctorStore } from '@/stores/doctor';
+import VisitDateBadge from '@/components/VisitDateBadge.vue';
 
 const route = useRoute();
 const api = useApi();
