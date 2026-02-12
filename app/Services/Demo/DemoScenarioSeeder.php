@@ -431,18 +431,20 @@ class DemoScenarioSeeder
             return $user;
         }
 
-        $practitioner = Practitioner::create([
-            'fhir_practitioner_id' => 'practitioner-'.Str::uuid(),
-            'first_name' => $config['first_name'],
-            'last_name' => $config['last_name'],
-            'email' => $email,
-            'npi' => $config['npi'],
-            'license_number' => $config['license_number'],
-            'medical_degree' => $config['medical_degree'],
-            'primary_specialty' => $config['primary_specialty'],
-            'secondary_specialties' => $config['secondary_specialties'],
-            'organization_id' => $org->id,
-        ]);
+        $practitioner = Practitioner::firstOrCreate(
+            ['email' => $email],
+            [
+                'fhir_practitioner_id' => 'practitioner-'.Str::uuid(),
+                'first_name' => $config['first_name'],
+                'last_name' => $config['last_name'],
+                'npi' => $config['npi'],
+                'license_number' => $config['license_number'],
+                'medical_degree' => $config['medical_degree'],
+                'primary_specialty' => $config['primary_specialty'],
+                'secondary_specialties' => $config['secondary_specialties'],
+                'organization_id' => $org->id,
+            ],
+        );
 
         return User::create([
             'name' => $config['name'],
@@ -471,18 +473,20 @@ class DemoScenarioSeeder
             return $user;
         }
 
-        $practitioner = Practitioner::create([
-            'fhir_practitioner_id' => 'practitioner-'.Str::uuid(),
-            'first_name' => $config['first_name'],
-            'last_name' => $config['last_name'],
-            'email' => $email,
-            'npi' => $config['npi'],
-            'license_number' => $config['license_number'],
-            'medical_degree' => $config['medical_degree'],
-            'primary_specialty' => $config['primary_specialty'],
-            'secondary_specialties' => $config['secondary_specialties'],
-            'organization_id' => $org->id,
-        ]);
+        $practitioner = Practitioner::firstOrCreate(
+            ['email' => $email],
+            [
+                'fhir_practitioner_id' => 'practitioner-'.Str::uuid(),
+                'first_name' => $config['first_name'],
+                'last_name' => $config['last_name'],
+                'npi' => $config['npi'],
+                'license_number' => $config['license_number'],
+                'medical_degree' => $config['medical_degree'],
+                'primary_specialty' => $config['primary_specialty'],
+                'secondary_specialties' => $config['secondary_specialties'],
+                'organization_id' => $org->id,
+            ],
+        );
 
         return User::create([
             'name' => $config['name'],

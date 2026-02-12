@@ -51,7 +51,7 @@ class AuditMiddleware
             'resource_id' => $resourceId ?? Str::uuid()->toString(),
             'success' => $response->getStatusCode() < 400,
             'ip_address' => $request->ip() ?? '0.0.0.0',
-            'session_id' => $request->hasSession() ? $request->session()->getId() : Str::uuid()->toString(),
+            'session_id' => Str::uuid()->toString(),
             'phi_accessed' => true,
             'phi_elements' => $this->detectPhiElements($resourceType),
             'accessed_at' => now(),
