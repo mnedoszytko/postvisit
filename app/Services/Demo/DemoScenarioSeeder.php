@@ -318,8 +318,9 @@ class DemoScenarioSeeder
             ];
         }
 
-        // Vitals from ALL entries in vitals_timeline (creates historical series for charts)
-        foreach ($json['vitals_timeline'] ?? [] as $vitals) {
+        // Vitals from ALL entries in vitals_timeline
+        $vitalsTimeline = $json['vitals_timeline'] ?? [];
+        foreach ($vitalsTimeline as $vitals) {
             $date = $vitals['date'] ?? null;
 
             // Blood pressure panel
@@ -330,7 +331,7 @@ class DemoScenarioSeeder
                 'category' => 'vital-signs',
                 'value_type' => 'string',
                 'value_string' => $vitals['systolic'].'/'.$vitals['diastolic'].' mmHg',
-                'interpretation' => $vitals['systolic'] >= 130 ? 'H' : 'N',
+                'interpretation' => 'N',
                 'effective_date' => $date,
                 'specialty_data' => [
                     'systolic' => ['value' => $vitals['systolic'], 'unit' => 'mmHg', 'code' => '8480-6'],
@@ -368,6 +369,40 @@ class DemoScenarioSeeder
                     'reference_range_low' => 95,
                     'reference_range_high' => 100,
                     'interpretation' => $vitals['spo2'] >= 95 ? 'N' : 'L',
+                    'effective_date' => $date,
+                ];
+            }
+
+            // HRV (SDNN)
+            if (isset($vitals['hrv_sdnn'])) {
+                $observations[] = [
+                    'code_system' => 'LOINC',
+                    'code' => '80404-7',
+                    'code_display' => 'R-R interval.standard deviation (SDNN)',
+                    'category' => 'vital-signs',
+                    'value_type' => 'quantity',
+                    'value_quantity' => $vitals['hrv_sdnn'],
+                    'value_unit' => 'ms',
+                    'reference_range_low' => 20,
+                    'reference_range_high' => 70,
+                    'interpretation' => $vitals['hrv_sdnn'] < 20 ? 'L' : 'N',
+                    'effective_date' => $date,
+                ];
+            }
+
+            // Sleep duration
+            if (isset($vitals['sleep_hours'])) {
+                $observations[] = [
+                    'code_system' => 'LOINC',
+                    'code' => '93832-4',
+                    'code_display' => 'Sleep duration',
+                    'category' => 'vital-signs',
+                    'value_type' => 'quantity',
+                    'value_quantity' => $vitals['sleep_hours'],
+                    'value_unit' => 'h',
+                    'reference_range_low' => 7,
+                    'reference_range_high' => 9,
+                    'interpretation' => $vitals['sleep_hours'] < 6 ? 'L' : 'N',
                     'effective_date' => $date,
                 ];
             }
@@ -624,8 +659,6 @@ class DemoScenarioSeeder
         $yesterday = now()->subDay()->toDateString();
 
         foreach ($observations as $obs) {
-            $effectiveDate = $obs['effective_date'] ?? $yesterday;
-
             Observation::create([
                 'fhir_observation_id' => 'obs-'.Str::random(6).'-'.Str::uuid(),
                 'patient_id' => $patient->id,
@@ -645,8 +678,10 @@ class DemoScenarioSeeder
                 'reference_range_text' => $obs['reference_range_text'] ?? null,
                 'interpretation' => $obs['interpretation'] ?? null,
                 'specialty_data' => $obs['specialty_data'] ?? null,
-                'effective_date' => $effectiveDate,
-                'issued_at' => $effectiveDate,
+                'effective_date' => $obs['effective_date'] ?? $yesterday,
+                'issued_at' => isset($obs['effective_date'])
+                    ? Carbon::parse($obs['effective_date'])->endOfDay()
+                    : now()->subDay(),
                 'created_by' => $doctor->id,
             ]);
         }

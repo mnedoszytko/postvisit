@@ -546,10 +546,10 @@ class DemoSeeder extends Seeder
             ['days_ago' => 8, 'weight' => 82.3],
             ['days_ago' => 7, 'weight' => 82.5],
             ['days_ago' => 6, 'weight' => 82.8],
-            ['days_ago' => 5, 'weight' => 83.2],
-            ['days_ago' => 4, 'weight' => 83.6],
-            ['days_ago' => 3, 'weight' => 84.1],
-            ['days_ago' => 2, 'weight' => 84.7],
+            ['days_ago' => 5, 'weight' => 83.0],
+            ['days_ago' => 4, 'weight' => 83.1],
+            ['days_ago' => 3, 'weight' => 83.0],
+            ['days_ago' => 2, 'weight' => 84.2],
             ['days_ago' => 1, 'weight' => 85.3],
         ];
 
