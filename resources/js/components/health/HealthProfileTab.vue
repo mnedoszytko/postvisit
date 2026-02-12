@@ -85,7 +85,7 @@
     <div class="bg-white rounded-2xl border border-gray-200 p-5">
       <div class="flex items-center justify-between mb-3">
         <h3 class="font-semibold text-gray-900">Biometrics</h3>
-        <AskAiButton @ask="openGlobalChat('Tell me about my biometrics — what do my height, weight, and BMI mean for my health?')" />
+        <AskAiButton @ask="openGlobalChat('biometrics')" />
       </div>
       <div v-if="!editing" class="grid grid-cols-3 gap-3">
         <div class="bg-gray-50 rounded-xl p-3 text-center">
@@ -136,7 +136,7 @@
     <div class="bg-white rounded-2xl border border-gray-200 p-5">
       <div class="flex items-center justify-between mb-3">
         <h3 class="font-semibold text-gray-900">Diagnoses</h3>
-        <AskAiButton v-if="conditions.length > 0" @ask="openGlobalChat('Tell me about my diagnoses and what they mean for my health')" />
+        <AskAiButton v-if="conditions.length > 0" @ask="openGlobalChat('diagnoses')" />
       </div>
       <div v-if="conditions.length > 0" class="space-y-2">
         <div
@@ -174,7 +174,7 @@
     <div class="bg-white rounded-2xl border border-gray-200 p-5">
       <div class="flex items-center justify-between mb-3">
         <h3 class="font-semibold text-gray-900">Recent Visits</h3>
-        <AskAiButton v-if="visits.length > 0" @ask="openGlobalChat('Tell me about my recent visits — what happened and what should I remember?')" />
+        <AskAiButton v-if="visits.length > 0" @ask="openGlobalChat('recent visits')" />
       </div>
       <div v-if="visits.length > 0" class="space-y-2">
         <router-link
@@ -204,7 +204,7 @@
     <div class="bg-white rounded-2xl border border-gray-200 p-5">
       <div class="flex items-center justify-between mb-3">
         <h3 class="font-semibold text-gray-900">Allergies</h3>
-        <AskAiButton v-if="allergies.length > 0" @ask="openGlobalChat('Tell me about my allergies — what should I watch out for?')" />
+        <AskAiButton v-if="allergies.length > 0" @ask="openGlobalChat('allergies')" />
       </div>
       <div v-if="allergies.length > 0" class="flex flex-wrap gap-2">
         <AllergyTag

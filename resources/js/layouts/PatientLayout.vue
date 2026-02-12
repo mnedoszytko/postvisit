@@ -251,7 +251,7 @@
           <ChatPanel
             :visit-id="latestVisitId"
             :initial-context="chatContext"
-            :embedded="true"
+                :embedded="true"
             @close="chatOpen = false"
           />
         </div>

@@ -100,7 +100,7 @@
 
       <!-- Disclaimer -->
       <p class="text-center text-[11px] text-gray-400 mt-8 max-w-2xl mx-auto leading-relaxed">
-        All patient photographs are AI-generated (Flux 2 Realism) and do not depict real individuals.
+        All patient photographs are AI-generated and do not depict real individuals.
         Clinical scenarios span cardiology, endocrinology, gastroenterology, and pulmonology. All names, demographics, and medical data are entirely fictional.
       </p>
 

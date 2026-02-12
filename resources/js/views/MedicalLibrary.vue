@@ -3,7 +3,7 @@
     <div class="space-y-6">
       <!-- Page header -->
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Reference Library</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Reference</h1>
         <p class="mt-1 text-sm text-gray-500">
           Evidence-based references and medical databases relevant to your care.
         </p>

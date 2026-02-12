@@ -7,7 +7,9 @@ use Anthropic\Messages\TextBlockParam;
 use App\Models\Visit;
 use App\Services\Guidelines\GuidelinesRepository;
 use App\Services\Medications\OpenFdaClient;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
 class ContextAssembler
@@ -27,15 +29,27 @@ class ContextAssembler
      */
     public function assembleQuickContext(Visit $visit): array
     {
-        $visit->loadMissing(['practitioner', 'visitNote', 'conditions', 'prescriptions.medication']);
+        $visit->loadMissing(['patient', 'practitioner', 'visitNote', 'conditions', 'prescriptions.medication']);
 
         $systemPrompt = $this->promptLoader->load('qa-assistant-quick');
 
         $contextMessages = [
             ['role' => 'user', 'content' => $this->formatVisitContext($visit)],
             ['role' => 'user', 'content' => $this->formatPatientContext($visit)],
-            ['role' => 'assistant', 'content' => 'I have the visit context. Ready to help the patient.'],
         ];
+
+        // Include health history and device data even in quick context for richer answers
+        $healthHistoryContext = $this->formatHealthHistoryContext($visit);
+        if ($healthHistoryContext) {
+            $contextMessages[] = ['role' => 'user', 'content' => $healthHistoryContext];
+        }
+
+        $deviceContext = $this->formatDeviceDataContext($visit);
+        if ($deviceContext) {
+            $contextMessages[] = ['role' => 'user', 'content' => $deviceContext];
+        }
+
+        $contextMessages[] = ['role' => 'assistant', 'content' => 'I have the visit context. Ready to help the patient.'];
 
         return ['system_prompt' => $systemPrompt, 'context_messages' => $contextMessages];
     }
@@ -51,7 +65,7 @@ class ContextAssembler
     public function assembleForVisit(Visit $visit, string $promptName = 'qa-assistant'): array
     {
         // Eager load all relationships upfront to prevent N+1 queries
-        $visit->loadMissing(['practitioner', 'visitNote', 'observations', 'transcript', 'conditions', 'prescriptions.medication']);
+        $visit->loadMissing(['patient', 'practitioner', 'visitNote', 'observations', 'transcript', 'conditions', 'prescriptions.medication']);
 
         $tier = $this->tierManager->current();
         $cacheTtl = config('anthropic.cache.ttl', '5m');
@@ -77,6 +91,33 @@ class ContextAssembler
             'role' => 'user',
             'content' => $this->formatPatientContext($visit),
         ];
+
+        // Layer 2b: Full health history (observations across all visits, last 3 months)
+        $healthHistoryContext = $this->formatHealthHistoryContext($visit);
+        if ($healthHistoryContext) {
+            $contextMessages[] = [
+                'role' => 'user',
+                'content' => $healthHistoryContext,
+            ];
+        }
+
+        // Layer 2c: Recent visit summaries (last 3 visits excluding current)
+        $recentVisitsContext = $this->formatRecentVisitsContext($visit);
+        if ($recentVisitsContext) {
+            $contextMessages[] = [
+                'role' => 'user',
+                'content' => $recentVisitsContext,
+            ];
+        }
+
+        // Layer 2d: Device/wearable data (Apple Watch)
+        $deviceContext = $this->formatDeviceDataContext($visit);
+        if ($deviceContext) {
+            $contextMessages[] = [
+                'role' => 'user',
+                'content' => $deviceContext,
+            ];
+        }
 
         // Layer 3: Medications data
         $medsContext = $this->formatMedicationsContext($visit);
@@ -108,7 +149,7 @@ class ContextAssembler
         // Acknowledge context load
         $contextMessages[] = [
             'role' => 'assistant',
-            'content' => 'I have loaded the full visit context, patient record, clinical guidelines, medication data, FDA safety information, and your personal medical library. I am ready to assist the patient with questions about this visit.',
+            'content' => 'I have loaded the full visit context, patient record, health history with trends, recent visit summaries, device/wearable data, clinical guidelines, medication data, FDA safety information, and your personal medical library. I am ready to assist the patient with questions about this visit.',
         ];
 
         return [
@@ -245,6 +286,33 @@ class ContextAssembler
         $parts[] = 'Date of Birth: '.($patient->dob ?? 'Unknown');
         $parts[] = 'Gender: '.($patient->gender ?? 'Unknown');
 
+        // Biometrics
+        if ($patient->height_cm) {
+            $parts[] = "Height: {$patient->height_cm} cm";
+        }
+        if ($patient->weight_kg) {
+            $parts[] = "Weight: {$patient->weight_kg} kg";
+            if ($patient->height_cm) {
+                $meters = $patient->height_cm / 100;
+                $bmi = round($patient->weight_kg / ($meters * $meters), 1);
+                $parts[] = "BMI: {$bmi}";
+            }
+        }
+        if ($patient->blood_type) {
+            $parts[] = "Blood Type: {$patient->blood_type}";
+        }
+
+        // Allergies
+        $allergies = $patient->allergies;
+        if (! empty($allergies) && is_array($allergies)) {
+            $parts[] = "\nAllergies:";
+            foreach ($allergies as $allergy) {
+                $name = $allergy['name'] ?? 'Unknown';
+                $severity = ! empty($allergy['severity']) ? " ({$allergy['severity']})" : '';
+                $parts[] = "- {$name}{$severity}";
+            }
+        }
+
         // Conditions from the visit
         $conditions = $visit->conditions;
         if ($conditions && $conditions->isNotEmpty()) {
@@ -252,6 +320,8 @@ class ContextAssembler
             foreach ($conditions as $condition) {
                 $parts[] = "- {$condition->code_display} ({$condition->code})".
                     ($condition->clinical_status ? " — status: {$condition->clinical_status}" : '').
+                    ($condition->severity ? ", severity: {$condition->severity}" : '').
+                    ($condition->onset_date ? ", onset: {$condition->onset_date->format('Y-m-d')}" : '').
                     ($condition->clinical_notes ? "\n  Notes: {$condition->clinical_notes}" : '');
             }
         }
@@ -397,6 +467,271 @@ class ContextAssembler
 
             return $parts !== [] ? implode("\n", $parts) : null;
         });
+    }
+
+    /**
+     * Format patient's observation history (last 3 months) grouped by type with trends.
+     *
+     * Queries ALL patient observations, not just those from the current visit,
+     * to give the AI a complete picture of health trends.
+     */
+    private function formatHealthHistoryContext(Visit $visit): ?string
+    {
+        $patient = $visit->patient;
+        if (! $patient) {
+            return null;
+        }
+
+        $threeMonthsAgo = now()->subMonths(3);
+
+        // Get all patient observations from the last 3 months, excluding current visit
+        // (current visit observations are already in formatVisitContext)
+        $observations = $patient->observations()
+            ->where('effective_date', '>=', $threeMonthsAgo)
+            ->where(function ($query) use ($visit) {
+                $query->where('visit_id', '!=', $visit->id)
+                    ->orWhereNull('visit_id');
+            })
+            ->orderBy('effective_date')
+            ->get();
+
+        if ($observations->isEmpty()) {
+            return null;
+        }
+
+        $parts = ['--- HEALTH HISTORY (Last 3 Months) ---'];
+
+        // Group by category (vital-signs, laboratory, etc.)
+        $grouped = $observations->groupBy('category');
+
+        foreach ($grouped as $category => $categoryObs) {
+            $parts[] = '';
+            $parts[] = strtoupper(str_replace('-', ' ', $category)).':';
+
+            // Sub-group by code_display (e.g. "Blood Pressure", "Heart Rate")
+            $byType = $categoryObs->groupBy('code_display');
+
+            foreach ($byType as $typeName => $typeObs) {
+                $trend = $this->formatObservationTrend($typeObs);
+                $parts[] = "  {$typeName}: {$trend}";
+            }
+        }
+
+        // Also include ALL patient conditions (not just visit-scoped)
+        $allConditions = $patient->conditions()
+            ->where('clinical_status', '!=', 'resolved')
+            ->orderBy('onset_date')
+            ->get();
+
+        if ($allConditions->isNotEmpty()) {
+            $parts[] = '';
+            $parts[] = 'ALL ACTIVE CONDITIONS:';
+            foreach ($allConditions as $condition) {
+                $line = "  - {$condition->code_display} ({$condition->code})";
+                $line .= $condition->clinical_status ? " — {$condition->clinical_status}" : '';
+                $line .= $condition->severity ? ", {$condition->severity}" : '';
+                $line .= $condition->onset_date ? ", since {$condition->onset_date->format('Y-m-d')}" : '';
+                $parts[] = $line;
+            }
+        }
+
+        $parts[] = '--- END HEALTH HISTORY ---';
+
+        return implode("\n", $parts);
+    }
+
+    /**
+     * Format a collection of same-type observations as a trend string.
+     *
+     * Example: "130/85 (Jan 15) → 125/80 (Feb 1) → 122/78 (Feb 10)"
+     */
+    private function formatObservationTrend(Collection $observations): string
+    {
+        $points = [];
+        foreach ($observations as $obs) {
+            $value = $obs->value_type === 'quantity'
+                ? "{$obs->value_quantity} {$obs->value_unit}"
+                : ($obs->value_string ?? '');
+
+            $date = $obs->effective_date->format('M j');
+
+            $interp = '';
+            if ($obs->interpretation) {
+                $interpLabels = ['L' => 'low', 'LL' => 'critically low', 'H' => 'high', 'HH' => 'critically high', 'N' => 'normal'];
+                $interp = ' ['.($interpLabels[$obs->interpretation] ?? $obs->interpretation).']';
+            }
+
+            $ref = $obs->reference_range_text ? " (ref: {$obs->reference_range_text})" : '';
+
+            $points[] = "{$value} ({$date}){$interp}{$ref}";
+        }
+
+        return implode(' → ', $points);
+    }
+
+    /**
+     * Format recent visit summaries (last 3 visits excluding current).
+     *
+     * Gives the AI context about the patient's recent clinical encounters.
+     */
+    private function formatRecentVisitsContext(Visit $visit): ?string
+    {
+        $patient = $visit->patient;
+        if (! $patient) {
+            return null;
+        }
+
+        $recentVisits = $patient->visits()
+            ->where('id', '!=', $visit->id)
+            ->with(['practitioner', 'visitNote'])
+            ->latest('started_at')
+            ->limit(3)
+            ->get();
+
+        if ($recentVisits->isEmpty()) {
+            return null;
+        }
+
+        $parts = ['--- RECENT VISITS ---'];
+
+        foreach ($recentVisits as $rv) {
+            $date = $rv->started_at ? $rv->started_at->format('M j, Y') : 'Unknown date';
+            $type = $rv->visit_type ?? 'General';
+            $reason = $rv->reason_for_visit ?? 'Not specified';
+
+            $practitioner = '';
+            if ($rv->practitioner) {
+                $practitioner = " with Dr. {$rv->practitioner->first_name} {$rv->practitioner->last_name}";
+                if ($rv->practitioner->primary_specialty) {
+                    $practitioner .= " ({$rv->practitioner->primary_specialty})";
+                }
+            }
+
+            $parts[] = '';
+            $parts[] = "{$date} — {$type}{$practitioner}";
+            $parts[] = "  Reason: {$reason}";
+
+            // Include brief assessment from visit note if available
+            if ($rv->visitNote && $rv->visitNote->assessment) {
+                $assessment = mb_substr($rv->visitNote->assessment, 0, 300);
+                $parts[] = "  Assessment: {$assessment}";
+            }
+        }
+
+        $parts[] = '--- END RECENT VISITS ---';
+
+        return implode("\n", $parts);
+    }
+
+    /**
+     * Format Apple Watch / wearable device data from static JSON file.
+     *
+     * For the demo, device data is loaded from public/data/apple-watch-{patient}.json.
+     * In production, this would come from HealthKit API integration.
+     */
+    private function formatDeviceDataContext(Visit $visit): ?string
+    {
+        $patient = $visit->patient;
+        if (! $patient) {
+            return null;
+        }
+
+        // Try to load device data from static JSON using patient's FHIR ID
+        $patientSlug = $patient->fhir_patient_id;
+        $filePath = public_path("data/apple-watch-{$patientSlug}.json");
+
+        if (! File::exists($filePath)) {
+            return null;
+        }
+
+        try {
+            $data = json_decode(File::get($filePath), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            Log::warning('Failed to parse device data JSON', [
+                'file' => $filePath,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+
+        $parts = ['--- WEARABLE DEVICE DATA ---'];
+        $parts[] = 'Source: '.($data['device']['type'] ?? 'Unknown device');
+        $parts[] = 'Last Sync: '.($data['device']['last_sync'] ?? 'Unknown');
+
+        // Heart Rate
+        if (! empty($data['heart_rate'])) {
+            $parts[] = '';
+            $parts[] = 'HEART RATE:';
+            $parts[] = "  Resting Average: {$data['heart_rate']['resting_average_bpm']} bpm";
+            if (! empty($data['heart_rate']['readings'])) {
+                $recent = array_slice($data['heart_rate']['readings'], 0, 5);
+                foreach ($recent as $r) {
+                    $time = date('M j H:i', strtotime($r['timestamp']));
+                    $parts[] = "  {$time}: {$r['bpm']} bpm ({$r['context']})";
+                }
+            }
+        }
+
+        // Irregular Rhythm Events (PVCs)
+        if (! empty($data['irregular_rhythm_events'])) {
+            $events = $data['irregular_rhythm_events'];
+            $parts[] = '';
+            $parts[] = 'IRREGULAR RHYTHM EVENTS (7d):';
+            $parts[] = '  Total events: '.count($events);
+            foreach ($events as $event) {
+                $time = date('M j H:i', strtotime($event['timestamp']));
+                $type = str_replace('_', ' ', $event['type']);
+                $parts[] = "  {$time}: {$type}, {$event['duration_seconds']}s, HR {$event['heart_rate_at_event']} bpm";
+            }
+        }
+
+        // HRV
+        if (! empty($data['hrv'])) {
+            $parts[] = '';
+            $parts[] = 'HEART RATE VARIABILITY (HRV):';
+            $parts[] = "  Average SDNN: {$data['hrv']['average_sdnn_ms']} ms";
+            if (! empty($data['hrv']['daily_readings'])) {
+                foreach (array_slice($data['hrv']['daily_readings'], 0, 7) as $r) {
+                    $parts[] = "  {$r['date']}: SDNN {$r['sdnn_ms']} ms, RMSSD {$r['rmssd_ms']} ms";
+                }
+            }
+        }
+
+        // Activity
+        if (! empty($data['activity']['daily_steps'])) {
+            $parts[] = '';
+            $parts[] = 'DAILY ACTIVITY:';
+            foreach (array_slice($data['activity']['daily_steps'], 0, 7) as $day) {
+                $parts[] = "  {$day['date']}: {$day['steps']} steps, {$day['distance_km']} km, {$day['active_minutes']} active min";
+            }
+        }
+
+        // Sleep
+        if (! empty($data['sleep'])) {
+            $parts[] = '';
+            $parts[] = 'SLEEP:';
+            $parts[] = "  Average: {$data['sleep']['average_hours']} hours/night";
+            if (! empty($data['sleep']['daily_readings'])) {
+                foreach (array_slice($data['sleep']['daily_readings'], 0, 7) as $day) {
+                    $parts[] = "  {$day['date']}: {$day['total_hours']}h total (deep: {$day['deep_hours']}h, REM: {$day['rem_hours']}h, light: {$day['light_hours']}h)";
+                }
+            }
+        }
+
+        // Blood Oxygen
+        if (! empty($data['blood_oxygen']['readings'])) {
+            $parts[] = '';
+            $parts[] = 'BLOOD OXYGEN (SpO2):';
+            foreach ($data['blood_oxygen']['readings'] as $r) {
+                $date = date('M j', strtotime($r['timestamp']));
+                $parts[] = "  {$date}: {$r['spo2_percent']}%";
+            }
+        }
+
+        $parts[] = '--- END WEARABLE DEVICE DATA ---';
+
+        return implode("\n", $parts);
     }
 
     private function formatLibraryContext(Visit $visit): ?string

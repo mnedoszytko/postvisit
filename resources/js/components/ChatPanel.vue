@@ -362,7 +362,7 @@ const hasScrolledToOpus = ref(false);
 
 const contextSources = reactive([
     { id: 'visit', label: 'Visit Notes', shortLabel: 'Visit', icon: '📋', description: 'SOAP notes, transcript', tokens: '~12K', selected: true },
-    { id: 'health', label: 'Health Data', shortLabel: 'Health', icon: '❤️', description: 'Vitals, observations, labs', tokens: '~8K', selected: true },
+    { id: 'health', label: 'Health Data', shortLabel: 'Health', icon: '❤️', description: 'Biometrics, vitals, labs, allergies, device data', tokens: '~8K', selected: true },
     { id: 'medications', label: 'Medications', shortLabel: 'Meds', icon: '💊', description: 'Prescriptions, FDA data', tokens: '~6K', selected: true },
     { id: 'references', label: 'Medical References', shortLabel: 'Refs', icon: '📚', description: 'Guidelines, conditions', tokens: '~45K', selected: true },
     { id: 'documents', label: 'Documents', shortLabel: 'Docs', icon: '📄', description: 'Uploaded files, reports', tokens: '~15K', selected: false },
@@ -577,19 +577,15 @@ function triggerSendGlow() {
     });
 }
 
-// When context changes while chat is already open, pre-fill the new context
+// When context changes while chat is already open, reset to show new suggestions
 watch(() => props.initialContext, (newCtx) => {
     if (newCtx) {
-        message.value = `Explain: ${newCtx}`;
-        triggerSendGlow();
+        chatStore.clearMessages();
+        message.value = '';
     }
 });
 
 onMounted(() => {
     chatStore.clearMessages();
-    if (props.initialContext) {
-        message.value = `Explain: ${props.initialContext}`;
-        triggerSendGlow();
-    }
 });
 </script>
