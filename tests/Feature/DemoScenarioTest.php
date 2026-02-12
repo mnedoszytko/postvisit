@@ -107,12 +107,12 @@ class DemoScenarioTest extends TestCase
         $this->assertEquals(1, $doctorCount);
     }
 
-    public function test_each_scenario_creates_fresh_user(): void
+    public function test_same_scenario_reuses_existing_user(): void
     {
         $r1 = $this->postJson('/api/v1/demo/start-scenario', ['scenario' => 'pvcs']);
         $r2 = $this->postJson('/api/v1/demo/start-scenario', ['scenario' => 'pvcs']);
 
-        $this->assertNotEquals(
+        $this->assertEquals(
             $r1->json('data.user.id'),
             $r2->json('data.user.id'),
         );

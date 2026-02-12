@@ -91,11 +91,12 @@ class DemoSeeder extends Seeder
 
         $patientUser = User::create([
             'name' => 'Alex Johnson',
-            'email' => 'patient@demo.postvisit.ai',
+            'email' => 'alex.johnson.pvcs@demo.postvisit.ai',
             'password' => 'password',
             'role' => 'patient',
             'patient_id' => $patient->id,
             'is_active' => true,
+            'demo_scenario_key' => 'pvcs',
         ]);
 
         // 5. Visit

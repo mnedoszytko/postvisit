@@ -27,6 +27,15 @@ class DemoScenarioSeeder
      */
     public function seed(array $scenario): User
     {
+        // Fast path: if this scenario was already seeded, return the existing user
+        $existingUser = User::where('demo_scenario_key', $scenario['key'])
+            ->where('role', 'patient')
+            ->first();
+
+        if ($existingUser) {
+            return $existingUser;
+        }
+
         // If source_dir exists, load data from JSON and merge with scenario config
         if (isset($scenario['source_dir'])) {
             $loaded = $this->loadFromSourceDir(base_path($scenario['source_dir']));
@@ -484,11 +493,9 @@ class DemoScenarioSeeder
     {
         $namePart = strtolower($patient->first_name).'.'.strtolower($patient->last_name);
 
-        $suffix = Str::random(6);
-
         return User::create([
             'name' => $patient->first_name.' '.$patient->last_name,
-            'email' => "{$namePart}.{$suffix}@demo.postvisit.ai",
+            'email' => "{$namePart}.{$scenarioKey}@demo.postvisit.ai",
             'password' => 'password',
             'role' => 'patient',
             'patient_id' => $patient->id,

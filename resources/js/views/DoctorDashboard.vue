@@ -134,15 +134,6 @@
                   <p class="font-semibold text-gray-900 truncate">
                     {{ patient.first_name }} {{ patient.last_name }}<span v-if="patient.age" class="text-gray-400 font-normal">, {{ patient.age }}</span>
                   </p>
-                  <span
-                    :class="[
-                      'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium shrink-0',
-                      alertBadgeClasses(patient)
-                    ]"
-                  >
-                    <span :class="['w-1.5 h-1.5 rounded-full', alertDotClass(patient)]"></span>
-                    {{ alertLabel(patient) }}
-                  </span>
                 </div>
 
                 <p v-if="patient.primary_condition" class="text-sm text-gray-600 truncate mb-1">
@@ -296,26 +287,6 @@ function avatarClasses(patient) {
     return 'bg-emerald-100 text-emerald-700';
 }
 
-function alertBadgeClasses(patient) {
-    const status = patient.alert_status || patient.status;
-    if (status === 'alert') return 'bg-red-50 text-red-700 border border-red-200';
-    if (status === 'review') return 'bg-amber-50 text-amber-700 border border-amber-200';
-    return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-}
-
-function alertDotClass(patient) {
-    const status = patient.alert_status || patient.status;
-    if (status === 'alert') return 'bg-red-500';
-    if (status === 'review') return 'bg-amber-500';
-    return 'bg-emerald-500';
-}
-
-function alertLabel(patient) {
-    const status = patient.alert_status || patient.status;
-    if (status === 'alert') return 'Alert';
-    if (status === 'review') return 'Review';
-    return 'Stable';
-}
 
 function closeMenuOnClickOutside(e) {
     if (openMenuId.value && !e.target.closest('.relative')) {
