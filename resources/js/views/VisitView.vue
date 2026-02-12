@@ -42,6 +42,17 @@
             mobileTab === 'chat' ? 'hidden lg:block' : ''
           ]"
         >
+          <!-- Back navigation -->
+          <router-link
+            to="/profile"
+            class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-emerald-700 transition-colors mb-4"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+            Back to Profile
+          </router-link>
+
           <!-- Visit header -->
           <div class="mb-6">
             <h1 class="text-2xl font-bold text-gray-900">Visit Summary</h1>
@@ -128,8 +139,8 @@
               <div class="p-4">
                 <div class="flex items-center justify-between mb-3">
                   <div class="flex items-center gap-2">
-                    <span class="w-6 h-6 flex items-center justify-center rounded-lg shrink-0 bg-amber-50">
-                      <svg class="w-3.5 h-3.5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <span class="w-6 h-6 flex items-center justify-center rounded-lg shrink-0 bg-emerald-50">
+                      <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                       </svg>
                     </span>
@@ -141,9 +152,9 @@
                   <div
                     v-for="(rec, idx) in recommendations"
                     :key="idx"
-                    class="flex items-start gap-3 rounded-lg bg-amber-50/50 border border-amber-100 px-3 py-2.5"
+                    class="flex items-start gap-3 rounded-lg bg-emerald-50/50 border border-emerald-100 px-3 py-2.5"
                   >
-                    <span class="w-5 h-5 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                    <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                       {{ idx + 1 }}
                     </span>
                     <p class="text-sm text-gray-700 leading-relaxed" v-html="inlineMd(rec)"></p>
@@ -338,6 +349,31 @@
               </div>
             </div>
 
+            <!-- Visit Recording (audio playback) -->
+            <div v-if="visit.transcript?.audio_file_path" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+              <div class="p-4">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="w-6 h-6 flex items-center justify-center rounded-lg shrink-0 bg-emerald-50">
+                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                    </svg>
+                  </span>
+                  <h3 class="font-semibold text-gray-800">Visit Recording</h3>
+                  <span v-if="visit.transcript.audio_duration_seconds" class="text-xs text-gray-500">
+                    {{ formatDuration(visit.transcript.audio_duration_seconds) }}
+                  </span>
+                </div>
+                <audio
+                  controls
+                  preload="none"
+                  class="w-full"
+                  :src="`/api/v1/visits/${visit.id}/transcript/audio`"
+                >
+                  Your browser does not support the audio element.
+                </audio>
+              </div>
+            </div>
+
             <!-- Raw Transcript -->
             <div v-if="visit.transcript?.raw_transcript" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
               <button class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors" @click="transcriptExpanded = !transcriptExpanded">
@@ -446,7 +482,7 @@ const route = useRoute();
 const visitStore = useVisitStore();
 const mobileTab = ref('visit');
 const chatVisible = ref(true);
-const chatContext = ref('');
+const chatContext = ref('visit');
 const chatHighlight = ref(false);
 const chatColumnRef = ref(null);
 const obsExpanded = ref(false);
@@ -599,6 +635,13 @@ function formatDate(dateStr) {
 function formatVisitType(type) {
     if (!type) return 'Visit';
     return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function formatDuration(seconds) {
+    if (!seconds || seconds <= 0) return '';
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
 }
 
 const entityCategoryLabels = {
