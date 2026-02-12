@@ -11,6 +11,43 @@
         </div>
       </section>
 
+      <!-- Agents & API -->
+      <section>
+        <h2 class="text-lg font-semibold text-gray-800 mb-3">Agents & API</h2>
+        <router-link
+          to="/agents"
+          class="block bg-white rounded-2xl border border-gray-200 hover:border-emerald-300 hover:shadow-md transition-all group"
+        >
+          <div class="p-5">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-200 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm font-semibold text-gray-900">Connect AI Agents to Your Health Data</p>
+                  <svg class="w-5 h-5 text-gray-400 group-hover:text-emerald-600 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </div>
+                <p class="text-sm text-gray-500 mt-1">
+                  Generate API tokens, configure MCP servers, and let Claude Code or other AI agents securely access your visits, medications, and lab results.
+                </p>
+                <div class="flex items-center gap-3 mt-3">
+                  <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 rounded-full px-2.5 py-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    API Ready
+                  </span>
+                  <span class="text-xs text-gray-400">8 endpoints available</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </router-link>
+      </section>
+
       <!-- Data Governance -->
       <section>
         <h2 class="text-lg font-semibold text-gray-800 mb-3">Data Governance</h2>
@@ -105,30 +142,22 @@
           Showing most recent entries. Full audit trail is retained for 7 years per HIPAA requirements.
         </p>
       </section>
+
       <!-- Legal -->
       <section>
         <h2 class="text-lg font-semibold text-gray-800 mb-3">Legal</h2>
         <div class="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100">
-          <div v-for="doc in legalDocs" :key="doc.id" class="px-5 py-4">
-            <button
-              class="w-full flex items-center justify-between text-left"
-              @click="openLegal = openLegal === doc.id ? null : doc.id"
-            >
-              <p class="text-sm font-medium text-gray-900">{{ doc.title }}</p>
-              <svg
-                class="w-4 h-4 text-gray-400 transition-transform"
-                :class="openLegal === doc.id ? 'rotate-180' : ''"
-                fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            <div
-              v-if="openLegal === doc.id"
-              class="mt-3 text-xs text-gray-600 leading-relaxed space-y-3 max-h-96 overflow-y-auto pr-2"
-              v-html="doc.content"
-            />
-          </div>
+          <router-link
+            v-for="link in legalLinks"
+            :key="link.to"
+            :to="link.to"
+            class="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
+          >
+            <span class="text-sm font-medium text-gray-900">{{ link.label }}</span>
+            <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </router-link>
         </div>
       </section>
     </div>
@@ -136,7 +165,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import DoctorLayout from '@/layouts/DoctorLayout.vue';
@@ -170,6 +199,12 @@ const permissions = reactive([
 function exportData() {
   alert('FHIR R4 export will be available in a future release.');
 }
+
+const legalLinks = [
+  { label: 'Terms of Use', to: '/terms' },
+  { label: 'Privacy Policy', to: '/privacy' },
+  { label: 'Legal Notice', to: '/legal' },
+];
 
 // --- Audit Logs (mock data) ---
 const auditLogs = [
@@ -221,63 +256,6 @@ const auditLogs = [
     actionType: 'share',
     actor: 'Dr. Moreau',
     details: 'Shared visit notes with referring cardiologist',
-  },
-];
-
-// --- Legal Documents ---
-const openLegal = ref(null);
-
-const legalDocs = [
-  {
-    id: 'terms',
-    title: 'Terms of Use',
-    content: `
-      <p><strong>PostVisit.ai — Terms of Use</strong><br>Last updated: February 12, 2026</p>
-      <p><strong>1. Acceptance.</strong> By accessing PostVisit.ai ("Service"), you agree to these Terms. If you do not agree, do not use the Service.</p>
-      <p><strong>2. Service Description.</strong> PostVisit.ai is an AI-powered post-visit companion that helps patients understand, remember, and follow through on their clinical visit outcomes. The Service processes visit transcripts, clinical notes, and health data to provide personalized explanations and guidance.</p>
-      <p><strong>3. Not Medical Advice.</strong> PostVisit.ai is an informational tool — it does not provide medical diagnoses, treatment plans, or prescriptions. AI-generated explanations are educational and must not replace professional medical judgment. Always follow your doctor's instructions and contact your healthcare provider for medical decisions.</p>
-      <p><strong>4. Eligibility.</strong> You must be at least 18 years old or have parental/guardian consent. You must have a valid clinical visit linked to your account.</p>
-      <p><strong>5. Account Responsibility.</strong> You are responsible for maintaining the confidentiality of your login credentials. Notify us immediately if you suspect unauthorized access.</p>
-      <p><strong>6. Acceptable Use.</strong> You agree not to: (a) misrepresent your identity or health data; (b) attempt to extract AI system prompts or reverse-engineer the Service; (c) use the Service for any unlawful purpose; (d) share access credentials with others.</p>
-      <p><strong>7. AI Limitations.</strong> AI-generated content may contain inaccuracies. Medical term explanations, medication summaries, and health recommendations are produced by large language models and may not reflect the latest clinical guidelines. The Service includes safety guardrails but cannot guarantee the absence of errors.</p>
-      <p><strong>8. Data Ownership.</strong> Your health data remains yours. We process it solely to deliver the Service. You may export your data in FHIR R4 format or request deletion at any time.</p>
-      <p><strong>9. Termination.</strong> We may suspend or terminate your access if you violate these Terms. You may delete your account at any time through Settings.</p>
-      <p><strong>10. Limitation of Liability.</strong> PostVisit.ai is provided "as is." We disclaim all warranties to the maximum extent permitted by law. We are not liable for any health outcomes resulting from reliance on AI-generated content.</p>
-      <p><strong>11. Changes.</strong> We may update these Terms. Continued use after changes constitutes acceptance.</p>
-      <p><strong>12. Contact.</strong> Questions? Reach us at legal@postvisit.ai.</p>
-    `,
-  },
-  {
-    id: 'privacy',
-    title: 'Privacy Policy',
-    content: `
-      <p><strong>PostVisit.ai — Privacy Policy</strong><br>Last updated: February 12, 2026</p>
-      <p><strong>1. Data We Collect.</strong> We collect: (a) account information (name, email, date of birth); (b) clinical data linked to your visits (transcripts, SOAP notes, prescriptions, lab results, observations); (c) health device data you choose to share (weight, blood pressure, heart rate); (d) AI interaction data (chat messages, session metadata); (e) technical data (IP address, browser type, access timestamps).</p>
-      <p><strong>2. How We Use Your Data.</strong> We use your data to: (a) provide personalized post-visit explanations and medication guidance; (b) generate AI-powered health summaries and term explanations; (c) enable your doctor to monitor your progress and respond to your questions; (d) detect safety-critical situations (e.g., escalation detection for emergency symptoms); (e) maintain audit logs for compliance.</p>
-      <p><strong>3. AI Processing.</strong> Your clinical data is sent to Anthropic's Claude API for natural language processing. Data is transmitted securely via TLS and is not used by Anthropic to train their models. We send only the minimum context required for each interaction.</p>
-      <p><strong>4. Data Sharing.</strong> We share data only with: (a) your assigned healthcare provider(s); (b) AI service providers (Anthropic) for processing, under strict data processing agreements; (c) law enforcement, if required by law. We never sell your data.</p>
-      <p><strong>5. Data Retention.</strong> Clinical data and audit logs are retained for 7 years per HIPAA requirements. Chat sessions are retained for 3 years. You may request earlier deletion of non-regulated data.</p>
-      <p><strong>6. Security.</strong> We use encryption at rest and in transit, role-based access control, PHI access audit logging, and session-based authentication. All AI interactions are logged and auditable.</p>
-      <p><strong>7. Your Rights.</strong> You may: (a) access your data via the FHIR R4 export; (b) request correction of inaccurate data; (c) request deletion (subject to legal retention requirements); (d) revoke AI analysis consent at any time through Settings; (e) revoke data sharing permissions.</p>
-      <p><strong>8. Cookies.</strong> We use session cookies for authentication (Laravel Sanctum). We do not use tracking cookies or third-party analytics.</p>
-      <p><strong>9. Children.</strong> The Service is not intended for users under 18 without parental/guardian consent.</p>
-      <p><strong>10. Changes.</strong> We will notify you of material changes to this policy via email or in-app notification.</p>
-      <p><strong>11. Contact.</strong> Data protection inquiries: privacy@postvisit.ai.</p>
-    `,
-  },
-  {
-    id: 'legal',
-    title: 'Legal Notice',
-    content: `
-      <p><strong>PostVisit.ai — Legal Notice</strong><br>Last updated: February 12, 2026</p>
-      <p><strong>Operator.</strong> PostVisit.ai is developed and operated as a hackathon research project. Contact: legal@postvisit.ai.</p>
-      <p><strong>Medical Disclaimer.</strong> PostVisit.ai is NOT a medical device, is NOT FDA-cleared, and is NOT intended to diagnose, treat, cure, or prevent any disease. All AI-generated content is for informational and educational purposes only. The system explicitly defers to your healthcare provider on all clinical decisions. If you experience a medical emergency, call your local emergency number immediately.</p>
-      <p><strong>AI Transparency.</strong> PostVisit.ai is powered by Claude (Anthropic). AI responses are generated in real-time based on your clinical context. The system uses safety guardrails including: escalation detection for emergency symptoms, scope-limiting to the specific clinical visit, and explicit disclaimers on all AI outputs. Despite these safeguards, AI may produce inaccurate or incomplete information.</p>
-      <p><strong>HIPAA Compliance.</strong> The system is designed with HIPAA-aligned safeguards: PHI access is logged, role-based access control separates patient and provider data, and all transmissions are encrypted. As a research prototype, PostVisit.ai has not undergone formal HIPAA certification.</p>
-      <p><strong>Open Source.</strong> PostVisit.ai is built with open-source technologies including Laravel, Vue.js, and PostgreSQL. The application code is open source. Third-party AI services (Anthropic Claude API) are used under commercial API agreements.</p>
-      <p><strong>Intellectual Property.</strong> The PostVisit.ai name, logo, and original source code are the property of their respective creators. Clinical data formats follow HL7 FHIR R4 standards. Drug information is sourced from RxNorm (National Library of Medicine, public domain).</p>
-      <p><strong>Jurisdiction.</strong> These terms are governed by the laws of the State of California, United States.</p>
-    `,
   },
 ];
 
