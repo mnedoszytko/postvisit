@@ -5,6 +5,7 @@ All notable changes to PostVisit.ai are documented here in reverse chronological
 ## 2026-02-12
 
 ### Added
+- **Lab Results trend charts with historical data** — LabResultsTab redesigned from flat list to grouped marker cards with Chart.js line charts. Each lab marker shows latest value, interpretation badge (HIGH/LOW/NORMAL), reference range lines, and trend over time. Markers sorted with abnormal values first. Time range filter (7d/30d/90d/1y) reused from VitalsTab. DemoSeeder now seeds 3-4 historical readings per marker (cholesterol improving on statin, creatinine slowly rising, BNP concerning uptrend, hemoglobin declining).
 - **HIPAA-inspired audit logging middleware for all PHI access** -- Terminable `AuditMiddleware` logs every authenticated access to patient data, clinical notes, transcripts, chat sessions, medications, and documents. Tracks user, action type (CRUD + download/export), resource, success/failure, IP address, session ID, and specific PHI element categories per resource type. Applied to all PHI route groups. Audit API at `GET /api/v1/audit/logs` with filters (doctor/admin only). Login/logout events logged in AuthController.
 - Chat panel flash animation (emerald glow) when "Ask AI" is clicked — draws attention to chat
 - "+" button next to Healthcare Provider dropdown in Companion Scribe to add new doctors inline

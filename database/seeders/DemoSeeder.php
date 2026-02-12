@@ -787,7 +787,10 @@ class DemoSeeder extends Seeder
         // 13. Longitudinal vitals for Alex (home readings over 2 weeks)
         $this->seedAlexLongitudinalVitals($patient, $practitioner, $doctorUser);
 
-        // 14. Medical References (real, verified PMIDs/DOIs)
+        // 14. Historical lab data for trend charts
+        $this->seedLabHistory($patient, $visit, $practitioner, $doctorUser);
+
+        // 15. Medical References (real, verified PMIDs/DOIs)
         $this->seedMedicalReferences();
 
         // ====================================================================
@@ -900,6 +903,137 @@ class DemoSeeder extends Seeder
                 ],
                 'created_by' => $doctor->id,
             ]);
+        }
+    }
+
+    /**
+     * Seed historical lab readings for Alex Johnson to enable trend charts.
+     *
+     * Adds 3-4 older readings per key marker, creating realistic clinical trends.
+     * The "latest" values already seeded above remain as the most recent data points.
+     */
+    private function seedLabHistory(Patient $patient, Visit $visit, Practitioner $practitioner, User $doctor): void
+    {
+        // Each entry: [code, code_display, category, unit, ref_low, ref_high, ref_text, readings[]]
+        // readings: [months_ago => value, interpretation]
+        $markers = [
+            [
+                'code' => '2093-3',
+                'code_display' => 'Total cholesterol',
+                'unit' => 'mg/dL',
+                'ref_low' => 0, 'ref_high' => 200,
+                'ref_text' => 'Desirable: <200 mg/dL',
+                'readings' => [
+                    [6, 248, 'H'], [4, 238, 'H'], [2, 225, 'H'],
+                ],
+            ],
+            [
+                'code' => '2089-1',
+                'code_display' => 'LDL Cholesterol [Mass/volume] in Serum or Plasma',
+                'unit' => 'mg/dL',
+                'ref_low' => 0, 'ref_high' => 100,
+                'ref_text' => 'Optimal: <100 mg/dL; Near optimal: 100-129',
+                'readings' => [
+                    [6, 168, 'H'], [4, 160, 'H'], [2, 152, 'H'],
+                ],
+            ],
+            [
+                'code' => '2085-9',
+                'code_display' => 'HDL Cholesterol [Mass/volume] in Serum or Plasma',
+                'unit' => 'mg/dL',
+                'ref_low' => 40, 'ref_high' => 60,
+                'ref_text' => 'Desirable: >40 mg/dL (men), >50 mg/dL (women)',
+                'readings' => [
+                    [6, 35, 'L'], [4, 36, 'L'], [2, 37, 'L'],
+                ],
+            ],
+            [
+                'code' => '2571-8',
+                'code_display' => 'Triglycerides [Mass/volume] in Serum or Plasma',
+                'unit' => 'mg/dL',
+                'ref_low' => 0, 'ref_high' => 150,
+                'ref_text' => 'Normal: <150 mg/dL; Borderline: 150-199',
+                'readings' => [
+                    [6, 195, 'H'], [4, 210, 'H'], [2, 185, 'H'],
+                ],
+            ],
+            [
+                'code' => '2823-3',
+                'code_display' => 'Potassium [Moles/volume] in Serum or Plasma',
+                'unit' => 'mEq/L',
+                'ref_low' => 3.5, 'ref_high' => 5.0,
+                'ref_text' => '3.5-5.0 mEq/L',
+                'readings' => [
+                    [6, 4.0, 'N'], [4, 4.1, 'N'], [2, 4.3, 'N'],
+                ],
+            ],
+            [
+                'code' => '3016-3',
+                'code_display' => 'Thyrotropin [Units/volume] in Serum or Plasma',
+                'unit' => 'mIU/L',
+                'ref_low' => 0.4, 'ref_high' => 4.0,
+                'ref_text' => '0.4-4.0 mIU/L',
+                'readings' => [
+                    [6, 1.8, 'N'], [4, 2.0, 'N'], [2, 2.3, 'N'],
+                ],
+            ],
+            [
+                'code' => '2160-0',
+                'code_display' => 'Creatinine [Mass/volume] in Serum or Plasma',
+                'unit' => 'mg/dL',
+                'ref_low' => 0.7, 'ref_high' => 1.3,
+                'ref_text' => '0.7-1.3 mg/dL',
+                'readings' => [
+                    [6, 1.1, 'N'], [4, 1.2, 'N'], [2, 1.3, 'N'],
+                ],
+            ],
+            [
+                'code' => '718-7',
+                'code_display' => 'Hemoglobin [Mass/volume] in Blood',
+                'unit' => 'g/dL',
+                'ref_low' => 13.5, 'ref_high' => 17.5,
+                'ref_text' => '13.5-17.5 g/dL (men)',
+                'readings' => [
+                    [6, 14.2, 'N'], [4, 13.8, 'N'], [2, 13.2, 'L'],
+                ],
+            ],
+            [
+                'code' => '30934-4',
+                'code_display' => 'Natriuretic peptide B [Mass/volume] in Serum or Plasma',
+                'unit' => 'pg/mL',
+                'ref_low' => 0, 'ref_high' => 100,
+                'ref_text' => 'Normal: <100 pg/mL; HF likely: >400 pg/mL',
+                'readings' => [
+                    [6, 180, 'H'], [4, 250, 'H'], [2, 350, 'H'],
+                ],
+            ],
+        ];
+
+        foreach ($markers as $marker) {
+            foreach ($marker['readings'] as [$monthsAgo, $value, $interp]) {
+                $date = now()->subMonths($monthsAgo);
+                Observation::create([
+                    'fhir_observation_id' => 'obs-hist-'.Str::uuid(),
+                    'patient_id' => $patient->id,
+                    'visit_id' => $visit->id,
+                    'practitioner_id' => $practitioner->id,
+                    'code_system' => 'LOINC',
+                    'code' => $marker['code'],
+                    'code_display' => $marker['code_display'],
+                    'category' => 'laboratory',
+                    'status' => 'final',
+                    'value_type' => 'quantity',
+                    'value_quantity' => $value,
+                    'value_unit' => $marker['unit'],
+                    'reference_range_low' => $marker['ref_low'],
+                    'reference_range_high' => $marker['ref_high'],
+                    'reference_range_text' => $marker['ref_text'],
+                    'interpretation' => $interp,
+                    'effective_date' => $date->toDateString(),
+                    'issued_at' => $date,
+                    'created_by' => $doctor->id,
+                ]);
+            }
         }
     }
 
@@ -1103,6 +1237,37 @@ class DemoSeeder extends Seeder
             'issued_at' => now()->subDays(3), 'created_by' => $doctor->id,
         ]);
 
+        // Historical lab data for Maria (HF trending)
+        $mariaLabHistory = [
+            ['code' => '30934-4', 'display' => 'BNP', 'unit' => 'pg/mL', 'ref_low' => 0, 'ref_high' => 100,
+                'readings' => [[6, 350, 'H'], [4, 520, 'H'], [2, 680, 'H']]],
+            ['code' => '2160-0', 'display' => 'Creatinine', 'unit' => 'mg/dL', 'ref_low' => 0.6, 'ref_high' => 1.1,
+                'readings' => [[6, 1.2, 'H'], [4, 1.3, 'H'], [2, 1.4, 'H']]],
+            ['code' => '2823-3', 'display' => 'Potassium', 'unit' => 'mEq/L', 'ref_low' => 3.5, 'ref_high' => 5.0,
+                'readings' => [[6, 3.8, 'N'], [4, 4.0, 'N'], [2, 4.2, 'N']]],
+            ['code' => '2951-2', 'display' => 'Sodium', 'unit' => 'mEq/L', 'ref_low' => 136, 'ref_high' => 145,
+                'readings' => [[6, 140, 'N'], [4, 138, 'N'], [2, 136, 'N']]],
+            ['code' => '718-7', 'display' => 'Hemoglobin', 'unit' => 'g/dL', 'ref_low' => 12.0, 'ref_high' => 16.0,
+                'readings' => [[6, 12.5, 'N'], [4, 12.2, 'N'], [2, 11.8, 'L']]],
+        ];
+
+        foreach ($mariaLabHistory as $marker) {
+            foreach ($marker['readings'] as [$mo, $val, $interp]) {
+                $date = now()->subMonths($mo);
+                Observation::create([
+                    'fhir_observation_id' => 'obs-hist-'.Str::uuid(),
+                    'patient_id' => $patient->id, 'visit_id' => $visit->id, 'practitioner_id' => $practitioner->id,
+                    'code_system' => 'LOINC', 'code' => $marker['code'], 'code_display' => $marker['display'],
+                    'category' => 'laboratory', 'status' => 'final', 'value_type' => 'quantity',
+                    'value_quantity' => $val, 'value_unit' => $marker['unit'],
+                    'reference_range_low' => $marker['ref_low'], 'reference_range_high' => $marker['ref_high'],
+                    'interpretation' => $interp,
+                    'effective_date' => $date->toDateString(), 'issued_at' => $date,
+                    'created_by' => $doctor->id,
+                ]);
+            }
+        }
+
         ChatSession::create([
             'patient_id' => $patient->id, 'visit_id' => $visit->id,
             'topic' => 'Post-visit follow-up: Heart failure management',
@@ -1198,6 +1363,61 @@ class DemoSeeder extends Seeder
             'follow_up_timeframe' => '4 weeks',
             'is_signed' => true, 'signed_at' => now()->subDays(5),
         ]);
+
+        // Lab results + history for James (HTN with metabolic workup)
+        $jamesLabs = [
+            ['code' => '2093-3', 'display' => 'Total cholesterol', 'unit' => 'mg/dL',
+                'ref_low' => 0, 'ref_high' => 200, 'ref_text' => 'Desirable: <200 mg/dL',
+                'history' => [[6, 232, 'H'], [4, 220, 'H'], [2, 210, 'H']],
+                'current' => [205, 'H']],
+            ['code' => '2089-1', 'display' => 'LDL Cholesterol', 'unit' => 'mg/dL',
+                'ref_low' => 0, 'ref_high' => 100, 'ref_text' => 'Optimal: <100 mg/dL',
+                'history' => [[6, 148, 'H'], [4, 138, 'H'], [2, 128, 'H']],
+                'current' => [118, 'H']],
+            ['code' => '2160-0', 'display' => 'Creatinine', 'unit' => 'mg/dL',
+                'ref_low' => 0.7, 'ref_high' => 1.3, 'ref_text' => '0.7-1.3 mg/dL',
+                'history' => [[6, 1.0, 'N'], [4, 1.0, 'N'], [2, 1.1, 'N']],
+                'current' => [1.1, 'N']],
+            ['code' => '2823-3', 'display' => 'Potassium', 'unit' => 'mEq/L',
+                'ref_low' => 3.5, 'ref_high' => 5.0, 'ref_text' => '3.5-5.0 mEq/L',
+                'history' => [[6, 4.1, 'N'], [4, 4.0, 'N'], [2, 4.2, 'N']],
+                'current' => [4.3, 'N']],
+            ['code' => '2345-7', 'display' => 'Fasting Glucose', 'unit' => 'mg/dL',
+                'ref_low' => 70, 'ref_high' => 100, 'ref_text' => '70-100 mg/dL',
+                'history' => [[6, 108, 'H'], [4, 105, 'H'], [2, 102, 'H']],
+                'current' => [98, 'N']],
+        ];
+
+        $yesterday = now()->subDays(5)->toDateString();
+        foreach ($jamesLabs as $lab) {
+            // Current value
+            Observation::create([
+                'fhir_observation_id' => 'obs-lab-james-'.Str::uuid(),
+                'patient_id' => $patient->id, 'visit_id' => $visit->id, 'practitioner_id' => $practitioner->id,
+                'code_system' => 'LOINC', 'code' => $lab['code'], 'code_display' => $lab['display'],
+                'category' => 'laboratory', 'status' => 'final', 'value_type' => 'quantity',
+                'value_quantity' => $lab['current'][0], 'value_unit' => $lab['unit'],
+                'reference_range_low' => $lab['ref_low'], 'reference_range_high' => $lab['ref_high'],
+                'reference_range_text' => $lab['ref_text'], 'interpretation' => $lab['current'][1],
+                'effective_date' => $yesterday, 'issued_at' => now()->subDays(5),
+                'created_by' => $doctor->id,
+            ]);
+            // Historical
+            foreach ($lab['history'] as [$mo, $val, $interp]) {
+                $date = now()->subMonths($mo);
+                Observation::create([
+                    'fhir_observation_id' => 'obs-hist-'.Str::uuid(),
+                    'patient_id' => $patient->id, 'visit_id' => $visit->id, 'practitioner_id' => $practitioner->id,
+                    'code_system' => 'LOINC', 'code' => $lab['code'], 'code_display' => $lab['display'],
+                    'category' => 'laboratory', 'status' => 'final', 'value_type' => 'quantity',
+                    'value_quantity' => $val, 'value_unit' => $lab['unit'],
+                    'reference_range_low' => $lab['ref_low'], 'reference_range_high' => $lab['ref_high'],
+                    'reference_range_text' => $lab['ref_text'], 'interpretation' => $interp,
+                    'effective_date' => $date->toDateString(), 'issued_at' => $date,
+                    'created_by' => $doctor->id,
+                ]);
+            }
+        }
 
         // Longitudinal BP: before and after medication change
         $bpReadings = [
