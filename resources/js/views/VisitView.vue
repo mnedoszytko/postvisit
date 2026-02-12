@@ -421,7 +421,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted } from 'vue';
+import { ref, computed, reactive, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { useVisitStore } from '@/stores/visit';
 import PatientLayout from '@/layouts/PatientLayout.vue';
@@ -704,7 +704,9 @@ function openChat(context = '') {
     chatVisible.value = true;
     chatHighlight.value = true;
     setTimeout(() => { chatHighlight.value = false; }, 600);
-    chatContext.value = context;
+    // Reset first to ensure watcher fires even if same section clicked again
+    chatContext.value = '';
+    nextTick(() => { chatContext.value = context; });
     // On mobile, switch to chat tab
     if (window.innerWidth < 1024) {
         mobileTab.value = 'chat';
