@@ -642,8 +642,7 @@ class DemoSeeder extends Seeder
         ]);
 
         // 8. Medication: Propranolol
-        $medication = Medication::create([
-            'rxnorm_code' => '8787',
+        $medication = Medication::firstOrCreate(['rxnorm_code' => '8787'], [
             'atc_code' => 'C07AA05',
             'generic_name' => 'Propranolol Hydrochloride',
             'brand_names' => ['Inderal', 'Inderal LA'],
@@ -1834,7 +1833,7 @@ class DemoSeeder extends Seeder
         $org = Organization::where('email', 'info@cityheartclinic.com')->first();
 
         // Collect ALL demo patients: by email pattern and by DemoScenarioSeeder users
-        $demoPatientIds = Patient::where('email', 'like', '%@demo.postvisit.ai')->pluck('id');
+        $demoPatientIds = Patient::withTrashed()->where('email', 'like', '%@demo.postvisit.ai')->pluck('id');
         $scenarioPatientIds = User::whereNotNull('demo_scenario_key')
             ->whereNotNull('patient_id')
             ->pluck('patient_id');
@@ -1897,7 +1896,7 @@ class DemoSeeder extends Seeder
 
         // Nullify created_by on patients and visits to break circular FKs
         if ($allPatientIds->isNotEmpty()) {
-            Patient::whereIn('id', $allPatientIds)->update(['created_by' => null]);
+            Patient::withTrashed()->whereIn('id', $allPatientIds)->update(['created_by' => null]);
         }
 
         // Delete users → patients → practitioner → organization
@@ -1912,7 +1911,7 @@ class DemoSeeder extends Seeder
         }
 
         if ($allPatientIds->isNotEmpty()) {
-            Patient::whereIn('id', $allPatientIds)->delete();
+            Patient::withTrashed()->whereIn('id', $allPatientIds)->forceDelete();
         }
 
         if ($practitioner) {
