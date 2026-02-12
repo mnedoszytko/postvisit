@@ -75,10 +75,19 @@ class ContextAssembler
             ];
         }
 
+        // Layer 5: User's personal library (analyzed documents)
+        $libraryContext = $this->formatLibraryContext($visit);
+        if ($libraryContext) {
+            $contextMessages[] = [
+                'role' => 'user',
+                'content' => $libraryContext,
+            ];
+        }
+
         // Acknowledge context load
         $contextMessages[] = [
             'role' => 'assistant',
-            'content' => 'I have loaded the full visit context, patient record, clinical guidelines, medication data, and FDA safety information. I am ready to assist the patient with questions about this visit.',
+            'content' => 'I have loaded the full visit context, patient record, clinical guidelines, medication data, FDA safety information, and your personal medical library. I am ready to assist the patient with questions about this visit.',
         ];
 
         return [
@@ -367,5 +376,69 @@ class ContextAssembler
 
             return $parts !== [] ? implode("\n", $parts) : null;
         });
+    }
+
+    private function formatLibraryContext(Visit $visit): ?string
+    {
+        $patient = $visit->patient;
+        if (! $patient || ! $patient->user) {
+            return null;
+        }
+
+        $items = $patient->user->libraryItems()
+            ->where('processing_status', 'completed')
+            ->whereNotNull('ai_analysis')
+            ->latest()
+            ->limit(5)
+            ->get();
+
+        if ($items->isEmpty()) {
+            return null;
+        }
+
+        $parts = ['--- PERSONAL MEDICAL LIBRARY ---'];
+        $parts[] = 'The patient has uploaded the following medical documents for personal reference:';
+
+        foreach ($items as $item) {
+            $analysis = $item->ai_analysis;
+            $parts[] = '';
+            $parts[] = 'Document: '.($analysis['title'] ?? $item->title);
+            $parts[] = 'Source: '.($item->source_type === 'pdf_upload' ? 'PDF upload' : 'Web article');
+
+            if (! empty($analysis['categories']['evidence_level'])) {
+                $parts[] = 'Evidence Level: '.$analysis['categories']['evidence_level']
+                    .' ('.($analysis['categories']['evidence_description'] ?? '').')';
+            }
+
+            if (! empty($analysis['categories']['medical_topics'])) {
+                $parts[] = 'Topics: '.implode(', ', $analysis['categories']['medical_topics']);
+            }
+
+            if (! empty($analysis['summary'])) {
+                $parts[] = 'Summary: '.$analysis['summary'];
+            }
+
+            if (! empty($analysis['key_findings'])) {
+                $parts[] = 'Key Findings:';
+                foreach (array_slice($analysis['key_findings'], 0, 5) as $finding) {
+                    $parts[] = '- '.$finding;
+                }
+            }
+
+            if (! empty($analysis['patient_relevance']['relevance_explanation'])) {
+                $parts[] = 'Relevance to Patient: '.$analysis['patient_relevance']['relevance_explanation'];
+            }
+
+            if (! empty($analysis['patient_relevance']['actionable_insights'])) {
+                $parts[] = 'Actionable Insights:';
+                foreach (array_slice($analysis['patient_relevance']['actionable_insights'], 0, 3) as $insight) {
+                    $parts[] = '- '.$insight;
+                }
+            }
+        }
+
+        $parts[] = '--- END PERSONAL MEDICAL LIBRARY ---';
+
+        return implode("\n", $parts);
     }
 }

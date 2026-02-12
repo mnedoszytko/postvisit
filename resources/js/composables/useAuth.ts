@@ -6,7 +6,7 @@ interface AuthReturn {
     isAuthenticated: ComputedRef<boolean>;
     isDoctor: ComputedRef<boolean>;
     isPatient: ComputedRef<boolean>;
-    user: ComputedRef<Record<string, unknown> | null>;
+    user: ComputedRef<AuthUser | null>;
     requireAuth: () => boolean;
     requireRole: (role: string) => boolean;
 }

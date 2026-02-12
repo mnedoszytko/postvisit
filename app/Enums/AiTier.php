@@ -61,6 +61,7 @@ enum AiTier: string
                 'scribe' => 6000,
                 'escalation' => 0,
                 'reasoning' => 6000,
+                'library' => 6000,
                 default => 4000,
             },
             self::Opus46 => match ($subsystem) {
@@ -68,6 +69,7 @@ enum AiTier: string
                 'scribe' => 10000,
                 'escalation' => 6000,
                 'reasoning' => 10000,
+                'library' => 10000,
                 default => 8000,
             },
         };

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\ExplainController;
 use App\Http\Controllers\Api\FeedbackController;
+use App\Http\Controllers\Api\LibraryController;
 use App\Http\Controllers\Api\MedicalLookupController;
 use App\Http\Controllers\Api\MedicationController;
 use App\Http\Controllers\Api\ObservationController;
@@ -171,6 +172,16 @@ Route::prefix('v1')->group(function () {
         Route::prefix('settings')->group(function () {
             Route::get('ai-tier', [SettingsController::class, 'getAiTier']);
             Route::put('ai-tier', [SettingsController::class, 'setAiTier']);
+        });
+
+        // ----- Module 10: Personal Medical Library -----
+        Route::prefix('library')->middleware('audit')->group(function () {
+            Route::get('/', [LibraryController::class, 'index']);
+            Route::post('upload', [LibraryController::class, 'storeFromUpload']);
+            Route::post('url', [LibraryController::class, 'storeFromUrl']);
+            Route::get('{libraryItem}', [LibraryController::class, 'show']);
+            Route::get('{libraryItem}/status', [LibraryController::class, 'status']);
+            Route::delete('{libraryItem}', [LibraryController::class, 'destroy']);
         });
 
         // Upload token status (polling from desktop)

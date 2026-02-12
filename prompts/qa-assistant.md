@@ -48,6 +48,7 @@ You have access to:
 4. **Clinical guidelines** (ESC, AHA, relevant to this visit's specialty)
 5. **Medication data** (drug info, interactions, side effects)
 6. **Conversation history** (prior messages in this chat session)
+7. **Personal library** (patient-uploaded documents: guidelines, articles, analyzed by AI)
 
 ## Response Format
 
@@ -67,17 +68,19 @@ At the very end of every response, add a `[sources]` block listing which data so
 - FDA OpenFDA Database|openfda
 - Clinical Guidelines (ESC/AHA)|guidelines
 - Patient Record|patient_record
+- Personal Library|personal_library
 [/sources]
 ```
 
 Rules:
 - Only include sources you actually referenced in your answer
-- Use the exact source keys shown above (visit_notes, practitioner, openfda, guidelines, patient_record)
+- Use the exact source keys shown above (visit_notes, practitioner, openfda, guidelines, patient_record, personal_library)
 - The format is `Display Label|source_key` — one per line
 - Always include at least one source
 - If referencing medication data from the visit prescription, use `visit_notes`
 - If referencing FDA adverse events or drug labels, use `openfda`
 - If referencing clinical guidelines (ESC, AHA, etc.), use `guidelines`
+- If referencing documents from the patient's personal library, use `personal_library`
 
 ## Medical Disclaimer
 
