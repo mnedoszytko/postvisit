@@ -146,7 +146,7 @@
                     <span class="w-5 h-5 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                       {{ idx + 1 }}
                     </span>
-                    <p class="text-sm text-gray-700 leading-relaxed">{{ rec }}</p>
+                    <p class="text-sm text-gray-700 leading-relaxed" v-html="inlineMd(rec)"></p>
                   </div>
                 </div>
               </div>
@@ -182,7 +182,8 @@
                         'text-sm leading-relaxed transition-colors',
                         checkedActions[idx] ? 'line-through text-gray-400' : 'text-gray-700'
                       ]"
-                    >{{ action }}</span>
+                      v-html="inlineMd(action)"
+                    ></span>
                   </label>
                 </div>
               </div>
@@ -435,6 +436,11 @@ import TermPopover from '@/components/TermPopover.vue';
 import VisitAttachments from '@/components/VisitAttachments.vue';
 import AskAiButton from '@/components/AskAiButton.vue';
 import VisitDateBadge from '@/components/VisitDateBadge.vue';
+
+function inlineMd(text) {
+    if (!text) return '';
+    return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
 
 const route = useRoute();
 const visitStore = useVisitStore();
