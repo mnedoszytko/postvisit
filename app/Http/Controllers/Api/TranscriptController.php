@@ -18,12 +18,39 @@ use Illuminate\Support\Facades\Storage;
 class TranscriptController extends Controller
 {
     /**
+     * Resolve a storage path to an absolute local path for CLI tools (Whisper).
+     * For non-local disks, downloads the file to a temp location.
+     */
+    private function resolveLocalPath(string $disk, string $storagePath): string
+    {
+        if ($disk === 'local') {
+            return Storage::disk($disk)->path($storagePath);
+        }
+
+        $ext = pathinfo($storagePath, PATHINFO_EXTENSION);
+        $tmp = tempnam(sys_get_temp_dir(), 'pv_audio_').'.'.$ext;
+        file_put_contents($tmp, Storage::disk($disk)->get($storagePath));
+
+        return $tmp;
+    }
+
+    /**
+     * Clean up temp file created by resolveLocalPath for non-local disks.
+     */
+    private function cleanupTempFile(string $disk, string $path): void
+    {
+        if ($disk !== 'local' && file_exists($path)) {
+            @unlink($path);
+        }
+    }
+
+    /**
      * Backup audio file outside the project directory for safekeeping.
      */
     private function backupAudio(string $storagePath, Visit $visit, string $label = ''): void
     {
         try {
-            $contents = Storage::disk('local')->get($storagePath);
+            $contents = Storage::disk(config('filesystems.upload'))->get($storagePath);
             $ext = pathinfo($storagePath, PATHINFO_EXTENSION);
             $timestamp = now()->format('Ymd_His');
             $backupName = "{$visit->id}/{$timestamp}".($label ? "_{$label}" : '').".{$ext}";
@@ -98,16 +125,18 @@ class TranscriptController extends Controller
             'patient_consent_given' => ['required', 'boolean'],
         ]);
 
+        $disk = config('filesystems.upload');
+
         $storagePath = $request->file('audio')->store(
             "transcripts/{$visit->id}",
-            'local'
+            $disk
         );
 
         $this->backupAudio($storagePath, $visit, 'full');
 
-        $absolutePath = Storage::disk('local')->path($storagePath);
-
+        $absolutePath = $this->resolveLocalPath($disk, $storagePath);
         $rawTranscript = $stt->transcribe($absolutePath);
+        $this->cleanupTempFile($disk, $absolutePath);
 
         $transcript = Transcript::create([
             'visit_id' => $visit->id,
@@ -255,15 +284,16 @@ class TranscriptController extends Controller
             'total_chunks' => ['required', 'integer', 'min:1'],
         ]);
 
+        $disk = config('filesystems.upload');
+
         $storagePath = $request->file('audio')->store(
             "transcripts/{$visit->id}/chunks",
-            'local'
+            $disk
         );
 
-        $absolutePath = Storage::disk('local')->path($storagePath);
-
-        // Keep chunk file on disk — audio is preserved even if transcription fails
+        $absolutePath = $this->resolveLocalPath($disk, $storagePath);
         $text = $stt->transcribe($absolutePath);
+        $this->cleanupTempFile($disk, $absolutePath);
 
         return response()->json([
             'data' => [
@@ -288,7 +318,7 @@ class TranscriptController extends Controller
 
         $storagePath = $request->file('audio')->store(
             "transcripts/{$visit->id}/chunks",
-            'local'
+            config('filesystems.upload')
         );
 
         $this->backupAudio($storagePath, $visit, 'chunk'.$request->input('chunk_index'));

@@ -45,9 +45,10 @@ class DocumentAnalyzer
      */
     private function buildContentBlocks(Document $document): array
     {
-        $fileContent = Storage::disk('local')->get($document->file_path);
+        $disk = config('filesystems.upload');
+        $fileContent = Storage::disk($disk)->get($document->file_path);
         $base64 = base64_encode($fileContent);
-        $mimeType = Storage::disk('local')->mimeType($document->file_path);
+        $mimeType = Storage::disk($disk)->mimeType($document->file_path);
 
         if ($document->content_type === 'pdf') {
             return [

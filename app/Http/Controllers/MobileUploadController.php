@@ -52,7 +52,7 @@ class MobileUploadController extends Controller
             default => 'other',
         };
 
-        $path = $file->store("documents/{$visit->id}", 'local');
+        $path = $file->store("documents/{$visit->id}", config('filesystems.upload'));
 
         $document = Document::create([
             'fhir_document_reference_id' => 'DocumentReference/'.Str::uuid(),

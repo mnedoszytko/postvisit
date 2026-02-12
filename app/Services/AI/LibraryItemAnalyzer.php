@@ -68,17 +68,35 @@ class LibraryItemAnalyzer
 
     private function extractFromPdf(LibraryItem $item): string
     {
-        $filePath = Storage::disk('local')->path($item->file_path);
+        $disk = config('filesystems.upload');
+
+        // Resolve to local path for pdftotext CLI
+        if ($disk === 'local') {
+            $filePath = Storage::disk($disk)->path($item->file_path);
+            $tmp = null;
+        } else {
+            $tmp = tempnam(sys_get_temp_dir(), 'pv_pdf_').'.pdf';
+            file_put_contents($tmp, Storage::disk($disk)->get($item->file_path));
+            $filePath = $tmp;
+        }
 
         // Try pdftotext CLI first
         $result = Process::run(['pdftotext', '-layout', $filePath, '-']);
 
         if ($result->successful() && trim($result->output()) !== '') {
+            if ($tmp) {
+                @unlink($tmp);
+            }
+
             return trim($result->output());
         }
 
+        if ($tmp) {
+            @unlink($tmp);
+        }
+
         // Fallback: send PDF to Claude for text extraction
-        $base64 = base64_encode(Storage::disk('local')->get($item->file_path));
+        $base64 = base64_encode(Storage::disk($disk)->get($item->file_path));
 
         $response = $this->client->chat(
             'Extract all text from this PDF document. Return only the extracted text, no commentary.',
@@ -125,9 +143,9 @@ class LibraryItemAnalyzer
             $item->update(['copyright_notice' => $copyrightNotice]);
         }
 
-        // Save raw HTML locally
+        // Save raw HTML
         $htmlPath = "library/{$userId}/{$item->id}-raw.html";
-        Storage::disk('local')->put($htmlPath, $html);
+        Storage::disk(config('filesystems.upload'))->put($htmlPath, $html);
         $item->update([
             'file_path' => $htmlPath,
             'file_size' => strlen($html),

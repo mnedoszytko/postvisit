@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Upload Disk
+    |--------------------------------------------------------------------------
+    |
+    | The disk used for all user-uploaded content (documents, audio, library).
+    | Set to 's3' for production (DigitalOcean Spaces), 'local' for dev.
+    |
+    */
+
+    'upload' => env('UPLOAD_DISK', 'local'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |

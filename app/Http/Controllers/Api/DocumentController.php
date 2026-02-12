@@ -43,7 +43,7 @@ class DocumentController extends Controller
         // Store in visit-scoped directory
         $path = $file->store(
             "documents/{$visit->id}",
-            'local'
+            config('filesystems.upload')
         );
 
         $document = Document::create([
@@ -82,6 +82,27 @@ class DocumentController extends Controller
         ]);
     }
 
+    public function reanalyze(Document $document): JsonResponse
+    {
+        if (! in_array($document->content_type, ['image', 'pdf'])) {
+            return response()->json(['error' => 'This document type cannot be analyzed'], 422);
+        }
+
+        $document->update([
+            'analysis_status' => 'pending',
+            'analysis_error' => null,
+        ]);
+
+        AnalyzeDocumentJob::dispatch($document);
+
+        return response()->json([
+            'data' => [
+                'analysis_status' => 'pending',
+                'message' => 'Analysis re-queued',
+            ],
+        ]);
+    }
+
     public function visitDocuments(Visit $visit): JsonResponse
     {
         $documents = $visit->documents()
@@ -93,11 +114,13 @@ class DocumentController extends Controller
 
     public function download(Document $document): \Symfony\Component\HttpFoundation\StreamedResponse
     {
-        if (! Storage::disk('local')->exists($document->file_path)) {
+        $disk = config('filesystems.upload');
+
+        if (! Storage::disk($disk)->exists($document->file_path)) {
             abort(404, 'File not found');
         }
 
-        return Storage::disk('local')->download(
+        return Storage::disk($disk)->download(
             $document->file_path,
             $document->title
         );
@@ -105,13 +128,15 @@ class DocumentController extends Controller
 
     public function thumbnail(Document $document): \Symfony\Component\HttpFoundation\StreamedResponse
     {
-        if (! Storage::disk('local')->exists($document->file_path)) {
+        $disk = config('filesystems.upload');
+
+        if (! Storage::disk($disk)->exists($document->file_path)) {
             abort(404, 'File not found');
         }
 
-        $mime = Storage::disk('local')->mimeType($document->file_path);
+        $mime = Storage::disk($disk)->mimeType($document->file_path);
 
-        return Storage::disk('local')->response($document->file_path, null, [
+        return Storage::disk($disk)->response($document->file_path, null, [
             'Content-Type' => $mime,
             'Cache-Control' => 'max-age=86400',
         ]);
@@ -119,7 +144,7 @@ class DocumentController extends Controller
 
     public function destroy(Document $document): JsonResponse
     {
-        Storage::disk('local')->delete($document->file_path);
+        Storage::disk(config('filesystems.upload'))->delete($document->file_path);
         $document->delete();
 
         return response()->json(['message' => 'Document deleted']);
