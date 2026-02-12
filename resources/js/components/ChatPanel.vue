@@ -114,7 +114,7 @@
               <p class="text-xs text-gray-500 leading-relaxed">{{ msg.quickContent }}</p>
             </div>
             <!-- Opus answer on amber background -->
-            <div class="bg-amber-50/80 border border-amber-200/60 rounded-xl px-3 py-2.5 -mx-1">
+            <div ref="opusAnswerEl" class="bg-amber-50/80 border border-amber-200/60 rounded-xl px-3 py-2.5 -mx-1">
               <div class="flex items-center gap-1.5 mb-2">
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-medium">
                   <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -346,6 +346,8 @@ const expandedThinking = reactive({});
 const showContextMenu = ref(false);
 const sendButton = ref(null);
 const sendGlow = ref(false);
+const opusAnswerEl = ref(null);
+const hasScrolledToOpus = ref(false);
 
 const contextSources = reactive([
     { id: 'visit', label: 'Visit Notes', shortLabel: 'Visit', icon: '📋', description: 'SOAP notes, transcript', tokens: '~12K', selected: true },
@@ -457,6 +459,7 @@ async function send() {
     const text = message.value;
     message.value = '';
     showContextMenu.value = false;
+    hasScrolledToOpus.value = false;
     const sources = selectedSources.value.map(s => s.id);
     await chatStore.sendMessage(props.visitId, text, sources);
     scrollToBottom();
@@ -470,7 +473,36 @@ function scrollToBottom() {
     });
 }
 
-watch(() => chatStore.messages, scrollToBottom, { deep: true });
+function scrollToOpusAnswer() {
+    nextTick(() => {
+        if (opusAnswerEl.value) {
+            opusAnswerEl.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            hasScrolledToOpus.value = true;
+        }
+    });
+}
+
+watch(() => chatStore.messages, () => {
+    const last = chatStore.messages[chatStore.messages.length - 1];
+    if (!last) return;
+
+    // When Opus content first appears and we haven't scrolled yet — scroll to its start
+    if (last.streaming && last.content && !hasScrolledToOpus.value) {
+        scrollToOpusAnswer();
+        return;
+    }
+
+    // When streaming finishes — scroll to Opus answer start
+    if (!last.streaming && last.deepReady && last.quickContent) {
+        scrollToOpusAnswer();
+        return;
+    }
+
+    // Default: scroll to bottom (for user messages, quick answer, etc.)
+    if (!hasScrolledToOpus.value) {
+        scrollToBottom();
+    }
+}, { deep: true });
 
 function triggerSendGlow() {
     sendGlow.value = false;
