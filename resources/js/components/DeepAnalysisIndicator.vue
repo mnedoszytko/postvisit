@@ -46,7 +46,7 @@ const props = defineProps({
 
 const medicalStatuses = [
   'Auscultating the data...',
-  'Cross-referencing clinical guidelines...',
+  'Cross-referencing guidelines...',
   'Checking drug interactions...',
   'Palpating the evidence...',
   'Reviewing your chart...',
@@ -55,6 +55,16 @@ const medicalStatuses = [
   'Running differential diagnosis...',
   'Examining lab correlations...',
   'Prescribing an answer...',
+  'Ordering a stat consult...',
+  'Scrubbing in for analysis...',
+  'Checking contraindications...',
+  'Reviewing clinical trials...',
+  'Titrating the response...',
+  'Performing chart review...',
+  'Triaging your concerns...',
+  'Calibrating dosage data...',
+  'Verifying against formulary...',
+  'Interpreting pathology...',
 ];
 
 const statusIndex = ref(0);
@@ -81,10 +91,18 @@ const progressWidth = computed(() => {
   return `${pct}%`;
 });
 
-onMounted(() => {
-  statusInterval = setInterval(() => {
+function scheduleNextStatus() {
+  const delay = 3000 + Math.random() * 3000; // 3-6 seconds
+  statusInterval = setTimeout(() => {
     statusIndex.value++;
-  }, 3000);
+    scheduleNextStatus();
+  }, delay);
+}
+
+onMounted(() => {
+  // Shuffle start position so it's not always the same first status
+  statusIndex.value = Math.floor(Math.random() * medicalStatuses.length);
+  scheduleNextStatus();
 
   timerInterval = setInterval(() => {
     elapsed.value++;
@@ -92,7 +110,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  clearInterval(statusInterval);
+  clearTimeout(statusInterval);
   clearInterval(timerInterval);
 });
 </script>
