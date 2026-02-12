@@ -70,6 +70,7 @@ Route::prefix('v1')->group(function () {
             Route::get('documents/{document}/download', [DocumentController::class, 'download']);
             Route::get('documents/{document}/thumbnail', [DocumentController::class, 'thumbnail']);
             Route::get('documents/{document}/analysis', [DocumentController::class, 'analysisStatus']);
+            Route::post('documents/{document}/reanalyze', [DocumentController::class, 'reanalyze']);
             Route::delete('documents/{document}', [DocumentController::class, 'destroy']);
         });
 

@@ -156,7 +156,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
               </svg>
               <span class="text-xs text-red-500">Analysis failed</span>
-              <button class="text-xs text-emerald-600 hover:underline ml-auto" @click="pollAnalysis(doc)">Retry</button>
+              <button class="text-xs text-emerald-600 hover:underline ml-auto" @click="retryAnalysis(doc)">Retry</button>
             </div>
 
             <!-- Completed state — collapsible -->
@@ -503,6 +503,17 @@ function stopPolling(docId) {
     if (pollTimers.value[docId]) {
         clearInterval(pollTimers.value[docId]);
         delete pollTimers.value[docId];
+    }
+}
+
+async function retryAnalysis(doc) {
+    try {
+        await api.post(`/documents/${doc.id}/reanalyze`);
+        doc._analysis_status = 'pending';
+        doc._analysis = null;
+        startPolling(doc);
+    } catch {
+        // Toast handled by api interceptor
     }
 }
 

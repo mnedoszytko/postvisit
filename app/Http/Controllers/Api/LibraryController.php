@@ -27,7 +27,7 @@ class LibraryController extends Controller
         $file = $request->file('file');
         $userId = $request->user()->id;
 
-        $path = $file->store("library/{$userId}", 'local');
+        $path = $file->store("library/{$userId}", config('filesystems.upload'));
 
         $item = LibraryItem::create([
             'user_id' => $userId,
@@ -91,7 +91,7 @@ class LibraryController extends Controller
         }
 
         if ($libraryItem->file_path) {
-            Storage::disk('local')->delete($libraryItem->file_path);
+            Storage::disk(config('filesystems.upload'))->delete($libraryItem->file_path);
         }
 
         $libraryItem->delete();
