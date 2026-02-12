@@ -32,7 +32,12 @@ class DocumentController extends Controller
             default => 'other',
         };
 
-        $documentType = $request->input('document_type', 'other');
+        // Use client-provided type, or infer from content type
+        $documentType = $request->input('document_type') ?? match ($contentType) {
+            'pdf' => 'lab_report',
+            'image' => 'imaging',
+            default => 'other',
+        };
         $title = $request->input('title') ?: $file->getClientOriginalName();
 
         // Store in visit-scoped directory

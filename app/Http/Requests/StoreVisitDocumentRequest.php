@@ -19,7 +19,7 @@ class StoreVisitDocumentRequest extends FormRequest
         return [
             'file' => ['required', 'file', 'max:20480', 'mimes:jpg,jpeg,png,gif,webp,pdf,heic,heif'],
             'title' => ['nullable', 'string', 'max:255'],
-            'document_type' => ['nullable', 'string', 'in:ecg,imaging,lab_result,photo,other'],
+            'document_type' => ['nullable', 'string', 'in:lab_report,imaging_report,discharge_summary,progress_note,referral,ecg,imaging,lab_result,photo,other'],
         ];
     }
 

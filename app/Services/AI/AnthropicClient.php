@@ -162,6 +162,32 @@ class AnthropicClient
         ];
     }
 
+    /**
+     * Extract and parse JSON from an AI response that may contain markdown fences.
+     *
+     * @param  array<string, mixed>  $default  Fallback if parsing fails
+     * @return array<string, mixed>
+     */
+    public static function parseJsonOutput(string $response, array $default = []): array
+    {
+        if (preg_match('/```(?:json)?\s*\n?(.*?)\n?```/s', $response, $matches)) {
+            $response = $matches[1];
+        }
+
+        $decoded = json_decode(trim($response), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            Log::warning('AI JSON parse failed', [
+                'error' => json_last_error_msg(),
+                'response_preview' => substr($response, 0, 200),
+            ]);
+
+            return $default;
+        }
+
+        return $decoded;
+    }
+
     private function logUsage(string $method, string $model, mixed $usage): void
     {
         $data = [

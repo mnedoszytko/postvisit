@@ -3,7 +3,6 @@
 namespace App\Services\AI;
 
 use App\Models\Document;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentAnalyzer
@@ -113,28 +112,13 @@ class DocumentAnalyzer
 
     private function parseJsonResponse(string $response): array
     {
-        if (preg_match('/```(?:json)?\s*\n?(.*?)\n?```/s', $response, $matches)) {
-            $response = $matches[1];
-        }
-
-        $decoded = json_decode($response, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            Log::warning('DocumentAnalyzer: Failed to parse JSON response', [
-                'error' => json_last_error_msg(),
-                'response_preview' => substr($response, 0, 500),
-            ]);
-
-            return [
-                'summary' => 'Unable to analyze this document automatically.',
-                'findings' => [],
-                'key_values' => [],
-                'confidence' => 'low',
-                'document_category' => 'other',
-                'safety_note' => 'This is an AI-generated analysis for informational purposes only. It does not constitute a medical diagnosis. Always consult your healthcare provider for clinical interpretation of your results.',
-            ];
-        }
-
-        return $decoded;
+        return AnthropicClient::parseJsonOutput($response, [
+            'summary' => 'Unable to analyze this document automatically.',
+            'findings' => [],
+            'key_values' => [],
+            'confidence' => 'low',
+            'document_category' => 'other',
+            'safety_note' => 'This is an AI-generated analysis for informational purposes only. It does not constitute a medical diagnosis. Always consult your healthcare provider for clinical interpretation of your results.',
+        ]);
     }
 }

@@ -123,24 +123,13 @@ class EscalationDetector
 
     private function parseJsonResponse(string $response): array
     {
-        if (preg_match('/```(?:json)?\s*\n?(.*?)\n?```/s', $response, $matches)) {
-            $response = $matches[1];
-        }
-
-        $decoded = json_decode($response, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            // Default to non-urgent if we can't parse
-            return [
-                'is_urgent' => false,
-                'severity' => 'low',
-                'reason' => 'Unable to evaluate (parse error)',
-                'trigger_phrases' => [],
-                'recommended_action' => 'No action needed',
-                'context_factors' => [],
-            ];
-        }
-
-        return $decoded;
+        return AnthropicClient::parseJsonOutput($response, [
+            'is_urgent' => false,
+            'severity' => 'low',
+            'reason' => 'Unable to evaluate (parse error)',
+            'trigger_phrases' => [],
+            'recommended_action' => 'No action needed',
+            'context_factors' => [],
+        ]);
     }
 }

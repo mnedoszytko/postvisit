@@ -232,11 +232,10 @@ class GenerateScenarioNotesCommand extends Command
                 $length = $end - $start;
 
                 if ($length <= 0 || $start < 0 || $end > strlen($text)) {
-                    // Try fallback search
-                    $pos = stripos($text, $entry['term']);
-                    if ($pos !== false) {
-                        $start = $pos;
-                        $end = $pos + strlen($entry['term']);
+                    // Try fallback search using word boundaries
+                    if (preg_match('/\b'.preg_quote($entry['term'], '/').'\b/iu', $text, $m, PREG_OFFSET_CAPTURE)) {
+                        $start = $m[0][1];
+                        $end = $start + strlen($m[0][0]);
                     } else {
                         continue;
                     }
@@ -246,11 +245,10 @@ class GenerateScenarioNotesCommand extends Command
                 $matched = strtolower($actual) === strtolower($entry['term']);
 
                 if (! $matched) {
-                    $pos = stripos($text, $entry['term']);
-                    if ($pos !== false) {
-                        $start = $pos;
-                        $end = $pos + strlen($entry['term']);
-                        $actual = substr($text, $start, strlen($entry['term']));
+                    if (preg_match('/\b'.preg_quote($entry['term'], '/').'\b/iu', $text, $m, PREG_OFFSET_CAPTURE)) {
+                        $start = $m[0][1];
+                        $end = $start + strlen($m[0][0]);
+                        $actual = $m[0][0];
                         $matched = true;
                     }
                 }
@@ -275,21 +273,11 @@ class GenerateScenarioNotesCommand extends Command
 
     private function parseJsonResponse(string $response): array
     {
-        if (preg_match('/```(?:json)?\s*\n?(.*?)\n?```/s', $response, $matches)) {
-            $response = $matches[1];
-        }
-
-        $decoded = json_decode($response, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return [
-                'clean_transcript' => $response,
-                'extracted_entities' => [],
-                'soap_note' => [],
-                'speakers' => [],
-            ];
-        }
-
-        return $decoded;
+        return AnthropicClient::parseJsonOutput($response, [
+            'clean_transcript' => $response,
+            'extracted_entities' => [],
+            'soap_note' => [],
+            'speakers' => [],
+        ]);
     }
 }
