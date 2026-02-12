@@ -34,7 +34,12 @@ Deadline: **15:00 EST**
 - [ ] Frontend tests exist and pass
 - [ ] No skipped or broken tests
 
-### 4. Stale branches — verify nothing forgotten
+### 4. AI model check — Opus everywhere
+- [ ] Verify all AI services use Claude Opus 4.6 (not Sonnet)
+- [ ] Check config, .env, and hardcoded model references
+- [ ] Especially: chat, visit processing, document analysis, term extraction
+
+### 5. Stale branches — verify nothing forgotten
 - [ ] List unmerged branches (`git branch -r --no-merged main`)
 - [ ] Verify none contain forgotten work — report to Nedo if found
 - [ ] Do NOT merge or delete anything — verification only
@@ -52,29 +57,29 @@ Deadline: **15:00 EST**
 
 ## Landing — deploy & go live
 
-### 6. Production — deployed, secured, working
+### 7. Production — deployed, secured, working
 - [ ] Deployed on Forge, HTTPS enforced, `APP_DEBUG=false`
 - [ ] Rate limiting on public endpoints
 - [ ] Bot protection active (Cloudflare WAF, `robots.txt`)
 - [ ] No debug/stack traces leaking in error responses
 - [ ] Remove IP whitelist / access restrictions — publicly accessible for judges
 
-### 7. Server — performance, data freshness
+### 8. Server — performance, data freshness
 - [ ] Pages load fast, AI chat streams within 2s
 - [ ] Demo data seeded and up to date
 - [ ] No 500 errors in logs
 - [ ] Queue worker running
 
-### 8. Cleanup — no dev artifacts, no doc duplicates
+### 9. Cleanup — no dev artifacts, no doc duplicates
 - [ ] Remove temp scripts, scratch files, agent worktree leftovers
 - [ ] No `console.log()` / `dd()` / `dump()` in production code
 - [ ] No duplicate or outdated docs
 - [ ] README concise and scannable
 - [ ] Markdown ratio < 20%
 
-### 9. Smoke test — full judge flow
+### 10. Smoke test — full judge flow
 - [ ] Try Demo → scenario → visit summary → tap term → AI chat → doctor dashboard
 
-### 10. Offline installation (Docker)
+### 11. Offline installation (Docker)
 - [ ] Verify `docker compose up` works from clean clone
 - [ ] App runs and demo flow works in Docker environment
