@@ -53,44 +53,15 @@
       </div>
     </div>
 
-    <!-- Recent Lab Results -->
-    <div v-if="labResults.length > 0" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-      <button
-        class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
-        @click="labsExpanded = !labsExpanded"
-      >
-        <h2 class="font-semibold text-gray-900">Recent Lab Results</h2>
-        <span class="text-gray-400 text-sm">{{ labsExpanded ? 'Collapse' : 'Expand' }}</span>
-      </button>
-      <div v-if="labsExpanded" class="px-4 pb-4 space-y-2">
-        <div
-          v-for="lab in labResults"
-          :key="lab.id"
-          class="flex items-center justify-between border-b border-gray-100 pb-2 last:border-0"
-        >
-          <div>
-            <p class="font-medium text-gray-800 text-sm">{{ lab.code_display }}</p>
-            <p class="text-xs text-gray-400">{{ formatDate(lab.effective_date) }}</p>
-          </div>
-          <div class="text-right">
-            <p class="text-sm font-medium" :class="interpretationColor(lab.interpretation)">
-              {{ lab.value_type === 'quantity' ? `${formatQuantity(lab.value_quantity)} ${lab.value_unit}` : lab.value_string }}
-            </p>
-            <p v-if="lab.reference_range_text" class="text-[10px] text-gray-400">{{ lab.reference_range_text }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Empty state -->
-    <div v-if="!deviceData && bpData.length === 0 && hrData.length === 0 && weightData.length === 0 && labResults.length === 0" class="text-center py-12 text-gray-400">
-      No vitals or lab data available yet.
+    <div v-if="!deviceData && bpData.length === 0 && hrData.length === 0 && weightData.length === 0" class="text-center py-12 text-gray-400">
+      No vitals data available yet.
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
 import {
     Chart as ChartJS,
@@ -111,8 +82,6 @@ const props = defineProps({
     deviceData: { type: Object, default: null },
 });
 
-const labsExpanded = ref(false);
-
 const bpData = computed(() =>
     props.observations
         .filter(o => o.code === '85354-9' && o.specialty_data?.systolic)
@@ -129,12 +98,6 @@ const weightData = computed(() =>
     props.observations
         .filter(o => o.code === '29463-7')
         .sort((a, b) => new Date(a.effective_date) - new Date(b.effective_date))
-);
-
-const labResults = computed(() =>
-    props.observations
-        .filter(o => o.category === 'laboratory')
-        .sort((a, b) => new Date(b.effective_date) - new Date(a.effective_date))
 );
 
 const todaySteps = computed(() => {
@@ -222,11 +185,6 @@ const weightChartOptions = {
     },
 };
 
-function formatDate(d) {
-    if (!d) return '';
-    return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-}
-
 function formatShortDate(d) {
     if (!d) return '';
     return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -235,17 +193,5 @@ function formatShortDate(d) {
 function formatDateTime(d) {
     if (!d) return '';
     return new Date(d).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-}
-
-function formatQuantity(val) {
-    const num = parseFloat(val);
-    if (isNaN(num)) return val;
-    return Number.isInteger(num) ? num.toString() : parseFloat(num.toFixed(2)).toString();
-}
-
-function interpretationColor(interp) {
-    if (interp === 'H') return 'text-red-600';
-    if (interp === 'L') return 'text-blue-600';
-    return 'text-gray-800';
 }
 </script>

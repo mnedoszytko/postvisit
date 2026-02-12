@@ -16,12 +16,16 @@
           :patient="patient"
           @patient-updated="onPatientUpdated"
         />
-        <ConnectedServicesTab v-if="activeTab === 'services'" />
-        <VitalsLabsTab
+        <VitalsTab
           v-if="activeTab === 'vitals'"
           :observations="observations"
           :device-data="deviceData"
         />
+        <LabResultsTab
+          v-if="activeTab === 'labs'"
+          :observations="observations"
+        />
+        <ConnectedServicesTab v-if="activeTab === 'services'" />
         <DocumentsTab v-if="activeTab === 'documents'" />
       </template>
     </div>
@@ -36,7 +40,8 @@ import PatientLayout from '@/layouts/PatientLayout.vue';
 import HealthTabNav from '@/components/health/HealthTabNav.vue';
 import HealthProfileTab from '@/components/health/HealthProfileTab.vue';
 import ConnectedServicesTab from '@/components/health/ConnectedServicesTab.vue';
-import VitalsLabsTab from '@/components/health/VitalsLabsTab.vue';
+import VitalsTab from '@/components/health/VitalsTab.vue';
+import LabResultsTab from '@/components/health/LabResultsTab.vue';
 import DocumentsTab from '@/components/health/DocumentsTab.vue';
 
 const auth = useAuthStore();
