@@ -26,11 +26,35 @@ class Practitioner extends Model
         'organization_id',
     ];
 
+    protected $appends = ['photo_url'];
+
     protected function casts(): array
     {
         return [
             'secondary_specialties' => 'array',
         ];
+    }
+
+    /**
+     * Map specialty to demo doctor photo directory key.
+     */
+    public function getPhotoUrlAttribute(): ?string
+    {
+        $specialtyMap = [
+            'cardiology' => 'default',
+            'endocrinology' => 'endocrinologist',
+            'gastroenterology' => 'gastroenterologist',
+            'pulmonology' => 'pulmonologist',
+        ];
+
+        $key = $specialtyMap[$this->primary_specialty] ?? 'default';
+        $path = base_path("demo/doctors/{$key}/doctor-photo.png");
+
+        if (! file_exists($path)) {
+            return null;
+        }
+
+        return "/api/v1/demo/doctors/{$key}/photo";
     }
 
     public function organization(): BelongsTo

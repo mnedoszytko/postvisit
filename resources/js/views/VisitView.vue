@@ -54,7 +54,13 @@
                 {{ formatVisitType(visit.visit_type) }}
               </span>
               <span v-if="visit.practitioner" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                <img
+                  v-if="visit.practitioner.photo_url"
+                  :src="visit.practitioner.photo_url"
+                  :alt="`Dr. ${visit.practitioner.first_name} ${visit.practitioner.last_name}`"
+                  class="w-5 h-5 rounded-full object-cover"
+                />
+                <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
                 <span v-if="visit.practitioner.primary_specialty" class="text-blue-500">&middot; {{ visit.practitioner.primary_specialty }}</span>
               </span>

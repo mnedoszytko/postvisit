@@ -199,4 +199,21 @@ class DemoScenarioController extends Controller
             'Cache-Control' => 'public, max-age=86400',
         ]);
     }
+
+    /**
+     * Serve doctor photo for a practitioner type (default, endocrinologist, etc.).
+     */
+    public function doctorPhoto(string $practitionerKey): BinaryFileResponse
+    {
+        $path = base_path("demo/doctors/{$practitionerKey}/doctor-photo.png");
+
+        if (! file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path, [
+            'Content-Type' => 'image/png',
+            'Cache-Control' => 'public, max-age=86400',
+        ]);
+    }
 }

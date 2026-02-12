@@ -189,6 +189,7 @@ Route::prefix('v1')->group(function () {
         // Scenario picker
         Route::get('scenarios', [DemoScenarioController::class, 'index']);
         Route::get('scenarios/{scenario}/photo', [DemoScenarioController::class, 'photo']);
+        Route::get('doctors/{practitionerKey}/photo', [DemoScenarioController::class, 'doctorPhoto']);
         Route::post('start-scenario', [DemoScenarioController::class, 'startScenario']);
         Route::post('switch-to-doctor', [DemoScenarioController::class, 'switchToDoctor']);
     });
