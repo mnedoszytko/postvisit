@@ -318,10 +318,9 @@ class DemoScenarioSeeder
             ];
         }
 
-        // Vitals from the last entry in vitals_timeline
-        $vitalsTimeline = $json['vitals_timeline'] ?? [];
-        if (! empty($vitalsTimeline)) {
-            $lastVitals = end($vitalsTimeline);
+        // Vitals from ALL entries in vitals_timeline (creates historical series for charts)
+        foreach ($json['vitals_timeline'] ?? [] as $vitals) {
+            $date = $vitals['date'] ?? null;
 
             // Blood pressure panel
             $observations[] = [
@@ -330,43 +329,46 @@ class DemoScenarioSeeder
                 'code_display' => 'Blood pressure panel',
                 'category' => 'vital-signs',
                 'value_type' => 'string',
-                'value_string' => $lastVitals['systolic'].'/'.$lastVitals['diastolic'].' mmHg',
-                'interpretation' => 'N',
+                'value_string' => $vitals['systolic'].'/'.$vitals['diastolic'].' mmHg',
+                'interpretation' => $vitals['systolic'] >= 130 ? 'H' : 'N',
+                'effective_date' => $date,
                 'specialty_data' => [
-                    'systolic' => ['value' => $lastVitals['systolic'], 'unit' => 'mmHg', 'code' => '8480-6'],
-                    'diastolic' => ['value' => $lastVitals['diastolic'], 'unit' => 'mmHg', 'code' => '8462-4'],
+                    'systolic' => ['value' => $vitals['systolic'], 'unit' => 'mmHg', 'code' => '8480-6'],
+                    'diastolic' => ['value' => $vitals['diastolic'], 'unit' => 'mmHg', 'code' => '8462-4'],
                 ],
             ];
 
             // Heart rate
-            if (isset($lastVitals['heart_rate'])) {
+            if (isset($vitals['heart_rate'])) {
                 $observations[] = [
                     'code_system' => 'LOINC',
                     'code' => '8867-4',
                     'code_display' => 'Heart rate',
                     'category' => 'vital-signs',
                     'value_type' => 'quantity',
-                    'value_quantity' => $lastVitals['heart_rate'],
+                    'value_quantity' => $vitals['heart_rate'],
                     'value_unit' => 'bpm',
                     'reference_range_low' => 60,
                     'reference_range_high' => 100,
                     'interpretation' => 'N',
+                    'effective_date' => $date,
                 ];
             }
 
             // SpO2
-            if (isset($lastVitals['spo2'])) {
+            if (isset($vitals['spo2'])) {
                 $observations[] = [
                     'code_system' => 'LOINC',
                     'code' => '2708-6',
                     'code_display' => 'Oxygen saturation',
                     'category' => 'vital-signs',
                     'value_type' => 'quantity',
-                    'value_quantity' => $lastVitals['spo2'],
+                    'value_quantity' => $vitals['spo2'],
                     'value_unit' => '%',
                     'reference_range_low' => 95,
                     'reference_range_high' => 100,
-                    'interpretation' => $lastVitals['spo2'] >= 95 ? 'N' : 'L',
+                    'interpretation' => $vitals['spo2'] >= 95 ? 'N' : 'L',
+                    'effective_date' => $date,
                 ];
             }
         }
@@ -622,6 +624,8 @@ class DemoScenarioSeeder
         $yesterday = now()->subDay()->toDateString();
 
         foreach ($observations as $obs) {
+            $effectiveDate = $obs['effective_date'] ?? $yesterday;
+
             Observation::create([
                 'fhir_observation_id' => 'obs-'.Str::random(6).'-'.Str::uuid(),
                 'patient_id' => $patient->id,
@@ -641,8 +645,8 @@ class DemoScenarioSeeder
                 'reference_range_text' => $obs['reference_range_text'] ?? null,
                 'interpretation' => $obs['interpretation'] ?? null,
                 'specialty_data' => $obs['specialty_data'] ?? null,
-                'effective_date' => $yesterday,
-                'issued_at' => now()->subDay(),
+                'effective_date' => $effectiveDate,
+                'issued_at' => $effectiveDate,
                 'created_by' => $doctor->id,
             ]);
         }
