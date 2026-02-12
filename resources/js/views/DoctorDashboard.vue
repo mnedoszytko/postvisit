@@ -117,17 +117,48 @@
             class="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md hover:border-emerald-300 transition-all block"
           >
             <div class="flex items-start gap-4">
-              <div class="w-11 h-11 bg-emerald-100 rounded-full flex items-center justify-center text-sm font-bold text-emerald-700 shrink-0">
-                {{ patient.first_name?.[0] || '?' }}
+              <!-- Avatar: initials circle with color based on alert status -->
+              <div
+                :class="[
+                  'w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold shrink-0',
+                  avatarClasses(patient)
+                ]"
+              >
+                {{ initials(patient) }}
               </div>
               <div class="flex-1 min-w-0">
-                <p class="font-semibold text-gray-900 truncate mb-1">{{ patient.first_name }} {{ patient.last_name }}</p>
+                <div class="flex items-center gap-2 mb-1">
+                  <p class="font-semibold text-gray-900 truncate">
+                    {{ patient.first_name }} {{ patient.last_name }}<span v-if="patient.age" class="text-gray-400 font-normal">, {{ patient.age }}</span>
+                  </p>
+                  <span
+                    :class="[
+                      'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium shrink-0',
+                      alertBadgeClasses(patient)
+                    ]"
+                  >
+                    <span :class="['w-1.5 h-1.5 rounded-full', alertDotClass(patient)]"></span>
+                    {{ alertLabel(patient) }}
+                  </span>
+                </div>
 
-                <p v-if="patient.primary_condition" class="text-sm text-gray-600 truncate">
+                <p v-if="patient.primary_condition" class="text-sm text-gray-600 truncate mb-1">
                   {{ patient.primary_condition }}
                 </p>
 
-                <div class="flex items-center gap-4 mt-2 text-xs text-gray-400">
+                <!-- Vitals row -->
+                <div v-if="patient.last_vitals" class="flex items-center gap-3 text-xs text-gray-500 mb-1">
+                  <span v-if="patient.last_vitals.bp" class="inline-flex items-center gap-1">
+                    <svg class="w-3 h-3 text-rose-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" /></svg>
+                    {{ patient.last_vitals.bp }}
+                  </span>
+                  <span v-if="patient.last_vitals.weight" class="inline-flex items-center gap-1">
+                    <svg class="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>
+                    {{ patient.last_vitals.weight }}
+                  </span>
+                </div>
+
+                <div class="flex items-center gap-4 text-xs text-gray-400">
                   <span>{{ patient.visits_count || 0 }} visit{{ patient.visits_count !== 1 ? 's' : '' }}</span>
                   <span v-if="patient.last_visit_date">Last: {{ formatDate(patient.last_visit_date) }}</span>
                 </div>
@@ -160,6 +191,40 @@ function formatDate(dateStr) {
     if (!dateStr) return '';
     const d = new Date(dateStr);
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function initials(patient) {
+    const f = patient.first_name?.[0] || '';
+    const l = patient.last_name?.[0] || '';
+    return (f + l).toUpperCase() || '?';
+}
+
+function avatarClasses(patient) {
+    const status = patient.alert_status || patient.status;
+    if (status === 'alert') return 'bg-red-100 text-red-700';
+    if (status === 'review') return 'bg-amber-100 text-amber-700';
+    return 'bg-emerald-100 text-emerald-700';
+}
+
+function alertBadgeClasses(patient) {
+    const status = patient.alert_status || patient.status;
+    if (status === 'alert') return 'bg-red-50 text-red-700 border border-red-200';
+    if (status === 'review') return 'bg-amber-50 text-amber-700 border border-amber-200';
+    return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+}
+
+function alertDotClass(patient) {
+    const status = patient.alert_status || patient.status;
+    if (status === 'alert') return 'bg-red-500';
+    if (status === 'review') return 'bg-amber-500';
+    return 'bg-emerald-500';
+}
+
+function alertLabel(patient) {
+    const status = patient.alert_status || patient.status;
+    if (status === 'alert') return 'Alert';
+    if (status === 'review') return 'Review';
+    return 'Stable';
 }
 
 onMounted(() => {

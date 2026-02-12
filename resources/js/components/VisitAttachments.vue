@@ -326,15 +326,21 @@ function matchTermsInText(text) {
         const termStr = t.term;
         if (!termStr) continue;
 
-        const idx = lowerText.indexOf(termStr.toLowerCase());
-        if (idx !== -1) {
-            // Use the actual text casing from the content
+        const lowerTerm = termStr.toLowerCase();
+        let searchFrom = 0;
+
+        // Find all occurrences of this term in the text
+        while (searchFrom < lowerText.length) {
+            const idx = lowerText.indexOf(lowerTerm, searchFrom);
+            if (idx === -1) break;
+
             matched.push({
                 term: text.substring(idx, idx + termStr.length),
                 definition: t.definition || '',
                 start: idx,
                 end: idx + termStr.length,
             });
+            searchFrom = idx + termStr.length;
         }
     }
 

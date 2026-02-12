@@ -15,7 +15,7 @@ class DemoScenarioTest extends TestCase
         $response = $this->getJson('/api/v1/demo/scenarios');
 
         $response->assertOk()
-            ->assertJsonCount(9, 'data')
+            ->assertJsonCount(12, 'data')
             ->assertJsonPath('data.0.key', 'pvcs')
             ->assertJsonPath('data.0.name', 'PVCs / Palpitations')
             ->assertJsonPath('data.0.patient_name', 'Alex Johnson')
@@ -125,5 +125,118 @@ class DemoScenarioTest extends TestCase
         $this->assertDatabaseHas('visit_notes', [
             'chief_complaint' => 'Heart palpitations and irregular heartbeat for 3 weeks',
         ]);
+    }
+
+    public function test_can_start_diabetes_scenario(): void
+    {
+        $response = $this->postJson('/api/v1/demo/start-scenario', [
+            'scenario' => 'diabetes-management',
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('data.user.role', 'patient')
+            ->assertJsonPath('data.scenario', 'diabetes-management');
+
+        $this->assertDatabaseHas('patients', [
+            'first_name' => 'Carlos',
+            'last_name' => 'Rodriguez',
+        ]);
+
+        $this->assertDatabaseHas('conditions', [
+            'code' => 'E11.65',
+        ]);
+
+        $this->assertDatabaseHas('medications', [
+            'generic_name' => 'Metformin',
+        ]);
+
+        $this->assertDatabaseHas('observations', [
+            'code' => '4548-4',
+            'code_display' => 'HbA1c',
+        ]);
+
+        // Verify specialty practitioner was created
+        $this->assertDatabaseHas('users', [
+            'email' => 'dr.patel@demo.postvisit.ai',
+            'role' => 'doctor',
+        ]);
+    }
+
+    public function test_can_start_crohns_scenario(): void
+    {
+        $response = $this->postJson('/api/v1/demo/start-scenario', [
+            'scenario' => 'crohns-flare',
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('data.user.role', 'patient')
+            ->assertJsonPath('data.scenario', 'crohns-flare');
+
+        $this->assertDatabaseHas('patients', [
+            'first_name' => 'Yukita',
+            'last_name' => 'Naka',
+        ]);
+
+        $this->assertDatabaseHas('conditions', [
+            'code' => 'K50.90',
+        ]);
+
+        $this->assertDatabaseHas('medications', [
+            'generic_name' => 'Adalimumab',
+        ]);
+
+        $this->assertDatabaseHas('observations', [
+            'code' => '1988-5',
+            'code_display' => 'C-Reactive Protein',
+        ]);
+    }
+
+    public function test_can_start_copd_scenario(): void
+    {
+        $response = $this->postJson('/api/v1/demo/start-scenario', [
+            'scenario' => 'copd-exacerbation',
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('data.user.role', 'patient')
+            ->assertJsonPath('data.scenario', 'copd-exacerbation');
+
+        $this->assertDatabaseHas('patients', [
+            'first_name' => 'James',
+            'last_name' => 'Washington',
+        ]);
+
+        $this->assertDatabaseHas('conditions', [
+            'code' => 'J44.1',
+        ]);
+
+        $this->assertDatabaseHas('medications', [
+            'generic_name' => 'Tiotropium bromide',
+        ]);
+
+        $this->assertDatabaseHas('observations', [
+            'code' => '6690-2',
+            'code_display' => 'WBC (White Blood Cell Count)',
+        ]);
+    }
+
+    public function test_specialty_practitioners_are_separate_from_default_doctor(): void
+    {
+        $this->postJson('/api/v1/demo/start-scenario', ['scenario' => 'pvcs']);
+        $this->postJson('/api/v1/demo/start-scenario', ['scenario' => 'diabetes-management']);
+
+        // Default doctor (cardiology)
+        $this->assertDatabaseHas('users', [
+            'email' => 'doctor@demo.postvisit.ai',
+            'role' => 'doctor',
+        ]);
+
+        // Specialty doctor (endocrinology)
+        $this->assertDatabaseHas('users', [
+            'email' => 'dr.patel@demo.postvisit.ai',
+            'role' => 'doctor',
+        ]);
+
+        $this->assertEquals(2, User::where('role', 'doctor')->count());
     }
 }

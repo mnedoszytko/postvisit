@@ -23,6 +23,7 @@ class User extends Authenticatable
         'patient_id',
         'practitioner_id',
         'is_active',
+        'demo_scenario_key',
         'last_login_at',
     ];
 

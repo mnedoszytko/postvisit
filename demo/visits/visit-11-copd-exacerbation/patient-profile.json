@@ -1,0 +1,172 @@
+{
+  "demographics": {
+    "first_name": "James",
+    "last_name": "Washington",
+    "dob": "1958-09-03",
+    "gender": "male",
+    "height_cm": 182.0,
+    "weight_kg": 88.0,
+    "bmi": 26.6,
+    "blood_type": "A-",
+    "email": "james.washington@demo.postvisit.ai",
+    "phone": "+1-555-0401",
+    "mrn": "DEMO-V11",
+    "preferred_language": "en"
+  },
+  "emergency_contact": {
+    "name": "Dorothy Washington",
+    "relationship": "Wife",
+    "phone": "+1-555-0402"
+  },
+  "allergies": [
+    {
+      "name": "Aspirin",
+      "severity": "moderate",
+      "reaction": "Bronchospasm"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "COPD with acute exacerbation",
+      "icd10": "J44.1",
+      "onset": "2019-11",
+      "status": "active"
+    },
+    {
+      "name": "Chronic bronchitis",
+      "icd10": "J42",
+      "onset": "2017-01",
+      "status": "active"
+    }
+  ],
+  "medications": [
+    {
+      "brand_name": "Spiriva",
+      "generic_name": "Tiotropium bromide",
+      "dose": "18mcg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2020-03",
+      "reason": "COPD — long-acting muscarinic antagonist for maintenance bronchodilation"
+    },
+    {
+      "brand_name": "Advair",
+      "generic_name": "Fluticasone/salmeterol",
+      "dose": "250/50mcg",
+      "frequency": "2x/day",
+      "status": "active",
+      "started": "2020-03",
+      "reason": "COPD — inhaled corticosteroid + long-acting beta-agonist combination"
+    },
+    {
+      "brand_name": "ProAir",
+      "generic_name": "Albuterol",
+      "dose": "90mcg",
+      "frequency": "PRN (as needed)",
+      "status": "active",
+      "started": "2019-11",
+      "reason": "COPD — rescue inhaler for acute shortness of breath"
+    },
+    {
+      "brand_name": "Zithromax",
+      "generic_name": "Azithromycin",
+      "dose": "250mg",
+      "frequency": "Z-pack (500mg day 1, 250mg days 2-5)",
+      "status": "active",
+      "started": "2026-02",
+      "reason": "COPD exacerbation — antibiotic for suspected bacterial component"
+    }
+  ],
+  "family_history": [
+    {
+      "relation": "Father",
+      "condition": "Lung cancer",
+      "deceased": true,
+      "age_of_onset": 62
+    },
+    {
+      "relation": "Brother",
+      "condition": "COPD",
+      "deceased": false,
+      "age_of_onset": 58
+    }
+  ],
+  "social_history": {
+    "smoking": "former",
+    "smoking_details": "Smoked 1 pack/day for 30 years (1978-2008). Quit 18 years ago. 30 pack-year history.",
+    "alcohol": "occasional",
+    "alcohol_details": "Glass of wine with dinner on weekends",
+    "exercise": "Limited by dyspnea. Short walks around the block when feeling well.",
+    "occupation": "Retired postal worker"
+  },
+  "lab_results": [
+    {
+      "test": "WBC (White Blood Cell Count)",
+      "loinc": "6690-2",
+      "value": 12.4,
+      "unit": "x10^9/L",
+      "reference_range_low": 4.5,
+      "reference_range_high": 11.0,
+      "reference_text": "Normal: 4.5-11.0 x10^9/L",
+      "interpretation": "H",
+      "date": "2026-02-09",
+      "note": "Mildly elevated — suggests infection or inflammatory response consistent with COPD exacerbation"
+    },
+    {
+      "test": "Hemoglobin",
+      "loinc": "718-7",
+      "value": 15.8,
+      "unit": "g/dL",
+      "reference_range_low": 13.5,
+      "reference_range_high": 17.5,
+      "reference_text": "Normal male: 13.5-17.5 g/dL",
+      "interpretation": "N",
+      "date": "2026-02-09",
+      "note": "Normal — slight polycythemia can be seen in chronic hypoxia but within range"
+    },
+    {
+      "test": "BNP (B-type Natriuretic Peptide)",
+      "loinc": "42637-9",
+      "value": 45,
+      "unit": "pg/mL",
+      "reference_range_low": null,
+      "reference_range_high": 100,
+      "reference_text": "Normal: <100 pg/mL",
+      "interpretation": "N",
+      "date": "2026-02-09",
+      "note": "Normal — helps rule out heart failure as cause of dyspnea"
+    },
+    {
+      "test": "Procalcitonin",
+      "loinc": "75241-0",
+      "value": 0.15,
+      "unit": "ng/mL",
+      "reference_range_low": null,
+      "reference_range_high": 0.1,
+      "reference_text": "Low risk of bacterial infection: <0.1, Possible: 0.1-0.25, Likely: >0.25",
+      "interpretation": "H",
+      "date": "2026-02-09",
+      "note": "Borderline — supports possible bacterial component warranting antibiotic therapy"
+    }
+  ],
+  "vitals_timeline": [
+    {"date": "2026-02-10", "systolic": 142, "diastolic": 88, "heart_rate": 94, "spo2": 91},
+    {"date": "2026-02-11", "systolic": 138, "diastolic": 85, "heart_rate": 90, "spo2": 92}
+  ],
+  "upcoming": [
+    {
+      "type": "appointment",
+      "name": "Pulmonology follow-up",
+      "date": "2026-02-25",
+      "location": "City Pulmonary Center",
+      "notes": "Follow-up after exacerbation. Repeat spirometry. Assess response to antibiotic therapy and adjusted inhalers."
+    },
+    {
+      "type": "program",
+      "name": "Pulmonary rehabilitation intake",
+      "date": "2026-03-10",
+      "location": "Regional Rehab Center",
+      "notes": "Initial assessment for pulmonary rehabilitation program. 8-week program, 2x/week."
+    }
+  ]
+}

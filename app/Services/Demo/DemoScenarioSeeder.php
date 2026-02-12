@@ -41,7 +41,10 @@ class DemoScenarioSeeder
         }
 
         $org = $this->findOrCreateOrganization();
-        $doctorUser = $this->findOrCreateDoctor($org);
+        $practitionerKey = $scenario['practitioner'] ?? null;
+        $doctorUser = $practitionerKey
+            ? $this->findOrCreatePractitioner($practitionerKey, $org)
+            : $this->findOrCreateDoctor($org);
         $practitioner = $doctorUser->practitioner;
 
         $patient = $this->createPatient($scenario['patient']);
@@ -288,13 +291,16 @@ class DemoScenarioSeeder
                 continue;
             }
 
+            $isNumeric = is_numeric($lab['value']);
+
             $observations[] = [
                 'code_system' => 'LOINC',
                 'code' => $lab['loinc'],
                 'code_display' => $lab['test'],
                 'category' => 'laboratory',
-                'value_type' => 'quantity',
-                'value_quantity' => $lab['value'],
+                'value_type' => $isNumeric ? 'quantity' : 'string',
+                'value_quantity' => $isNumeric ? $lab['value'] : null,
+                'value_string' => $isNumeric ? null : (string) $lab['value'],
                 'value_unit' => $lab['unit'],
                 'reference_range_low' => $lab['reference_range_low'],
                 'reference_range_high' => $lab['reference_range_high'],
@@ -402,6 +408,46 @@ class DemoScenarioSeeder
         ]);
     }
 
+    /**
+     * Find or create a specialty practitioner from the practitioners config.
+     */
+    private function findOrCreatePractitioner(string $key, Organization $org): User
+    {
+        $config = config("demo-scenarios.practitioners.{$key}");
+        if (! $config) {
+            return $this->findOrCreateDoctor($org);
+        }
+
+        $email = $config['email'];
+
+        $user = User::where('email', $email)->first();
+        if ($user) {
+            return $user;
+        }
+
+        $practitioner = Practitioner::create([
+            'fhir_practitioner_id' => 'practitioner-'.Str::uuid(),
+            'first_name' => $config['first_name'],
+            'last_name' => $config['last_name'],
+            'email' => $email,
+            'npi' => $config['npi'],
+            'license_number' => $config['license_number'],
+            'medical_degree' => $config['medical_degree'],
+            'primary_specialty' => $config['primary_specialty'],
+            'secondary_specialties' => $config['secondary_specialties'],
+            'organization_id' => $org->id,
+        ]);
+
+        return User::create([
+            'name' => $config['name'],
+            'email' => $email,
+            'password' => 'password',
+            'role' => 'doctor',
+            'practitioner_id' => $practitioner->id,
+            'is_active' => true,
+        ]);
+    }
+
     private function createPatient(array $data): Patient
     {
         $namePart = strtolower($data['first_name']).'.'.strtolower($data['last_name']);
@@ -438,16 +484,17 @@ class DemoScenarioSeeder
     {
         $namePart = strtolower($patient->first_name).'.'.strtolower($patient->last_name);
 
-        return User::firstOrCreate(
-            ['patient_id' => $patient->id],
-            [
-                'name' => $patient->first_name.' '.$patient->last_name,
-                'email' => "{$namePart}@demo.postvisit.ai",
-                'password' => 'password',
-                'role' => 'patient',
-                'is_active' => true,
-            ],
-        );
+        $suffix = Str::random(6);
+
+        return User::create([
+            'name' => $patient->first_name.' '.$patient->last_name,
+            'email' => "{$namePart}.{$suffix}@demo.postvisit.ai",
+            'password' => 'password',
+            'role' => 'patient',
+            'patient_id' => $patient->id,
+            'is_active' => true,
+            'demo_scenario_key' => $scenarioKey,
+        ]);
     }
 
     private function createVisit(array $data, Patient $patient, Practitioner $practitioner, Organization $org, User $doctor): Visit

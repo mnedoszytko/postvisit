@@ -275,8 +275,101 @@ class DoctorAlertsTest extends TestCase
             ->assertJsonCount(1, 'data')
             ->assertJsonStructure([
                 'data' => [
-                    ['id', 'first_name', 'last_name', 'visits_count', 'status', 'last_visit_date'],
+                    ['id', 'first_name', 'last_name', 'visits_count', 'status', 'alert_status', 'age', 'last_visit_date'],
                 ],
             ]);
+    }
+
+    public function test_patients_include_last_vitals(): void
+    {
+        $visit = Visit::factory()->create([
+            'patient_id' => $this->patient->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+        ]);
+
+        Observation::factory()->create([
+            'patient_id' => $this->patient->id,
+            'visit_id' => $visit->id,
+            'code' => '29463-7',
+            'code_display' => 'Body weight',
+            'value_type' => 'quantity',
+            'value_quantity' => 82.5,
+            'value_unit' => 'kg',
+            'effective_date' => Carbon::now()->toDateString(),
+        ]);
+
+        Observation::factory()->create([
+            'patient_id' => $this->patient->id,
+            'visit_id' => $visit->id,
+            'code' => '85354-9',
+            'code_display' => 'Blood pressure panel',
+            'value_type' => 'quantity',
+            'value_quantity' => 130,
+            'value_unit' => 'mmHg',
+            'specialty_data' => ['systolic' => 130, 'diastolic' => 85],
+            'effective_date' => Carbon::now()->toDateString(),
+        ]);
+
+        $response = $this->actingAs($this->doctorUser)->getJson('/api/v1/doctor/patients');
+
+        $response->assertOk()
+            ->assertJsonPath('data.0.last_vitals.weight', '82.5000 kg')
+            ->assertJsonPath('data.0.last_vitals.bp', '130/85 mmHg');
+    }
+
+    public function test_patients_alert_status_is_review_for_elevated_bp(): void
+    {
+        $visit = Visit::factory()->create([
+            'patient_id' => $this->patient->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+        ]);
+
+        // 3 consecutive elevated BP readings
+        foreach ([1, 2, 3] as $daysAgo) {
+            Observation::factory()->create([
+                'patient_id' => $this->patient->id,
+                'visit_id' => $visit->id,
+                'code' => '85354-9',
+                'specialty_data' => ['systolic' => 150, 'diastolic' => 95],
+                'effective_date' => Carbon::now()->subDays($daysAgo)->toDateString(),
+            ]);
+        }
+
+        $response = $this->actingAs($this->doctorUser)->getJson('/api/v1/doctor/patients');
+
+        $response->assertOk()
+            ->assertJsonPath('data.0.alert_status', 'review');
+    }
+
+    public function test_patients_deduplicates_by_name(): void
+    {
+        // Create two patients with the same name
+        $patient2 = Patient::factory()->create([
+            'first_name' => $this->patient->first_name,
+            'last_name' => $this->patient->last_name,
+        ]);
+
+        Visit::factory()->create([
+            'patient_id' => $this->patient->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+            'started_at' => Carbon::now()->subDays(5),
+        ]);
+
+        Visit::factory()->create([
+            'patient_id' => $patient2->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+            'started_at' => Carbon::now(),
+        ]);
+
+        $response = $this->actingAs($this->doctorUser)->getJson('/api/v1/doctor/patients');
+
+        // Should only return 1 patient (deduplicated)
+        $response->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $patient2->id);
     }
 }

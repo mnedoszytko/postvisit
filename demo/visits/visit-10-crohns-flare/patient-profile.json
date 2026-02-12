@@ -1,0 +1,171 @@
+{
+  "demographics": {
+    "first_name": "Yukita",
+    "last_name": "Naka",
+    "dob": "1998-04-12",
+    "gender": "female",
+    "height_cm": 160.0,
+    "weight_kg": 52.0,
+    "bmi": 20.3,
+    "blood_type": "B+",
+    "email": "yukita.naka@demo.postvisit.ai",
+    "phone": "+1-555-0301",
+    "mrn": "DEMO-V10",
+    "preferred_language": "en"
+  },
+  "emergency_contact": {
+    "name": "Kenji Naka",
+    "relationship": "Father",
+    "phone": "+1-555-0302"
+  },
+  "allergies": [
+    {
+      "name": "Sulfasalazine",
+      "severity": "moderate",
+      "reaction": "Severe headache and skin rash"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "Crohn's disease, unspecified, without complications",
+      "icd10": "K50.90",
+      "onset": "2021-08",
+      "status": "active"
+    },
+    {
+      "name": "Iron deficiency anemia",
+      "icd10": "D50.9",
+      "onset": "2026-01",
+      "status": "active"
+    }
+  ],
+  "medications": [
+    {
+      "brand_name": "Humira",
+      "generic_name": "Adalimumab",
+      "dose": "40mg",
+      "frequency": "Every 2 weeks",
+      "status": "active",
+      "started": "2023-01",
+      "reason": "Crohn's disease — biologic maintenance therapy"
+    },
+    {
+      "brand_name": "Asacol",
+      "generic_name": "Mesalamine",
+      "dose": "1200mg",
+      "frequency": "3x/day",
+      "status": "active",
+      "started": "2021-09",
+      "reason": "Crohn's disease — anti-inflammatory maintenance"
+    },
+    {
+      "brand_name": "Deltasone",
+      "generic_name": "Prednisone",
+      "dose": "20mg",
+      "frequency": "1x/day (taper over 6 weeks)",
+      "status": "active",
+      "started": "2026-02",
+      "reason": "Crohn's flare — short-term corticosteroid to reduce acute inflammation"
+    },
+    {
+      "brand_name": "Feosol",
+      "generic_name": "Ferrous sulfate",
+      "dose": "325mg",
+      "frequency": "1x/day",
+      "status": "active",
+      "started": "2026-02",
+      "reason": "Iron deficiency anemia secondary to GI blood loss"
+    }
+  ],
+  "family_history": [
+    {
+      "relation": "Mother",
+      "condition": "Ulcerative colitis",
+      "deceased": false,
+      "age_of_onset": 35
+    }
+  ],
+  "social_history": {
+    "smoking": "never",
+    "smoking_details": null,
+    "alcohol": "none",
+    "alcohol_details": "Avoids alcohol due to Crohn's",
+    "exercise": "Yoga 2x/week when not flaring, currently limited by symptoms",
+    "occupation": "Graduate student, molecular biology"
+  },
+  "lab_results": [
+    {
+      "test": "C-Reactive Protein",
+      "loinc": "1988-5",
+      "value": 28,
+      "unit": "mg/L",
+      "reference_range_low": null,
+      "reference_range_high": 3.0,
+      "reference_text": "Normal: <3.0 mg/L",
+      "interpretation": "H",
+      "date": "2026-02-08",
+      "note": "Significantly elevated — indicates active inflammation consistent with Crohn's flare"
+    },
+    {
+      "test": "ESR (Erythrocyte Sedimentation Rate)",
+      "loinc": "4537-7",
+      "value": 42,
+      "unit": "mm/hr",
+      "reference_range_low": null,
+      "reference_range_high": 20,
+      "reference_text": "Normal female: 0-20 mm/hr",
+      "interpretation": "H",
+      "date": "2026-02-08",
+      "note": "Elevated inflammatory marker — correlates with disease activity"
+    },
+    {
+      "test": "Hemoglobin",
+      "loinc": "718-7",
+      "value": 10.2,
+      "unit": "g/dL",
+      "reference_range_low": 12.0,
+      "reference_range_high": 16.0,
+      "reference_text": "Normal female: 12.0-16.0 g/dL",
+      "interpretation": "L",
+      "date": "2026-02-08",
+      "note": "Moderate anemia — likely from chronic GI blood loss"
+    },
+    {
+      "test": "Albumin",
+      "loinc": "1751-7",
+      "value": 3.1,
+      "unit": "g/dL",
+      "reference_range_low": 3.5,
+      "reference_range_high": 5.5,
+      "reference_text": "Normal: 3.5-5.5 g/dL",
+      "interpretation": "L",
+      "date": "2026-02-08",
+      "note": "Low albumin — suggests malabsorption and nutritional deficiency from active Crohn's"
+    },
+    {
+      "test": "Fecal Calprotectin",
+      "loinc": "38442-7",
+      "value": 890,
+      "unit": "ug/g",
+      "reference_range_low": null,
+      "reference_range_high": 50,
+      "reference_text": "Normal: <50 ug/g, Moderate inflammation: 200-800, Severe: >800",
+      "interpretation": "H",
+      "date": "2026-02-08",
+      "note": "Very high — confirms significant intestinal inflammation, correlates with active Crohn's disease"
+    }
+  ],
+  "vitals_timeline": [
+    {"date": "2026-02-10", "systolic": 108, "diastolic": 68, "heart_rate": 92, "spo2": 99},
+    {"date": "2026-02-11", "systolic": 110, "diastolic": 70, "heart_rate": 88, "spo2": 99}
+  ],
+  "upcoming": [
+    {
+      "type": "procedure",
+      "name": "Colonoscopy",
+      "date": "2026-02-25",
+      "location": "GI Associates Endoscopy Center",
+      "notes": "Assess disease extent and activity. Bowel prep instructions will be mailed. Stop iron supplements 5 days before procedure."
+    }
+  ]
+}

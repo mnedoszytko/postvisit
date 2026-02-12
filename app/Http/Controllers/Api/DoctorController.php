@@ -207,13 +207,27 @@ class DoctorController extends Controller
 
         $patients = $query->orderBy('last_name')->get();
 
+        // Deduplicate by first_name + last_name — keep the one with the most recent visit
+        $patients = $patients->groupBy(fn ($p) => strtolower($p->first_name.'|'.$p->last_name))
+            ->map(fn ($group) => $group->sortByDesc(fn ($p) => $p->visits->first()?->started_at)->first())
+            ->values();
+
+        // Get alert statuses (tri-state: alert, review, stable)
+        $alertStatuses = $this->getPatientAlertStatuses($practitioner);
+
+        // Fetch latest vitals (BP and weight) for all patients in bulk
+        $latestVitals = $this->getLatestVitals($patientIds);
+
         // Append computed fields for the dashboard
-        $alertPatientIds = collect($this->getAlertPatientIds($practitioner));
-        $patients->each(function ($patient) use ($alertPatientIds) {
+        $patients->each(function ($patient) use ($alertStatuses, $latestVitals) {
             $patient->primary_condition = $patient->conditions->first()?->code_display;
             $patient->last_visit_date = $patient->visits->first()?->started_at?->toDateString();
             $patient->last_visit_status = $patient->visits->first()?->visit_status;
-            $patient->status = $alertPatientIds->contains($patient->id) ? 'alert' : 'stable';
+            $patient->alert_status = $alertStatuses[$patient->id] ?? 'stable';
+            // Keep legacy 'status' field for backward compatibility
+            $patient->status = $patient->alert_status === 'stable' ? 'stable' : 'alert';
+            $patient->age = $patient->dob ? $patient->dob->age : null;
+            $patient->last_vitals = $latestVitals[$patient->id] ?? null;
             unset($patient->conditions, $patient->visits);
         });
 
@@ -365,5 +379,108 @@ class DoctorController extends Controller
         }
 
         return array_unique($alertIds);
+    }
+
+    /**
+     * Get alert status per patient: "alert" (weight gain), "review" (elevated BP), or "stable".
+     *
+     * @return array<string, string> patient_id => status
+     */
+    private function getPatientAlertStatuses(\App\Models\Practitioner $practitioner): array
+    {
+        $patientIds = Visit::where('practitioner_id', $practitioner->id)
+            ->distinct('patient_id')
+            ->pluck('patient_id');
+
+        $statuses = [];
+
+        // Weight alerts => "alert" (highest severity)
+        $threeDaysAgo = Carbon::now()->subDays(3)->startOfDay();
+        $weightObs = Observation::whereIn('patient_id', $patientIds)
+            ->where('code', '29463-7')
+            ->where('effective_date', '>=', $threeDaysAgo)
+            ->orderBy('effective_date')
+            ->get()
+            ->groupBy('patient_id');
+
+        foreach ($weightObs as $pid => $obs) {
+            if ($obs->count() >= 2) {
+                $delta = (float) $obs->last()->value_quantity - (float) $obs->first()->value_quantity;
+                if ($delta >= 2.0) {
+                    $statuses[$pid] = 'alert';
+                }
+            }
+        }
+
+        // BP alerts => "review" (medium severity, don't overwrite "alert")
+        $bpObs = Observation::whereIn('patient_id', $patientIds)
+            ->where('code', '85354-9')
+            ->orderBy('effective_date')
+            ->get()
+            ->groupBy('patient_id');
+
+        foreach ($bpObs as $pid => $obs) {
+            $consecutive = 0;
+            foreach ($obs as $o) {
+                $systolic = $o->specialty_data['systolic'] ?? ((float) $o->value_quantity ?: null);
+                $diastolic = $o->specialty_data['diastolic'] ?? null;
+                $elevated = ($systolic !== null && $systolic >= 140) || ($diastolic !== null && $diastolic >= 90);
+                $consecutive = $elevated ? $consecutive + 1 : 0;
+            }
+            if ($consecutive >= 3 && ! isset($statuses[$pid])) {
+                $statuses[$pid] = 'review';
+            }
+        }
+
+        return $statuses;
+    }
+
+    /**
+     * Get the latest BP and weight observations per patient.
+     *
+     * @param  \Illuminate\Support\Collection  $patientIds
+     * @return array<string, array> patient_id => ['bp' => '...', 'weight' => '...']
+     */
+    private function getLatestVitals($patientIds): array
+    {
+        $vitals = [];
+
+        // Latest weight per patient (code 29463-7)
+        $latestWeights = Observation::whereIn('patient_id', $patientIds)
+            ->where('code', '29463-7')
+            ->orderByDesc('effective_date')
+            ->get()
+            ->unique('patient_id');
+
+        foreach ($latestWeights as $obs) {
+            $vitals[$obs->patient_id]['weight'] = $obs->value_quantity.' '.($obs->value_unit ?? 'kg');
+        }
+
+        // Latest BP per patient (code 85354-9)
+        $latestBp = Observation::whereIn('patient_id', $patientIds)
+            ->where('code', '85354-9')
+            ->orderByDesc('effective_date')
+            ->get()
+            ->unique('patient_id');
+
+        foreach ($latestBp as $obs) {
+            $systolic = $obs->specialty_data['systolic'] ?? null;
+            $diastolic = $obs->specialty_data['diastolic'] ?? null;
+
+            if (is_array($systolic)) {
+                $systolic = $systolic['value'] ?? null;
+            }
+            if (is_array($diastolic)) {
+                $diastolic = $diastolic['value'] ?? null;
+            }
+
+            if ($systolic !== null && $diastolic !== null) {
+                $vitals[$obs->patient_id]['bp'] = (int) $systolic.'/'.(int) $diastolic.' mmHg';
+            } elseif ($obs->value_quantity !== null) {
+                $vitals[$obs->patient_id]['bp'] = $obs->value_quantity.' mmHg';
+            }
+        }
+
+        return $vitals;
     }
 }

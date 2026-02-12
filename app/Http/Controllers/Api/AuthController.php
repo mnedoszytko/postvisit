@@ -122,8 +122,38 @@ class AuthController extends Controller
     {
         $user = $request->user()->load(['patient', 'practitioner']);
 
+        $data = $user->toArray();
+        $data['photo_url'] = $this->resolvePhotoUrl($user);
+
         return response()->json([
-            'data' => $user,
+            'data' => $data,
         ]);
+    }
+
+    /**
+     * Resolve photo URL for demo scenario users.
+     */
+    private function resolvePhotoUrl(User $user): ?string
+    {
+        $key = $user->demo_scenario_key;
+        if (! $key) {
+            return null;
+        }
+
+        $scenario = config("demo-scenarios.scenarios.{$key}");
+        if (! $scenario) {
+            return null;
+        }
+
+        $dir = $scenario['source_dir'] ?? $scenario['photo_dir'] ?? null;
+        if (! $dir) {
+            return null;
+        }
+
+        if (! file_exists(base_path($dir.'/patient-photo.png'))) {
+            return null;
+        }
+
+        return "/api/v1/demo/scenarios/{$key}/photo";
     }
 }

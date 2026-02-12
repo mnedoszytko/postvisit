@@ -85,6 +85,24 @@ PATIENTS = {
         "prompt": "Marek, a 52-year-old Polish man with medium build, brown hair with some gray, "
                   "slightly anxious worried expression, clean-shaven, wearing a dark blue polo shirt.",
     },
+    "09": {
+        "dir": "visit-09-diabetes-management",
+        "prompt": "Carlos, a 52-year-old Latino Hispanic man with medium-heavy build, dark brown hair "
+                  "with gray at temples, warm brown skin, full rounded face, thick dark mustache, "
+                  "friendly but tired expression, wearing a maroon polo shirt.",
+    },
+    "10": {
+        "dir": "visit-10-crohns-flare",
+        "prompt": "Yukita, a 28-year-old Japanese-American woman with straight black shoulder-length hair, "
+                  "slim build, pale complexion from illness, dark eyes with slight dark circles underneath, "
+                  "gentle but fatigued expression, wearing a soft lavender cardigan.",
+    },
+    "11": {
+        "dir": "visit-11-copd-exacerbation",
+        "prompt": "James, a 68-year-old mixed-race African American man with short gray curly hair, "
+                  "medium-dark brown skin, weathered face with deep laugh lines, reading glasses on nose, "
+                  "slightly short of breath expression, wearing a dark green flannel shirt.",
+    },
 }
 
 

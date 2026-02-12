@@ -35,6 +35,8 @@ class DemoScenarioController extends Controller
                             'description' => $s['description'],
                             'icon' => $s['icon'],
                             'color' => $s['color'],
+                            'specialty' => $s['specialty'] ?? 'cardiology',
+                            'featured' => $s['featured'] ?? false,
                             'patient_name' => $demographics['first_name'].' '.$demographics['last_name'],
                             'patient_age' => Carbon::parse($demographics['dob'])->age,
                             'patient_gender' => $demographics['gender'],
@@ -57,6 +59,8 @@ class DemoScenarioController extends Controller
                     'description' => $s['description'],
                     'icon' => $s['icon'],
                     'color' => $s['color'],
+                    'specialty' => $s['specialty'] ?? 'cardiology',
+                    'featured' => $s['featured'] ?? false,
                     'patient_name' => $s['patient']['first_name'].' '.$s['patient']['last_name'],
                     'patient_age' => Carbon::parse($s['patient']['dob'])->age,
                     'patient_gender' => $s['patient']['gender'],
@@ -103,9 +107,12 @@ class DemoScenarioController extends Controller
             ->latest('started_at')
             ->first();
 
+        $userData = $user->toArray();
+        $userData['photo_url'] = $this->resolvePhotoUrl($scenarioKey);
+
         return response()->json([
             'data' => [
-                'user' => $user,
+                'user' => $userData,
                 'token' => $token,
                 'visit' => $visit,
                 'scenario' => $scenarioKey,
@@ -139,6 +146,28 @@ class DemoScenarioController extends Controller
                 'token' => $token,
             ],
         ]);
+    }
+
+    /**
+     * Resolve photo URL for a scenario key.
+     */
+    private function resolvePhotoUrl(string $scenarioKey): ?string
+    {
+        $scenario = config("demo-scenarios.scenarios.{$scenarioKey}");
+        if (! $scenario) {
+            return null;
+        }
+
+        $dir = $scenario['source_dir'] ?? $scenario['photo_dir'] ?? null;
+        if (! $dir) {
+            return null;
+        }
+
+        if (! file_exists(base_path($dir.'/patient-photo.png'))) {
+            return null;
+        }
+
+        return "/api/v1/demo/scenarios/{$scenarioKey}/photo";
     }
 
     /**

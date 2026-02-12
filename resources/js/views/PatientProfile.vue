@@ -3,7 +3,13 @@
     <div class="space-y-6">
       <!-- Profile header -->
       <div class="bg-white rounded-2xl border border-gray-200 p-6 flex items-center gap-6">
-        <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-2xl font-bold text-emerald-700">
+        <img
+          v-if="auth.user?.photo_url"
+          :src="auth.user.photo_url"
+          :alt="auth.user.name"
+          class="w-20 h-20 rounded-full object-cover"
+        />
+        <div v-else class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-2xl font-bold text-emerald-700">
           {{ initials }}
         </div>
         <div>

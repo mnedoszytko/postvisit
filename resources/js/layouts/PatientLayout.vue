@@ -75,7 +75,13 @@
               class="flex items-center gap-2 hover:opacity-80 transition-opacity"
               @click="dropdownOpen = !dropdownOpen"
             >
-              <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
+              <img
+                v-if="auth.user.photo_url"
+                :src="auth.user.photo_url"
+                :alt="auth.user.name"
+                class="w-7 h-7 rounded-full object-cover"
+              />
+              <div v-else class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
                 {{ initials }}
               </div>
               <span class="text-sm text-gray-700 font-medium">{{ auth.user.name }}</span>
@@ -122,7 +128,13 @@
       <div v-if="mobileOpen" class="md:hidden border-t border-emerald-100 bg-white">
         <div class="px-4 py-3 space-y-1">
           <div v-if="auth.user" class="flex items-center gap-3 px-3 py-2 mb-1 border-b border-gray-100">
-            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">
+            <img
+              v-if="auth.user.photo_url"
+              :src="auth.user.photo_url"
+              :alt="auth.user.name"
+              class="w-8 h-8 rounded-full object-cover"
+            />
+            <div v-else class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">
               {{ initials }}
             </div>
             <div>

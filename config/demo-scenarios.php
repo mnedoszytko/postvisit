@@ -41,6 +41,8 @@ return [
             'description' => 'Heart palpitations and irregular heartbeat for 3 weeks. EKG shows PVCs. Started on Propranolol.',
             'icon' => 'heart-pulse',
             'color' => 'emerald',
+            'specialty' => 'cardiology',
+            'featured' => true,
             'photo_dir' => 'demo/visits/visit-00-pvcs-palpitations',
             'transcript_file' => 'demo/visits/visit-00-pvcs-palpitations/raw-transcript.txt',
             'notes_dir' => 'demo/visits/visit-00-pvcs-palpitations',
@@ -272,6 +274,8 @@ return [
             'description' => 'Post-coronarography follow-up for LAD stenosis, fibromyalgia management, and medication review.',
             'icon' => 'heart',
             'color' => 'red',
+            'specialty' => 'cardiology',
+            'featured' => true,
             'source_dir' => 'demo/visits/visit-01-coronarography-stenosis',
             'visit' => [
                 'visit_type' => 'office_visit',
@@ -297,6 +301,8 @@ return [
             'description' => 'Pre-operative cardiac clearance for gastric bypass surgery. Echocardiogram and stress test normal.',
             'icon' => 'scissors',
             'color' => 'blue',
+            'specialty' => 'cardiology',
+            'featured' => true,
             'source_dir' => 'demo/visits/visit-02-gastric-bypass-preop',
             'visit' => [
                 'visit_type' => 'office_visit',
@@ -322,6 +328,8 @@ return [
             'description' => 'Routine hypertension follow-up with medication adjustment and lifestyle counseling.',
             'icon' => 'gauge',
             'color' => 'amber',
+            'specialty' => 'cardiology',
+            'featured' => true,
             'source_dir' => 'demo/visits/visit-03-hypertension-followup',
             'visit' => [
                 'visit_type' => 'office_visit',
@@ -347,6 +355,7 @@ return [
             'description' => 'Evaluation of atypical chest pain with carotid stenosis workup. Echo and carotid ultrasound performed.',
             'icon' => 'alert-triangle',
             'color' => 'orange',
+            'specialty' => 'cardiology',
             'source_dir' => 'demo/visits/visit-04-chest-pain-carotid',
             'visit' => [
                 'visit_type' => 'office_visit',
@@ -372,6 +381,7 @@ return [
             'description' => 'Evaluation of arm pain with possible fibromyalgia diagnosis. Cardiac workup to rule out cardiac origin.',
             'icon' => 'hand',
             'color' => 'purple',
+            'specialty' => 'cardiology',
             'source_dir' => 'demo/visits/visit-05-arm-pain-fibromyalgia',
             'visit' => [
                 'visit_type' => 'office_visit',
@@ -397,6 +407,7 @@ return [
             'description' => 'Follow-up for thoracic aortic aneurysm with smoking cessation counseling and monitoring.',
             'icon' => 'wind',
             'color' => 'slate',
+            'specialty' => 'cardiology',
             'source_dir' => 'demo/visits/visit-06-aortic-aneurysm-smoking',
             'visit' => [
                 'visit_type' => 'office_visit',
@@ -422,6 +433,7 @@ return [
             'description' => 'Pre-operative cardiac assessment for shoulder surgery. Post-MI with 2 stents. Statin intolerance investigation.',
             'icon' => 'pill',
             'color' => 'indigo',
+            'specialty' => 'cardiology',
             'source_dir' => 'demo/visits/visit-07-preop-stent-statin',
             'visit' => [
                 'visit_type' => 'office_visit',
@@ -447,6 +459,7 @@ return [
             'description' => 'Hypertension management with 24-hour ambulatory blood pressure monitoring referral.',
             'icon' => 'activity',
             'color' => 'teal',
+            'specialty' => 'cardiology',
             'source_dir' => 'demo/visits/visit-08-hypertension-bp-monitoring',
             'visit' => [
                 'visit_type' => 'office_visit',
@@ -466,15 +479,136 @@ return [
             ],
         ],
 
-        // TODO: needs full scenario prep (transcript, audio, photo)
-        // 'heart-failure' => [
-        //     'key' => 'heart-failure',
-        //     'name' => 'Heart Failure',
-        //     'description' => 'Chronic heart failure management with recent decompensation. Weight monitoring and medication adjustment.',
-        //     'icon' => 'activity',
-        //     'color' => 'rose',
-        //     ...
-        // ],
+        'diabetes-management' => [
+            'key' => 'diabetes-management',
+            'name' => 'Type 2 Diabetes / HbA1c',
+            'description' => 'Diabetes follow-up with elevated HbA1c at 8.2%. Adding empagliflozin, adjusting insulin. Dietary counseling.',
+            'icon' => 'droplets',
+            'color' => 'yellow',
+            'specialty' => 'endocrinology',
+            'practitioner' => 'endocrinologist',
+            'source_dir' => 'demo/visits/visit-09-diabetes-management',
+            'visit' => [
+                'visit_type' => 'office_visit',
+                'class' => 'AMB',
+                'service_type' => 'endocrinology_consultation',
+                'reason_for_visit' => 'Diabetes follow-up — poor blood sugar control, HbA1c 8.2%',
+                'summary' => 'Diabetes follow-up. HbA1c elevated at 8.2%. Added empagliflozin, adjusted insulin dose. Dietary counseling and exercise recommendations. Follow-up in 3 months with labs.',
+                'duration_minutes' => 30,
+                'days_ago' => 1,
+            ],
+            'visit_note' => [
+                'composition_type' => 'progress_note',
+                'chief_complaint' => 'Diabetes follow-up — poor blood sugar control, HbA1c 8.2%',
+            ],
+            'chat_session' => [
+                'topic' => 'Post-visit follow-up: Diabetes management and new medication',
+            ],
+        ],
+
+        'crohns-flare' => [
+            'key' => 'crohns-flare',
+            'name' => "Crohn's Disease Flare",
+            'description' => 'Active Crohn\'s flare with bloody diarrhea. Elevated CRP, anemia. Prednisone taper started, colonoscopy scheduled.',
+            'icon' => 'flame',
+            'color' => 'pink',
+            'specialty' => 'gastroenterology',
+            'practitioner' => 'gastroenterologist',
+            'source_dir' => 'demo/visits/visit-10-crohns-flare',
+            'visit' => [
+                'visit_type' => 'office_visit',
+                'class' => 'AMB',
+                'service_type' => 'gastroenterology_consultation',
+                'reason_for_visit' => 'Abdominal pain and bloody diarrhea — Crohn\'s disease flare',
+                'summary' => 'Crohn\'s flare with bloody diarrhea. Labs show elevated inflammatory markers and anemia. Started prednisone taper, continuing Humira. Colonoscopy scheduled in 2 weeks. Iron supplementation added.',
+                'duration_minutes' => 35,
+                'days_ago' => 1,
+            ],
+            'visit_note' => [
+                'composition_type' => 'progress_note',
+                'chief_complaint' => 'Abdominal pain and bloody diarrhea — Crohn\'s disease flare',
+            ],
+            'chat_session' => [
+                'topic' => 'Post-visit follow-up: Crohn\'s disease flare management',
+            ],
+        ],
+
+        'copd-exacerbation' => [
+            'key' => 'copd-exacerbation',
+            'name' => 'COPD Exacerbation',
+            'description' => 'COPD exacerbation with productive cough. Spirometry shows severe obstruction (FEV1 42%). Antibiotics and pulmonary rehab referral.',
+            'icon' => 'wind',
+            'color' => 'cyan',
+            'specialty' => 'pulmonology',
+            'practitioner' => 'pulmonologist',
+            'source_dir' => 'demo/visits/visit-11-copd-exacerbation',
+            'visit' => [
+                'visit_type' => 'office_visit',
+                'class' => 'AMB',
+                'service_type' => 'pulmonology_consultation',
+                'reason_for_visit' => 'Worsening shortness of breath and productive cough — COPD exacerbation',
+                'summary' => 'COPD exacerbation with productive cough. Spirometry shows severe obstruction (FEV1 42%). Started Z-pack for bacterial component. Adjusted maintenance inhalers. Pulmonary rehabilitation referral. Follow-up in 2 weeks.',
+                'duration_minutes' => 30,
+                'days_ago' => 1,
+            ],
+            'visit_note' => [
+                'composition_type' => 'progress_note',
+                'chief_complaint' => 'Worsening shortness of breath and productive cough — COPD exacerbation',
+            ],
+            'chat_session' => [
+                'topic' => 'Post-visit follow-up: COPD exacerbation and pulmonary rehab',
+            ],
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Practitioners (per-specialty doctors)
+    |--------------------------------------------------------------------------
+    |
+    | Scenarios can reference a practitioner key via the 'practitioner' field.
+    | If no key is set, the default 'doctor' config is used (Dr. Nedo, cardiology).
+    |
+    */
+
+    'practitioners' => [
+
+        'endocrinologist' => [
+            'name' => 'Dr. Patel',
+            'email' => 'dr.patel@demo.postvisit.ai',
+            'first_name' => 'Anita',
+            'last_name' => 'Patel',
+            'npi' => '2345678901',
+            'license_number' => 'CA-ENDO-2024-001',
+            'medical_degree' => 'MD',
+            'primary_specialty' => 'endocrinology',
+            'secondary_specialties' => ['internal_medicine'],
+        ],
+
+        'gastroenterologist' => [
+            'name' => 'Dr. Chen',
+            'email' => 'dr.chen@demo.postvisit.ai',
+            'first_name' => 'Lisa',
+            'last_name' => 'Chen',
+            'npi' => '3456789012',
+            'license_number' => 'CA-GI-2024-001',
+            'medical_degree' => 'MD',
+            'primary_specialty' => 'gastroenterology',
+            'secondary_specialties' => ['internal_medicine'],
+        ],
+
+        'pulmonologist' => [
+            'name' => 'Dr. Okafor',
+            'email' => 'dr.okafor@demo.postvisit.ai',
+            'first_name' => 'Chukwuemeka',
+            'last_name' => 'Okafor',
+            'npi' => '4567890123',
+            'license_number' => 'CA-PULM-2024-001',
+            'medical_degree' => 'MD, FCCP',
+            'primary_specialty' => 'pulmonology',
+            'secondary_specialties' => ['internal_medicine', 'critical_care'],
+        ],
 
     ],
 
