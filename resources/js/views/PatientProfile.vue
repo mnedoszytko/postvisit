@@ -12,9 +12,9 @@
         <div v-else class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-2xl font-bold text-emerald-700">
           {{ initials }}
         </div>
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900">{{ auth.user?.name || 'Patient' }}</h1>
-          <p class="text-gray-500">{{ auth.user?.email }}</p>
+        <div class="min-w-0 flex-1">
+          <h1 class="text-2xl font-bold text-gray-900 truncate">{{ auth.user?.name || 'Patient' }}</h1>
+          <p class="text-gray-500 truncate">{{ auth.user?.email }}</p>
         </div>
         <svg class="w-5 h-5 ml-auto text-gray-300 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
       </router-link>

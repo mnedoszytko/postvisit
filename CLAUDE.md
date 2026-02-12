@@ -473,6 +473,14 @@ curl -s "$BASE/tasks?scope=active" | python3 -m json.tool
 - [x] **Transkrypt wizyty** — DONE (`demo/transcript.txt`). Realistyczny dialog kardiolog-pacjent, PVCs, propranolol 40mg 2x/day.
 - [x] **Wypis lekarski / discharge notes** — DONE (`demo/discharge-notes.txt`). Pełny format wypisu.
 
+### Production deployment checklist
+- [ ] **UPLOAD_DISK=s3** — on production set `UPLOAD_DISK=s3` in `.env` (default is `local` for dev). Requires `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET` to be configured. Without this, uploaded documents/audio are stored on local disk and will be lost on redeploy.
+- [ ] **ANTHROPIC_API_KEY** — required for AI chat, analysis, term extraction
+- [ ] **OPENAI_API_KEY** — required for Whisper STT (voice recording)
+- [ ] **APP_URL** — set to `https://postvisit.ai` (or `https://app.postvisit.ai` for staging)
+- [ ] **SANCTUM_STATEFUL_DOMAINS** — must match production domain
+- [ ] **SESSION_DOMAIN** — set to `.postvisit.ai`
+
 ### Nedo — do zrobienia DZIŚ (11 Feb)
 - [ ] **Export WAV'ów z Voice Memos** — kilkanaście nagranych scenariuszy klinicznych. Share → Files/AirDrop, format m4a OK (Whisper je przyjmie). Wrzucić do `demo/audio/`.
 - [ ] Każdy WAV = osobny case kliniczny → budujemy bibliotekę demo cases
