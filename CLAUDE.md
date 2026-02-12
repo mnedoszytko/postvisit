@@ -6,7 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **PostVisit.ai** — system AI utrzymujący kontekst konkretnej wizyty klinicznej, pomagający pacjentowi po wyjściu z gabinetu. Hackathon project: Built with Opus 4.6 (10-16 luty 2026).
 
-Pełna dokumentacja projektu: `docs/seed.md`
 Log decyzji: `docs/decisions.md`
 Log błędów i poprawek (dev/tooling): `docs/lessons.md`
 Log iteracji i głębi klinicznej: `docs/KEEP-THINKING.md`

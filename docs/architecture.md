@@ -340,9 +340,15 @@ resources/js/
 | **NIH ClinicalTables** | `NihClinicalTablesClient` | Medical lookup | Conditions, procedures search |
 | **PubMed/PMC** | `PubMedClient` | Literature | Reference verification, article metadata |
 
-### Clinical Guidelines (Local)
+### Clinical Knowledge Pipeline
 
-Bundled clinical guidelines from open-access sources (WikiDoc CC-BY-SA, DailyMed public domain) are stored in `demo/guidelines/` and loaded by the `GuidelinesRepository` service. On the Opus 4.6 tier, these are injected into the system prompt with Anthropic's prompt caching for efficient reuse across requests.
+The `GuidelinesRepository` loads clinical guidelines from multiple open-access sources:
+
+- **Local files** (`demo/guidelines/`): WikiDoc articles (CC-BY-SA 3.0) and DailyMed drug labels (public domain)
+- **PMC Open Access**: Full-text articles fetched at runtime via BioC API (PVC management, heart failure, hypertension guidelines)
+- **OpenFDA**: Adverse event reports and drug label sections via REST API
+
+On the Opus 4.6 tier, guidelines are injected into the system prompt with Anthropic's prompt caching (90% token cost reduction on cache hits). A typical cardiology visit loads 50-150K tokens of clinical reference material into the 1M context window alongside visit data, patient record, and conversation history.
 
 ## Deployment Architecture
 
