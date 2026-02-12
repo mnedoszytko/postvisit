@@ -85,9 +85,21 @@ const routes = [
         meta: { requiresAuth: true, role: 'doctor' },
     },
     {
+        path: '/doctor/patients',
+        name: 'doctor-patients',
+        component: () => import('@/views/DoctorPatients.vue'),
+        meta: { requiresAuth: true, role: 'doctor' },
+    },
+    {
         path: '/doctor/patients/:id',
         name: 'doctor-patient-detail',
         component: DoctorPatientDetail,
+        meta: { requiresAuth: true, role: 'doctor' },
+    },
+    {
+        path: '/doctor/patients/:patientId/visits/:visitId',
+        name: 'doctor-visit-detail',
+        component: () => import('@/views/DoctorVisitDetail.vue'),
         meta: { requiresAuth: true, role: 'doctor' },
     },
     {

@@ -64,12 +64,12 @@
             Dashboard
           </router-link>
           <router-link
-            to="/doctor/audit"
+            to="/doctor/patients"
             class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
             active-class="bg-indigo-50 text-indigo-700 font-medium"
             @click="mobileOpen = false"
           >
-            Audit Log
+            Patients
           </router-link>
           <router-link
             to="/settings"
@@ -113,11 +113,11 @@
             Dashboard
           </router-link>
           <router-link
-            to="/doctor/audit"
+            to="/doctor/patients"
             class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
             active-class="bg-indigo-50 text-indigo-700 font-medium"
           >
-            Audit Log
+            Patients
           </router-link>
           <router-link
             to="/settings"

@@ -222,8 +222,11 @@ class DoctorController extends Controller
         // Fetch latest vitals (BP and weight) for all patients in bulk
         $latestVitals = $this->getLatestVitals($patientIds);
 
+        // Resolve photo URLs: Patient → User (patient_id) → demo_scenario_key → photo
+        $photoUrls = $this->resolvePatientPhotoUrls($patients->pluck('id'));
+
         // Append computed fields for the dashboard
-        $patients->each(function ($patient) use ($alertStatuses, $latestVitals) {
+        $patients->each(function ($patient) use ($alertStatuses, $latestVitals, $photoUrls) {
             $patient->primary_condition = $patient->conditions->first()?->code_display;
             $patient->last_visit_date = $patient->visits->first()?->started_at?->toDateString();
             $patient->last_visit_status = $patient->visits->first()?->visit_status;
@@ -239,6 +242,7 @@ class DoctorController extends Controller
                 'dose' => $rx->dose_quantity.($rx->dose_unit ? ' '.$rx->dose_unit : ''),
                 'frequency' => $rx->frequency_text ?? $rx->frequency,
             ])->values();
+            $patient->photo_url = $photoUrls[$patient->id] ?? null;
             unset($patient->conditions, $patient->visits, $patient->prescriptions);
         });
 
@@ -252,6 +256,9 @@ class DoctorController extends Controller
             'prescriptions' => fn ($q) => $q->where('status', 'active')->with('medication'),
         ]);
 
+        $photoUrls = $this->resolvePatientPhotoUrls(collect([$patient->id]));
+        $patient->photo_url = $photoUrls[$patient->id] ?? null;
+
         return response()->json(['data' => $patient]);
     }
 
@@ -263,6 +270,26 @@ class DoctorController extends Controller
             ->get();
 
         return response()->json(['data' => $visits]);
+    }
+
+    public function visitDetail(Patient $patient, Visit $visit): JsonResponse
+    {
+        // Ensure the visit belongs to this patient
+        if ($visit->patient_id !== $patient->id) {
+            return response()->json(['error' => ['message' => 'Visit does not belong to this patient']], 404);
+        }
+
+        $visit->load([
+            'practitioner:id,first_name,last_name,primary_specialty',
+            'organization:id,name',
+            'observations',
+            'conditions',
+            'prescriptions.medication',
+            'transcript',
+            'visitNote',
+        ]);
+
+        return response()->json(['data' => $visit]);
     }
 
     public function engagement(Patient $patient): JsonResponse
@@ -548,6 +575,36 @@ class DoctorController extends Controller
         }
 
         return $statuses;
+    }
+
+    /**
+     * Resolve photo URLs for patients via their linked User's demo_scenario_key.
+     *
+     * @param  \Illuminate\Support\Collection  $patientIds
+     * @return array<string, string|null> patient_id => photo URL
+     */
+    private function resolvePatientPhotoUrls($patientIds): array
+    {
+        $users = User::whereIn('patient_id', $patientIds)
+            ->where('role', 'patient')
+            ->whereNotNull('demo_scenario_key')
+            ->get(['patient_id', 'demo_scenario_key']);
+
+        $photoUrls = [];
+        foreach ($users as $user) {
+            $key = $user->demo_scenario_key;
+            $scenario = config("demo-scenarios.scenarios.{$key}");
+            if (! $scenario) {
+                continue;
+            }
+
+            $dir = $scenario['source_dir'] ?? $scenario['photo_dir'] ?? null;
+            if ($dir && file_exists(base_path($dir.'/patient-photo.png'))) {
+                $photoUrls[$user->patient_id] = "/api/v1/demo/scenarios/{$key}/photo";
+            }
+        }
+
+        return $photoUrls;
     }
 
     /**

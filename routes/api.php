@@ -156,6 +156,7 @@ Route::prefix('v1')->group(function () {
             Route::get('patients', [DoctorController::class, 'patients']);
             Route::get('patients/{patient}', [DoctorController::class, 'patientDetail']);
             Route::get('patients/{patient}/visits', [DoctorController::class, 'patientVisits']);
+            Route::get('patients/{patient}/visits/{visit}', [DoctorController::class, 'visitDetail']);
             Route::get('patients/{patient}/engagement', [DoctorController::class, 'engagement']);
             Route::get('patients/{patient}/chat-audit', [DoctorController::class, 'chatAudit']);
             Route::get('patients/{patient}/observations', [DoctorController::class, 'patientObservations']);
