@@ -14,7 +14,10 @@
         <HealthProfileTab
           v-if="activeTab === 'profile'"
           :patient="patient"
+          :conditions="conditions"
+          :visits="visitStore.visits.slice(0, 3)"
           @patient-updated="onPatientUpdated"
+          @navigate-tab="activeTab = $event"
         />
         <VitalsTab
           v-if="activeTab === 'vitals'"
@@ -36,6 +39,7 @@
 import { ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useApi } from '@/composables/useApi';
+import { useVisitStore } from '@/stores/visit';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import HealthTabNav from '@/components/health/HealthTabNav.vue';
 import HealthProfileTab from '@/components/health/HealthProfileTab.vue';
@@ -46,11 +50,13 @@ import DocumentsTab from '@/components/health/DocumentsTab.vue';
 
 const auth = useAuthStore();
 const api = useApi();
+const visitStore = useVisitStore();
 
 const activeTab = ref('profile');
 const loading = ref(true);
 const patient = ref(null);
 const observations = ref([]);
+const conditions = ref([]);
 const deviceData = ref(null);
 
 function onPatientUpdated(updatedPatient) {
@@ -65,9 +71,10 @@ onMounted(async () => {
     }
 
     try {
-        const [patientRes, obsRes, deviceRes] = await Promise.allSettled([
+        const [patientRes, obsRes, condRes, deviceRes] = await Promise.allSettled([
             api.get(`/patients/${patientId}`),
             api.get(`/patients/${patientId}/observations`),
+            api.get(`/patients/${patientId}/conditions`),
             fetch('/data/apple-watch-alex.json').then(r => r.ok ? r.json() : null),
         ]);
 
@@ -77,8 +84,15 @@ onMounted(async () => {
         if (obsRes.status === 'fulfilled') {
             observations.value = obsRes.value.data.data || [];
         }
+        if (condRes.status === 'fulfilled') {
+            conditions.value = condRes.value.data.data || [];
+        }
         if (deviceRes.status === 'fulfilled' && deviceRes.value) {
             deviceData.value = deviceRes.value;
+        }
+
+        if (!visitStore.visits.length) {
+            visitStore.fetchVisits(patientId);
         }
     } finally {
         loading.value = false;

@@ -89,11 +89,19 @@
           <p class="text-2xl font-bold text-gray-900">{{ patient?.height_cm || '\u2014' }}</p>
           <p class="text-xs text-gray-500 mt-1">Height (cm)</p>
         </div>
-        <div class="bg-gray-50 rounded-xl p-3 text-center">
+        <div
+          class="bg-gray-50 rounded-xl p-3 text-center cursor-pointer hover:bg-emerald-50 hover:ring-1 hover:ring-emerald-200 transition-all"
+          title="View weight trend"
+          @click="emit('navigate-tab', 'vitals')"
+        >
           <p class="text-2xl font-bold text-gray-900">{{ patient?.weight_kg || '\u2014' }}</p>
           <p class="text-xs text-gray-500 mt-1">Weight (kg)</p>
         </div>
-        <div class="bg-gray-50 rounded-xl p-3 text-center">
+        <div
+          class="bg-gray-50 rounded-xl p-3 text-center cursor-pointer hover:bg-emerald-50 hover:ring-1 hover:ring-emerald-200 transition-all"
+          title="View weight trend"
+          @click="emit('navigate-tab', 'vitals')"
+        >
           <p class="text-2xl font-bold" :class="bmiColor">{{ bmi || '\u2014' }}</p>
           <p class="text-xs text-gray-500 mt-1">BMI</p>
         </div>
@@ -119,6 +127,68 @@
         <span class="text-gray-400 text-xs">Blood Type:</span>
         <span class="ml-1 font-medium">{{ patient.blood_type }}</span>
       </div>
+    </div>
+
+    <!-- Diagnoses -->
+    <div class="bg-white rounded-2xl border border-gray-200 p-5">
+      <h3 class="font-semibold text-gray-900 mb-3">Diagnoses</h3>
+      <div v-if="conditions.length > 0" class="space-y-2">
+        <div
+          v-for="condition in conditions"
+          :key="condition.id"
+          class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-xl"
+        >
+          <div>
+            <p class="text-sm font-medium text-gray-900">{{ condition.code_display }}</p>
+            <p v-if="condition.onset_date" class="text-xs text-gray-400 mt-0.5">
+              Since {{ formatDate(condition.onset_date) }}
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span
+              v-if="condition.severity"
+              class="text-[10px] font-medium px-2 py-0.5 rounded-full"
+              :class="severityClass(condition.severity)"
+            >
+              {{ condition.severity }}
+            </span>
+            <span
+              class="text-[10px] font-medium px-2 py-0.5 rounded-full"
+              :class="statusClass(condition.clinical_status)"
+            >
+              {{ condition.clinical_status }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <p v-else class="text-sm text-gray-400">No diagnoses on record</p>
+    </div>
+
+    <!-- Recent Visits -->
+    <div class="bg-white rounded-2xl border border-gray-200 p-5">
+      <h3 class="font-semibold text-gray-900 mb-3">Recent Visits</h3>
+      <div v-if="visits.length > 0" class="space-y-2">
+        <router-link
+          v-for="visit in visits"
+          :key="visit.id"
+          :to="`/visits/${visit.id}`"
+          class="flex items-center gap-3 py-2.5 px-3 bg-indigo-50/50 rounded-xl hover:bg-indigo-50 transition-colors group"
+        >
+          <VisitDateBadge :date="visit.started_at" size="sm" />
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 truncate">
+              {{ visit.reason_for_visit || formatVisitType(visit.visit_type) || 'Visit' }}
+            </p>
+            <span v-if="visit.practitioner" class="text-xs text-blue-600">
+              Dr. {{ visit.practitioner.first_name }} {{ visit.practitioner.last_name }}
+            </span>
+          </div>
+          <svg class="w-4 h-4 text-indigo-300 group-hover:text-indigo-500 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </router-link>
+      </div>
+      <p v-else class="text-sm text-gray-400">No visits recorded yet</p>
     </div>
 
     <!-- Allergies -->
@@ -170,12 +240,15 @@
 import { ref, computed, reactive } from 'vue';
 import { useApi } from '@/composables/useApi';
 import AllergyTag from '@/components/health/AllergyTag.vue';
+import VisitDateBadge from '@/components/VisitDateBadge.vue';
 
 const props = defineProps({
     patient: { type: Object, default: null },
+    conditions: { type: Array, default: () => [] },
+    visits: { type: Array, default: () => [] },
 });
 
-const emit = defineEmits(['patient-updated']);
+const emit = defineEmits(['patient-updated', 'navigate-tab']);
 
 const api = useApi();
 const editing = ref(false);
@@ -228,6 +301,28 @@ const allergies = computed(() => {
 function formatDate(d) {
     if (!d) return '';
     return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function severityClass(severity) {
+    return {
+        mild: 'bg-blue-100 text-blue-700',
+        moderate: 'bg-amber-100 text-amber-700',
+        severe: 'bg-red-100 text-red-700',
+    }[severity] || 'bg-gray-100 text-gray-600';
+}
+
+function statusClass(status) {
+    return {
+        active: 'bg-emerald-100 text-emerald-700',
+        inactive: 'bg-gray-100 text-gray-600',
+        resolved: 'bg-blue-100 text-blue-700',
+        remission: 'bg-purple-100 text-purple-700',
+    }[status] || 'bg-gray-100 text-gray-600';
+}
+
+function formatVisitType(type) {
+    if (!type) return '';
+    return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
 function startEdit() {
