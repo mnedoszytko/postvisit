@@ -34,11 +34,10 @@ Deadline: **15:00 EST**
 - [ ] Frontend tests exist and pass
 - [ ] No skipped or broken tests
 
-### 4. Stale branches — nothing forgotten
-- [ ] Review all unmerged branches (`git branch -r --no-merged main`)
-- [ ] Check if any contain work we forgot to merge
-- [ ] Delete confirmed-stale branches (clean up remote)
-- [ ] Verify worktree branches (agent3, agent4, agent5) are synced with main
+### 4. Stale branches — verify nothing forgotten
+- [ ] List unmerged branches (`git branch -r --no-merged main`)
+- [ ] Verify none contain forgotten work — report to Nedo if found
+- [ ] Do NOT merge or delete anything — verification only
 
 ### 5. Demo polish — nothing forgotten
 - [ ] All key features visible in demo flow without digging
