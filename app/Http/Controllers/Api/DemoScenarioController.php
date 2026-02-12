@@ -114,6 +114,34 @@ class DemoScenarioController extends Controller
     }
 
     /**
+     * Switch current demo session to the shared doctor account.
+     */
+    public function switchToDoctor(Request $request): JsonResponse
+    {
+        $doctorEmail = config('demo-scenarios.doctor.email');
+        $doctor = \App\Models\User::where('email', $doctorEmail)->first();
+
+        if (! $doctor) {
+            return response()->json([
+                'error' => ['message' => 'Demo doctor not found. Run a scenario first.'],
+            ], 422);
+        }
+
+        Auth::login($doctor);
+        if ($request->hasSession()) {
+            $request->session()->regenerate();
+        }
+        $token = $doctor->createToken('demo-doctor-token')->plainTextToken;
+
+        return response()->json([
+            'data' => [
+                'user' => $doctor,
+                'token' => $token,
+            ],
+        ]);
+    }
+
+    /**
      * Serve patient photo for a scenario.
      */
     public function photo(string $scenario): BinaryFileResponse

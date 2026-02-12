@@ -10,12 +10,21 @@
           <span>Demo Mode</span>
           <span class="hidden sm:inline text-amber-700">&mdash; {{ auth.user?.name }}</span>
         </div>
-        <router-link
-          to="/demo/scenarios"
-          class="px-3 py-1 bg-amber-900/10 hover:bg-amber-900/20 rounded-lg text-xs font-semibold transition-colors"
-        >
-          Switch Scenario
-        </router-link>
+        <div class="flex items-center gap-2">
+          <button
+            class="px-3 py-1 bg-amber-900/10 hover:bg-amber-900/20 rounded-lg text-xs font-semibold transition-colors"
+            :disabled="switchingRole"
+            @click="switchToDoctor"
+          >
+            {{ switchingRole ? 'Switching...' : 'Doctor Panel' }}
+          </button>
+          <router-link
+            to="/demo/scenarios"
+            class="px-3 py-1 bg-amber-900/10 hover:bg-amber-900/20 rounded-lg text-xs font-semibold transition-colors"
+          >
+            Switch Scenario
+          </router-link>
+        </div>
       </div>
     </div>
 
@@ -188,6 +197,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useApi } from '@/composables/useApi';
 import { useRouter } from 'vue-router';
 
 defineProps({
@@ -195,9 +205,11 @@ defineProps({
 });
 
 const auth = useAuthStore();
+const api = useApi();
 const router = useRouter();
 const mobileOpen = ref(false);
 const dropdownOpen = ref(false);
+const switchingRole = ref(false);
 
 function closeDropdown(e) {
     if (dropdownOpen.value && !e.target.closest('.relative')) {
@@ -221,6 +233,18 @@ const initials = computed(() => {
     if (!auth.user?.name) return '?';
     return auth.user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
 });
+
+async function switchToDoctor() {
+    switchingRole.value = true;
+    try {
+        const { data } = await api.post('/demo/switch-to-doctor');
+        auth.user = data.data.user;
+        auth.token = data.data.token;
+        router.push('/doctor');
+    } catch {
+        switchingRole.value = false;
+    }
+}
 
 async function handleLogout() {
     mobileOpen.value = false;
