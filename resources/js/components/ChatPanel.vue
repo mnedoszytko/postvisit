@@ -85,11 +85,10 @@
                 <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                 </svg>
-                Quick answer
+                Let me think...
               </span>
             </div>
             <p class="text-sm leading-relaxed">{{ msg.quickContent }}</p>
-            <p v-if="msg.quickDone" class="text-[11px] text-gray-400 mt-2 italic">Hold on — a more detailed analysis is on the way.</p>
 
             <div v-if="msg.quickDone" class="mt-2 pt-2 border-t border-gray-200/60">
               <DeepAnalysisIndicator
@@ -109,7 +108,7 @@
                   <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                   </svg>
-                  Quick answer
+                  Let me think...
                 </span>
               </div>
               <p class="text-xs text-gray-500 leading-relaxed">{{ msg.quickContent }}</p>
@@ -137,7 +136,7 @@
                   <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                   </svg>
-                  Quick answer
+                  Let me think...
                 </span>
               </div>
               <p class="text-xs text-gray-500 leading-relaxed">{{ msg.quickContent }}</p>
