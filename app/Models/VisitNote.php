@@ -35,7 +35,14 @@ class VisitNote extends Model
     protected function casts(): array
     {
         return [
-            'assessment_codes' => 'array',
+            'chief_complaint' => 'encrypted',
+            'history_of_present_illness' => 'encrypted',
+            'review_of_systems' => 'encrypted',
+            'physical_exam' => 'encrypted',
+            'assessment' => 'encrypted',
+            'plan' => 'encrypted',
+            'follow_up' => 'encrypted',
+            'assessment_codes' => 'encrypted:array',
             'additional_sections' => 'array',
             'medical_terms' => 'array',
             'is_signed' => 'boolean',

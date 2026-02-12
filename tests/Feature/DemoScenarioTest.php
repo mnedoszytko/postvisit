@@ -122,8 +122,9 @@ class DemoScenarioTest extends TestCase
     {
         $this->postJson('/api/v1/demo/start-scenario', ['scenario' => 'pvcs']);
 
-        $this->assertDatabaseHas('visit_notes', [
-            'chief_complaint' => 'Heart palpitations and irregular heartbeat for 3 weeks',
-        ]);
+        // chief_complaint is encrypted at rest — query via Eloquent model, not raw DB
+        $note = \App\Models\VisitNote::latest()->first();
+        $this->assertNotNull($note);
+        $this->assertEquals('Heart palpitations and irregular heartbeat for 3 weeks', $note->chief_complaint);
     }
 }

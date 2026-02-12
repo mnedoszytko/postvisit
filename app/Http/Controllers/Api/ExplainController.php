@@ -16,6 +16,8 @@ class ExplainController extends Controller
 
     public function explain(Request $request, Visit $visit): StreamedResponse
     {
+        $this->authorize('view', $visit);
+
         $validated = $request->validate([
             'term' => ['required', 'string', 'max:500'],
             'context' => ['nullable', 'string', 'max:2000'],
@@ -28,14 +30,14 @@ class ExplainController extends Controller
         return response()->stream(function () use ($visit, $validated) {
             try {
                 foreach ($this->explainer->explain($visit, $validated['term'], $validated['context'] ?? null) as $chunk) {
-                    echo "data: " . json_encode(['text' => $chunk]) . "\n\n";
+                    echo 'data: '.json_encode(['text' => $chunk])."\n\n";
                     if (ob_get_level()) {
                         ob_flush();
                     }
                     flush();
                 }
             } catch (\Throwable $e) {
-                echo "data: " . json_encode(['text' => 'Unable to generate explanation at this time. Please try again.', 'error' => true]) . "\n\n";
+                echo 'data: '.json_encode(['text' => 'Unable to generate explanation at this time. Please try again.', 'error' => true])."\n\n";
                 if (ob_get_level()) {
                     ob_flush();
                 }

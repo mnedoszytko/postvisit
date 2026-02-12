@@ -12,6 +12,23 @@
 >
 > Try the full demo flow: visit `/demo`, click "Skip to Visit Summary" (patient view) or "View Doctor Dashboard" (doctor view). No registration required -- demo mode auto-authenticates with realistic cardiology visit data.
 
+## Built By
+
+**Dr. Maciej Nedoszytko** -- Physician and software engineer. Medical license: PWZ 234\*\*835 (Polish Medical Chamber / NIL, verifiable at [nil.org.pl](https://nil.org.pl)), Belgian medical license 139135-\*\*\*30. Specialization in internal medicine. [LinkedIn](https://www.linkedin.com/in/mnedoszytko/)
+
+PostVisit.ai is designed by a practicing physician who experiences the patient communication gap daily -- this is not a hypothetical problem.
+
+## Early Validation
+
+> "After my visit I had no idea what PVCs meant or why the doctor wasn't worried. I opened PostVisit, tapped the term, and got a clear explanation tied to MY test results. That's when it clicked -- this is what every patient needs after leaving the office."
+> -- **Valdimar Gunnar**, early tester (patient perspective)
+
+> "As a doctor's spouse, I see how often patients call back with questions they forgot to ask. PostVisit handles exactly that -- the AI knows what was discussed and gives answers grounded in the actual visit, not generic Google results."
+> -- **Marta Skoczkowska-Nedoszytko**, early tester (clinical perspective)
+
+> "In aesthetic medicine, patients often leave confused about aftercare and contraindications. A tool like PostVisit that keeps the full visit context and explains it in plain language would reduce complications and unnecessary follow-up calls."
+> -- **Dr. Mariusz Borkowski, MD, PhD**, esthetic medicine specialist
+
 ## The Problem
 
 After a medical visit, patients forget up to 80% of what their doctor said. They struggle with medical terminology, have no way to reference what was discussed, and are left with confusing discharge papers. Doctors repeat the same explanations and lack feedback on patient understanding.
@@ -172,7 +189,7 @@ AI services include:
 php artisan test
 ```
 
-89 feature tests covering all API modules with 264 assertions. Tests use SQLite in-memory for speed, with mocked AI services.
+201 feature tests covering all API modules with 577 assertions. Tests use SQLite in-memory for speed, with mocked AI services.
 
 ## Project Structure
 
@@ -200,12 +217,13 @@ demo/                         # Demo data and scenarios
 
 ## Documentation
 
-- [`docs/prd.md`](docs/prd.md) -- Product Requirements Document
-- [`docs/data-model.md`](docs/data-model.md) -- Database schema and relationships
+- [`docs/architecture.md`](docs/architecture.md) -- System architecture, data flow, AI pipeline
+- [`docs/demo-guide.md`](docs/demo-guide.md) -- Step-by-step demo walkthrough for judges
 - [`docs/decisions.md`](docs/decisions.md) -- Architecture decision log
+- [`docs/opus-4.6-usage.md`](docs/opus-4.6-usage.md) -- Why Opus 4.6 for medical AI
 - [`docs/licenses.md`](docs/licenses.md) -- Dependency license tracker
 - [`docs/security-audit.md`](docs/security-audit.md) -- OWASP Top 10 security audit
-- [`docs/lessons.md`](docs/lessons.md) -- Development lessons learned
+- [`ATTRIBUTION.md`](ATTRIBUTION.md) -- Bundled open-access content attribution
 
 ## Hackathon Tracks
 

@@ -45,8 +45,10 @@ class VisitController extends Controller
         return response()->json(['data' => $visit], 201);
     }
 
-    public function show(Visit $visit): JsonResponse
+    public function show(Request $request, Visit $visit): JsonResponse
     {
+        $this->authorize('view', $visit);
+
         $visit->load([
             'patient',
             'practitioner',
@@ -62,8 +64,10 @@ class VisitController extends Controller
         return response()->json(['data' => $visit]);
     }
 
-    public function summary(Visit $visit): JsonResponse
+    public function summary(Request $request, Visit $visit): JsonResponse
     {
+        $this->authorize('view', $visit);
+
         $visit->load([
             'patient:id,first_name,last_name',
             'practitioner:id,first_name,last_name,primary_specialty',

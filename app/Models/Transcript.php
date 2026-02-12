@@ -31,9 +31,11 @@ class Transcript extends Model
     protected function casts(): array
     {
         return [
-            'diarized_transcript' => 'array',
-            'entities_extracted' => 'array',
-            'soap_note' => 'array',
+            'raw_transcript' => 'encrypted',
+            'summary' => 'encrypted',
+            'diarized_transcript' => 'encrypted:array',
+            'entities_extracted' => 'encrypted:array',
+            'soap_note' => 'encrypted:array',
             'patient_consent_given' => 'boolean',
             'consent_timestamp' => 'datetime',
         ];

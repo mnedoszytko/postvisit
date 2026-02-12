@@ -264,11 +264,11 @@ class TranscriptTest extends TestCase
         $transcript->refresh();
         $this->assertEquals('completed', $transcript->processing_status);
 
-        $this->assertDatabaseHas('visit_notes', [
-            'visit_id' => $this->visit->id,
-            'assessment' => 'test',
-            'plan' => 'test',
-        ]);
+        // assessment and plan are encrypted at rest — query via Eloquent model
+        $note = \App\Models\VisitNote::where('visit_id', $this->visit->id)->first();
+        $this->assertNotNull($note);
+        $this->assertEquals('test', $note->assessment);
+        $this->assertEquals('test', $note->plan);
     }
 
     public function test_status_returns_404_when_no_transcript(): void

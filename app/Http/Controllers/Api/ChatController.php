@@ -20,6 +20,8 @@ class ChatController extends Controller
 
     public function sendMessage(Request $request, Visit $visit): StreamedResponse
     {
+        $this->authorize('view', $visit);
+
         $validated = $request->validate([
             'message' => ['required', 'string', 'max:5000'],
         ]);
@@ -123,8 +125,10 @@ class ChatController extends Controller
         ]);
     }
 
-    public function history(Visit $visit): JsonResponse
+    public function history(Request $request, Visit $visit): JsonResponse
     {
+        $this->authorize('view', $visit);
+
         $session = ChatSession::where('visit_id', $visit->id)
             ->where('patient_id', $visit->patient_id)
             ->first();
