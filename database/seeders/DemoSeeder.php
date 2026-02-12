@@ -2,16 +2,23 @@
 
 namespace Database\Seeders;
 
+use App\Models\AuditLog;
+use App\Models\ChatMessage;
 use App\Models\ChatSession;
 use App\Models\Condition;
+use App\Models\Consent;
+use App\Models\Document;
+use App\Models\LibraryItem;
 use App\Models\MedicalReference;
 use App\Models\Medication;
+use App\Models\Notification;
 use App\Models\Observation;
 use App\Models\Organization;
 use App\Models\Patient;
 use App\Models\Practitioner;
 use App\Models\Prescription;
 use App\Models\Transcript;
+use App\Models\UploadToken;
 use App\Models\User;
 use App\Models\Visit;
 use App\Models\VisitNote;
@@ -29,6 +36,9 @@ class DemoSeeder extends Seeder
      */
     public function run(): void
     {
+        // Idempotent: clean up previous demo data before re-seeding
+        $this->cleanupExistingDemoData();
+
         // 1. Organization
         $org = Organization::create([
             'name' => 'City Heart Clinic',
@@ -1368,7 +1378,92 @@ class DemoSeeder extends Seeder
         ];
 
         foreach ($references as $ref) {
-            MedicalReference::create($ref);
+            $doi = $ref['doi'] ?? null;
+            if ($doi) {
+                MedicalReference::firstOrCreate(['doi' => $doi], $ref);
+            } else {
+                MedicalReference::create($ref);
+            }
         }
+    }
+
+    /**
+     * Remove existing demo data so the seeder is idempotent on re-run.
+     *
+     * Deletes records in reverse-dependency order to respect FK constraints.
+     */
+    private function cleanupExistingDemoData(): void
+    {
+        $demoPatientEmails = [
+            'patient@demo.postvisit.ai',
+            'maria@demo.postvisit.ai',
+            'james@demo.postvisit.ai',
+        ];
+        $demoUserEmails = array_merge($demoPatientEmails, [
+            'doctor@demo.postvisit.ai',
+            'alex.johnson.pvcs@demo.postvisit.ai',
+        ]);
+
+        $demoPatientIds = Patient::whereIn('email', $demoPatientEmails)->pluck('id');
+        $demoUserIds = User::whereIn('email', $demoUserEmails)->pluck('id');
+        $practitioner = Practitioner::where('email', 'doctor@demo.postvisit.ai')->first();
+
+        if ($demoPatientIds->isEmpty() && ! $practitioner) {
+            return;
+        }
+
+        // Find all demo visits
+        $demoVisitIds = Visit::whereIn('patient_id', $demoPatientIds)->pluck('id');
+
+        if ($demoVisitIds->isNotEmpty()) {
+            // Chat messages → sessions
+            $chatSessionIds = ChatSession::whereIn('visit_id', $demoVisitIds)->pluck('id');
+            ChatMessage::whereIn('session_id', $chatSessionIds)->delete();
+            ChatSession::whereIn('id', $chatSessionIds)->delete();
+
+            // Visit-level children
+            UploadToken::whereIn('visit_id', $demoVisitIds)->delete();
+            Document::whereIn('visit_id', $demoVisitIds)->delete();
+            Transcript::whereIn('visit_id', $demoVisitIds)->delete();
+            VisitNote::whereIn('visit_id', $demoVisitIds)->delete();
+            Observation::whereIn('visit_id', $demoVisitIds)->delete();
+            Prescription::whereIn('visit_id', $demoVisitIds)->delete();
+            Condition::whereIn('visit_id', $demoVisitIds)->delete();
+
+            Visit::whereIn('id', $demoVisitIds)->delete();
+        }
+
+        // Patient-level children (in case any aren't linked to visits)
+        if ($demoPatientIds->isNotEmpty()) {
+            Observation::whereIn('patient_id', $demoPatientIds)->delete();
+            Condition::whereIn('patient_id', $demoPatientIds)->delete();
+            Prescription::whereIn('patient_id', $demoPatientIds)->delete();
+            Consent::whereIn('patient_id', $demoPatientIds)->delete();
+            Document::whereIn('patient_id', $demoPatientIds)->delete();
+        }
+
+        // User-level children
+        if ($demoUserIds->isNotEmpty()) {
+            LibraryItem::whereIn('user_id', $demoUserIds)->delete();
+            Notification::whereIn('user_id', $demoUserIds)->delete();
+            AuditLog::whereIn('user_id', $demoUserIds)->delete();
+        }
+
+        // Nullify created_by on patients to break circular FK
+        Patient::whereIn('id', $demoPatientIds)->update(['created_by' => null]);
+
+        // Users → Patients → Practitioner → Organization
+        User::whereIn('email', $demoUserEmails)->delete();
+        // Also delete any DemoScenarioSeeder users (have demo_scenario_key)
+        User::whereNotNull('demo_scenario_key')->delete();
+        Patient::whereIn('id', $demoPatientIds)->delete();
+
+        if ($practitioner) {
+            $practitioner->delete();
+        }
+
+        Organization::where('email', 'info@cityheartclinic.com')->delete();
+
+        Log::info('DemoSeeder: cleaned up existing demo data for re-seeding.');
     }
 }
