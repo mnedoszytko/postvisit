@@ -1390,79 +1390,104 @@ class DemoSeeder extends Seeder
     /**
      * Remove existing demo data so the seeder is idempotent on re-run.
      *
-     * Deletes records in reverse-dependency order to respect FK constraints.
+     * Covers records from both DemoSeeder and DemoScenarioSeeder.
+     * Deletes in reverse-dependency order to respect FK constraints.
      */
     private function cleanupExistingDemoData(): void
     {
-        $demoPatientEmails = [
-            'patient@demo.postvisit.ai',
-            'maria@demo.postvisit.ai',
-            'james@demo.postvisit.ai',
-        ];
-        $demoUserEmails = array_merge($demoPatientEmails, [
-            'doctor@demo.postvisit.ai',
-            'alex.johnson.pvcs@demo.postvisit.ai',
-        ]);
-
-        $demoPatientIds = Patient::whereIn('email', $demoPatientEmails)->pluck('id');
-        $demoUserIds = User::whereIn('email', $demoUserEmails)->pluck('id');
         $practitioner = Practitioner::where('email', 'doctor@demo.postvisit.ai')->first();
+        $org = Organization::where('email', 'info@cityheartclinic.com')->first();
 
-        if ($demoPatientIds->isEmpty() && ! $practitioner) {
+        // Collect ALL demo patients: by email pattern and by DemoScenarioSeeder users
+        $demoPatientIds = Patient::where('email', 'like', '%@demo.postvisit.ai')->pluck('id');
+        $scenarioPatientIds = User::whereNotNull('demo_scenario_key')
+            ->whereNotNull('patient_id')
+            ->pluck('patient_id');
+        $allPatientIds = $demoPatientIds->merge($scenarioPatientIds)->unique();
+
+        // Collect ALL demo users: by email pattern + scenario key
+        $allUserIds = User::where('email', 'like', '%@demo.postvisit.ai')
+            ->orWhereNotNull('demo_scenario_key')
+            ->pluck('id');
+
+        if ($allPatientIds->isEmpty() && ! $practitioner && ! $org) {
             return;
         }
 
-        // Find all demo visits
-        $demoVisitIds = Visit::whereIn('patient_id', $demoPatientIds)->pluck('id');
+        // Find ALL demo visits (by patient OR by practitioner)
+        $visitQuery = Visit::query();
+        if ($allPatientIds->isNotEmpty()) {
+            $visitQuery->whereIn('patient_id', $allPatientIds);
+        }
+        if ($practitioner) {
+            $visitQuery->orWhere('practitioner_id', $practitioner->id);
+        }
+        $allVisitIds = $visitQuery->pluck('id');
 
-        if ($demoVisitIds->isNotEmpty()) {
+        if ($allVisitIds->isNotEmpty()) {
             // Chat messages → sessions
-            $chatSessionIds = ChatSession::whereIn('visit_id', $demoVisitIds)->pluck('id');
-            ChatMessage::whereIn('session_id', $chatSessionIds)->delete();
-            ChatSession::whereIn('id', $chatSessionIds)->delete();
+            $chatSessionIds = ChatSession::whereIn('visit_id', $allVisitIds)->pluck('id');
+            if ($chatSessionIds->isNotEmpty()) {
+                ChatMessage::whereIn('session_id', $chatSessionIds)->delete();
+                ChatSession::whereIn('id', $chatSessionIds)->delete();
+            }
 
             // Visit-level children
-            UploadToken::whereIn('visit_id', $demoVisitIds)->delete();
-            Document::whereIn('visit_id', $demoVisitIds)->delete();
-            Transcript::whereIn('visit_id', $demoVisitIds)->delete();
-            VisitNote::whereIn('visit_id', $demoVisitIds)->delete();
-            Observation::whereIn('visit_id', $demoVisitIds)->delete();
-            Prescription::whereIn('visit_id', $demoVisitIds)->delete();
-            Condition::whereIn('visit_id', $demoVisitIds)->delete();
+            UploadToken::whereIn('visit_id', $allVisitIds)->delete();
+            Document::whereIn('visit_id', $allVisitIds)->delete();
+            Transcript::whereIn('visit_id', $allVisitIds)->delete();
+            VisitNote::whereIn('visit_id', $allVisitIds)->delete();
+            Observation::whereIn('visit_id', $allVisitIds)->delete();
+            Prescription::whereIn('visit_id', $allVisitIds)->delete();
+            Condition::whereIn('visit_id', $allVisitIds)->delete();
 
-            Visit::whereIn('id', $demoVisitIds)->delete();
+            Visit::whereIn('id', $allVisitIds)->delete();
         }
 
-        // Patient-level children (in case any aren't linked to visits)
-        if ($demoPatientIds->isNotEmpty()) {
-            Observation::whereIn('patient_id', $demoPatientIds)->delete();
-            Condition::whereIn('patient_id', $demoPatientIds)->delete();
-            Prescription::whereIn('patient_id', $demoPatientIds)->delete();
-            Consent::whereIn('patient_id', $demoPatientIds)->delete();
-            Document::whereIn('patient_id', $demoPatientIds)->delete();
+        // Patient-level children (not linked to visits)
+        if ($allPatientIds->isNotEmpty()) {
+            Observation::whereIn('patient_id', $allPatientIds)->delete();
+            Condition::whereIn('patient_id', $allPatientIds)->delete();
+            Prescription::whereIn('patient_id', $allPatientIds)->delete();
+            Consent::whereIn('patient_id', $allPatientIds)->delete();
+            Document::whereIn('patient_id', $allPatientIds)->delete();
         }
 
-        // User-level children
-        if ($demoUserIds->isNotEmpty()) {
-            LibraryItem::whereIn('user_id', $demoUserIds)->delete();
-            Notification::whereIn('user_id', $demoUserIds)->delete();
-            AuditLog::whereIn('user_id', $demoUserIds)->delete();
+        // User-level children (audit logs, notifications, library items)
+        if ($allUserIds->isNotEmpty()) {
+            LibraryItem::whereIn('user_id', $allUserIds)->delete();
+            Notification::whereIn('user_id', $allUserIds)->delete();
+            AuditLog::whereIn('user_id', $allUserIds)->delete();
         }
 
-        // Nullify created_by on patients to break circular FK
-        Patient::whereIn('id', $demoPatientIds)->update(['created_by' => null]);
+        // Nullify created_by on patients and visits to break circular FKs
+        if ($allPatientIds->isNotEmpty()) {
+            Patient::whereIn('id', $allPatientIds)->update(['created_by' => null]);
+        }
 
-        // Users → Patients → Practitioner → Organization
-        User::whereIn('email', $demoUserEmails)->delete();
-        // Also delete any DemoScenarioSeeder users (have demo_scenario_key)
-        User::whereNotNull('demo_scenario_key')->delete();
-        Patient::whereIn('id', $demoPatientIds)->delete();
+        // Delete users → patients → practitioner → organization
+        if ($allUserIds->isNotEmpty()) {
+            // Nullify created_by FKs that reference demo users
+            Observation::whereIn('created_by', $allUserIds)->update(['created_by' => null]);
+            Condition::whereIn('created_by', $allUserIds)->update(['created_by' => null]);
+            Prescription::whereIn('created_by', $allUserIds)->update(['created_by' => null]);
+            Document::whereIn('created_by', $allUserIds)->update(['created_by' => null]);
+            Visit::whereIn('created_by', $allUserIds)->update(['created_by' => null]);
+            User::whereIn('id', $allUserIds)->delete();
+        }
+
+        if ($allPatientIds->isNotEmpty()) {
+            Patient::whereIn('id', $allPatientIds)->delete();
+        }
 
         if ($practitioner) {
+            // Nullify any remaining FK references to this practitioner
+            Observation::where('practitioner_id', $practitioner->id)->update(['practitioner_id' => null]);
+            VisitNote::where('author_practitioner_id', $practitioner->id)->delete();
             $practitioner->delete();
         }
 
-        Organization::where('email', 'info@cityheartclinic.com')->delete();
+        $org?->delete();
 
         Log::info('DemoSeeder: cleaned up existing demo data for re-seeding.');
     }
