@@ -196,6 +196,9 @@ class DoctorController extends Controller
                     ->orderByDesc('started_at')
                     ->limit(1)
                     ->select('id', 'patient_id', 'started_at', 'visit_status'),
+                'prescriptions' => fn ($q) => $q->where('status', 'active')
+                    ->with('medication:id,display_name,generic_name,strength_value,strength_unit')
+                    ->select('id', 'patient_id', 'medication_id', 'dose_quantity', 'dose_unit', 'frequency', 'frequency_text'),
             ]);
 
         if ($search = $request->query('search')) {
@@ -224,12 +227,19 @@ class DoctorController extends Controller
             $patient->primary_condition = $patient->conditions->first()?->code_display;
             $patient->last_visit_date = $patient->visits->first()?->started_at?->toDateString();
             $patient->last_visit_status = $patient->visits->first()?->visit_status;
+            $patient->latest_visit_id = $patient->visits->first()?->id;
             $patient->alert_status = $alertStatuses[$patient->id] ?? 'stable';
             // Keep legacy 'status' field for backward compatibility
             $patient->status = $patient->alert_status === 'stable' ? 'stable' : 'alert';
             $patient->age = $patient->dob ? $patient->dob->age : null;
             $patient->last_vitals = $latestVitals[$patient->id] ?? null;
-            unset($patient->conditions, $patient->visits);
+            $patient->active_medications = $patient->prescriptions->map(fn ($rx) => [
+                'id' => $rx->id,
+                'name' => $rx->medication?->display_name ?? $rx->medication?->generic_name ?? 'Unknown',
+                'dose' => $rx->dose_quantity.($rx->dose_unit ? ' '.$rx->dose_unit : ''),
+                'frequency' => $rx->frequency_text ?? $rx->frequency,
+            ])->values();
+            unset($patient->conditions, $patient->visits, $patient->prescriptions);
         });
 
         return response()->json(['data' => $patients]);
@@ -352,6 +362,84 @@ class DoctorController extends Controller
         ]);
 
         return response()->json(['data' => $reply], 201);
+    }
+
+    public function quickAction(Request $request, Patient $patient): JsonResponse
+    {
+        $validated = $request->validate([
+            'action' => ['required', 'string', 'in:schedule_followup,renew_prescription,send_recommendation,request_labs'],
+            'timeframe' => ['nullable', 'string'],
+            'note' => ['nullable', 'string', 'max:5000'],
+            'medication' => ['nullable', 'string', 'max:500'],
+            'duration_days' => ['nullable', 'integer', 'min:1', 'max:365'],
+            'message' => ['nullable', 'string', 'max:5000'],
+            'labs' => ['nullable', 'array'],
+            'labs.*' => ['string'],
+            'visit_id' => ['nullable', 'uuid'],
+        ]);
+
+        $practitioner = $request->user()->practitioner;
+        if (! $practitioner) {
+            return response()->json(['error' => ['message' => 'No practitioner profile linked']], 403);
+        }
+
+        $patientName = $patient->first_name.' '.$patient->last_name;
+        $action = $validated['action'];
+
+        // Build human-readable title and body
+        $titles = [
+            'schedule_followup' => 'Follow-up Scheduled',
+            'renew_prescription' => 'Prescription Renewed',
+            'send_recommendation' => 'Recommendation Sent',
+            'request_labs' => 'Labs Requested',
+        ];
+
+        $bodies = [
+            'schedule_followup' => sprintf(
+                'Follow-up scheduled for %s in %s.%s',
+                $patientName,
+                $validated['timeframe'] ?? 'unspecified timeframe',
+                ! empty($validated['note']) ? ' Note: '.$validated['note'] : ''
+            ),
+            'renew_prescription' => sprintf(
+                'Prescription renewed for %s: %s for %d days.',
+                $patientName,
+                $validated['medication'] ?? 'unspecified medication',
+                $validated['duration_days'] ?? 30
+            ),
+            'send_recommendation' => sprintf(
+                'Recommendation sent to %s: %s',
+                $patientName,
+                $validated['message'] ?? ''
+            ),
+            'request_labs' => sprintf(
+                'Labs requested for %s: %s',
+                $patientName,
+                ! empty($validated['labs']) ? implode(', ', $validated['labs']) : 'none specified'
+            ),
+        ];
+
+        // Find visit to link notification
+        $visitId = $validated['visit_id'] ?? Visit::where('patient_id', $patient->id)
+            ->where('practitioner_id', $practitioner->id)
+            ->orderByDesc('started_at')
+            ->value('id');
+
+        $notification = Notification::create([
+            'user_id' => $request->user()->id,
+            'visit_id' => $visitId,
+            'type' => 'quick_action',
+            'title' => $titles[$action],
+            'body' => $bodies[$action],
+            'data' => [
+                'action' => $action,
+                'patient_id' => $patient->id,
+                'patient_name' => $patientName,
+                ...$validated,
+            ],
+        ]);
+
+        return response()->json(['data' => $notification], 201);
     }
 
     /**

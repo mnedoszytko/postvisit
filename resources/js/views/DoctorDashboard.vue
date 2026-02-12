@@ -206,19 +206,176 @@
         </div>
       </section>
     </div>
+
+    <!-- Quick Action Modals -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="activeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" @click.self="closeModal">
+          <div class="fixed inset-0 bg-black/40" />
+          <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 z-10">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">
+                  {{ activeModal === 'schedule_followup' ? 'Schedule Follow-up' : activeModal === 'renew_prescription' ? 'Renew Prescription' : activeModal === 'send_recommendation' ? 'Send Recommendation' : 'Request Labs' }}
+                </h3>
+                <p class="text-sm text-gray-500 mt-0.5">{{ modalPatient?.first_name }} {{ modalPatient?.last_name }}</p>
+              </div>
+              <button @click="closeModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            <!-- Schedule Follow-up -->
+            <div v-if="activeModal === 'schedule_followup'" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Timeframe</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <button v-for="tf in ['1 week', '2 weeks', '1 month', '3 months']" :key="tf"
+                    :class="['px-3 py-2 rounded-xl text-sm font-medium border transition-colors', followupTimeframe === tf ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'border-gray-200 text-gray-600 hover:border-emerald-300']"
+                    @click="followupTimeframe = tf">
+                    {{ tf }}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Note (optional)</label>
+                <textarea v-model="followupNote" rows="2" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="Additional instructions..." />
+              </div>
+            </div>
+
+            <!-- Renew Prescription -->
+            <div v-if="activeModal === 'renew_prescription'" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Medication</label>
+                <div v-if="patientMedications.length" class="space-y-2 mb-2">
+                  <button v-for="med in patientMedications" :key="med.id"
+                    :class="['w-full text-left px-3 py-2.5 rounded-xl border transition-colors', prescriptionMed === med.name ? 'bg-emerald-50 border-emerald-500' : 'border-gray-200 hover:border-emerald-300']"
+                    @click="prescriptionMed = med.name; showOtherMed = false">
+                    <span class="text-sm font-medium text-gray-900">{{ med.name }}</span>
+                    <span class="text-xs text-gray-400 ml-2">{{ med.dose }} · {{ med.frequency }}</span>
+                  </button>
+                </div>
+                <button v-if="!showOtherMed"
+                  :class="['w-full text-left px-3 py-2.5 rounded-xl border transition-colors text-sm', showOtherMed || (!patientMedications.length) ? '' : 'border-dashed', prescriptionMed && !patientMedications.find(m => m.name === prescriptionMed) ? 'bg-emerald-50 border-emerald-500' : 'border-gray-200 hover:border-emerald-300 text-gray-500']"
+                  @click="showOtherMed = true; prescriptionMed = ''">
+                  + Other medication
+                </button>
+                <div v-if="showOtherMed" class="mt-2">
+                  <input v-model="prescriptionMed" type="text" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="Enter medication name..." autofocus />
+                  <button v-if="patientMedications.length" class="text-xs text-gray-400 hover:text-gray-600 mt-1" @click="showOtherMed = false; prescriptionMed = ''">
+                    &larr; Back to current medications
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <div class="grid grid-cols-3 gap-2">
+                  <button v-for="d in [30, 60, 90]" :key="d"
+                    :class="['px-3 py-2 rounded-xl text-sm font-medium border transition-colors', prescriptionDays === d ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'border-gray-200 text-gray-600 hover:border-emerald-300']"
+                    @click="prescriptionDays = d">
+                    {{ d }} days
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Send Recommendation -->
+            <div v-if="activeModal === 'send_recommendation'" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                <textarea v-model="recommendationMsg" rows="4" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="Write your recommendation..." />
+              </div>
+            </div>
+
+            <!-- Request Labs -->
+            <div v-if="activeModal === 'request_labs'" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Lab Panel</label>
+                <select v-model="selectedPanel" @change="applyLabPanel"
+                  class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+                  <option value="">Custom selection</option>
+                  <option v-for="panel in labPanels" :key="panel.id" :value="panel.id">{{ panel.label }}</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Individual Tests</label>
+                <div class="flex flex-wrap gap-2">
+                  <button v-for="lab in allLabTests" :key="lab"
+                    :class="['px-3 py-2 rounded-xl text-sm font-medium border transition-colors', selectedLabs.includes(lab) ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'border-gray-200 text-gray-600 hover:border-emerald-300']"
+                    @click="toggleLab(lab); selectedPanel = ''">
+                    {{ lab }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
+              <button @click="closeModal" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors">
+                Cancel
+              </button>
+              <button @click="submitQuickAction" :disabled="submitting || !canSubmit"
+                :class="['px-5 py-2 rounded-xl text-sm font-semibold text-white transition-colors', submitting || !canSubmit ? 'bg-gray-300 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700']">
+                {{ submitting ? 'Sending...' : 'Submit' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </DoctorLayout>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useDoctorStore } from '@/stores/doctor';
 import { useToastStore } from '@/stores/toast';
+import { useApi } from '@/composables/useApi';
 import DoctorLayout from '@/layouts/DoctorLayout.vue';
 
 const doctorStore = useDoctorStore();
 const toast = useToastStore();
+const api = useApi();
 const search = ref('');
 const openMenuId = ref(null);
+
+// Modal state
+const activeModal = ref(null);
+const modalPatient = ref(null);
+const submitting = ref(false);
+
+// Form state
+const followupTimeframe = ref('');
+const followupNote = ref('');
+const prescriptionMed = ref('');
+const prescriptionDays = ref(null);
+const recommendationMsg = ref('');
+const selectedLabs = ref([]);
+const showOtherMed = ref(false);
+const selectedPanel = ref('');
+
+const patientMedications = computed(() => modalPatient.value?.active_medications || []);
+
+const allLabTests = ['CBC', 'BMP', 'CMP', 'Lipid Panel', 'HbA1c', 'TSH', 'T3/T4', 'BNP', 'Troponin', 'eGFR', 'Urinalysis', 'INR'];
+
+const labPanels = [
+    { id: 'cardiac', label: 'Cardiac Panel', tests: ['CBC', 'BMP', 'BNP', 'Troponin', 'Lipid Panel'] },
+    { id: 'metabolic', label: 'Comprehensive Metabolic (CMP)', tests: ['CMP', 'CBC'] },
+    { id: 'lipid', label: 'Lipid Panel', tests: ['Lipid Panel', 'HbA1c'] },
+    { id: 'thyroid', label: 'Thyroid Panel', tests: ['TSH', 'T3/T4'] },
+    { id: 'renal', label: 'Renal Panel', tests: ['BMP', 'eGFR', 'Urinalysis'] },
+    { id: 'coag', label: 'Coagulation Panel', tests: ['CBC', 'INR'] },
+];
+
+const canSubmit = computed(() => {
+    if (!activeModal.value) return false;
+    if (activeModal.value === 'schedule_followup') return !!followupTimeframe.value;
+    if (activeModal.value === 'renew_prescription') return !!prescriptionMed.value && !!prescriptionDays.value;
+    if (activeModal.value === 'send_recommendation') return !!recommendationMsg.value.trim();
+    if (activeModal.value === 'request_labs') return selectedLabs.value.length > 0;
+    return false;
+});
 
 const quickActions = [
     {
@@ -243,10 +400,92 @@ const quickActions = [
     },
 ];
 
+const ACTION_MAP = {
+    'Schedule Follow-up': 'schedule_followup',
+    'Renew Prescription': 'renew_prescription',
+    'Send Recommendation': 'send_recommendation',
+    'Request Labs': 'request_labs',
+};
+
 function handleQuickAction(label, patient) {
-    const name = patient ? `${patient.first_name} ${patient.last_name}` : '';
-    toast.info(`${label}${name ? ` for ${name}` : ''} — coming soon`);
     openMenuId.value = null;
+    const action = ACTION_MAP[label];
+    if (!action) return;
+
+    modalPatient.value = patient;
+    activeModal.value = action;
+
+    // Reset form state
+    followupTimeframe.value = '';
+    followupNote.value = '';
+    prescriptionMed.value = '';
+    prescriptionDays.value = null;
+    showOtherMed.value = false;
+    recommendationMsg.value = '';
+    selectedLabs.value = [];
+    selectedPanel.value = '';
+}
+
+function closeModal() {
+    activeModal.value = null;
+    modalPatient.value = null;
+}
+
+async function submitQuickAction() {
+    if (!modalPatient.value || !activeModal.value) return;
+
+    const payload = { action: activeModal.value };
+
+    if (activeModal.value === 'schedule_followup') {
+        if (!followupTimeframe.value) return;
+        payload.timeframe = followupTimeframe.value;
+        payload.note = followupNote.value || null;
+    } else if (activeModal.value === 'renew_prescription') {
+        if (!prescriptionMed.value || !prescriptionDays.value) return;
+        payload.medication = prescriptionMed.value;
+        payload.duration_days = prescriptionDays.value;
+    } else if (activeModal.value === 'send_recommendation') {
+        if (!recommendationMsg.value.trim()) return;
+        payload.message = recommendationMsg.value;
+    } else if (activeModal.value === 'request_labs') {
+        if (selectedLabs.value.length === 0) return;
+        payload.labs = selectedLabs.value;
+    }
+
+    if (modalPatient.value.latest_visit_id) {
+        payload.visit_id = modalPatient.value.latest_visit_id;
+    }
+
+    submitting.value = true;
+    try {
+        await api.post(`/doctor/patients/${modalPatient.value.id}/quick-action`, payload);
+        toast.success(`${activeModal.value.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} sent for ${modalPatient.value.first_name} ${modalPatient.value.last_name}`);
+        closeModal();
+    } catch (e) {
+        // useApi interceptor handles error toasts
+    } finally {
+        submitting.value = false;
+    }
+}
+
+function toggleLab(lab) {
+    const idx = selectedLabs.value.indexOf(lab);
+    if (idx >= 0) {
+        selectedLabs.value.splice(idx, 1);
+    } else {
+        selectedLabs.value.push(lab);
+    }
+}
+
+function applyLabPanel() {
+    const panel = labPanels.find(p => p.id === selectedPanel.value);
+    selectedLabs.value = panel ? [...panel.tests] : [];
+}
+
+function handleKeydown(e) {
+    if (e.key === 'Escape' && activeModal.value) {
+        closeModal();
+    }
 }
 
 function toggleMoreMenu(patientId) {
@@ -299,9 +538,22 @@ onMounted(() => {
     doctorStore.fetchPatients();
     doctorStore.fetchAlerts();
     document.addEventListener('click', closeMenuOnClickOutside);
+    document.addEventListener('keydown', handleKeydown);
 });
 
 onUnmounted(() => {
     document.removeEventListener('click', closeMenuOnClickOutside);
+    document.removeEventListener('keydown', handleKeydown);
 });
 </script>
+
+<style scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+</style>

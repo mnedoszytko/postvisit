@@ -161,6 +161,7 @@ Route::prefix('v1')->group(function () {
             Route::get('patients/{patient}/observations', [DoctorController::class, 'patientObservations']);
             Route::get('notifications', [DoctorController::class, 'notifications']);
             Route::post('messages/{message}/reply', [DoctorController::class, 'reply']);
+            Route::post('patients/{patient}/quick-action', [DoctorController::class, 'quickAction']);
         });
 
         // ----- Module 8: Audit (doctor/admin role required) -----

@@ -14,7 +14,7 @@ return [
     */
 
     'doctor' => [
-        'name' => 'Dr. Nedo',
+        'name' => 'Dr. Michael Nedoszytko',
         'email' => 'doctor@demo.postvisit.ai',
         'first_name' => 'Michael',
         'last_name' => 'Nedoszytko',

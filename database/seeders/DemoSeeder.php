@@ -53,12 +53,12 @@ class DemoSeeder extends Seeder
         // 2. Practitioner
         $practitioner = Practitioner::create([
             'fhir_practitioner_id' => 'practitioner-'.Str::uuid(),
-            'first_name' => 'Sarah',
-            'last_name' => 'Chen',
+            'first_name' => 'Michael',
+            'last_name' => 'Nedoszytko',
             'email' => 'doctor@demo.postvisit.ai',
             'npi' => '1234567890',
             'license_number' => 'CA-CARD-2024-001',
-            'medical_degree' => 'MD',
+            'medical_degree' => 'MD, PhD',
             'primary_specialty' => 'cardiology',
             'secondary_specialties' => ['internal_medicine'],
             'organization_id' => $org->id,
@@ -93,7 +93,7 @@ class DemoSeeder extends Seeder
 
         // 4. Users
         $doctorUser = User::create([
-            'name' => 'Dr. Nedo',
+            'name' => 'Dr. Michael Nedoszytko',
             'email' => 'doctor@demo.postvisit.ai',
             'password' => 'password',
             'role' => 'doctor',
@@ -805,6 +805,10 @@ class DemoSeeder extends Seeder
         // ====================================================================
         $this->seedHypertensionScenario($org, $practitioner, $doctorUser);
 
+        // Seed demo notifications and audit logs for the doctor dashboard
+        $this->seedDemoNotifications($doctorUser);
+        $this->seedDemoAuditLogs($doctorUser);
+
         // Extract medical terms for visit notes that don't have them yet
         // (PVC visit has hardcoded terms; HF and HTN need AI extraction)
         $this->extractMissingMedicalTerms();
@@ -1250,8 +1254,8 @@ class DemoSeeder extends Seeder
             ['day' => -28, 'kg' => 73.5], ['day' => -25, 'kg' => 73.8], ['day' => -21, 'kg' => 74.0],
             ['day' => -18, 'kg' => 74.2], ['day' => -14, 'kg' => 74.5], ['day' => -11, 'kg' => 75.2],
             ['day' => -8, 'kg' => 76.0], ['day' => -6, 'kg' => 76.8], ['day' => -4, 'kg' => 77.5],
-            ['day' => -3, 'kg' => 78.0], ['day' => -2, 'kg' => 77.2], ['day' => -1, 'kg' => 76.5],
-            ['day' => 0, 'kg' => 75.8],
+            ['day' => -3, 'kg' => 75.5], ['day' => -2, 'kg' => 76.8], ['day' => -1, 'kg' => 77.8],
+            ['day' => 0, 'kg' => 78.0],
         ];
 
         foreach ($weights as $w) {
@@ -1665,6 +1669,124 @@ class DemoSeeder extends Seeder
                 MedicalReference::firstOrCreate(['doi' => $doi], $ref);
             } else {
                 MedicalReference::create($ref);
+            }
+        }
+    }
+
+    /**
+     * Seed demo notifications (patient messages to doctor).
+     */
+    private function seedDemoNotifications(User $doctorUser): void
+    {
+        $alexVisitId = Visit::whereHas('patient', fn ($q) => $q->where('first_name', 'Alex')->where('last_name', 'Johnson'))
+            ->orderByDesc('started_at')->value('id');
+        $mariaVisitId = Visit::whereHas('patient', fn ($q) => $q->where('first_name', 'Maria')->where('last_name', 'Santos'))
+            ->orderByDesc('started_at')->value('id');
+        $jamesVisitId = Visit::whereHas('patient', fn ($q) => $q->where('first_name', 'James')->where('last_name', 'Williams'))
+            ->orderByDesc('started_at')->value('id');
+
+        $notifications = [
+            [
+                'user_id' => $doctorUser->id,
+                'visit_id' => $alexVisitId,
+                'type' => 'patient_feedback',
+                'title' => 'Question about Propranolol',
+                'body' => "I've been taking Propranolol for 3 days now. Is it normal to feel a bit more tired than usual? Also, should I still avoid coffee completely or is one cup okay?",
+                'created_at' => now()->subHours(2),
+            ],
+            [
+                'user_id' => $doctorUser->id,
+                'visit_id' => $alexVisitId,
+                'type' => 'patient_feedback',
+                'title' => 'Coffee and PVCs',
+                'body' => 'Had a cup of coffee today and noticed a few more palpitations than usual this evening. Is this something I should worry about?',
+                'created_at' => now()->subHours(5),
+            ],
+            [
+                'user_id' => $doctorUser->id,
+                'visit_id' => $mariaVisitId,
+                'type' => 'patient_feedback',
+                'title' => 'Weight tracking question',
+                'body' => "My weight went up to 78 kg this morning. Should I be concerned? I've been following the fluid restriction but had a slightly saltier meal yesterday.",
+                'created_at' => now()->subHours(8),
+            ],
+            [
+                'user_id' => $doctorUser->id,
+                'visit_id' => $jamesVisitId,
+                'type' => 'patient_feedback',
+                'title' => 'Medication side effects (Amlodipine)',
+                'body' => 'I noticed some ankle swelling since starting the new medication. Is this a normal side effect of Amlodipine? Should I continue taking it?',
+                'created_at' => now()->subHours(12),
+            ],
+        ];
+
+        foreach ($notifications as $n) {
+            Notification::create($n);
+        }
+    }
+
+    /**
+     * Seed demo audit log entries for the doctor dashboard.
+     */
+    private function seedDemoAuditLogs(User $doctorUser): void
+    {
+        $sessionId = (string) Str::uuid();
+        $alexSessionId = (string) Str::uuid();
+        $mariaSessionId = (string) Str::uuid();
+        $jamesSessionId = (string) Str::uuid();
+        $ip = '192.168.1.100';
+
+        // Find patient users
+        $alexUser = User::where('email', 'alex.johnson.pvcs@demo.postvisit.ai')->first();
+        $mariaUser = User::where('email', 'maria@demo.postvisit.ai')->first();
+        $jamesUser = User::where('email', 'james@demo.postvisit.ai')->first();
+
+        // Find patient IDs
+        $alexPatientId = $alexUser?->patient_id;
+        $mariaPatientId = $mariaUser?->patient_id;
+        $jamesPatientId = $jamesUser?->patient_id;
+
+        // Find visit IDs
+        $alexVisitId = Visit::where('patient_id', $alexPatientId)->orderByDesc('started_at')->value('id');
+        $mariaVisitId = Visit::where('patient_id', $mariaPatientId)->orderByDesc('started_at')->value('id');
+        $jamesVisitId = Visit::where('patient_id', $jamesPatientId)->orderByDesc('started_at')->value('id');
+
+        // Find visit note IDs
+        $alexNoteId = VisitNote::where('visit_id', $alexVisitId)->value('id');
+        $mariaNoteId = VisitNote::where('visit_id', $mariaVisitId)->value('id');
+        $jamesNoteId = VisitNote::where('visit_id', $jamesVisitId)->value('id');
+
+        $entries = [
+            // Doctor login
+            ['user_id' => $doctorUser->id, 'user_role' => 'doctor', 'action_type' => 'login', 'resource_type' => 'Session', 'resource_id' => $sessionId, 'success' => true, 'ip_address' => $ip, 'session_id' => $sessionId, 'phi_accessed' => false, 'accessed_at' => now()->subHours(1)],
+
+            // Patient logins
+            ['user_id' => $alexUser?->id, 'user_role' => 'patient', 'action_type' => 'login', 'resource_type' => 'Session', 'resource_id' => $alexSessionId, 'success' => true, 'ip_address' => '10.0.0.50', 'session_id' => $alexSessionId, 'phi_accessed' => false, 'accessed_at' => now()->subHours(3)],
+            ['user_id' => $mariaUser?->id, 'user_role' => 'patient', 'action_type' => 'login', 'resource_type' => 'Session', 'resource_id' => $mariaSessionId, 'success' => true, 'ip_address' => '10.0.0.51', 'session_id' => $mariaSessionId, 'phi_accessed' => false, 'accessed_at' => now()->subHours(5)],
+            ['user_id' => $jamesUser?->id, 'user_role' => 'patient', 'action_type' => 'login', 'resource_type' => 'Session', 'resource_id' => $jamesSessionId, 'success' => true, 'ip_address' => '10.0.0.52', 'session_id' => $jamesSessionId, 'phi_accessed' => false, 'accessed_at' => now()->subHours(8)],
+
+            // Patient visit reads
+            ['user_id' => $alexUser?->id, 'user_role' => 'patient', 'action_type' => 'read', 'resource_type' => 'Visit', 'resource_id' => $alexVisitId, 'success' => true, 'ip_address' => '10.0.0.50', 'session_id' => $alexSessionId, 'phi_accessed' => true, 'phi_elements' => ['visit_summary', 'medications'], 'accessed_at' => now()->subHours(3)->addMinutes(2)],
+            ['user_id' => $mariaUser?->id, 'user_role' => 'patient', 'action_type' => 'read', 'resource_type' => 'Visit', 'resource_id' => $mariaVisitId, 'success' => true, 'ip_address' => '10.0.0.51', 'session_id' => $mariaSessionId, 'phi_accessed' => true, 'phi_elements' => ['visit_summary', 'medications'], 'accessed_at' => now()->subHours(5)->addMinutes(1)],
+            ['user_id' => $jamesUser?->id, 'user_role' => 'patient', 'action_type' => 'read', 'resource_type' => 'Visit', 'resource_id' => $jamesVisitId, 'success' => true, 'ip_address' => '10.0.0.52', 'session_id' => $jamesSessionId, 'phi_accessed' => true, 'phi_elements' => ['visit_summary', 'medications'], 'accessed_at' => now()->subHours(8)->addMinutes(3)],
+
+            // Patient SOAP reads
+            ['user_id' => $alexUser?->id, 'user_role' => 'patient', 'action_type' => 'read', 'resource_type' => 'VisitNote', 'resource_id' => $alexNoteId, 'success' => true, 'ip_address' => '10.0.0.50', 'session_id' => $alexSessionId, 'phi_accessed' => true, 'phi_elements' => ['soap_note', 'medical_terms'], 'accessed_at' => now()->subHours(3)->addMinutes(5)],
+            ['user_id' => $mariaUser?->id, 'user_role' => 'patient', 'action_type' => 'read', 'resource_type' => 'VisitNote', 'resource_id' => $mariaNoteId, 'success' => true, 'ip_address' => '10.0.0.51', 'session_id' => $mariaSessionId, 'phi_accessed' => true, 'phi_elements' => ['soap_note', 'medical_terms'], 'accessed_at' => now()->subHours(5)->addMinutes(4)],
+            ['user_id' => $jamesUser?->id, 'user_role' => 'patient', 'action_type' => 'read', 'resource_type' => 'VisitNote', 'resource_id' => $jamesNoteId, 'success' => true, 'ip_address' => '10.0.0.52', 'session_id' => $jamesSessionId, 'phi_accessed' => true, 'phi_elements' => ['soap_note', 'medical_terms'], 'accessed_at' => now()->subHours(8)->addMinutes(6)],
+
+            // Doctor patient reviews
+            ['user_id' => $doctorUser->id, 'user_role' => 'doctor', 'action_type' => 'read', 'resource_type' => 'Patient', 'resource_id' => $alexPatientId, 'success' => true, 'ip_address' => $ip, 'session_id' => $sessionId, 'phi_accessed' => true, 'phi_elements' => ['patient_profile', 'conditions', 'prescriptions'], 'accessed_at' => now()->subMinutes(45)],
+            ['user_id' => $doctorUser->id, 'user_role' => 'doctor', 'action_type' => 'read', 'resource_type' => 'Patient', 'resource_id' => $mariaPatientId, 'success' => true, 'ip_address' => $ip, 'session_id' => $sessionId, 'phi_accessed' => true, 'phi_elements' => ['patient_profile', 'conditions', 'prescriptions'], 'accessed_at' => now()->subMinutes(30)],
+            ['user_id' => $doctorUser->id, 'user_role' => 'doctor', 'action_type' => 'read', 'resource_type' => 'Patient', 'resource_id' => $jamesPatientId, 'success' => true, 'ip_address' => $ip, 'session_id' => $sessionId, 'phi_accessed' => true, 'phi_elements' => ['patient_profile', 'conditions', 'prescriptions'], 'accessed_at' => now()->subMinutes(15)],
+
+            // Doctor audit log view
+            ['user_id' => $doctorUser->id, 'user_role' => 'doctor', 'action_type' => 'read', 'resource_type' => 'AuditLog', 'resource_id' => $sessionId, 'success' => true, 'ip_address' => $ip, 'session_id' => $sessionId, 'phi_accessed' => false, 'accessed_at' => now()->subMinutes(5)],
+        ];
+
+        foreach ($entries as $entry) {
+            if (! empty($entry['user_id'])) {
+                AuditLog::create($entry);
             }
         }
     }
