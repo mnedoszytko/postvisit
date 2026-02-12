@@ -2,6 +2,7 @@
 
 namespace App\Services\Demo;
 
+use App\Models\AuditLog;
 use App\Models\ChatSession;
 use App\Models\Condition;
 use App\Models\Medication;
@@ -55,6 +56,7 @@ class DemoScenarioSeeder
         $this->createVisitNote($scenario['visit_note'] ?? [], $visit, $patient, $practitioner);
         $this->createTranscript($scenario['transcript_file'] ?? null, $visit, $patient);
         $this->createChatSession($scenario['chat_session'] ?? [], $patient, $visit);
+        $this->createAuditLogs($user, $doctorUser, $visit, $patient);
 
         return $user;
     }
@@ -684,5 +686,69 @@ class DemoScenarioSeeder
             'status' => 'active',
             'initiated_at' => now(),
         ]);
+    }
+
+    /**
+     * Seed realistic audit log entries to populate the Audit Log view.
+     */
+    private function createAuditLogs(User $patientUser, User $doctorUser, Visit $visit, Patient $patient): void
+    {
+        $sessionId = Str::uuid()->toString();
+        $ips = ['192.168.1.42', '10.0.0.15', '172.16.0.88'];
+
+        $entries = [
+            // Patient login
+            ['user' => $patientUser, 'action' => 'login', 'resource' => 'auth', 'rid' => $patientUser->id, 'phi' => false, 'elements' => [], 'ago' => 180],
+            // Patient views their profile
+            ['user' => $patientUser, 'action' => 'read', 'resource' => 'patient_profile', 'rid' => $patient->id, 'phi' => true, 'elements' => ['demographics', 'contact_info'], 'ago' => 175],
+            // Patient views visit
+            ['user' => $patientUser, 'action' => 'read', 'resource' => 'visit', 'rid' => $visit->id, 'phi' => true, 'elements' => ['visit_data', 'clinical_notes'], 'ago' => 170],
+            // Patient reads SOAP note
+            ['user' => $patientUser, 'action' => 'read', 'resource' => 'visit_note', 'rid' => $visit->id, 'phi' => true, 'elements' => ['soap_notes', 'clinical_assessment'], 'ago' => 165],
+            // Patient views transcript
+            ['user' => $patientUser, 'action' => 'read', 'resource' => 'transcript', 'rid' => $visit->id, 'phi' => true, 'elements' => ['visit_recording', 'spoken_content'], 'ago' => 160],
+            // Patient asks AI about medication
+            ['user' => $patientUser, 'action' => 'create', 'resource' => 'chat_session', 'rid' => $visit->id, 'phi' => true, 'elements' => ['patient_questions', 'ai_responses'], 'ago' => 150],
+            // Patient views medications
+            ['user' => $patientUser, 'action' => 'read', 'resource' => 'medication', 'rid' => $visit->id, 'phi' => true, 'elements' => ['prescriptions', 'drug_info'], 'ago' => 140],
+            // Patient views observations
+            ['user' => $patientUser, 'action' => 'read', 'resource' => 'observation', 'rid' => $visit->id, 'phi' => true, 'elements' => ['lab_results', 'vitals'], 'ago' => 130],
+            // Patient asks for explanation
+            ['user' => $patientUser, 'action' => 'create', 'resource' => 'explanation', 'rid' => $visit->id, 'phi' => true, 'elements' => ['medical_explanations'], 'ago' => 120],
+            // Patient views conditions
+            ['user' => $patientUser, 'action' => 'read', 'resource' => 'condition', 'rid' => $visit->id, 'phi' => true, 'elements' => ['diagnoses'], 'ago' => 110],
+            // Patient views health summary
+            ['user' => $patientUser, 'action' => 'read', 'resource' => 'health_summary', 'rid' => $patient->id, 'phi' => true, 'elements' => ['aggregate_health_data'], 'ago' => 90],
+            // Doctor login
+            ['user' => $doctorUser, 'action' => 'login', 'resource' => 'auth', 'rid' => $doctorUser->id, 'phi' => false, 'elements' => [], 'ago' => 60],
+            // Doctor views patient list
+            ['user' => $doctorUser, 'action' => 'read', 'resource' => 'patient', 'rid' => $patient->id, 'phi' => true, 'elements' => ['demographics', 'contact_info'], 'ago' => 55],
+            // Doctor reviews visit
+            ['user' => $doctorUser, 'action' => 'read', 'resource' => 'visit', 'rid' => $visit->id, 'phi' => true, 'elements' => ['visit_data', 'clinical_notes'], 'ago' => 50],
+            // Doctor views chat audit
+            ['user' => $doctorUser, 'action' => 'read', 'resource' => 'chat_session', 'rid' => $visit->id, 'phi' => true, 'elements' => ['patient_questions', 'ai_responses'], 'ago' => 45],
+            // Doctor checks SOAP note
+            ['user' => $doctorUser, 'action' => 'read', 'resource' => 'visit_note', 'rid' => $visit->id, 'phi' => true, 'elements' => ['soap_notes', 'clinical_assessment'], 'ago' => 40],
+            // Doctor views lab results
+            ['user' => $doctorUser, 'action' => 'read', 'resource' => 'observation', 'rid' => $visit->id, 'phi' => true, 'elements' => ['lab_results', 'vitals'], 'ago' => 35],
+            // Doctor views audit log
+            ['user' => $doctorUser, 'action' => 'read', 'resource' => 'audit_log', 'rid' => $doctorUser->id, 'phi' => false, 'elements' => [], 'ago' => 5],
+        ];
+
+        foreach ($entries as $e) {
+            AuditLog::create([
+                'user_id' => $e['user']->id,
+                'user_role' => $e['user']->role,
+                'action_type' => $e['action'],
+                'resource_type' => $e['resource'],
+                'resource_id' => $e['rid'],
+                'success' => true,
+                'ip_address' => $ips[array_rand($ips)],
+                'session_id' => $sessionId,
+                'phi_accessed' => $e['phi'],
+                'phi_elements' => $e['elements'] ?: null,
+                'accessed_at' => now()->subMinutes($e['ago']),
+            ]);
+        }
     }
 }

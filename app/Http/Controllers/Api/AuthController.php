@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
@@ -61,6 +63,19 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth-token')->plainTextToken;
 
+        AuditLog::create([
+            'user_id' => $user->id,
+            'user_role' => $user->role ?? 'unknown',
+            'action_type' => 'login',
+            'resource_type' => 'auth',
+            'resource_id' => $user->id,
+            'success' => true,
+            'ip_address' => $request->ip() ?? '0.0.0.0',
+            'session_id' => $request->hasSession() ? $request->session()->getId() : Str::uuid()->toString(),
+            'phi_accessed' => false,
+            'accessed_at' => now(),
+        ]);
+
         return response()->json([
             'data' => [
                 'user' => $user,
@@ -71,7 +86,22 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
-        $token = $request->user()->currentAccessToken();
+        $user = $request->user();
+
+        AuditLog::create([
+            'user_id' => $user->id,
+            'user_role' => $user->role ?? 'unknown',
+            'action_type' => 'logout',
+            'resource_type' => 'auth',
+            'resource_id' => $user->id,
+            'success' => true,
+            'ip_address' => $request->ip() ?? '0.0.0.0',
+            'session_id' => $request->hasSession() ? $request->session()->getId() : Str::uuid()->toString(),
+            'phi_accessed' => false,
+            'accessed_at' => now(),
+        ]);
+
+        $token = $user->currentAccessToken();
 
         if ($token && method_exists($token, 'delete')) {
             $token->delete();

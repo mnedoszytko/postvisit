@@ -379,10 +379,80 @@ Bundled clinical guidelines from open-access sources (WikiDoc CC-BY-SA, DailyMed
 - **Deployment:** Auto-deploy from `main` branch via Forge
 - **Local dev:** Laravel Herd (PHP 8.4 isolated) with Vite HMR
 
-## Security Considerations
+## Security & Audit Logging
+
+PostVisit.ai handles Protected Health Information (PHI) and implements a HIPAA-inspired audit trail to track every access to sensitive clinical data. This is not a checkbox exercise -- the audit system is designed so that a compliance officer could reconstruct exactly who accessed what patient data, when, and why.
+
+### Audit Middleware (Terminable)
+
+The `AuditMiddleware` (`app/Http/Middleware/AuditMiddleware.php`) is registered as a terminable middleware, meaning the audit record is written **after** the HTTP response has been sent to the browser. This ensures audit logging never adds latency to user-facing requests.
+
+```
+Request → Controller → Response sent → [AuditMiddleware::terminate()] → Write audit_logs row
+```
+
+The middleware is applied to all PHI-bearing route groups:
+- **Patient data** -- profiles, conditions, prescriptions, observations, health records, documents
+- **Visit data** -- visit details, summaries, SOAP notes, transcripts
+- **AI interactions** -- chat sessions, medical term explanations
+- **Medications** -- drug search, interactions, adverse events, labels
+- **Medical references** -- literature lookup and verification
+- **Doctor dashboard** -- patient lists, engagement stats, chat audit trails
+- **Audit logs themselves** -- meta-audit (querying the audit log is itself audited)
+
+Login and logout events are logged directly in `AuthController` to capture authentication lifecycle outside the middleware's scope.
+
+### What Gets Logged
+
+Each audit record captures:
+
+| Field | Purpose |
+|-------|---------|
+| `user_id` | Who accessed the data (foreign key to `users`) |
+| `user_role` | Role at time of access (`patient`, `doctor`, `admin`) |
+| `action_type` | What they did: `create`, `read`, `update`, `delete`, `download`, `export`, `login`, `logout` |
+| `resource_type` | What kind of data (e.g., `visit`, `transcript`, `medication`, `chat_session`) |
+| `resource_id` | Specific record accessed (UUID) |
+| `success` | Whether the request succeeded (HTTP status < 400) |
+| `ip_address` | Client IP for forensic tracing |
+| `session_id` | Session ID to correlate multiple actions in one session |
+| `phi_accessed` | Boolean flag -- always `true` for audited routes |
+| `phi_elements` | JSON array of specific PHI categories accessed (see below) |
+| `accessed_at` | Timestamp of access |
+
+### PHI Element Tracking
+
+The middleware automatically classifies which categories of PHI are accessed based on the resource type, enabling fine-grained compliance reporting:
+
+| Resource Type | PHI Elements |
+|---------------|-------------|
+| `visit` | `visit_data`, `clinical_notes` |
+| `patient` / `patient_profile` | `demographics`, `contact_info` |
+| `transcript` | `visit_recording`, `spoken_content` |
+| `visit_note` | `soap_notes`, `clinical_assessment` |
+| `chat_session` | `patient_questions`, `ai_responses` |
+| `observation` | `lab_results`, `vitals` |
+| `condition` | `diagnoses` |
+| `medication` | `prescriptions`, `drug_info` |
+| `health_summary` | `aggregate_health_data` |
+| `document` | `clinical_documents` |
+| `explanation` | `medical_explanations` |
+
+### Action Type Resolution
+
+HTTP methods map to action types automatically: `GET` = `read`, `POST` = `create`, `PUT/PATCH` = `update`, `DELETE` = `delete`. If the request includes `?download=true` or `?export=true` query parameters, the action is upgraded to `download` -- this distinction matters for compliance since data leaving the system (downloads/exports) carries higher risk than in-app viewing.
+
+### Audit API
+
+Doctors and admins can query audit logs via `GET /api/v1/audit/logs` with filters for `resource_type`, `user_id`, and `action_type`. The endpoint itself is audited (meta-audit). See [API Reference](api.md#audit) for full details.
+
+### Database Indexing
+
+The `audit_logs` table uses composite indices on `(user_id, accessed_at)` and `(resource_id, accessed_at)` for efficient time-range queries, plus a standalone index on `phi_accessed` for compliance-focused queries.
+
+### Other Security Measures
 
 - **No medical data in localStorage** -- all sensitive data stays server-side
-- **Audit logging** -- all AI interactions and data access are logged in `audit_logs`
 - **Consent tracking** -- patient consent records stored in `consents` table
 - **Role-based access** -- doctors see patient data only through authorized endpoints with `role:doctor,admin` middleware
 - **CSRF protection** -- Sanctum's stateful middleware handles XSRF tokens automatically

@@ -2,6 +2,11 @@
 
 All notable changes to PostVisit.ai are documented here in reverse chronological order.
 
+## 2026-02-12
+
+### Added
+- **HIPAA-inspired audit logging middleware for all PHI access** -- Terminable `AuditMiddleware` logs every authenticated access to patient data, clinical notes, transcripts, chat sessions, medications, and documents. Tracks user, action type (CRUD + download/export), resource, success/failure, IP address, session ID, and specific PHI element categories per resource type. Applied to all PHI route groups. Audit API at `GET /api/v1/audit/logs` with filters (doctor/admin only). Login/logout events logged in AuthController.
+
 ## 2026-02-11
 
 ### Added

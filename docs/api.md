@@ -445,20 +445,52 @@ Verify a PMID exists in PubMed without storing it.
 
 ## Audit
 
-Requires `role:doctor,admin`.
+HIPAA-inspired audit trail. Requires `role:doctor,admin`. The endpoint itself is audited (meta-audit).
 
 ### GET /audit/logs
-Paginated audit logs with optional filters.
+Paginated audit logs with optional filters. Returns every recorded PHI access event.
 
 **Query params:**
 | Param | Type | Notes |
 |-------|------|-------|
-| resource_type | string | Filter by type (visit, patient, etc.) |
+| resource_type | string | Filter by type: `visit`, `patient`, `transcript`, `visit_note`, `chat_session`, `medication`, `observation`, `condition`, `document`, `explanation`, `health_summary`, `patient_profile`, `audit_log` |
 | user_id | uuid | Filter by user |
-| action_type | string | create, read, update, delete, login, etc. |
+| action_type | string | `create`, `read`, `update`, `delete`, `download`, `export`, `login`, `logout` |
 | per_page | integer | Default 50 |
 
-**Response:** `200` `{ data: { data: [...], current_page, last_page, total } }`
+**Response:** `200`
+```json
+{
+  "data": {
+    "data": [
+      {
+        "id": "9f3a...",
+        "user_id": "8b2c...",
+        "user_role": "patient",
+        "action_type": "read",
+        "resource_type": "visit",
+        "resource_id": "a1d4...",
+        "success": true,
+        "ip_address": "192.168.1.10",
+        "session_id": "c7e8...",
+        "phi_accessed": true,
+        "phi_elements": ["visit_data", "clinical_notes"],
+        "accessed_at": "2026-02-12T14:30:00.000000Z",
+        "user": {
+          "id": "8b2c...",
+          "name": "Alex Johnson",
+          "email": "alex@example.com",
+          "role": "patient"
+        }
+      }
+    ],
+    "current_page": 1,
+    "last_page": 3,
+    "per_page": 50,
+    "total": 142
+  }
+}
+```
 
 ---
 

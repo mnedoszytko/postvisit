@@ -49,7 +49,7 @@ Route::prefix('v1')->group(function () {
         });
 
         // ----- Module 1: Core Health — Patients -----
-        Route::prefix('patients/{patient}')->group(function () {
+        Route::prefix('patients/{patient}')->middleware('audit')->group(function () {
             Route::get('/', [PatientController::class, 'show']);
             Route::patch('/', [PatientController::class, 'update']);
             Route::get('visits', [PatientController::class, 'visits']);
@@ -64,19 +64,21 @@ Route::prefix('v1')->group(function () {
         });
 
         // Documents (standalone)
-        Route::get('documents/{document}', [DocumentController::class, 'show']);
-        Route::get('documents/{document}/download', [DocumentController::class, 'download']);
-        Route::get('documents/{document}/thumbnail', [DocumentController::class, 'thumbnail']);
-        Route::get('documents/{document}/analysis', [DocumentController::class, 'analysisStatus']);
-        Route::delete('documents/{document}', [DocumentController::class, 'destroy']);
+        Route::middleware('audit')->group(function () {
+            Route::get('documents/{document}', [DocumentController::class, 'show']);
+            Route::get('documents/{document}/download', [DocumentController::class, 'download']);
+            Route::get('documents/{document}/thumbnail', [DocumentController::class, 'thumbnail']);
+            Route::get('documents/{document}/analysis', [DocumentController::class, 'analysisStatus']);
+            Route::delete('documents/{document}', [DocumentController::class, 'destroy']);
+        });
 
         // Practitioners (for visit form dropdown)
         Route::get('practitioners', [VisitController::class, 'practitioners']);
 
         // ----- Module 2: Companion Scribe — Visits & Transcripts -----
-        Route::post('visits', [VisitController::class, 'store']);
+        Route::post('visits', [VisitController::class, 'store'])->middleware('audit');
 
-        Route::prefix('visits/{visit}')->group(function () {
+        Route::prefix('visits/{visit}')->middleware('audit')->group(function () {
             // Module 3: PostVisit AI
             Route::get('/', [VisitController::class, 'show']);
             Route::get('summary', [VisitController::class, 'summary']);
@@ -117,17 +119,19 @@ Route::prefix('v1')->group(function () {
         });
 
         // Mark message as read
-        Route::patch('messages/{message}/read', [FeedbackController::class, 'markRead']);
+        Route::patch('messages/{message}/read', [FeedbackController::class, 'markRead'])->middleware('audit');
 
         // ----- Module 5: Medications -----
-        Route::get('medications/search', [MedicationController::class, 'search']);
-        Route::get('medications/{rxnormCode}', [MedicationController::class, 'show']);
-        Route::get('medications/{rxnormCode}/interactions', [MedicationController::class, 'interactions']);
-        Route::get('medications/{rxnormCode}/adverse-events', [MedicationController::class, 'adverseEvents']);
-        Route::get('medications/{rxnormCode}/label', [MedicationController::class, 'label']);
+        Route::middleware('audit')->group(function () {
+            Route::get('medications/search', [MedicationController::class, 'search']);
+            Route::get('medications/{rxnormCode}', [MedicationController::class, 'show']);
+            Route::get('medications/{rxnormCode}/interactions', [MedicationController::class, 'interactions']);
+            Route::get('medications/{rxnormCode}/adverse-events', [MedicationController::class, 'adverseEvents']);
+            Route::get('medications/{rxnormCode}/label', [MedicationController::class, 'label']);
+        });
 
         // ----- Module 6: Medical Lookup (NIH + DailyMed) -----
-        Route::prefix('lookup')->group(function () {
+        Route::prefix('lookup')->middleware('audit')->group(function () {
             Route::get('conditions', [MedicalLookupController::class, 'searchConditions']);
             Route::get('drugs', [MedicalLookupController::class, 'searchDrugs']);
             Route::get('procedures', [MedicalLookupController::class, 'searchProcedures']);
@@ -135,7 +139,7 @@ Route::prefix('v1')->group(function () {
         });
 
         // ----- Module 9: Medical References -----
-        Route::prefix('references')->group(function () {
+        Route::prefix('references')->middleware('audit')->group(function () {
             Route::get('/', [ReferenceController::class, 'index']);
             Route::get('{reference}', [ReferenceController::class, 'show']);
             Route::post('{reference}/verify', [ReferenceController::class, 'verify']);
@@ -143,7 +147,7 @@ Route::prefix('v1')->group(function () {
         });
 
         // ----- Module 7: Doctor Dashboard (doctor role required) -----
-        Route::prefix('doctor')->middleware('role:doctor,admin')->group(function () {
+        Route::prefix('doctor')->middleware(['role:doctor,admin', 'audit'])->group(function () {
             Route::get('dashboard', [DoctorController::class, 'dashboard']);
             Route::get('alerts', [DoctorController::class, 'alerts']);
             Route::get('patients', [DoctorController::class, 'patients']);
@@ -158,7 +162,9 @@ Route::prefix('v1')->group(function () {
 
         // ----- Module 8: Audit (doctor/admin role required) -----
         Route::get('audit/logs', [AuditController::class, 'index'])
-            ->middleware('role:doctor,admin');
+            ->middleware(['role:doctor,admin', 'audit']);
+        Route::get('audit/export', [AuditController::class, 'export'])
+            ->middleware(['role:doctor,admin', 'audit']);
 
         // ----- Settings -----
         Route::prefix('settings')->group(function () {
@@ -183,5 +189,6 @@ Route::prefix('v1')->group(function () {
         Route::get('scenarios', [DemoScenarioController::class, 'index']);
         Route::get('scenarios/{scenario}/photo', [DemoScenarioController::class, 'photo']);
         Route::post('start-scenario', [DemoScenarioController::class, 'startScenario']);
+        Route::post('switch-to-doctor', [DemoScenarioController::class, 'switchToDoctor']);
     });
 });
