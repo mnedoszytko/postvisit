@@ -123,23 +123,12 @@ class ScribeProcessor
 
     private function parseJsonResponse(string $response): array
     {
-        // Extract JSON from markdown code block if wrapped
-        if (preg_match('/```(?:json)?\s*\n?(.*?)\n?```/s', $response, $matches)) {
-            $response = $matches[1];
-        }
-
-        $decoded = json_decode($response, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return [
-                'clean_transcript' => $response,
-                'extracted_entities' => [],
-                'soap_note' => [],
-                'speakers' => [],
-                'unclear_sections' => [],
-            ];
-        }
-
-        return $decoded;
+        return AnthropicClient::parseJsonOutput($response, [
+            'clean_transcript' => $response,
+            'extracted_entities' => [],
+            'soap_note' => [],
+            'speakers' => [],
+            'unclear_sections' => [],
+        ]);
     }
 }

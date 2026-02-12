@@ -65,25 +65,7 @@ class TermExtractor
      */
     private function parseResponse(string $response): array
     {
-        $cleaned = trim($response);
-
-        // Strip markdown code fences if present
-        if (str_starts_with($cleaned, '```')) {
-            $cleaned = preg_replace('/^```(?:json)?\s*\n?/', '', $cleaned);
-            $cleaned = preg_replace('/\n?```\s*$/', '', $cleaned);
-        }
-
-        $decoded = json_decode($cleaned, true);
-
-        if (! is_array($decoded)) {
-            Log::channel('ai')->warning('TermExtractor: failed to parse response', [
-                'response' => substr($response, 0, 500),
-            ]);
-
-            return [];
-        }
-
-        return $decoded;
+        return AnthropicClient::parseJsonOutput($response);
     }
 
     /**

@@ -301,20 +301,11 @@ PROMPT;
      */
     private function parseVerification(string $response): array
     {
-        // Extract JSON from markdown code blocks if present
-        if (preg_match('/```(?:json)?\s*\n?(.*?)\n?```/s', $response, $matches)) {
-            $response = $matches[1];
-        }
-
-        $decoded = json_decode($response, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return [
-                'is_verified' => true,
-                'concerns' => [],
-                'correction' => null,
-            ];
-        }
+        $decoded = AnthropicClient::parseJsonOutput($response, [
+            'is_verified' => true,
+            'concerns' => [],
+            'correction' => null,
+        ]);
 
         return [
             'is_verified' => $decoded['is_verified'] ?? true,
