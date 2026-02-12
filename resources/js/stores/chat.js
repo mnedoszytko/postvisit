@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 import { useApi } from '@/composables/useApi';
 
+const MAX_MESSAGES = 100;
+
 export const useChatStore = defineStore('chat', {
     state: () => ({
         messages: [],
@@ -10,10 +12,17 @@ export const useChatStore = defineStore('chat', {
     }),
 
     actions: {
+        trimMessages() {
+            if (this.messages.length > MAX_MESSAGES) {
+                this.messages.splice(0, this.messages.length - MAX_MESSAGES);
+            }
+        },
+
         async sendMessage(visitId, message, contextSources = null) {
             this.loading = true;
             this.error = null;
             this.messages.push({ role: 'user', content: message });
+            this.trimMessages();
 
             // Add streaming placeholder for AI response
             const aiIndex = this.messages.length;
