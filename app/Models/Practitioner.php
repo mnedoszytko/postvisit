@@ -36,18 +36,24 @@ class Practitioner extends Model
     }
 
     /**
-     * Map specialty to demo doctor photo directory key.
+     * Match practitioner to their demo photo by email identity.
      */
     public function getPhotoUrlAttribute(): ?string
     {
-        $specialtyMap = [
-            'cardiology' => 'default',
-            'endocrinology' => 'endocrinologist',
-            'gastroenterology' => 'gastroenterologist',
-            'pulmonology' => 'pulmonologist',
+        // Map demo doctor emails to photo directory keys
+        $emailMap = [
+            'doctor@demo.postvisit.ai' => 'default',
+            'dr.patel@demo.postvisit.ai' => 'endocrinologist',
+            'dr.chen@demo.postvisit.ai' => 'gastroenterologist',
+            'dr.okafor@demo.postvisit.ai' => 'pulmonologist',
         ];
 
-        $key = $specialtyMap[$this->primary_specialty] ?? 'default';
+        $key = $emailMap[$this->email] ?? null;
+
+        if (! $key) {
+            return null;
+        }
+
         $path = base_path("demo/doctors/{$key}/doctor-photo.png");
 
         if (! file_exists($path)) {
