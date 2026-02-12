@@ -73,5 +73,30 @@
       { "timestamp": "2026-02-09T23:00:00Z", "spo2_percent": 97 },
       { "timestamp": "2026-02-08T23:00:00Z", "spo2_percent": 99 }
     ]
+  },
+  "hrv": {
+    "unit": "ms",
+    "average_sdnn_ms": 40,
+    "daily_readings": [
+      { "date": "2026-02-10", "sdnn_ms": 42, "rmssd_ms": 38, "context": "overnight" },
+      { "date": "2026-02-09", "sdnn_ms": 38, "rmssd_ms": 34, "context": "overnight" },
+      { "date": "2026-02-08", "sdnn_ms": 45, "rmssd_ms": 41, "context": "overnight" },
+      { "date": "2026-02-07", "sdnn_ms": 34, "rmssd_ms": 30, "context": "overnight" },
+      { "date": "2026-02-06", "sdnn_ms": 48, "rmssd_ms": 44, "context": "overnight" },
+      { "date": "2026-02-05", "sdnn_ms": 40, "rmssd_ms": 36, "context": "overnight" },
+      { "date": "2026-02-04", "sdnn_ms": 36, "rmssd_ms": 32, "context": "overnight" }
+    ]
+  },
+  "sleep": {
+    "average_hours": 6.9,
+    "daily_readings": [
+      { "date": "2026-02-10", "total_hours": 7.2, "deep_hours": 1.8, "rem_hours": 1.9, "light_hours": 3.0, "awake_hours": 0.5 },
+      { "date": "2026-02-09", "total_hours": 6.5, "deep_hours": 1.4, "rem_hours": 1.6, "light_hours": 2.8, "awake_hours": 0.7 },
+      { "date": "2026-02-08", "total_hours": 7.8, "deep_hours": 2.0, "rem_hours": 2.1, "light_hours": 3.2, "awake_hours": 0.5 },
+      { "date": "2026-02-07", "total_hours": 5.9, "deep_hours": 1.2, "rem_hours": 1.3, "light_hours": 2.6, "awake_hours": 0.8 },
+      { "date": "2026-02-06", "total_hours": 7.5, "deep_hours": 1.9, "rem_hours": 2.0, "light_hours": 3.1, "awake_hours": 0.5 },
+      { "date": "2026-02-05", "total_hours": 6.8, "deep_hours": 1.5, "rem_hours": 1.7, "light_hours": 2.9, "awake_hours": 0.7 },
+      { "date": "2026-02-04", "total_hours": 7.0, "deep_hours": 1.7, "rem_hours": 1.8, "light_hours": 3.0, "awake_hours": 0.5 }
+    ]
   }
 }

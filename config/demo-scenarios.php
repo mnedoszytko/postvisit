@@ -266,6 +266,25 @@ return [
             'chat_session' => [
                 'topic' => 'Post-visit follow-up: PVCs and Propranolol',
             ],
+
+            'weight_series' => [
+                ['day' => -29, 'kg' => 80.2],
+                ['day' => -28, 'kg' => 80.5],
+                ['day' => -27, 'kg' => 80.6],
+                ['day' => -26, 'kg' => 80.6],
+                ['day' => -21, 'kg' => 80.5],
+                ['day' => -19, 'kg' => 81.0],
+                ['day' => -17, 'kg' => 80.8],
+                ['day' => -16, 'kg' => 81.3],
+                ['day' => -12, 'kg' => 81.0],
+                ['day' => -11, 'kg' => 81.3],
+                ['day' => -10, 'kg' => 81.5],
+                ['day' => -8, 'kg' => 82.0],
+                ['day' => -5, 'kg' => 82.2],
+                ['day' => -3, 'kg' => 82.5],
+                ['day' => -2, 'kg' => 83.8],
+                ['day' => -1, 'kg' => 85.3],
+            ],
         ],
 
         'coronarography' => [
@@ -292,6 +311,24 @@ return [
             ],
             'chat_session' => [
                 'topic' => 'Post-visit follow-up: Coronarography and stenosis',
+            ],
+
+            'weight_series' => [
+                ['day' => -29, 'kg' => 68.2],
+                ['day' => -28, 'kg' => 67.9],
+                ['day' => -23, 'kg' => 68.0],
+                ['day' => -21, 'kg' => 68.4],
+                ['day' => -20, 'kg' => 68.1],
+                ['day' => -19, 'kg' => 68.4],
+                ['day' => -16, 'kg' => 68.0],
+                ['day' => -14, 'kg' => 67.9],
+                ['day' => -13, 'kg' => 68.0],
+                ['day' => -11, 'kg' => 68.4],
+                ['day' => -10, 'kg' => 68.2],
+                ['day' => -7, 'kg' => 68.3],
+                ['day' => -5, 'kg' => 67.5],
+                ['day' => -4, 'kg' => 68.0],
+                ['day' => -2, 'kg' => 67.7],
             ],
         ],
 
@@ -320,6 +357,24 @@ return [
             'chat_session' => [
                 'topic' => 'Post-visit follow-up: Gastric bypass cardiac clearance',
             ],
+
+            'weight_series' => [
+                ['day' => -29, 'kg' => 90.5],
+                ['day' => -28, 'kg' => 90.6],
+                ['day' => -27, 'kg' => 89.9],
+                ['day' => -23, 'kg' => 90.0],
+                ['day' => -19, 'kg' => 90.4],
+                ['day' => -18, 'kg' => 89.5],
+                ['day' => -17, 'kg' => 89.7],
+                ['day' => -15, 'kg' => 90.0],
+                ['day' => -12, 'kg' => 90.3],
+                ['day' => -11, 'kg' => 90.3],
+                ['day' => -6, 'kg' => 90.1],
+                ['day' => -5, 'kg' => 90.6],
+                ['day' => -4, 'kg' => 89.6],
+                ['day' => -2, 'kg' => 90.0],
+                ['day' => -1, 'kg' => 89.9],
+            ],
         ],
 
         'hypertension-followup' => [
@@ -347,6 +402,24 @@ return [
             'chat_session' => [
                 'topic' => 'Post-visit follow-up: Hypertension management',
             ],
+
+            'weight_series' => [
+                ['day' => -29, 'kg' => 81.5],
+                ['day' => -28, 'kg' => 81.8],
+                ['day' => -26, 'kg' => 81.5],
+                ['day' => -25, 'kg' => 81.9],
+                ['day' => -23, 'kg' => 81.4],
+                ['day' => -21, 'kg' => 82.0],
+                ['day' => -18, 'kg' => 81.5],
+                ['day' => -16, 'kg' => 82.2],
+                ['day' => -15, 'kg' => 81.9],
+                ['day' => -11, 'kg' => 82.6],
+                ['day' => -9, 'kg' => 81.7],
+                ['day' => -8, 'kg' => 82.0],
+                ['day' => -7, 'kg' => 82.3],
+                ['day' => -3, 'kg' => 81.8],
+                ['day' => -1, 'kg' => 81.8],
+            ],
         ],
 
         'chest-pain' => [
@@ -372,6 +445,24 @@ return [
             ],
             'chat_session' => [
                 'topic' => 'Post-visit follow-up: Chest pain and carotid assessment',
+            ],
+
+            'weight_series' => [
+                ['day' => -29, 'kg' => 95.0],
+                ['day' => -28, 'kg' => 94.6],
+                ['day' => -27, 'kg' => 95.2],
+                ['day' => -25, 'kg' => 95.5],
+                ['day' => -24, 'kg' => 95.3],
+                ['day' => -22, 'kg' => 94.9],
+                ['day' => -18, 'kg' => 94.6],
+                ['day' => -17, 'kg' => 95.6],
+                ['day' => -16, 'kg' => 95.0],
+                ['day' => -13, 'kg' => 95.2],
+                ['day' => -9, 'kg' => 95.4],
+                ['day' => -8, 'kg' => 94.9],
+                ['day' => -7, 'kg' => 94.5],
+                ['day' => -5, 'kg' => 94.6],
+                ['day' => -1, 'kg' => 95.2],
             ],
         ],
 
@@ -399,6 +490,24 @@ return [
             'chat_session' => [
                 'topic' => 'Post-visit follow-up: Arm pain assessment',
             ],
+
+            'weight_series' => [
+                ['day' => -29, 'kg' => 72.0],
+                ['day' => -24, 'kg' => 72.1],
+                ['day' => -20, 'kg' => 71.8],
+                ['day' => -19, 'kg' => 71.5],
+                ['day' => -18, 'kg' => 72.3],
+                ['day' => -16, 'kg' => 71.7],
+                ['day' => -15, 'kg' => 72.1],
+                ['day' => -13, 'kg' => 71.5],
+                ['day' => -8, 'kg' => 72.5],
+                ['day' => -7, 'kg' => 71.7],
+                ['day' => -6, 'kg' => 72.5],
+                ['day' => -4, 'kg' => 71.7],
+                ['day' => -3, 'kg' => 71.5],
+                ['day' => -2, 'kg' => 72.0],
+                ['day' => -1, 'kg' => 72.5],
+            ],
         ],
 
         'aortic-aneurysm' => [
@@ -424,6 +533,24 @@ return [
             ],
             'chat_session' => [
                 'topic' => 'Post-visit follow-up: Aortic aneurysm management',
+            ],
+
+            'weight_series' => [
+                ['day' => -29, 'kg' => 85.5],
+                ['day' => -27, 'kg' => 84.6],
+                ['day' => -25, 'kg' => 85.5],
+                ['day' => -23, 'kg' => 85.0],
+                ['day' => -22, 'kg' => 84.9],
+                ['day' => -21, 'kg' => 84.4],
+                ['day' => -19, 'kg' => 85.3],
+                ['day' => -13, 'kg' => 85.4],
+                ['day' => -11, 'kg' => 85.4],
+                ['day' => -10, 'kg' => 84.8],
+                ['day' => -9, 'kg' => 85.5],
+                ['day' => -7, 'kg' => 85.4],
+                ['day' => -5, 'kg' => 85.5],
+                ['day' => -3, 'kg' => 85.1],
+                ['day' => -2, 'kg' => 84.4],
             ],
         ],
 
@@ -451,6 +578,24 @@ return [
             'chat_session' => [
                 'topic' => 'Post-visit follow-up: Pre-op clearance and statin management',
             ],
+
+            'weight_series' => [
+                ['day' => -29, 'kg' => 118.8],
+                ['day' => -28, 'kg' => 118.7],
+                ['day' => -26, 'kg' => 118.9],
+                ['day' => -19, 'kg' => 119.4],
+                ['day' => -18, 'kg' => 118.6],
+                ['day' => -16, 'kg' => 119.6],
+                ['day' => -15, 'kg' => 118.9],
+                ['day' => -14, 'kg' => 119.4],
+                ['day' => -11, 'kg' => 119.4],
+                ['day' => -10, 'kg' => 118.9],
+                ['day' => -8, 'kg' => 118.7],
+                ['day' => -7, 'kg' => 119.5],
+                ['day' => -4, 'kg' => 119.4],
+                ['day' => -3, 'kg' => 118.9],
+                ['day' => -1, 'kg' => 118.5],
+            ],
         ],
 
         'bp-monitoring' => [
@@ -476,6 +621,24 @@ return [
             ],
             'chat_session' => [
                 'topic' => 'Post-visit follow-up: Blood pressure monitoring',
+            ],
+
+            'weight_series' => [
+                ['day' => -29, 'kg' => 88.1],
+                ['day' => -28, 'kg' => 88.6],
+                ['day' => -26, 'kg' => 87.8],
+                ['day' => -21, 'kg' => 88.2],
+                ['day' => -20, 'kg' => 87.7],
+                ['day' => -19, 'kg' => 87.9],
+                ['day' => -17, 'kg' => 88.1],
+                ['day' => -15, 'kg' => 87.7],
+                ['day' => -13, 'kg' => 88.2],
+                ['day' => -11, 'kg' => 88.0],
+                ['day' => -10, 'kg' => 88.5],
+                ['day' => -8, 'kg' => 87.7],
+                ['day' => -7, 'kg' => 88.5],
+                ['day' => -2, 'kg' => 87.6],
+                ['day' => -1, 'kg' => 87.4],
             ],
         ],
 

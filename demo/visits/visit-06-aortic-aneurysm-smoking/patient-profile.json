@@ -233,36 +233,276 @@
     }
   ],
   "vitals_timeline": [
-    {"date": "2026-01-12", "systolic": 142, "diastolic": 88, "heart_rate": 72, "spo2": 96},
-    {"date": "2026-01-13", "systolic": 138, "diastolic": 85, "heart_rate": 68, "spo2": 95},
-    {"date": "2026-01-14", "systolic": 146, "diastolic": 90, "heart_rate": 74, "spo2": 96},
-    {"date": "2026-01-15", "systolic": 140, "diastolic": 86, "heart_rate": 70, "spo2": 94},
-    {"date": "2026-01-16", "systolic": 148, "diastolic": 92, "heart_rate": 76, "spo2": 96},
-    {"date": "2026-01-17", "systolic": 135, "diastolic": 83, "heart_rate": 66, "spo2": 97},
-    {"date": "2026-01-18", "systolic": 144, "diastolic": 89, "heart_rate": 72, "spo2": 95},
-    {"date": "2026-01-19", "systolic": 150, "diastolic": 94, "heart_rate": 74, "spo2": 94},
-    {"date": "2026-01-20", "systolic": 139, "diastolic": 86, "heart_rate": 68, "spo2": 96},
-    {"date": "2026-01-21", "systolic": 143, "diastolic": 88, "heart_rate": 71, "spo2": 95},
-    {"date": "2026-01-22", "systolic": 136, "diastolic": 84, "heart_rate": 66, "spo2": 97},
-    {"date": "2026-01-23", "systolic": 147, "diastolic": 91, "heart_rate": 75, "spo2": 95},
-    {"date": "2026-01-24", "systolic": 141, "diastolic": 87, "heart_rate": 70, "spo2": 96},
-    {"date": "2026-01-25", "systolic": 152, "diastolic": 93, "heart_rate": 74, "spo2": 94},
-    {"date": "2026-01-26", "systolic": 138, "diastolic": 85, "heart_rate": 68, "spo2": 96},
-    {"date": "2026-01-27", "systolic": 145, "diastolic": 90, "heart_rate": 72, "spo2": 95},
-    {"date": "2026-01-28", "systolic": 137, "diastolic": 84, "heart_rate": 67, "spo2": 97},
-    {"date": "2026-01-29", "systolic": 149, "diastolic": 92, "heart_rate": 76, "spo2": 94},
-    {"date": "2026-01-30", "systolic": 140, "diastolic": 87, "heart_rate": 70, "spo2": 96},
-    {"date": "2026-01-31", "systolic": 146, "diastolic": 91, "heart_rate": 73, "spo2": 95},
-    {"date": "2026-02-01", "systolic": 135, "diastolic": 82, "heart_rate": 64, "spo2": 97},
-    {"date": "2026-02-02", "systolic": 143, "diastolic": 89, "heart_rate": 72, "spo2": 95},
-    {"date": "2026-02-03", "systolic": 148, "diastolic": 92, "heart_rate": 75, "spo2": 94},
-    {"date": "2026-02-04", "systolic": 137, "diastolic": 85, "heart_rate": 68, "spo2": 96},
-    {"date": "2026-02-05", "systolic": 144, "diastolic": 90, "heart_rate": 73, "spo2": 95},
-    {"date": "2026-02-06", "systolic": 151, "diastolic": 93, "heart_rate": 76, "spo2": 94},
-    {"date": "2026-02-07", "systolic": 139, "diastolic": 86, "heart_rate": 69, "spo2": 96},
-    {"date": "2026-02-08", "systolic": 145, "diastolic": 91, "heart_rate": 74, "spo2": 95},
-    {"date": "2026-02-09", "systolic": 136, "diastolic": 83, "heart_rate": 66, "spo2": 97},
-    {"date": "2026-02-10", "systolic": 142, "diastolic": 88, "heart_rate": 70, "spo2": 96}
+    {
+      "date": "2026-01-12",
+      "systolic": 142,
+      "diastolic": 88,
+      "heart_rate": 72,
+      "spo2": 96,
+      "hrv_sdnn": 33,
+      "sleep_hours": 6.6
+    },
+    {
+      "date": "2026-01-13",
+      "systolic": 138,
+      "diastolic": 85,
+      "heart_rate": 68,
+      "spo2": 95,
+      "hrv_sdnn": 37,
+      "sleep_hours": 5.9
+    },
+    {
+      "date": "2026-01-14",
+      "systolic": 146,
+      "diastolic": 90,
+      "heart_rate": 74,
+      "spo2": 96,
+      "hrv_sdnn": 43,
+      "sleep_hours": 6.5
+    },
+    {
+      "date": "2026-01-15",
+      "systolic": 140,
+      "diastolic": 86,
+      "heart_rate": 70,
+      "spo2": 94,
+      "hrv_sdnn": 42,
+      "sleep_hours": 6.5
+    },
+    {
+      "date": "2026-01-16",
+      "systolic": 148,
+      "diastolic": 92,
+      "heart_rate": 76,
+      "spo2": 96,
+      "hrv_sdnn": 32,
+      "sleep_hours": 5.8
+    },
+    {
+      "date": "2026-01-17",
+      "systolic": 135,
+      "diastolic": 83,
+      "heart_rate": 66,
+      "spo2": 97,
+      "hrv_sdnn": 33,
+      "sleep_hours": 6.5
+    },
+    {
+      "date": "2026-01-18",
+      "systolic": 144,
+      "diastolic": 89,
+      "heart_rate": 72,
+      "spo2": 95,
+      "hrv_sdnn": 40,
+      "sleep_hours": 6.5
+    },
+    {
+      "date": "2026-01-19",
+      "systolic": 150,
+      "diastolic": 94,
+      "heart_rate": 74,
+      "spo2": 94,
+      "hrv_sdnn": 33,
+      "sleep_hours": 6.3
+    },
+    {
+      "date": "2026-01-20",
+      "systolic": 139,
+      "diastolic": 86,
+      "heart_rate": 68,
+      "spo2": 96,
+      "hrv_sdnn": 30,
+      "sleep_hours": 6.1
+    },
+    {
+      "date": "2026-01-21",
+      "systolic": 143,
+      "diastolic": 88,
+      "heart_rate": 71,
+      "spo2": 95,
+      "hrv_sdnn": 30,
+      "sleep_hours": 7.0
+    },
+    {
+      "date": "2026-01-22",
+      "systolic": 136,
+      "diastolic": 84,
+      "heart_rate": 66,
+      "spo2": 97,
+      "hrv_sdnn": 35,
+      "sleep_hours": 6.7
+    },
+    {
+      "date": "2026-01-23",
+      "systolic": 147,
+      "diastolic": 91,
+      "heart_rate": 75,
+      "spo2": 95,
+      "hrv_sdnn": 32,
+      "sleep_hours": 6.2
+    },
+    {
+      "date": "2026-01-24",
+      "systolic": 141,
+      "diastolic": 87,
+      "heart_rate": 70,
+      "spo2": 96,
+      "hrv_sdnn": 42,
+      "sleep_hours": 7.1
+    },
+    {
+      "date": "2026-01-25",
+      "systolic": 152,
+      "diastolic": 93,
+      "heart_rate": 74,
+      "spo2": 94,
+      "hrv_sdnn": 33,
+      "sleep_hours": 7.0
+    },
+    {
+      "date": "2026-01-26",
+      "systolic": 138,
+      "diastolic": 85,
+      "heart_rate": 68,
+      "spo2": 96,
+      "hrv_sdnn": 36,
+      "sleep_hours": 6.9
+    },
+    {
+      "date": "2026-01-27",
+      "systolic": 145,
+      "diastolic": 90,
+      "heart_rate": 72,
+      "spo2": 95,
+      "hrv_sdnn": 34,
+      "sleep_hours": 6.9
+    },
+    {
+      "date": "2026-01-28",
+      "systolic": 137,
+      "diastolic": 84,
+      "heart_rate": 67,
+      "spo2": 97,
+      "hrv_sdnn": 29,
+      "sleep_hours": 6.0
+    },
+    {
+      "date": "2026-01-29",
+      "systolic": 149,
+      "diastolic": 92,
+      "heart_rate": 76,
+      "spo2": 94,
+      "hrv_sdnn": 39,
+      "sleep_hours": 6.8
+    },
+    {
+      "date": "2026-01-30",
+      "systolic": 140,
+      "diastolic": 87,
+      "heart_rate": 70,
+      "spo2": 96,
+      "hrv_sdnn": 42,
+      "sleep_hours": 6.8
+    },
+    {
+      "date": "2026-01-31",
+      "systolic": 146,
+      "diastolic": 91,
+      "heart_rate": 73,
+      "spo2": 95,
+      "hrv_sdnn": 36,
+      "sleep_hours": 6.1
+    },
+    {
+      "date": "2026-02-01",
+      "systolic": 135,
+      "diastolic": 82,
+      "heart_rate": 64,
+      "spo2": 97,
+      "hrv_sdnn": 32,
+      "sleep_hours": 6.2
+    },
+    {
+      "date": "2026-02-02",
+      "systolic": 143,
+      "diastolic": 89,
+      "heart_rate": 72,
+      "spo2": 95,
+      "hrv_sdnn": 30,
+      "sleep_hours": 6.9
+    },
+    {
+      "date": "2026-02-03",
+      "systolic": 148,
+      "diastolic": 92,
+      "heart_rate": 75,
+      "spo2": 94,
+      "hrv_sdnn": 36,
+      "sleep_hours": 6.0
+    },
+    {
+      "date": "2026-02-04",
+      "systolic": 137,
+      "diastolic": 85,
+      "heart_rate": 68,
+      "spo2": 96,
+      "hrv_sdnn": 43,
+      "sleep_hours": 6.2
+    },
+    {
+      "date": "2026-02-05",
+      "systolic": 144,
+      "diastolic": 90,
+      "heart_rate": 73,
+      "spo2": 95,
+      "hrv_sdnn": 36,
+      "sleep_hours": 6.0
+    },
+    {
+      "date": "2026-02-06",
+      "systolic": 151,
+      "diastolic": 93,
+      "heart_rate": 76,
+      "spo2": 94,
+      "hrv_sdnn": 35,
+      "sleep_hours": 6.3
+    },
+    {
+      "date": "2026-02-07",
+      "systolic": 139,
+      "diastolic": 86,
+      "heart_rate": 69,
+      "spo2": 96,
+      "hrv_sdnn": 37,
+      "sleep_hours": 6.9
+    },
+    {
+      "date": "2026-02-08",
+      "systolic": 145,
+      "diastolic": 91,
+      "heart_rate": 74,
+      "spo2": 95,
+      "hrv_sdnn": 37,
+      "sleep_hours": 6.2
+    },
+    {
+      "date": "2026-02-09",
+      "systolic": 136,
+      "diastolic": 83,
+      "heart_rate": 66,
+      "spo2": 97,
+      "hrv_sdnn": 45,
+      "sleep_hours": 6.3
+    },
+    {
+      "date": "2026-02-10",
+      "systolic": 142,
+      "diastolic": 88,
+      "heart_rate": 70,
+      "spo2": 96,
+      "hrv_sdnn": 39,
+      "sleep_hours": 7.0
+    }
   ],
   "upcoming": [
     {

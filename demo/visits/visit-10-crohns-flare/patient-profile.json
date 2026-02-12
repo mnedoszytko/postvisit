@@ -156,8 +156,24 @@
     }
   ],
   "vitals_timeline": [
-    {"date": "2026-02-10", "systolic": 108, "diastolic": 68, "heart_rate": 92, "spo2": 99},
-    {"date": "2026-02-11", "systolic": 110, "diastolic": 70, "heart_rate": 88, "spo2": 99}
+    {
+      "date": "2026-02-10",
+      "systolic": 108,
+      "diastolic": 68,
+      "heart_rate": 92,
+      "spo2": 99,
+      "hrv_sdnn": 47,
+      "sleep_hours": 7.4
+    },
+    {
+      "date": "2026-02-11",
+      "systolic": 110,
+      "diastolic": 70,
+      "heart_rate": 88,
+      "spo2": 99,
+      "hrv_sdnn": 45,
+      "sleep_hours": 6.7
+    }
   ],
   "upcoming": [
     {
