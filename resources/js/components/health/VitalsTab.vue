@@ -1,5 +1,23 @@
 <template>
   <div class="space-y-6">
+    <!-- Time Range Filter -->
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-gray-900">Vitals</h2>
+      <div class="flex gap-1 bg-gray-100 rounded-lg p-0.5">
+        <button
+          v-for="range in ranges"
+          :key="range.key"
+          class="px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
+          :class="selectedRange === range.key
+            ? 'bg-white text-emerald-700 shadow-sm'
+            : 'text-gray-500 hover:text-gray-700'"
+          @click="selectedRange = range.key"
+        >
+          {{ range.label }}
+        </button>
+      </div>
+    </div>
+
     <!-- Connected Devices -->
     <div v-if="deviceData" class="bg-white rounded-2xl border border-gray-200 p-5">
       <div class="flex items-center gap-3 mb-4">
@@ -30,38 +48,47 @@
     </div>
 
     <!-- BP Trend Chart -->
-    <div v-if="bpData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
-      <h2 class="font-semibold text-gray-900 mb-4">Blood Pressure Trend</h2>
+    <div v-if="bpFiltered.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-gray-900">Blood Pressure Trend</h2>
+        <span class="text-xs text-gray-400">{{ bpFiltered.length }} readings</span>
+      </div>
       <div class="h-64">
         <Line :data="bpChartData" :options="bpChartOptions" />
       </div>
     </div>
 
     <!-- HR Trend Chart -->
-    <div v-if="hrData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
-      <h2 class="font-semibold text-gray-900 mb-4">Heart Rate Trend</h2>
+    <div v-if="hrFiltered.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-gray-900">Heart Rate Trend</h2>
+        <span class="text-xs text-gray-400">{{ hrFiltered.length }} readings</span>
+      </div>
       <div class="h-64">
         <Line :data="hrChartData" :options="hrChartOptions" />
       </div>
     </div>
 
     <!-- Weight Trend Chart -->
-    <div v-if="weightData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
-      <h2 class="font-semibold text-gray-900 mb-4">Weight Trend</h2>
+    <div v-if="weightFiltered.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-gray-900">Weight Trend</h2>
+        <span class="text-xs text-gray-400">{{ weightFiltered.length }} readings</span>
+      </div>
       <div class="h-64">
         <Line :data="weightChartData" :options="weightChartOptions" />
       </div>
     </div>
 
     <!-- Empty state -->
-    <div v-if="!deviceData && bpData.length === 0 && hrData.length === 0 && weightData.length === 0" class="text-center py-12 text-gray-400">
-      No vitals data available yet.
+    <div v-if="!deviceData && bpFiltered.length === 0 && hrFiltered.length === 0 && weightFiltered.length === 0" class="text-center py-12 text-gray-400">
+      No vitals data available for this period.
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { Line } from 'vue-chartjs';
 import {
     Chart as ChartJS,
@@ -82,35 +109,62 @@ const props = defineProps({
     deviceData: { type: Object, default: null },
 });
 
-const bpData = computed(() =>
+// --- Time Range Filter ---
+const ranges = [
+    { key: '7d', label: '7D', days: 7 },
+    { key: '30d', label: '30D', days: 30 },
+    { key: '90d', label: '90D', days: 90 },
+    { key: '1y', label: '1Y', days: 365 },
+];
+
+const selectedRange = ref('30d');
+
+const cutoffDate = computed(() => {
+    const days = ranges.find(r => r.key === selectedRange.value)?.days ?? 30;
+    const d = new Date();
+    d.setDate(d.getDate() - days);
+    return d;
+});
+
+function filterByRange(items) {
+    return items.filter(o => new Date(o.effective_date) >= cutoffDate.value);
+}
+
+// --- Data filtered by code, then by time range ---
+const bpAll = computed(() =>
     props.observations
         .filter(o => o.code === '85354-9' && o.specialty_data?.systolic)
         .sort((a, b) => new Date(a.effective_date) - new Date(b.effective_date))
 );
 
-const hrData = computed(() =>
+const hrAll = computed(() =>
     props.observations
         .filter(o => o.code === '8867-4')
         .sort((a, b) => new Date(a.effective_date) - new Date(b.effective_date))
 );
 
-const weightData = computed(() =>
+const weightAll = computed(() =>
     props.observations
         .filter(o => o.code === '29463-7')
         .sort((a, b) => new Date(a.effective_date) - new Date(b.effective_date))
 );
+
+const bpFiltered = computed(() => filterByRange(bpAll.value));
+const hrFiltered = computed(() => filterByRange(hrAll.value));
+const weightFiltered = computed(() => filterByRange(weightAll.value));
 
 const todaySteps = computed(() => {
     if (!props.deviceData?.activity?.daily_steps?.length) return '\u2014';
     return props.deviceData.activity.daily_steps[0].steps.toLocaleString();
 });
 
+// --- Chart Data ---
 const bpChartData = computed(() => ({
-    labels: bpData.value.map(o => formatShortDate(o.effective_date)),
+    labels: bpFiltered.value.map(o => formatShortDate(o.effective_date)),
     datasets: [
         {
             label: 'Systolic',
-            data: bpData.value.map(o => o.specialty_data.systolic.value),
+            data: bpFiltered.value.map(o => o.specialty_data.systolic.value),
             borderColor: '#ef4444',
             backgroundColor: 'rgba(239,68,68,0.1)',
             fill: false,
@@ -119,7 +173,7 @@ const bpChartData = computed(() => ({
         },
         {
             label: 'Diastolic',
-            data: bpData.value.map(o => o.specialty_data.diastolic.value),
+            data: bpFiltered.value.map(o => o.specialty_data.diastolic.value),
             borderColor: '#3b82f6',
             backgroundColor: 'rgba(59,130,246,0.1)',
             fill: false,
@@ -142,10 +196,10 @@ const bpChartOptions = {
 };
 
 const hrChartData = computed(() => ({
-    labels: hrData.value.map(o => formatShortDate(o.effective_date)),
+    labels: hrFiltered.value.map(o => formatShortDate(o.effective_date)),
     datasets: [{
         label: 'Heart Rate',
-        data: hrData.value.map(o => parseFloat(o.value_quantity)),
+        data: hrFiltered.value.map(o => parseFloat(o.value_quantity)),
         borderColor: '#ef4444',
         backgroundColor: 'rgba(239,68,68,0.08)',
         fill: true,
@@ -164,10 +218,10 @@ const hrChartOptions = {
 };
 
 const weightChartData = computed(() => ({
-    labels: weightData.value.map(o => formatShortDate(o.effective_date)),
+    labels: weightFiltered.value.map(o => formatShortDate(o.effective_date)),
     datasets: [{
         label: 'Weight',
-        data: weightData.value.map(o => parseFloat(o.value_quantity)),
+        data: weightFiltered.value.map(o => parseFloat(o.value_quantity)),
         borderColor: '#8b5cf6',
         backgroundColor: 'rgba(139,92,246,0.08)',
         fill: true,
