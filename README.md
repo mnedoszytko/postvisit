@@ -4,6 +4,7 @@
 [![PHP](https://img.shields.io/badge/PHP-8.4-8892BF)]()
 [![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20)]()
 [![Vue](https://img.shields.io/badge/Vue-3-4FC08D)]()
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6)]()
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 **AI-powered post-visit care platform** that bridges the gap between what happens in the doctor's office and what happens after. Built for the [Claude AI Hackathon](https://anthropic.com) (Feb 10-16, 2026).

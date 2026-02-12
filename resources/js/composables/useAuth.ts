@@ -1,8 +1,17 @@
-import { computed } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 
-export function useAuth() {
+interface AuthReturn {
+    isAuthenticated: ComputedRef<boolean>;
+    isDoctor: ComputedRef<boolean>;
+    isPatient: ComputedRef<boolean>;
+    user: ComputedRef<Record<string, unknown> | null>;
+    requireAuth: () => boolean;
+    requireRole: (role: string) => boolean;
+}
+
+export function useAuth(): AuthReturn {
     const auth = useAuthStore();
     const router = useRouter();
 
@@ -11,7 +20,7 @@ export function useAuth() {
     const isPatient = computed(() => auth.isPatient);
     const user = computed(() => auth.user);
 
-    function requireAuth() {
+    function requireAuth(): boolean {
         if (!auth.isAuthenticated) {
             router.push({ name: 'login' });
             return false;
@@ -19,7 +28,7 @@ export function useAuth() {
         return true;
     }
 
-    function requireRole(role) {
+    function requireRole(role: string): boolean {
         if (!requireAuth()) return false;
         if (auth.user?.role !== role) {
             router.push({ name: 'landing' });

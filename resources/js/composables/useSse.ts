@@ -1,12 +1,20 @@
-import { ref, onScopeDispose } from 'vue';
+import { ref, onScopeDispose, type Ref } from 'vue';
 
-export function useSse() {
+interface SseReturn {
+    data: Ref<string>;
+    isStreaming: Ref<boolean>;
+    error: Ref<string | null>;
+    connect: (url: string) => void;
+    close: () => void;
+}
+
+export function useSse(): SseReturn {
     const data = ref('');
     const isStreaming = ref(false);
-    const error = ref(null);
-    let eventSource = null;
+    const error = ref<string | null>(null);
+    let eventSource: EventSource | null = null;
 
-    function connect(url) {
+    function connect(url: string): void {
         close();
         data.value = '';
         isStreaming.value = true;
@@ -14,7 +22,7 @@ export function useSse() {
 
         eventSource = new EventSource(url, { withCredentials: true });
 
-        eventSource.onmessage = (event) => {
+        eventSource.onmessage = (event: MessageEvent) => {
             if (event.data === '[DONE]') {
                 close();
                 return;
@@ -33,7 +41,7 @@ export function useSse() {
         };
     }
 
-    function close() {
+    function close(): void {
         if (eventSource) {
             eventSource.close();
             eventSource = null;

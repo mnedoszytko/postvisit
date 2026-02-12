@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "noEmit": true,
+    "paths": {
+      "@/*": ["./resources/js/*"]
+    },
+    "types": ["node"]
+  },
+  "include": [
+    "resources/js/**/*.ts",
+    "resources/js/**/*.vue"
+  ],
+  "exclude": ["node_modules"]
+}
