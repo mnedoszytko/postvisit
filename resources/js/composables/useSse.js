@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, onScopeDispose } from 'vue';
 
 export function useSse() {
     const data = ref('');
@@ -40,6 +40,8 @@ export function useSse() {
         }
         isStreaming.value = false;
     }
+
+    onScopeDispose(() => close());
 
     return { data, isStreaming, error, connect, close };
 }
