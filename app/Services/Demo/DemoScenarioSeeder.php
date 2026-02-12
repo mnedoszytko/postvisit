@@ -64,6 +64,7 @@ class DemoScenarioSeeder
         $this->createConditions($scenario['conditions'] ?? [], $patient, $visit, $doctorUser);
         $this->createMedicationsAndPrescriptions($scenario['medications'] ?? [], $patient, $practitioner, $visit, $doctorUser);
         $this->createObservations($scenario['observations'] ?? [], $patient, $visit, $practitioner, $doctorUser);
+        $this->createLabHistory($patient, $visit, $practitioner, $doctorUser);
         $this->createWeightSeries($scenario['weight_series'] ?? [], $patient, $practitioner, $doctorUser);
         $this->createVisitNote($scenario['visit_note'] ?? [], $visit, $patient, $practitioner);
         $this->createTranscript($scenario['transcript_file'] ?? null, $visit, $patient);
@@ -717,6 +718,123 @@ class DemoScenarioSeeder
                 'created_by' => $doctor->id,
             ]);
         }
+    }
+
+    /**
+     * Generate 3 historical readings per lab marker to enable trend charts.
+     *
+     * For each existing lab observation, creates readings at ~6mo, ~4mo, ~2mo ago.
+     * Trend direction is based on interpretation: HIGH values trend down (improving),
+     * LOW values trend up (improving), NORMAL values stay stable with small variance.
+     */
+    private function createLabHistory(Patient $patient, Visit $visit, Practitioner $practitioner, User $doctor): void
+    {
+        $labs = Observation::where('patient_id', $patient->id)
+            ->where('category', 'laboratory')
+            ->where('value_type', 'quantity')
+            ->whereNotNull('value_quantity')
+            ->get();
+
+        if ($labs->isEmpty()) {
+            return;
+        }
+
+        // Group by code, keep only one per code (the latest)
+        $byCode = $labs->groupBy('code')->map->last();
+
+        foreach ($byCode as $lab) {
+            $current = (float) $lab->value_quantity;
+            $refLow = (float) ($lab->reference_range_low ?? 0);
+            $refHigh = (float) ($lab->reference_range_high ?? $current * 1.5);
+            $interp = $lab->interpretation;
+
+            // Generate 3 historical values with realistic clinical trends
+            $historical = $this->generateHistoricalValues($current, $refLow, $refHigh, $interp);
+
+            $monthsAgo = [6, 4, 2];
+            foreach ($historical as $i => $value) {
+                $date = now()->subMonths($monthsAgo[$i]);
+                $histInterp = $this->interpretValue($value, $refLow, $refHigh);
+
+                Observation::create([
+                    'fhir_observation_id' => 'obs-hist-'.Str::uuid(),
+                    'patient_id' => $patient->id,
+                    'visit_id' => $visit->id,
+                    'practitioner_id' => $practitioner->id,
+                    'code_system' => $lab->code_system,
+                    'code' => $lab->code,
+                    'code_display' => $lab->code_display,
+                    'category' => 'laboratory',
+                    'status' => 'final',
+                    'value_type' => 'quantity',
+                    'value_quantity' => round($value, 1),
+                    'value_unit' => $lab->value_unit,
+                    'reference_range_low' => $lab->reference_range_low,
+                    'reference_range_high' => $lab->reference_range_high,
+                    'reference_range_text' => $lab->reference_range_text,
+                    'interpretation' => $histInterp,
+                    'effective_date' => $date->toDateString(),
+                    'issued_at' => $date,
+                    'created_by' => $doctor->id,
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Generate 3 plausible historical values trending toward the current value.
+     *
+     * @return array{0: float, 1: float, 2: float} Values at 6mo, 4mo, 2mo ago
+     */
+    private function generateHistoricalValues(float $current, float $refLow, float $refHigh, ?string $interp): array
+    {
+        $range = max($refHigh - $refLow, 1);
+
+        if ($interp === 'H') {
+            // HIGH: was even higher before, improving trend
+            $offset = $range * 0.15;
+
+            return [
+                $current + $offset * 3,  // 6mo: worst
+                $current + $offset * 2,  // 4mo: improving
+                $current + $offset,      // 2mo: closer to current
+            ];
+        }
+
+        if ($interp === 'L') {
+            // LOW: was even lower before, slowly improving
+            $offset = $range * 0.08;
+
+            return [
+                $current - $offset * 3,
+                $current - $offset * 2,
+                $current - $offset,
+            ];
+        }
+
+        // NORMAL: stable with small variance
+        $variance = $range * 0.05;
+
+        return [
+            $current + $variance * 0.5,
+            $current - $variance * 0.8,
+            $current + $variance * 0.3,
+        ];
+    }
+
+    /**
+     * Determine interpretation (H/L/N) based on value and reference range.
+     */
+    private function interpretValue(float $value, float $refLow, float $refHigh): string
+    {
+        if ($refHigh > 0 && $value > $refHigh) {
+            return 'H';
+        }
+        if ($refLow > 0 && $value < $refLow) {
+            return 'L';
+        }
+
+        return 'N';
     }
 
     private function createVisitNote(array $data, Visit $visit, Patient $patient, Practitioner $practitioner): void
