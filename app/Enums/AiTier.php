@@ -28,6 +28,13 @@ enum AiTier: string
 
     public function model(): string
     {
+        $override = config('anthropic.default_model');
+
+        // When ANTHROPIC_MODEL env is set, all tiers use that model (dev cost savings)
+        if ($override && $override !== 'claude-opus-4-6') {
+            return $override;
+        }
+
         return match ($this) {
             self::Good => 'claude-sonnet-4-5-20250929',
             self::Better, self::Opus46 => 'claude-opus-4-6',
