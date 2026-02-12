@@ -23,6 +23,7 @@ use App\Models\User;
 use App\Models\Visit;
 use App\Models\VisitNote;
 use App\Services\AI\TermExtractor;
+use App\Services\Guidelines\PmcClient;
 use App\Services\Medications\OpenFdaClient;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Cache;
@@ -813,8 +814,9 @@ class DemoSeeder extends Seeder
         // (PVC visit has hardcoded terms; HF and HTN need AI extraction)
         $this->extractMissingMedicalTerms();
 
-        // Pre-warm FDA safety cache for demo medications
+        // Pre-warm external API caches so chat never blocks on HTTP calls
         $this->warmFdaCache();
+        $this->warmPmcCache();
     }
 
     /**
@@ -899,6 +901,35 @@ class DemoSeeder extends Seeder
                 // Non-fatal — cache miss just means slower first chat request
                 Log::warning('DemoSeeder: FDA cache warm failed (non-fatal)', [
                     'medication' => $med->generic_name,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Pre-warm PMC Open Access guidelines cache.
+     *
+     * PMC BioC API calls can take 5-30s. Warming the cache during seeding
+     * ensures chat responses never block on these external HTTP calls.
+     */
+    private function warmPmcCache(): void
+    {
+        $pmcClient = app(PmcClient::class);
+
+        foreach (array_keys(PmcClient::GUIDELINE_IDS) as $key) {
+            $cacheKey = "pmc_guideline_{$key}";
+
+            if (Cache::has($cacheKey)) {
+                continue;
+            }
+
+            try {
+                $pmcClient->getGuideline($key);
+                Log::info("DemoSeeder: warmed PMC cache for {$key}");
+            } catch (\Throwable $e) {
+                Log::warning('DemoSeeder: PMC cache warm failed (non-fatal)', [
+                    'key' => $key,
                     'error' => $e->getMessage(),
                 ]);
             }

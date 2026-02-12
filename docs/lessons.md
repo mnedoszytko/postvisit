@@ -95,3 +95,22 @@ Every 3-5 iterations, we review and promote the most important takeaways to CLAU
   - `herd share` via Expose works because Expose is designed for Herd — it handles Host headers and SSL correctly.
 - **Free tier limits:** 60 minutes per session, random subdomain (no custom), EU Frankfurt server.
 - **Takeaway:** For testing any feature that requires phone access (QR codes, mobile pages, push notifications), use `herd share`. Remember to update and revert `APP_URL` — otherwise QR code URLs will point to the wrong domain.
+
+## 2026-02-12
+
+### Lesson 15: Anthropic PHP SDK (`anthropic-ai/sdk` v0.5.0) does NOT truly stream
+
+- **Bug:** AI chat responses appeared all at once after ~7s instead of streaming progressively token-by-token.
+- **Root cause:** The official Anthropic PHP SDK (`anthropic-ai/sdk`) uses PSR-18 HTTP client interface (`sendRequest()`), which **downloads the entire HTTP response body into memory** before returning. The SDK's `createStream()` method then iterates over this already-buffered data — creating the illusion of streaming, but all tokens arrive at once.
+- **Debugging path:** We systematically eliminated all other suspects:
+  1. Nginx buffering (`fastcgi_buffering off`) — NOT the cause
+  2. HTTP/2 frame aggregation (disabled entirely) — NOT the cause
+  3. EventSource vs fetch API — NOT the cause (server-side issue)
+  4. `curl --trace-time` directly to Anthropic API proved it streams progressively
+  5. `curl --trace-time` to PHP-FPM showed all data arriving in 1ms — buffered in PHP
+  6. SDK source code audit confirmed: `BaseClient::sendRequest()` → PSR-18 `$transporter->sendRequest($req)` downloads full body
+- **Fix:** Bypass the SDK for streaming calls. Use raw `curl_init()` with `CURLOPT_WRITEFUNCTION` callback (via `curl_multi` for generator compatibility). The callback receives data chunks the instant they arrive from the network.
+- **Implementation:** `AnthropicClient::rawCurlStream()` method using `curl_multi_init()` + `curl_multi_exec()` polling loop with SSE line parsing.
+- **Result:** Time to first token went from 7.2s to 1.8s. Tokens now stream progressively.
+- **Pattern:** When using PHP SDKs for streaming HTTP APIs, always verify the transport actually streams. PSR-18's `sendRequest()` is inherently non-streaming. PSR-7 `StreamInterface::read()` only helps if the stream was opened non-buffered — which PSR-18 clients typically don't do.
+- **Non-streaming methods (chat, chatWithThinking) still use the SDK** — only streaming endpoints were replaced with raw curl.

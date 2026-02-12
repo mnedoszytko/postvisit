@@ -100,9 +100,10 @@ class AnthropicClient
     }
 
     /**
-     * Send a streaming chat request and yield tokens.
+     * Send a streaming chat request and yield tokens progressively.
      *
-     * Retries only the initial connection — once streaming starts, chunks are not retried.
+     * Uses raw curl with curl_multi to bypass PSR-18 buffering in the SDK,
+     * delivering tokens to the caller the instant they arrive from the API.
      *
      * @param  string|array  $systemPrompt  String or array of TextBlockParam
      * @return Generator<string> Yields response text chunks
@@ -112,24 +113,22 @@ class AnthropicClient
         $model = $options['model'] ?? $this->defaultModel;
         $maxTokens = $options['max_tokens'] ?? 4096;
 
-        $stream = $this->withRetry('stream', fn () => $this->client->messages->createStream(
-            model: $model,
-            maxTokens: $maxTokens,
-            system: $systemPrompt,
-            messages: $messages,
-        ));
+        $body = [
+            'model' => $model,
+            'max_tokens' => $maxTokens,
+            'stream' => true,
+            'system' => $this->serializeSystemPrompt($systemPrompt),
+            'messages' => $messages,
+        ];
 
-        foreach ($stream as $event) {
-            if ($event->type === 'content_block_delta' && $event->delta->type === 'text_delta') {
-                yield $event->delta->text;
-            }
-        }
+        yield from $this->rawCurlStream($body, withThinking: false);
     }
 
     /**
-     * Stream with extended thinking. Yields typed chunks.
+     * Stream with extended thinking. Yields typed chunks progressively.
      *
-     * Retries only the initial connection — once streaming starts, chunks are not retried.
+     * Uses raw curl with curl_multi to bypass PSR-18 buffering in the SDK,
+     * delivering tokens to the caller the instant they arrive from the API.
      *
      * @param  string|array  $systemPrompt  String or array of TextBlockParam
      * @return Generator<array{type: string, content: string}> Yields thinking/text chunks
@@ -140,23 +139,149 @@ class AnthropicClient
         $maxTokens = $options['max_tokens'] ?? 16000;
         $budgetTokens = $options['budget_tokens'] ?? config('anthropic.thinking.chat_budget', 8000);
 
-        $stream = $this->withRetry('streamWithThinking', fn () => $this->client->messages->createStream(
-            model: $model,
-            maxTokens: $maxTokens,
-            system: $systemPrompt,
-            messages: $messages,
-            thinking: ThinkingConfigEnabled::with(budgetTokens: $budgetTokens),
-        ));
+        $body = [
+            'model' => $model,
+            'max_tokens' => $maxTokens,
+            'stream' => true,
+            'system' => $this->serializeSystemPrompt($systemPrompt),
+            'messages' => $messages,
+            'thinking' => ['type' => 'enabled', 'budget_tokens' => $budgetTokens],
+        ];
 
-        foreach ($stream as $event) {
-            if ($event->type === 'content_block_delta') {
-                if ($event->delta->type === 'thinking_delta') {
-                    yield ['type' => 'thinking', 'content' => $event->delta->thinking];
-                } elseif ($event->delta->type === 'text_delta') {
-                    yield ['type' => 'text', 'content' => $event->delta->text];
+        yield from $this->rawCurlStream($body, withThinking: true);
+    }
+
+    /**
+     * True progressive streaming via raw curl + curl_multi.
+     *
+     * The official SDK uses PSR-18 sendRequest() which downloads the entire
+     * response body before iterating. This method uses CURLOPT_WRITEFUNCTION
+     * with curl_multi_exec to yield SSE events the instant they arrive.
+     *
+     * @return Generator Yields string (text-only) or array{type, content} (with thinking)
+     */
+    private function rawCurlStream(array $body, bool $withThinking): Generator
+    {
+        $apiKey = config('anthropic.api_key');
+        $buffer = '';
+
+        $ch = curl_init('https://api.anthropic.com/v1/messages');
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'x-api-key: '.$apiKey,
+                'anthropic-version: 2023-06-01',
+                'Accept: text/event-stream',
+            ],
+            CURLOPT_POSTFIELDS => json_encode($body),
+            CURLOPT_RETURNTRANSFER => false,
+            CURLOPT_WRITEFUNCTION => function ($ch, $data) use (&$buffer) {
+                $buffer .= $data;
+
+                return strlen($data);
+            },
+        ]);
+
+        $mh = curl_multi_init();
+        curl_multi_add_handle($mh, $ch);
+
+        $running = null;
+        $httpError = null;
+
+        do {
+            curl_multi_exec($mh, $running);
+
+            // Parse complete SSE events from the buffer
+            while (($pos = strpos($buffer, "\n\n")) !== false) {
+                $chunk = substr($buffer, 0, $pos);
+                $buffer = substr($buffer, $pos + 2);
+
+                foreach (explode("\n", $chunk) as $line) {
+                    if (! str_starts_with($line, 'data: ')) {
+                        continue;
+                    }
+
+                    $payload = substr($line, 6);
+                    $decoded = json_decode($payload, true);
+
+                    if (! $decoded) {
+                        continue;
+                    }
+
+                    $type = $decoded['type'] ?? '';
+
+                    // Check for API errors (auth, rate limit, etc.)
+                    if ($type === 'error') {
+                        $errorMsg = $decoded['error']['message'] ?? 'Unknown API error';
+                        $httpError = $errorMsg;
+                        Log::error('Anthropic streaming API error', ['error' => $decoded['error'] ?? $decoded]);
+
+                        break 3; // Exit all loops
+                    }
+
+                    if ($type !== 'content_block_delta') {
+                        continue;
+                    }
+
+                    $deltaType = $decoded['delta']['type'] ?? '';
+
+                    if ($withThinking) {
+                        if ($deltaType === 'thinking_delta') {
+                            yield ['type' => 'thinking', 'content' => $decoded['delta']['thinking']];
+                        } elseif ($deltaType === 'text_delta') {
+                            yield ['type' => 'text', 'content' => $decoded['delta']['text']];
+                        }
+                    } else {
+                        if ($deltaType === 'text_delta') {
+                            yield $decoded['delta']['text'];
+                        }
+                    }
                 }
             }
+
+            if ($running) {
+                curl_multi_select($mh, 0.05);
+            }
+        } while ($running);
+
+        $curlError = curl_error($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_multi_remove_handle($mh, $ch);
+        curl_multi_close($mh);
+        curl_close($ch);
+
+        if ($curlError) {
+            Log::error('Anthropic raw stream curl error', ['error' => $curlError]);
+
+            throw new \RuntimeException("Anthropic API connection error: {$curlError}");
         }
+
+        if ($httpError) {
+            throw new \RuntimeException("Anthropic API error: {$httpError}");
+        }
+
+        if ($httpCode >= 400) {
+            Log::error('Anthropic raw stream HTTP error', ['code' => $httpCode, 'body' => substr($buffer, 0, 500)]);
+
+            throw new \RuntimeException("Anthropic API returned HTTP {$httpCode}");
+        }
+    }
+
+    /**
+     * Convert system prompt to API-compatible format.
+     *
+     * Handles both plain strings and TextBlockParam arrays (for cache control).
+     */
+    private function serializeSystemPrompt(string|array $systemPrompt): string|array
+    {
+        if (is_string($systemPrompt)) {
+            return $systemPrompt;
+        }
+
+        // Array of TextBlockParam objects — serialize to plain arrays
+        return array_map(fn ($block) => $block instanceof \JsonSerializable ? $block->jsonSerialize() : $block, $systemPrompt);
     }
 
     /**

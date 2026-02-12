@@ -19,6 +19,7 @@ class ChatTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private Visit $visit;
 
     protected function setUp(): void
@@ -62,7 +63,9 @@ class ChatTest extends TestCase
         // (saves AI message to DB and outputs SSE)
         ob_start();
         $response->baseResponse->sendContent();
-        ob_end_clean();
+        if (ob_get_level() > 0) {
+            ob_end_clean();
+        }
 
         // Verify database records
         $this->assertDatabaseHas('chat_messages', [

@@ -100,6 +100,11 @@ class QaAssistant
         if ($tier->thinkingEnabled() && $this->reasoningPipeline->shouldUseDeepReasoning($question)) {
             $visit->load(['patient', 'practitioner', 'visitNote', 'observations', 'conditions', 'prescriptions.medication', 'transcript']);
 
+            // Pre-assemble full context NOW while user sees "Loading clinical data..."
+            // This moves the expensive FDA/PMC/guidelines calls out of the plan→execute gap
+            yield ['type' => 'status', 'content' => 'Loading clinical guidelines...'];
+            $context = $this->contextAssembler->assembleForVisit($visit, 'qa-assistant');
+
             yield ['type' => 'status', 'content' => 'Deep clinical reasoning...'];
 
             // Build conversation history for the pipeline
@@ -115,7 +120,7 @@ class QaAssistant
                 ];
             }
 
-            yield from $this->reasoningPipeline->reason($visit, $historyMessages, $question);
+            yield from $this->reasoningPipeline->reason($visit, $historyMessages, $question, $context);
 
             return;
         }

@@ -25,17 +25,30 @@ class ExplainController extends Controller
 
         set_time_limit(0);
 
+        // Release session lock before streaming — prevents blocking concurrent requests
+        session()->save();
+
         return response()->stream(function () use ($visit, $validated) {
+            ignore_user_abort(true);
+
+            if (! headers_sent()) {
+                while (ob_get_level() > 0) {
+                    ob_end_flush();
+                }
+                @ini_set('zlib.output_compression', '0');
+                @ini_set('implicit_flush', '1');
+            }
+
             try {
                 foreach ($this->explainer->explain($visit, $validated['term'], $validated['context'] ?? null) as $chunk) {
-                    echo "data: " . json_encode(['text' => $chunk]) . "\n\n";
+                    echo 'data: '.json_encode(['text' => $chunk])."\n\n";
                     if (ob_get_level()) {
                         ob_flush();
                     }
                     flush();
                 }
             } catch (\Throwable $e) {
-                echo "data: " . json_encode(['text' => 'Unable to generate explanation at this time. Please try again.', 'error' => true]) . "\n\n";
+                echo 'data: '.json_encode(['text' => 'Unable to generate explanation at this time. Please try again.', 'error' => true])."\n\n";
                 if (ob_get_level()) {
                     ob_flush();
                 }
@@ -58,6 +71,7 @@ class ExplainController extends Controller
             'Cache-Control' => 'no-cache',
             'Connection' => 'keep-alive',
             'X-Accel-Buffering' => 'no',
+            'Content-Encoding' => 'none',
         ]);
     }
 }

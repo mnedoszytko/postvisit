@@ -62,7 +62,7 @@ class ClinicalReasoningPipeline
      *
      * @return Generator<array{type: string, content: string}> Yields phase/thinking/text chunks
      */
-    public function reason(Visit $visit, array $messages, string $question): Generator
+    public function reason(Visit $visit, array $messages, string $question, ?array $preAssembledContext = null): Generator
     {
         $tier = $this->tierManager->current();
         $startTime = microtime(true);
@@ -75,7 +75,18 @@ class ClinicalReasoningPipeline
         // --- Phase 1: Plan ---
         yield ['type' => 'phase', 'content' => 'planning'];
 
-        $plan = $this->plan($visit, $question, $tier);
+        $plan = ['text' => '', 'thinking' => ''];
+        foreach ($this->planStreaming($visit, $question, $tier) as $chunk) {
+            if ($chunk['type'] === 'thinking') {
+                $plan['thinking'] .= $chunk['content'];
+            } else {
+                $plan['text'] .= $chunk['content'];
+            }
+            // Forward thinking chunks to the client immediately
+            if ($chunk['type'] === 'thinking') {
+                yield $chunk;
+            }
+        }
 
         Log::info('ClinicalReasoningPipeline plan completed', [
             'visit_id' => $visit->id,
@@ -83,15 +94,11 @@ class ClinicalReasoningPipeline
             'thinking_length' => strlen($plan['thinking']),
         ]);
 
-        // Stream thinking from plan phase
-        if ($plan['thinking']) {
-            yield ['type' => 'thinking', 'content' => $plan['thinking']];
-        }
-
         // --- Phase 2: Execute ---
         yield ['type' => 'phase', 'content' => 'reasoning'];
 
-        $context = $this->contextAssembler->assembleForVisit($visit, 'qa-assistant');
+        // Use pre-assembled context (moved to QaAssistant to eliminate plan→execute gap)
+        $context = $preAssembledContext ?? $this->contextAssembler->assembleForVisit($visit, 'qa-assistant');
 
         // Inject the plan as guidance for the main response
         $augmentedMessages = $context['context_messages'];
@@ -152,11 +159,42 @@ class ClinicalReasoningPipeline
     }
 
     /**
-     * Phase 1: Plan which knowledge sources to consult.
+     * Phase 1: Plan which knowledge sources to consult (streaming).
+     *
+     * Streams thinking tokens to the client as they arrive instead of
+     * blocking until the entire plan is complete.
+     *
+     * @return Generator<array{type: string, content: string}>
+     */
+    private function planStreaming(Visit $visit, string $question, \App\Enums\AiTier $tier): Generator
+    {
+        [$systemPrompt, $messages, $options] = $this->buildPlanRequest($visit, $question, $tier);
+
+        yield from $this->client->streamWithThinking($systemPrompt, $messages, $options);
+    }
+
+    /**
+     * Phase 1 (legacy non-streaming): Plan which knowledge sources to consult.
      *
      * @return array{text: string, thinking: string}
      */
     private function plan(Visit $visit, string $question, \App\Enums\AiTier $tier): array
+    {
+        [$systemPrompt, $messages, $options] = $this->buildPlanRequest($visit, $question, $tier);
+        $result = $this->client->chatWithThinking($systemPrompt, $messages, $options);
+
+        return [
+            'text' => $result['text'],
+            'thinking' => $result['thinking'],
+        ];
+    }
+
+    /**
+     * Build the request parameters for the planning phase.
+     *
+     * @return array{0: string, 1: array, 2: array}
+     */
+    private function buildPlanRequest(Visit $visit, string $question, \App\Enums\AiTier $tier): array
     {
         $conditions = [];
         if ($visit->conditions) {
@@ -203,19 +241,14 @@ PROMPT;
             $planPrompt
         );
 
-        $result = $this->client->chatWithThinking(
+        return [
             'You are a clinical reasoning planner for a post-visit patient assistant.',
             [['role' => 'user', 'content' => $planPrompt]],
             [
                 'model' => $tier->model(),
                 'max_tokens' => 8000,
                 'budget_tokens' => min($tier->thinkingBudget('chat'), 6000),
-            ]
-        );
-
-        return [
-            'text' => $result['text'],
-            'thinking' => $result['thinking'],
+            ],
         ];
     }
 

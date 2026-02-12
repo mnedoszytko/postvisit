@@ -48,7 +48,22 @@ class ChatController extends Controller
         // AI streaming can take >30s with extended thinking — remove PHP time limit
         set_time_limit(0);
 
+        // Release session lock before streaming — prevents blocking concurrent requests
+        session()->save();
+
         return response()->stream(function () use ($session, $validated) {
+            // Allow streaming to continue even if client disconnects
+            ignore_user_abort(true);
+
+            // Disable PHP output buffering for true SSE streaming
+            if (! headers_sent()) {
+                while (ob_get_level() > 0) {
+                    ob_end_flush();
+                }
+                @ini_set('zlib.output_compression', '0');
+                @ini_set('implicit_flush', '1');
+            }
+
             $fullResponse = '';
             $thinkingContent = '';
 
@@ -128,6 +143,7 @@ class ChatController extends Controller
             'Cache-Control' => 'no-cache',
             'Connection' => 'keep-alive',
             'X-Accel-Buffering' => 'no',
+            'Content-Encoding' => 'none',
         ]);
     }
 
