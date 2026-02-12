@@ -1,9 +1,23 @@
 <template>
-  <div>
-    <!-- Photo -->
+  <div
+    @mouseenter="onHover"
+    @mouseleave="onLeave"
+  >
+    <!-- Photo / Animation -->
     <div class="aspect-square overflow-hidden bg-gray-200 relative">
+      <!-- Video: preloaded paused on 1st frame, plays on hover -->
+      <video
+        v-if="scenario.animation_url"
+        ref="videoEl"
+        :src="scenario.animation_url"
+        class="w-full h-full object-cover"
+        muted
+        playsinline
+        preload="auto"
+      />
+      <!-- Static photo fallback (no animation available) -->
       <img
-        v-if="scenario.photo_url"
+        v-else-if="scenario.photo_url"
         :src="scenario.photo_url"
         :alt="scenario.patient_name"
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -54,9 +68,25 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
 defineProps({
   scenario: { type: Object, required: true },
   index: { type: Number, required: true },
   starting: { type: Boolean, default: false },
 });
+
+const videoEl = ref(null);
+
+function onHover() {
+  if (!videoEl.value) return;
+  if (videoEl.value.ended) {
+    videoEl.value.currentTime = 0;
+  }
+  videoEl.value.play();
+}
+
+function onLeave() {
+  videoEl.value?.pause();
+}
 </script>

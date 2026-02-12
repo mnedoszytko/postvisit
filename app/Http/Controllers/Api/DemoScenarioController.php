@@ -44,6 +44,9 @@ class DemoScenarioController extends Controller
                             'language' => $demographics['preferred_language'],
                             'bmi' => $demographics['bmi'] ?? null,
                             'photo_url' => $hasPhoto ? "/api/v1/demo/scenarios/{$s['key']}/photo" : null,
+                            'animation_url' => file_exists(base_path($s['source_dir'].'/patient-animation.mp4'))
+                                ? "/api/v1/demo/scenarios/{$s['key']}/animation"
+                                : null,
                             'has_audio' => file_exists(base_path($s['source_dir'].'/dialogue-tts.mp3')),
                         ];
                     }
@@ -196,6 +199,36 @@ class DemoScenarioController extends Controller
 
         return response()->file($path, [
             'Content-Type' => 'image/png',
+            'Cache-Control' => 'public, max-age=86400',
+        ]);
+    }
+
+    /**
+     * Serve patient animation video for a scenario.
+     */
+    public function animation(string $scenario): BinaryFileResponse
+    {
+        $scenarios = config('demo-scenarios.scenarios');
+
+        if (! isset($scenarios[$scenario])) {
+            abort(404);
+        }
+
+        $s = $scenarios[$scenario];
+        $dir = $s['source_dir'] ?? $s['photo_dir'] ?? null;
+
+        if (! $dir) {
+            abort(404);
+        }
+
+        $path = base_path($dir.'/patient-animation.mp4');
+
+        if (! file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path, [
+            'Content-Type' => 'video/mp4',
             'Cache-Control' => 'public, max-age=86400',
         ]);
     }
