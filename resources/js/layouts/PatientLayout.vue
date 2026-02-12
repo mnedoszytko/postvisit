@@ -44,25 +44,25 @@
         <nav class="hidden md:flex items-center gap-4">
           <router-link
             to="/profile"
-            class="text-sm text-gray-600 hover:text-emerald-700 transition-colors"
+            :class="['text-sm transition-colors', isActive('/profile') ? 'text-emerald-700 font-semibold' : 'text-gray-600 hover:text-emerald-700']"
           >
             Profile
           </router-link>
           <router-link
             to="/health"
-            class="text-sm text-gray-600 hover:text-emerald-700 transition-colors"
+            :class="['text-sm transition-colors', isActive('/health') ? 'text-emerald-700 font-semibold' : 'text-gray-600 hover:text-emerald-700']"
           >
             My Health
           </router-link>
           <router-link
             to="/library"
-            class="text-sm text-gray-600 hover:text-emerald-700 transition-colors"
+            :class="['text-sm transition-colors', isActive('/library') ? 'text-emerald-700 font-semibold' : 'text-gray-600 hover:text-emerald-700']"
           >
-            Library
+            Reference
           </router-link>
           <router-link
             to="/scribe"
-            class="text-sm text-gray-600 hover:text-emerald-700 transition-colors flex items-center gap-1.5"
+            :class="['text-sm transition-colors flex items-center gap-1.5', isActive('/scribe') ? 'text-emerald-700 font-semibold' : 'text-gray-600 hover:text-emerald-700']"
           >
             <span class="relative flex h-2.5 w-2.5">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -144,28 +144,28 @@
           </div>
           <router-link
             to="/profile"
-            class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            :class="['block px-3 py-2 rounded-lg text-sm transition-colors', isActive('/profile') ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-gray-700 hover:bg-emerald-50 hover:text-emerald-700']"
             @click="mobileOpen = false"
           >
             Profile
           </router-link>
           <router-link
             to="/health"
-            class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            :class="['block px-3 py-2 rounded-lg text-sm transition-colors', isActive('/health') ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-gray-700 hover:bg-emerald-50 hover:text-emerald-700']"
             @click="mobileOpen = false"
           >
             My Health
           </router-link>
           <router-link
             to="/library"
-            class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            :class="['block px-3 py-2 rounded-lg text-sm transition-colors', isActive('/library') ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-gray-700 hover:bg-emerald-50 hover:text-emerald-700']"
             @click="mobileOpen = false"
           >
-            Library
+            Reference
           </router-link>
           <router-link
             to="/scribe"
-            class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            :class="['flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors', isActive('/scribe') ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-gray-700 hover:bg-emerald-50 hover:text-emerald-700']"
             @click="mobileOpen = false"
           >
             <span class="relative flex h-2.5 w-2.5">
@@ -224,6 +224,7 @@
       />
       <ChatPanel
         :visit-id="latestVisitId"
+        :initial-context="chatContext"
         :embedded="true"
         @close="chatOpen = false"
       />
@@ -249,6 +250,7 @@
         <div v-if="chatOpen" class="lg:hidden fixed inset-y-0 right-0 z-50 w-full sm:w-96 flex flex-col bg-white shadow-2xl border-l border-gray-200">
           <ChatPanel
             :visit-id="latestVisitId"
+            :initial-context="chatContext"
             :embedded="true"
             @close="chatOpen = false"
           />
@@ -268,7 +270,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, computed, provide, nextTick, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useVisitStore } from '@/stores/visit';
 import { useApi } from '@/composables/useApi';
@@ -290,9 +292,19 @@ const mobileOpen = ref(false);
 const dropdownOpen = ref(false);
 const switchingRole = ref(false);
 const chatOpen = ref(window.innerWidth >= 1024);
+const chatContext = ref('');
 const latestVisitId = ref(null);
 const chatWidth = ref(384); // default w-96
 const isResizing = ref(false);
+
+function openGlobalChat(context = '') {
+    chatContext.value = '';
+    nextTick(() => {
+        chatContext.value = context;
+        chatOpen.value = true;
+    });
+}
+provide('openGlobalChat', openGlobalChat);
 
 // Hide global chat on pages that have their own chat or where it doesn't make sense
 const hideChatRoutes = ['visit-view', 'meds-detail', 'companion-scribe', 'processing', 'feedback'];
@@ -389,6 +401,10 @@ async function switchToDoctor() {
     } catch {
         switchingRole.value = false;
     }
+}
+
+function isActive(path) {
+    return route.path === path || route.path.startsWith(path + '/');
 }
 
 async function handleLogout() {

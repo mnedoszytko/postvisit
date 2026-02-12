@@ -3,7 +3,7 @@
     <div class="space-y-6">
       <!-- Page header -->
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Medical Library</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Reference Library</h1>
         <p class="mt-1 text-sm text-gray-500">
           Evidence-based references and medical databases relevant to your care.
         </p>
@@ -55,10 +55,11 @@
                     </div>
                   </div>
                   <button
-                    class="shrink-0 text-xs text-emerald-600 hover:text-emerald-700 font-medium px-3 py-1.5 rounded-lg hover:bg-emerald-50 transition-colors"
-                    @click="searchCondition(cond.code_display)"
+                    class="shrink-0 inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 transition-colors"
+                    @click="openGlobalChat(`Tell me about my diagnosis: ${cond.code_display}`)"
                   >
-                    Look up
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" /></svg>
+                    Ask AI
                   </button>
                 </div>
                 <!-- Inline lookup result -->
@@ -98,10 +99,11 @@
                     <p v-if="rx.special_instructions" class="text-xs text-gray-400 mt-0.5">{{ rx.special_instructions }}</p>
                   </div>
                   <button
-                    class="shrink-0 text-xs text-emerald-600 hover:text-emerald-700 font-medium px-3 py-1.5 rounded-lg hover:bg-emerald-50 transition-colors"
-                    @click="lookupDrugLabel(rx)"
+                    class="shrink-0 inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 transition-colors"
+                    @click="openGlobalChat(`Tell me about my medication: ${rx.medication?.display_name || rx.medication?.generic_name}`)"
                   >
-                    Drug info
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" /></svg>
+                    Ask AI
                   </button>
                 </div>
                 <!-- Inline drug label -->
@@ -681,7 +683,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, computed, inject, onMounted, onUnmounted } from 'vue';
 import { useApi } from '@/composables/useApi';
 import { useAuthStore } from '@/stores/auth';
 import PatientLayout from '@/layouts/PatientLayout.vue';
@@ -713,6 +715,7 @@ interface Tab {
 
 const api = useApi();
 const auth = useAuthStore();
+const openGlobalChat = inject<(context: string) => void>('openGlobalChat', () => {});
 
 const tabs: Tab[] = [
     { id: 'relevant', label: 'Relevant for You' },
