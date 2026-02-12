@@ -57,29 +57,33 @@ Deadline: **15:00 EST**
 
 ## Landing — deploy & go live
 
-### 7. Production — deployed, secured, working
+### 7. Repository public
+- [ ] GitHub repo set to **Public** (judges must access code)
+- [ ] Verify repo URL works in incognito browser
+
+### 8. Production — deployed, secured, working
 - [ ] Deployed on Forge, HTTPS enforced, `APP_DEBUG=false`
 - [ ] Rate limiting on public endpoints
 - [ ] Bot protection active (Cloudflare WAF, `robots.txt`)
 - [ ] No debug/stack traces leaking in error responses
 - [ ] Remove IP whitelist / access restrictions — publicly accessible for judges
 
-### 8. Server — performance, data freshness
+### 9. Server — performance, data freshness
 - [ ] Pages load fast, AI chat streams within 2s
 - [ ] Demo data seeded and up to date
 - [ ] No 500 errors in logs
 - [ ] Queue worker running
 
-### 9. Cleanup — no dev artifacts, no doc duplicates
+### 10. Cleanup — no dev artifacts, no doc duplicates
 - [ ] Remove temp scripts, scratch files, agent worktree leftovers
 - [ ] No `console.log()` / `dd()` / `dump()` in production code
 - [ ] No duplicate or outdated docs
 - [ ] README concise and scannable
 - [ ] Markdown ratio < 20%
 
-### 10. Smoke test — full judge flow
+### 11. Smoke test — full judge flow
 - [ ] Try Demo → scenario → visit summary → tap term → AI chat → doctor dashboard
 
-### 11. Offline installation (Docker)
+### 12. Offline installation (Docker)
 - [ ] Verify `docker compose up` works from clean clone
 - [ ] App runs and demo flow works in Docker environment
