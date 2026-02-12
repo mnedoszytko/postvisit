@@ -297,6 +297,14 @@ Global axios interceptors that perform side effects (navigation, toasts) must ha
 2. **Deduplication** — parallel requests triggering the same error (e.g. 3 concurrent 401s) must show ONE toast, not N. Use timestamp-based cooldown (5s)
 3. **Scope awareness** — don't redirect to login from pages that don't require auth
 
+### TypeScript Policy (Frontend)
+- **All new frontend files MUST be TypeScript.** New Vue components use `<script setup lang="ts">`, new composables/stores/utilities use `.ts` extension.
+- **Opportunistic migration:** When making significant changes to an existing JS file (e.g. rewriting a component, adding major functionality), consider converting to TypeScript — but only if it's safe and won't break anything. A small bug fix is NOT a reason to convert the whole file.
+- **No forced migrations:** Do NOT do mass renames, bulk TS migrations, or convert files "just because". TypeScript adoption happens naturally when it makes sense.
+- **Framework compatibility first:** If adding types would require complex workarounds or risk breaking existing functionality, skip the conversion. Pragmatism over purity — working code beats typed code.
+- **Type strictness:** Use explicit types for component props (`defineProps<{ ... }>()`), store state, API responses, and service return values. Avoid `any` — prefer `unknown` with narrowing when the type is unclear.
+- **Shared types:** Place reusable types/interfaces in `resources/js/types/`. Keep type definitions close to where they're used when they're not shared.
+
 ### General Rules
 - NEVER hardcode data to resolve a problem — only if explicitly instructed by user
 - Never Co-Author commits with Claude Code as author
