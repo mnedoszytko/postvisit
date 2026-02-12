@@ -94,7 +94,7 @@
                 Start Recording
               </router-link>
             </div>
-            <VisitAttachments :visit-id="route.params.id" :terms="allMedicalTerms" @term-click="showTermPopover" />
+            <VisitAttachments :visit-id="route.params.id" :terms="allMedicalTerms" @term-click="showTermPopover" @ask-ai="(ctx) => openChat(`Attachment: ${ctx}`)" />
           </div>
 
           <!-- Visit sections (has content) -->
@@ -249,7 +249,7 @@
             </div>
 
             <!-- Patient Attachments -->
-            <VisitAttachments :visit-id="route.params.id" :terms="allMedicalTerms" @term-click="showTermPopover" />
+            <VisitAttachments :visit-id="route.params.id" :terms="allMedicalTerms" @term-click="showTermPopover" @ask-ai="(ctx) => openChat(`Attachment: ${ctx}`)" />
 
             <!-- AI-Extracted Entities (from transcript analysis) -->
             <div v-if="entities && Object.keys(entities).length" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">

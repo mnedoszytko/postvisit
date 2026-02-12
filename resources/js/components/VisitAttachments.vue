@@ -103,10 +103,11 @@
                 &middot; {{ formatDate(doc.document_date) }}
               </p>
             </div>
-            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="flex items-center gap-1">
+              <AskAiButton @ask="emit('ask-ai', doc.title)" />
               <a
                 :href="`/api/v1/documents/${doc.id}/download`"
-                class="p-1.5 text-gray-400 hover:text-emerald-600 transition-colors"
+                class="p-1.5 text-gray-400 hover:text-emerald-600 transition-colors opacity-0 group-hover:opacity-100"
                 title="Download"
               >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -114,7 +115,7 @@
                 </svg>
               </a>
               <button
-                class="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                class="p-1.5 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
                 title="Delete"
                 @click="deleteDocument(doc)"
               >
@@ -338,13 +339,14 @@ import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import { useApi } from '@/composables/useApi';
 import QrcodeVue from 'qrcode.vue';
 import HighlightedText from '@/components/HighlightedText.vue';
+import AskAiButton from '@/components/AskAiButton.vue';
 
 const props = defineProps({
     visitId: { type: String, required: true },
     terms: { type: Array, default: () => [] },
 });
 
-const emit = defineEmits(['term-click']);
+const emit = defineEmits(['term-click', 'ask-ai']);
 
 /**
  * Match visit-level medical terms against a given text string.
