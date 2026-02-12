@@ -103,10 +103,11 @@
                 &middot; {{ formatDate(doc.document_date) }}
               </p>
             </div>
-            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="flex items-center gap-1">
+              <AskAiButton @ask="emit('ask-ai', doc.title)" />
               <a
                 :href="`/api/v1/documents/${doc.id}/download`"
-                class="p-1.5 text-gray-400 hover:text-emerald-600 transition-colors"
+                class="p-1.5 text-gray-400 hover:text-emerald-600 transition-colors opacity-0 group-hover:opacity-100"
                 title="Download"
               >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -114,7 +115,7 @@
                 </svg>
               </a>
               <button
-                class="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                class="p-1.5 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
                 title="Delete"
                 @click="deleteDocument(doc)"
               >
@@ -247,8 +248,9 @@
         </div>
       </div>
 
-      <!-- Upload from phone button -->
+      <!-- Upload from phone (desktop: QR bridge, mobile: native camera/file picker) -->
       <button
+        v-if="!isMobile"
         class="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-dashed border-gray-300 rounded-xl text-sm text-gray-600 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
         @click="startQrUpload"
       >
@@ -257,6 +259,25 @@
         </svg>
         Upload from phone
       </button>
+      <button
+        v-else
+        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-dashed border-gray-300 rounded-xl text-sm text-gray-600 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
+        @click="triggerCameraInput"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+        </svg>
+        Take photo or choose file
+      </button>
+      <input
+        ref="cameraInput"
+        type="file"
+        class="hidden"
+        accept="image/*,.pdf"
+        capture="environment"
+        @change="handleCameraSelect"
+      />
 
       <!-- Empty state -->
       <p v-if="!pendingFiles.length && !documents.length" class="text-sm text-gray-400 text-center py-2">
@@ -318,13 +339,14 @@ import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import { useApi } from '@/composables/useApi';
 import QrcodeVue from 'qrcode.vue';
 import HighlightedText from '@/components/HighlightedText.vue';
+import AskAiButton from '@/components/AskAiButton.vue';
 
 const props = defineProps({
     visitId: { type: String, required: true },
     terms: { type: Array, default: () => [] },
 });
 
-const emit = defineEmits(['term-click']);
+const emit = defineEmits(['term-click', 'ask-ai']);
 
 /**
  * Match visit-level medical terms against a given text string.
@@ -378,7 +400,14 @@ const documents = ref([]);
 const uploading = ref(false);
 const dragOver = ref(false);
 const fileInput = ref(null);
+const cameraInput = ref(null);
 const pendingFiles = ref([]);
+
+const isMobile = computed(() => {
+    if (typeof navigator === 'undefined') return false;
+    return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        || (navigator.maxTouchPoints > 0 && window.innerWidth < 768);
+});
 const pollTimers = ref({});
 
 const qrModal = reactive({
@@ -396,6 +425,17 @@ function triggerFileInput() {
     if (!uploading.value) {
         fileInput.value?.click();
     }
+}
+
+function triggerCameraInput() {
+    if (!uploading.value) {
+        cameraInput.value?.click();
+    }
+}
+
+function handleCameraSelect(event) {
+    addFiles(event.target.files);
+    event.target.value = '';
 }
 
 function handleFileSelect(event) {

@@ -168,7 +168,7 @@
         </template>
       </div>
 
-      <!-- Tab: Ask AI (EBM) — OpenEvidence mockup -->
+      <!-- Tab: Ask (EBM) — OpenEvidence mockup -->
       <div v-if="activeTab === 'ask'" class="space-y-4">
         <!-- OpenEvidence powered search -->
         <div class="bg-white rounded-2xl border border-gray-200 p-4">
@@ -716,7 +716,7 @@ const auth = useAuthStore();
 
 const tabs: Tab[] = [
     { id: 'relevant', label: 'Relevant for You' },
-    { id: 'ask', label: 'Ask AI (EBM)' },
+    { id: 'ask', label: 'Ask (EBM)' },
     { id: 'search', label: 'Search Databases' },
     { id: 'my-library', label: 'My Library' },
 ];
@@ -782,7 +782,7 @@ async function lookupDrugLabel(rx: Prescription): Promise<void> {
     }
 }
 
-// --- Ask AI (OpenEvidence mockup) ---
+// --- Ask (OpenEvidence mockup) ---
 const oeQuery = ref<string>('');
 const oeLoading = ref<boolean>(false);
 const oeResult = ref<OeResult | null>(null);

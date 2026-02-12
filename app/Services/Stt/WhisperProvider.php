@@ -14,9 +14,9 @@ class WhisperProvider implements SpeechToTextProvider
 
     public function __construct()
     {
-        $this->apiKey = config('services.stt.whisper_api_key', env('OPENAI_API_KEY', ''));
-        $this->apiUrl = config('services.stt.whisper_api_url', 'https://api.openai.com/v1/audio/transcriptions');
-        $this->model = config('services.stt.whisper_model', 'whisper-1');
+        $this->apiKey = (string) (config('services.stt.whisper_api_key') ?? '');
+        $this->apiUrl = (string) (config('services.stt.whisper_api_url') ?? 'https://api.openai.com/v1/audio/transcriptions');
+        $this->model = (string) (config('services.stt.whisper_model') ?? 'whisper-1');
     }
 
     /**

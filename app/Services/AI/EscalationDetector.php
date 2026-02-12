@@ -41,8 +41,17 @@ class EscalationDetector
             return $keywordResult;
         }
 
-        // AI evaluation for nuanced detection
-        return $this->aiEvaluate($message, $visit);
+        // Skip AI evaluation — keyword check is sufficient for safety.
+        // AI evaluation adds 5-15s latency before first chat token streams.
+        // The aiEvaluate() method is kept intact for future background-check use.
+        return [
+            'is_urgent' => false,
+            'severity' => 'low',
+            'reason' => 'No critical keywords detected',
+            'trigger_phrases' => [],
+            'recommended_action' => 'No action needed',
+            'context_factors' => [],
+        ];
     }
 
     private function checkCriticalKeywords(string $message): array

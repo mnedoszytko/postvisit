@@ -37,7 +37,7 @@
     animation: send-glow 1.5s ease-out 1;
 }
 
-/* Chat panel flash when "Ask AI" is clicked */
+/* Chat panel flash when "Ask" is clicked */
 @keyframes chat-flash {
     0% { box-shadow: 0 0 20px 4px rgb(16 185 129 / 0.4); }
     50% { box-shadow: 0 0 12px 2px rgb(16 185 129 / 0.2); }

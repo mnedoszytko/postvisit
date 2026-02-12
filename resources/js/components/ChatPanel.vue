@@ -71,14 +71,91 @@
               : 'bg-gray-100 text-gray-800'
           ]"
         >
-          <!-- Streaming with thinking active -->
+          <!-- Phase 1: Initial thinking (before quick answer arrives) -->
           <ThinkingIndicator
-            v-if="msg.streaming && !msg.content"
+            v-if="msg.streaming && !msg.quickContent && !msg.content"
             :query="lastUserMessage"
             :thinking-active="msg.thinkingPhase"
           />
-          <StreamingMessage v-else-if="msg.streaming" :text="stripSources(msg.content)" />
-          <div v-else-if="msg.role === 'assistant'" class="prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
+
+          <!-- Phase 2: Quick answer streaming / displayed -->
+          <div v-else-if="msg.streaming && msg.quickContent && !msg.content">
+            <div class="flex items-center gap-1.5 mb-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-medium">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                </svg>
+                Let me think...
+              </span>
+            </div>
+            <StreamingMessage :text="msg.quickContent" />
+
+            <div v-if="msg.quickDone" class="mt-2 pt-2 border-t border-gray-200/60">
+              <DeepAnalysisIndicator
+                :status-text="msg.statusText"
+                :thinking="msg.thinking"
+                :thinking-active="msg.thinkingPhase"
+              />
+            </div>
+          </div>
+
+          <!-- Phase 3: Opus answer streaming (deep analysis in progress) -->
+          <div v-else-if="msg.streaming && msg.content">
+            <!-- Keep quick answer visible above -->
+            <div v-if="msg.quickContent" class="mb-3">
+              <div class="flex items-center gap-1.5 mb-1">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-200/60 text-gray-500 text-[10px] font-medium">
+                  <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  </svg>
+                  Let me think...
+                </span>
+              </div>
+              <div class="text-xs text-gray-500 leading-relaxed prose prose-sm max-w-none prose-p:text-gray-500 prose-strong:text-gray-500" v-html="renderMarkdown(msg.quickContent)" />
+            </div>
+            <!-- Opus answer on amber background -->
+            <div ref="opusAnswerEl" class="bg-amber-50/80 border border-amber-200/60 rounded-xl px-3 py-2.5 -mx-1">
+              <div class="flex items-center gap-1.5 mb-2">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-medium">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+                  </svg>
+                  Detailed clinical analysis
+                </span>
+              </div>
+              <StreamingMessage :text="stripSources(msg.content)" />
+            </div>
+          </div>
+
+          <!-- Phase 4: Completed message — keep quick + opus visible -->
+          <div v-else-if="msg.role === 'assistant'">
+            <!-- Quick answer stays visible (faded) -->
+            <div v-if="msg.quickContent" class="mb-3">
+              <div class="flex items-center gap-1.5 mb-1">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-200/60 text-gray-500 text-[10px] font-medium">
+                  <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  </svg>
+                  Let me think...
+                </span>
+              </div>
+              <div class="text-xs text-gray-500 leading-relaxed prose prose-sm max-w-none prose-p:text-gray-500 prose-strong:text-gray-500" v-html="renderMarkdown(msg.quickContent)" />
+            </div>
+            <!-- Full Opus answer on amber background -->
+            <div :class="msg.quickContent ? 'bg-amber-50/80 border border-amber-200/60 rounded-xl px-3 py-2.5 -mx-1' : ''">
+              <div v-if="msg.quickContent" class="flex items-center gap-1.5 mb-2">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-medium">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+                  </svg>
+                  Detailed clinical analysis
+                </span>
+              </div>
+              <div class="prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
+            </div>
+          </div>
+
+          <!-- User message -->
           <p v-else>{{ msg.content }}</p>
         </div>
         <!-- Source chips for completed assistant messages -->
@@ -86,34 +163,19 @@
           v-if="msg.role === 'assistant' && !msg.streaming && parseSources(msg.content).length"
           :sources="parseSources(msg.content)"
           class="mt-1.5"
+          @source-click="handleSourceClick"
         />
-        <!-- Collapsible AI Reasoning for completed messages with thinking -->
+        <!-- Powered by badge for completed assistant messages -->
         <div
-          v-if="msg.role === 'assistant' && !msg.streaming && msg.thinking"
-          class="mt-2"
+          v-if="msg.role === 'assistant' && !msg.streaming && msg.content"
+          class="mt-1.5 flex items-center gap-1"
         >
-          <button
-            class="flex items-center gap-1 text-xs text-amber-700 hover:text-amber-900 transition-colors"
-            @click="toggleThinking(i)"
-          >
-            <svg
-              class="w-3 h-3 transition-transform"
-              :class="{ 'rotate-90': expandedThinking[i] }"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 text-[9px] font-medium border border-amber-200/50">
+            <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
             </svg>
-            AI Reasoning
-          </button>
-          <div
-            v-if="expandedThinking[i]"
-            class="mt-1.5 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 max-h-48 overflow-y-auto"
-          >
-            <pre class="text-[11px] text-amber-900 font-mono whitespace-pre-wrap break-words leading-relaxed">{{ msg.thinking }}</pre>
-          </div>
+            Powered by Opus 4.6
+          </span>
         </div>
       </div>
     </div>
@@ -238,11 +300,14 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick, watch, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 import { useChatStore } from '@/stores/chat';
+import { useVisitStore } from '@/stores/visit';
 import { marked } from 'marked';
 import StreamingMessage from '@/components/StreamingMessage.vue';
 import ThinkingIndicator from '@/components/ThinkingIndicator.vue';
 import SourceChips from '@/components/SourceChips.vue';
+import DeepAnalysisIndicator from '@/components/DeepAnalysisIndicator.vue';
 
 marked.setOptions({ breaks: true, gfm: true });
 function renderMarkdown(text) {
@@ -264,6 +329,12 @@ function parseSources(text) {
         .filter(line => line.includes('|'))
         .map(line => {
             const [label, key] = line.split('|').map(s => s.trim());
+            // Add visit date to practitioner badge for clarity
+            if (key === 'practitioner' && visitStore.currentVisit?.started_at) {
+                const date = new Date(visitStore.currentVisit.started_at);
+                const formatted = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                return { label: `${label} · ${formatted}`, key };
+            }
             return { label, key };
         });
 }
@@ -277,13 +348,17 @@ const props = defineProps({
 
 defineEmits(['close']);
 
+const router = useRouter();
 const chatStore = useChatStore();
+const visitStore = useVisitStore();
 const message = ref('');
 const messagesContainer = ref(null);
 const expandedThinking = reactive({});
 const showContextMenu = ref(false);
 const sendButton = ref(null);
 const sendGlow = ref(false);
+const opusAnswerEl = ref(null);
+const hasScrolledToOpus = ref(false);
 
 const contextSources = reactive([
     { id: 'visit', label: 'Visit Notes', shortLabel: 'Visit', icon: '📋', description: 'SOAP notes, transcript', tokens: '~12K', selected: true },
@@ -381,6 +456,18 @@ const suggestedQuestions = computed(() => {
     return defaultSuggestions;
 });
 
+function handleSourceClick(source) {
+    const actions = {
+        visit_notes: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+        practitioner: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+        openfda: () => window.open('https://open.fda.gov', '_blank'),
+        guidelines: () => router.push({ name: 'medical-library' }),
+        patient_record: () => router.push({ name: 'health-dashboard' }),
+    };
+    const action = actions[source.key];
+    if (action) action();
+}
+
 function toggleThinking(index) {
     expandedThinking[index] = !expandedThinking[index];
 }
@@ -395,6 +482,7 @@ async function send() {
     const text = message.value;
     message.value = '';
     showContextMenu.value = false;
+    hasScrolledToOpus.value = false;
     const sources = selectedSources.value.map(s => s.id);
     await chatStore.sendMessage(props.visitId, text, sources);
     scrollToBottom();
@@ -408,7 +496,36 @@ function scrollToBottom() {
     });
 }
 
-watch(() => chatStore.messages, scrollToBottom, { deep: true });
+function scrollToOpusAnswer() {
+    nextTick(() => {
+        if (opusAnswerEl.value) {
+            opusAnswerEl.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            hasScrolledToOpus.value = true;
+        }
+    });
+}
+
+watch(() => chatStore.messages, () => {
+    const last = chatStore.messages[chatStore.messages.length - 1];
+    if (!last) return;
+
+    // When Opus content first appears and we haven't scrolled yet — scroll to its start
+    if (last.streaming && last.content && !hasScrolledToOpus.value) {
+        scrollToOpusAnswer();
+        return;
+    }
+
+    // When streaming finishes — scroll to Opus answer start
+    if (!last.streaming && last.deepReady && last.quickContent) {
+        scrollToOpusAnswer();
+        return;
+    }
+
+    // Default: scroll to bottom (for user messages, quick answer, etc.)
+    if (!hasScrolledToOpus.value) {
+        scrollToBottom();
+    }
+}, { deep: true });
 
 function triggerSendGlow() {
     sendGlow.value = false;

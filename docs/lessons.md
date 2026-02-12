@@ -3,7 +3,7 @@
 This file records mistakes made by Claude and corrections from the user.
 Every 3-5 iterations, we review and promote the most important takeaways to CLAUDE.md.
 
-**Last promotion:** 2026-02-11 — 16 lessons promoted to CLAUDE.md (Field Audit Rule, Ephemeral Data Protection, AI Output Validation, Demo Seeder Completeness, Axios Interceptor Safety).
+**Last promotion:** 2026-02-12 — 3 lessons promoted to CLAUDE.md (Worktree .env Configuration, AI Generation Cost Guard, No Real AI in Tests).
 
 ## 2026-02-10
 

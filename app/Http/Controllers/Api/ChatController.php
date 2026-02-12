@@ -59,7 +59,13 @@ class ChatController extends Controller
                         $type = $chunk['type'] ?? 'text';
                         $content = $chunk['content'] ?? '';
 
-                        if ($type === 'thinking') {
+                        if ($type === 'quick') {
+                            echo 'data: '.json_encode(['quick' => $content])."\n\n";
+                        } elseif ($type === 'quick_done') {
+                            echo 'data: '.json_encode(['quick_done' => true])."\n\n";
+                        } elseif ($type === 'status') {
+                            echo 'data: '.json_encode(['status' => $content])."\n\n";
+                        } elseif ($type === 'thinking') {
                             $thinkingContent .= $content;
                             echo 'data: '.json_encode(['thinking' => $content])."\n\n";
                         } elseif ($type === 'phase') {
@@ -110,6 +116,8 @@ class ChatController extends Controller
 
             ChatMessage::create($messageData);
 
+            // Signal that deep analysis is complete (for reveal transition)
+            echo 'data: '.json_encode(['deep_ready' => true])."\n\n";
             echo "data: [DONE]\n\n";
             if (ob_get_level()) {
                 ob_flush();
