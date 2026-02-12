@@ -1,0 +1,392 @@
+{
+    "chief_complaint": [
+        {
+            "term": "Intermittent chest pain",
+            "start": 0,
+            "end": 23,
+            "definition": "Chest pain that comes and goes rather than being constant. Your doctor is investigating whether this pain is related to your heart or has another cause."
+        },
+        {
+            "term": "bilateral hernia surgery",
+            "start": 72,
+            "end": 96,
+            "definition": "A surgical procedure to repair hernias on both sides of the body. A hernia occurs when an organ or tissue pushes through a weak spot in the surrounding muscle or tissue wall."
+        },
+        {
+            "term": "cardiac workup",
+            "start": 129,
+            "end": 143,
+            "definition": "A series of heart-related tests and evaluations used to check how well your heart is functioning and to look for potential heart problems."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "intermittent chest pain",
+            "start": 50,
+            "end": 73,
+            "definition": "Chest pain that comes and goes rather than being constant. Your doctor is working to determine whether this is related to your heart or another cause."
+        },
+        {
+            "term": "bilateral hernia repair surgery",
+            "start": 163,
+            "end": 194,
+            "definition": "A surgical operation to fix hernias on both sides of the body. A hernia is when tissue or an organ bulges through a weak area in the surrounding muscle wall."
+        },
+        {
+            "term": "general anesthesia",
+            "start": 211,
+            "end": 229,
+            "definition": "A type of anesthesia that puts you into a deep sleep during surgery so you don't feel pain or have awareness of the procedure."
+        },
+        {
+            "term": "knee arthroplasty",
+            "start": 250,
+            "end": 267,
+            "definition": "A surgical procedure to replace or repair a damaged knee joint, also known as knee replacement surgery. You had this done 7 weeks ago."
+        },
+        {
+            "term": "palpitations",
+            "start": 319,
+            "end": 331,
+            "definition": "A sensation of your heart beating too fast, fluttering, or skipping beats. You reported experiencing these after your hernia surgery."
+        },
+        {
+            "term": "cardiologist",
+            "start": 489,
+            "end": 501,
+            "definition": "A doctor who specializes in diagnosing and treating diseases and conditions of the heart and blood vessels."
+        },
+        {
+            "term": "carotid artery plaques",
+            "start": 531,
+            "end": 553,
+            "definition": "Buildup of fatty deposits (plaque) in the carotid arteries, which are the major blood vessels in your neck that supply blood to your brain. These plaques suggest you may have a tendency toward artery blockages elsewhere in your body."
+        },
+        {
+            "term": "cardiac function",
+            "start": 730,
+            "end": 746,
+            "definition": "How well your heart is pumping blood throughout your body. Your doctor noted you vaguely recall being told about a possible finding related to this in the past."
+        },
+        {
+            "term": "Diovan",
+            "start": 1061,
+            "end": 1067,
+            "definition": "A brand-name blood pressure medication (generic name: valsartan) that relaxes blood vessels to lower blood pressure. You previously took this but stopped on your own."
+        },
+        {
+            "term": "osteopathy",
+            "start": 1298,
+            "end": 1308,
+            "definition": "A form of hands-on therapy that focuses on treating the body's muscles, joints, and bones to improve overall function and relieve pain."
+        },
+        {
+            "term": "kinesitherapy",
+            "start": 1322,
+            "end": 1335,
+            "definition": "A type of physical therapy that uses movement and exercise to help rehabilitate the body after injury or surgery. You may be receiving this for your knee recovery."
+        },
+        {
+            "term": "post-operative knee rehabilitation",
+            "start": 1340,
+            "end": 1374,
+            "definition": "The recovery process after knee surgery that involves exercises and therapies to restore strength, flexibility, and function to the knee joint."
+        },
+        {
+            "term": "myocardial infarction",
+            "start": 1415,
+            "end": 1436,
+            "definition": "The medical term for a heart attack, which occurs when blood flow to part of the heart muscle is blocked. Your family has no history of this condition."
+        },
+        {
+            "term": "morphine",
+            "start": 1624,
+            "end": 1632,
+            "definition": "A strong prescription pain medication (an opioid) used to manage severe pain, such as after surgery. You mentioned taking this during your knee surgery hospitalization."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "Cardiovascular",
+            "start": 4,
+            "end": 18,
+            "definition": "Relating to the heart and blood vessels. This section reviews any symptoms involving your heart and circulation."
+        },
+        {
+            "term": "Intermittent chest pain",
+            "start": 22,
+            "end": 45,
+            "definition": "Chest pain that comes and goes. Yours is located in the center of your chest and is being evaluated to determine its cause."
+        },
+        {
+            "term": "palpitations",
+            "start": 68,
+            "end": 80,
+            "definition": "A sensation of your heart beating irregularly, too fast, or fluttering. You experienced these after your surgery."
+        },
+        {
+            "term": "Musculoskeletal",
+            "start": 98,
+            "end": 113,
+            "definition": "Relating to the muscles, bones, and joints of the body. This section reviews any pain or problems in these areas."
+        },
+        {
+            "term": "arthroplasty",
+            "start": 171,
+            "end": 183,
+            "definition": "A surgical procedure to repair or replace a damaged joint. You had a knee arthroplasty 7 weeks ago and are currently in rehabilitation."
+        },
+        {
+            "term": "Constitutional",
+            "start": 188,
+            "end": 202,
+            "definition": "A medical term referring to general body-wide symptoms such as weight changes, fatigue, or fever, rather than symptoms in one specific body part."
+        },
+        {
+            "term": "Respiratory",
+            "start": 277,
+            "end": 288,
+            "definition": "Relating to the lungs and breathing. No breathing problems were reported during this visit."
+        },
+        {
+            "term": "Gastrointestinal",
+            "start": 319,
+            "end": 335,
+            "definition": "Relating to the stomach and intestines (the digestive system). No digestive complaints were reported."
+        },
+        {
+            "term": "Neurological",
+            "start": 366,
+            "end": 378,
+            "definition": "Relating to the brain, spinal cord, and nerves. No nerve-related symptoms were reported."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "Echocardiogram",
+            "start": 2,
+            "end": 16,
+            "definition": "An ultrasound test of the heart that uses sound waves to create pictures showing how your heart's chambers and valves are working. Yours showed no significant problems today."
+        },
+        {
+            "term": "structural or functional abnormalities",
+            "start": 56,
+            "end": 94,
+            "definition": "Problems with the physical shape of the heart (structural) or how well it pumps and works (functional). Your echocardiogram did not reveal any of these issues."
+        },
+        {
+            "term": "Anthropometrics",
+            "start": 195,
+            "end": 210,
+            "definition": "Body measurements such as weight, height, and body mass index (BMI) used to assess overall health and nutritional status."
+        },
+        {
+            "term": "BMI",
+            "start": 232,
+            "end": 235,
+            "definition": "Body Mass Index — a number calculated from your weight and height that helps determine if you are at a healthy weight. A BMI of 35 falls into the Grade 2 obesity category."
+        },
+        {
+            "term": "Grade 2 obesity",
+            "start": 241,
+            "end": 256,
+            "definition": "A classification of obesity where BMI is between 35 and 39.9. This level of obesity significantly increases your risk for heart disease and other health problems."
+        },
+        {
+            "term": "acute distress",
+            "start": 295,
+            "end": 309,
+            "definition": "Visible signs of severe pain, difficulty breathing, or other urgent medical distress. Your doctor noted you were NOT in acute distress during this visit."
+        },
+        {
+            "term": "Blood pressure",
+            "start": 404,
+            "end": 418,
+            "definition": "The force of blood pushing against the walls of your arteries as your heart pumps. It is an important measure of heart and vascular health. Your blood pressure was not measured at this visit, but you report good values at home."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "Chest pain, unspecified",
+            "start": 5,
+            "end": 28,
+            "definition": "Chest pain for which the cause has not yet been determined. Your doctor is ordering further tests to find out whether the pain is related to your heart or another cause."
+        },
+        {
+            "term": "bilateral hernia surgery",
+            "start": 64,
+            "end": 88,
+            "definition": "Surgery to repair hernias on both sides of the body. Your chest pain started after this procedure, which is why your doctor is investigating a possible connection."
+        },
+        {
+            "term": "Echocardiogram",
+            "start": 90,
+            "end": 104,
+            "definition": "An ultrasound of the heart that produces images of the heart's structure and function. Yours showed no significant problems today."
+        },
+        {
+            "term": "Etiology",
+            "start": 147,
+            "end": 155,
+            "definition": "The underlying cause or origin of a disease or symptom. Your doctor is still working to determine the etiology of your chest pain."
+        },
+        {
+            "term": "carotid artery plaques",
+            "start": 287,
+            "end": 309,
+            "definition": "Fatty deposits built up in the carotid arteries in your neck. Because plaque in one artery can suggest plaque in other arteries, your doctor wants to check your coronary (heart) arteries as well."
+        },
+        {
+            "term": "coronary artery disease",
+            "start": 311,
+            "end": 334,
+            "definition": "A condition where the arteries that supply blood to the heart become narrowed or blocked by plaque buildup. Your doctor wants to rule this out as a possible cause of your chest pain."
+        },
+        {
+            "term": "Grade 2 obesity",
+            "start": 360,
+            "end": 375,
+            "definition": "A category of obesity defined by a BMI between 35 and 39.9. At your current weight of 95 kg with a BMI of 35, this is a significant risk factor for heart disease."
+        },
+        {
+            "term": "BMI",
+            "start": 382,
+            "end": 385,
+            "definition": "Body Mass Index — a measurement that uses your height and weight to estimate body fat. Your BMI of 35 places you in the Grade 2 obesity range."
+        },
+        {
+            "term": "cardiovascular risk factor",
+            "start": 417,
+            "end": 443,
+            "definition": "A condition or habit that increases your chance of developing heart or blood vessel disease. Your obesity is one such risk factor."
+        },
+        {
+            "term": "Hypertension",
+            "start": 471,
+            "end": 483,
+            "definition": "High blood pressure — a condition where the force of blood against your artery walls is consistently too high. Yours is currently controlled with medication."
+        },
+        {
+            "term": "antihypertensive medication",
+            "start": 514,
+            "end": 541,
+            "definition": "Medication used to lower high blood pressure. You are currently taking Belsar to keep your blood pressure under control."
+        },
+        {
+            "term": "cholesterol-lowering therapy",
+            "start": 678,
+            "end": 706,
+            "definition": "Medications (such as statins) used to lower cholesterol levels in the blood, which can help reduce plaque buildup in arteries. Your doctor noted this was not previously prescribed despite your carotid plaques."
+        },
+        {
+            "term": "atherosclerotic disease",
+            "start": 750,
+            "end": 773,
+            "definition": "A condition where arteries become narrowed and hardened due to plaque buildup on the artery walls. Your carotid plaques raise concern that this process may be happening in other arteries as well."
+        },
+        {
+            "term": "bilateral hernia repair",
+            "start": 793,
+            "end": 816,
+            "definition": "Surgical repair of hernias on both sides of the body, which you had performed about 4 months ago."
+        },
+        {
+            "term": "knee arthroplasty",
+            "start": 855,
+            "end": 872,
+            "definition": "Knee replacement surgery, which you had 7 weeks ago. You are currently undergoing rehabilitation to recover from this procedure."
+        }
+    ],
+    "plan": [
+        {
+            "term": "CT angiography",
+            "start": 5,
+            "end": 19,
+            "definition": "A special CT scan that uses contrast dye to create detailed images of your blood vessels, particularly the coronary arteries that supply your heart. This test will help determine if you have any blockages."
+        },
+        {
+            "term": "coronary artery disease",
+            "start": 46,
+            "end": 69,
+            "definition": "A condition where the arteries supplying blood to your heart become narrowed or blocked by plaque. Your doctor ordered the CT angiography to check for this condition."
+        },
+        {
+            "term": "carotid artery plaques",
+            "start": 88,
+            "end": 110,
+            "definition": "Fatty deposits in the arteries of your neck. Because you have these, your doctor is concerned you may also have plaque in the arteries of your heart."
+        },
+        {
+            "term": "chest pain",
+            "start": 126,
+            "end": 136,
+            "definition": "Pain felt in the chest area. Your persistent chest pain is one of the main reasons your doctor is ordering further testing."
+        },
+        {
+            "term": "radiology department",
+            "start": 173,
+            "end": 193,
+            "definition": "The department in the hospital where imaging tests such as CT scans, X-rays, and MRIs are performed. You need to schedule your CT angiography appointment there."
+        },
+        {
+            "term": "Cholesterol level testing",
+            "start": 212,
+            "end": 237,
+            "definition": "A blood test that measures the amount of cholesterol (a fatty substance) in your blood. High cholesterol contributes to plaque buildup in arteries."
+        },
+        {
+            "term": "lipid-lowering therapy",
+            "start": 303,
+            "end": 325,
+            "definition": "Medications designed to reduce the levels of fats (lipids), including cholesterol, in your blood. If your cholesterol is high, your doctor may start you on this type of treatment."
+        },
+        {
+            "term": "carotid plaques",
+            "start": 358,
+            "end": 373,
+            "definition": "Fatty deposits in the carotid arteries of your neck, which can indicate a higher risk of blockages in other arteries."
+        },
+        {
+            "term": "BMI",
+            "start": 459,
+            "end": 462,
+            "definition": "Body Mass Index — a measure of body fat based on your height and weight. Your BMI of 35 indicates Grade 2 obesity."
+        },
+        {
+            "term": "Grade 2 obesity",
+            "start": 470,
+            "end": 485,
+            "definition": "A classification of significant obesity with a BMI between 35 and 39.9 that substantially increases risk for heart disease and other conditions."
+        },
+        {
+            "term": "cardiovascular risk factor",
+            "start": 504,
+            "end": 530,
+            "definition": "Any condition that increases the likelihood of developing heart or blood vessel disease. Your weight is considered a significant cardiovascular risk factor."
+        },
+        {
+            "term": "Belsar 10 mg",
+            "start": 623,
+            "end": 635,
+            "definition": "A brand-name blood pressure medication (containing olmesartan) taken once daily to help keep your blood pressure at a healthy level. Your prescription was renewed at this visit."
+        },
+        {
+            "term": "blood pressure control",
+            "start": 648,
+            "end": 670,
+            "definition": "Keeping your blood pressure within a healthy range, typically through medication, diet, and lifestyle changes, to reduce the risk of heart attack, stroke, and other complications."
+        },
+        {
+            "term": "blood pressure monitoring",
+            "start": 728,
+            "end": 753,
+            "definition": "Regularly checking your blood pressure, which you are doing at home. This helps you and your doctor know if your medication is working well."
+        },
+        {
+            "term": "CT angiography",
+            "start": 5,
+            "end": 19,
+            "definition": "A specialized imaging test using contrast dye and CT technology to visualize your heart's blood vessels. Your follow-up visit is scheduled after these results are available."
+        }
+    ]
+}

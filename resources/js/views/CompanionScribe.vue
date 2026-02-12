@@ -12,15 +12,27 @@
         <div class="space-y-3">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Healthcare Provider</label>
-            <select
-              v-model="selectedPractitionerId"
-              class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
-            >
-              <option value="" disabled>Select your doctor...</option>
-              <option v-for="p in practitioners" :key="p.id" :value="p.id">
-                Dr. {{ p.first_name }} {{ p.last_name }} — {{ p.primary_specialty }}
-              </option>
-            </select>
+            <div class="flex items-center gap-2">
+              <select
+                v-model="selectedPractitionerId"
+                class="flex-1 rounded-xl border border-gray-300 px-3 py-2.5 text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
+              >
+                <option value="" disabled>Select your doctor...</option>
+                <option v-for="p in practitioners" :key="p.id" :value="p.id">
+                  Dr. {{ p.first_name }} {{ p.last_name }} — {{ p.primary_specialty }}
+                </option>
+              </select>
+              <button
+                type="button"
+                class="w-10 h-10 rounded-xl border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-emerald-600 transition-colors shrink-0"
+                title="Add new doctor"
+                @click="showAddDoctor = true"
+              >
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </button>
+            </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Visit Date</label>
@@ -120,6 +132,63 @@
         <p v-if="error" class="text-red-600 text-sm">{{ error }}</p>
       </div>
     </div>
+
+    <!-- Add Doctor Modal -->
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition duration-150 ease-in"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div v-if="showAddDoctor" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div class="absolute inset-0 bg-black/40" @click="showAddDoctor = false" />
+          <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-bold text-gray-900">Add Healthcare Provider</h2>
+              <button class="text-gray-400 hover:text-gray-600 text-xl" @click="showAddDoctor = false">&times;</button>
+            </div>
+
+            <div class="space-y-3">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <input v-model="newDoctor.first_name" type="text" placeholder="Lisa" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-emerald-500" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <input v-model="newDoctor.last_name" type="text" placeholder="Chen" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-emerald-500" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Specialty</label>
+                <input v-model="newDoctor.primary_specialty" type="text" placeholder="e.g. Cardiology, Family Medicine" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-emerald-500" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Degree <span class="text-gray-400 font-normal">(optional)</span></label>
+                <input v-model="newDoctor.medical_degree" type="text" placeholder="e.g. MD, DO" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-emerald-500" />
+              </div>
+            </div>
+
+            <p v-if="addDoctorError" class="text-red-600 text-sm">{{ addDoctorError }}</p>
+
+            <div class="flex gap-3 pt-1">
+              <button
+                class="flex-1 py-2.5 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                @click="showAddDoctor = false"
+              >Cancel</button>
+              <button
+                class="flex-1 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
+                :disabled="addingDoctor || !newDoctor.first_name || !newDoctor.last_name || !newDoctor.primary_specialty"
+                @click="addDoctor"
+              >{{ addingDoctor ? 'Adding...' : 'Add Doctor' }}</button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </PatientLayout>
 </template>
 
@@ -152,6 +221,29 @@ let demoRecordingTimer = null;
 const practitioners = ref([]);
 const selectedPractitionerId = ref('');
 const visitDate = ref(new Date().toISOString().slice(0, 10));
+
+// Add doctor modal
+const showAddDoctor = ref(false);
+const addingDoctor = ref(false);
+const addDoctorError = ref('');
+const newDoctor = ref({ first_name: '', last_name: '', primary_specialty: '', medical_degree: '' });
+
+async function addDoctor() {
+    addingDoctor.value = true;
+    addDoctorError.value = '';
+    try {
+        const { data } = await api.post('/practitioners', newDoctor.value);
+        const created = data.data;
+        practitioners.value.push(created);
+        selectedPractitionerId.value = created.id;
+        showAddDoctor.value = false;
+        newDoctor.value = { first_name: '', last_name: '', primary_specialty: '', medical_degree: '' };
+    } catch (err) {
+        addDoctorError.value = err.response?.data?.message || 'Failed to add doctor. Please try again.';
+    } finally {
+        addingDoctor.value = false;
+    }
+}
 
 const selectedPractitioner = computed(() =>
     practitioners.value.find(p => p.id === selectedPractitionerId.value) || null

@@ -1,0 +1,77 @@
+{
+    "clean_transcript": "Doctor: Alors, on se voit aujourd'hui pour une visite de suivi, c'est bien ça ? La fois passée, vous êtes venu en novembre et le problème c'était l'hypertension. Est-ce que vous avez mesuré la tension artérielle ?\nPatient: Oui.\nDoctor: Est-ce que vous pouvez me montrer le relevé ? Parfait. Génial. Alors, ici les valeurs sont un peu variables, quelque chose entre 130 et 155, mais je vois que la moyenne est bonne. Donc, vous avez mesuré la moyenne 138 sur 76, donc légèrement au-delà. Alors, quels sont les médicaments que vous prenez actuellement ?\nPatient: Donc, vous m'aviez prescrit du Copérindopril et du... J'ai un problème là, j'oublie. En fait, je les ai pris un petit peu et je me suis rendu compte que je ne me sentais pas bien avec ces médicaments. Je ne trouvais pas le sommeil et j'étais fort constipé.\nDoctor: Avec le Copérindopril ?\nPatient: Copérindopril et Bisoprolol.\nDoctor: Alors, la fois passée, je vous ai prescrit le Copérindopril et vous avez ressenti que vous étiez constipé et quoi ?\nPatient: Et des... je ne pouvais pas m'endormir.\nDoctor: Donc, trouble de sommeil. Et alors, vous avez arrêté ?\nPatient: Oui. Alors, je suis revenu aux médicaments précédents que mon médecin traitant m'a prescrit, c'est-à-dire le Biprésil. Donc, pendant toute cette période, c'est le résultat du Biprésil.\nDoctor: Donc, actuellement, vous prenez le Biprésil ?\nPatient: Eh bien, justement, je suis tombé à court il y a trois jours. Et alors, je me suis dit, je vais réessayer les deux autres puisque je les avais toujours. Mais il se fait malheureusement que j'ai des très grandes douleurs dans le bas du dos, des douleurs articulaires qui m'empêchent de dormir. Et donc, je ne sais même pas voir si... je ne sais pas comparer.\nDoctor: Est-ce que vous pouvez me dire quel médicament vous prenez actuellement ?\nPatient: Le Biprésil.\nDoctor: Biprésil ?\nPatient: Oui, sauf les trois derniers jours.\nDoctor: Sauf les trois derniers jours. Quelle dose de Biprésil ?\nPatient: Eh bien, celle que vous m'aviez prescrit à l'époque, c'est-à-dire un le matin.\nDoctor: Combien de milligrammes ?\nPatient: C'est 5 sur 10, c'est ce que j'avais avant. C'est sûr, je n'ai rien changé.\nDoctor: Et alors, rappelez-moi juste, on a changé le Biprésil avant à cause de quoi ?\nPatient: Si je me souviens bien, vous aviez trouvé que le résultat de baisse de tension n'était pas suffisant.\nDoctor: Voilà. Donc, les derniers trois jours, vous n'avez pas pris la tension aujourd'hui. Bon, elle est bien. Est-ce qu'il y a encore d'autres choses qu'on doit vérifier aujourd'hui ou c'est juste pour la tension ?\nPatient: C'est juste pour la tension. Comme je vous l'avais dit à l'origine, j'avais un autre problème qui était des arythmies cardiaques par moment. Et vous m'aviez justement dit que l'avantage du Biprésil, c'est qu'il y avait deux substances dont une pouvait résoudre ce problème-là aussi. Et c'est vrai que depuis que je prends du Biprésil, ça va beaucoup mieux.\nDoctor: OK. Est-ce que votre consommation d'alcool a changé ? Parce que la fois passée, vous avez noté que vous buvez un verre de vin par jour. C'est toujours le cas ?\nPatient: Oui.\nDoctor: Pas plus ?\nPatient: Non.\nDoctor: En fait, comme je vous l'ai expliqué, on ne peut pas boire tout le jour. C'est nocif pour le foie et pour d'autres organes. Quand je vois ici la tension artérielle, il me semble que c'est plus ou moins réglé. Juste une chose. [UNCLEAR — possible reference to another patient or referral at Sainte-Anne-de-Neve-Jambier and a mention of a persantine test]. Donc ici, ça va. Vous n'avez pas de douleurs dans la poitrine ?\nPatient: Non.\nDoctor: Je vous ai déjà demandé un Coroscan.\nPatient: Je sais que vous m'aviez prescrit des examens que j'avais faits ici à la clinique.\nDoctor: Oui, le scan coronaire. Il était fait et il était bien. C'était fait le [UNCLEAR — date inaudible].\nPatient: OK, voilà.\nDoctor: Donc ici, je ne vois pas d'autres problèmes. Donc vous continuez alors avec le Biprésil 5 sur 10. Et si l'autre médicament vous donne des effets secondaires, on note ça et comme ça, on ne va pas retourner à ça. Est-ce que vous avez besoin de quelque chose ?\nPatient: Une prescription pour le Biprésil.\nDoctor: 5 sur 10. Voilà, j'imprime. Est-ce que vous avez encore des questions ?\nPatient: Les tests, l'électrocardiogramme, tout est normal ? Il n'y a pas de crainte de quelque chose ?\nDoctor: Non, on a déjà fait un scanner coronaire, donc ça, c'est quelque chose qui nous rassure au niveau de votre artère du cœur. Le rapport d'hypertension. Donc mesurez de temps en temps et voyez un peu quelles sont les valeurs. Notez ça comme vous avez noté avant. C'est une bonne idée que vous avez une idée. Et au-delà de ça, vous continuez avec le même traitement. Je vous propose un suivi annuel.\nPatient: D'accord.\nDoctor: Ça va ? Donc je vous rencontre dans un an.\nPatient: Parfait.\nDoctor: Voilà, merci beaucoup alors.\nPatient: Merci.",
+    "speakers": {
+        "doctor": "Dr. Nedo",
+        "patient": "Patient"
+    },
+    "extracted_entities": {
+        "symptoms": [
+            "Insomnia \/ sleep disturbance (associated with copérindopril and bisoprolol)",
+            "Constipation (associated with copérindopril and bisoprolol)",
+            "Severe lower back pain (when retrying copérindopril and bisoprolol)",
+            "Joint pain preventing sleep (when retrying copérindopril and bisoprolol)",
+            "Intermittent cardiac arrhythmias (historical, improved on Biprésil)"
+        ],
+        "diagnoses": [
+            "Hypertension",
+            "Cardiac arrhythmias (intermittent)"
+        ],
+        "medications": [
+            {
+                "name": "Biprésil (combination antihypertensive)",
+                "dose": "5\/10 mg",
+                "frequency": "Once daily in the morning",
+                "route": "Oral",
+                "status": "continued"
+            },
+            {
+                "name": "Copérindopril (perindopril)",
+                "dose": "Not specified",
+                "frequency": "Not specified",
+                "route": "Oral",
+                "status": "discontinued"
+            },
+            {
+                "name": "Bisoprolol",
+                "dose": "Not specified",
+                "frequency": "Not specified",
+                "route": "Oral",
+                "status": "discontinued"
+            }
+        ],
+        "tests_ordered": [],
+        "test_results": [
+            "Coronary CT scan (Coroscan): Normal — performed previously at the clinic",
+            "ECG: Normal (referenced by patient, confirmed by doctor)",
+            "Home blood pressure monitoring: variable systolic 130–155 mmHg, average 138\/76 mmHg"
+        ],
+        "vitals": {
+            "blood_pressure_home_average": "138\/76 mmHg",
+            "blood_pressure_home_range_systolic": "130–155 mmHg",
+            "blood_pressure_in_office": "Within normal range (described as 'good')"
+        },
+        "allergies": [],
+        "procedures": []
+    },
+    "soap_note": {
+        "chief_complaint": "Follow-up visit for hypertension management, previously seen in November.",
+        "history_of_present_illness": "Patient returns for cardiology follow-up of hypertension. At the last visit in November, Dr. Nedo changed the patient's antihypertensive regimen from Biprésil 5\/10 to copérindopril and bisoprolol because blood pressure control on Biprésil was deemed insufficient.\n\nThe patient tried the new medications briefly but experienced significant constipation and insomnia, prompting him to discontinue them and resume Biprésil 5\/10 (originally prescribed by his general practitioner). He has been on Biprésil for most of the interval period. Home blood pressure readings during this time show variable systolic values between 130 and 155 mmHg with a recorded average of 138\/76 mmHg.\n\nThree days ago, the patient ran out of Biprésil and decided to retry copérindopril and bisoprolol. He subsequently developed severe lower back pain and joint pain interfering with sleep, making it difficult to assess whether the previous side effects recurred.\n\nThe patient also reports a history of intermittent cardiac arrhythmias, which have markedly improved since being on Biprésil. He attributes this to the dual-substance composition of the medication, one component of which the doctor had previously indicated could help with arrhythmias.\n\nAlcohol consumption remains unchanged at one glass of wine per day.\n\nA coronary CT scan was previously performed at the clinic and was normal.",
+        "review_of_systems": "- **Cardiovascular:** No chest pain. Intermittent cardiac arrhythmias — significantly improved on current medication.\n- **Gastrointestinal:** Constipation reported when taking copérindopril and bisoprolol; resolved after discontinuation.\n- **Neurological \/ Sleep:** Insomnia reported when taking copérindopril and bisoprolol; resolved after discontinuation.\n- **Musculoskeletal:** Severe lower back pain and joint pain over the last three days, coinciding with retrial of copérindopril and bisoprolol.",
+        "physical_exam": "- **Blood pressure (in-office):** Within acceptable range (described as 'good' by the clinician).\n- **Home blood pressure log reviewed:** Systolic range 130–155 mmHg; average 138\/76 mmHg — slightly above target.\n- **No additional physical examination findings documented.**",
+        "assessment": "1. **Hypertension** — Reasonably controlled on Biprésil 5\/10 mg, with home averages slightly above optimal but clinically acceptable. In-office blood pressure today is satisfactory.\n\n2. **Intermittent cardiac arrhythmias** — Markedly improved on Biprésil.\n\n3. **Intolerance to copérindopril and bisoprolol** — Documented adverse effects including constipation, insomnia, and possible lower back \/ joint pain. These medications will not be re-trialled.\n\n4. **Coronary artery disease screening** — Coronary CT scan previously normal; reassuring for coronary health.",
+        "plan": "1. **Continue Biprésil 5\/10 mg** — one tablet by mouth each morning. Prescription renewed and printed today.\n\n2. **Discontinue copérindopril and bisoprolol permanently** — side effects (constipation, insomnia, lower back pain, joint pain) documented to avoid future re-prescription.\n\n3. **Home blood pressure monitoring** — Patient to continue periodic measurements and record values in a log as previously done.\n\n4. **Alcohol counseling** — Reiterated that daily alcohol consumption is harmful to the liver and other organs. Patient currently drinks one glass of wine per day.\n\n5. **No new tests ordered** — Coronary CT scan and ECG previously normal; no additional cardiac investigations indicated at this time.\n\n6. **Follow-up** — Annual follow-up visit scheduled (approximately February 2027).",
+        "current_medications": "- **Biprésil 5\/10 mg** — 1 tablet orally each morning — Status: **continued** (prescription renewed)\n- **Copérindopril (perindopril)** — dose not specified — Status: **discontinued** (constipation, insomnia)\n- **Bisoprolol** — dose not specified — Status: **discontinued** (constipation, insomnia, possible musculoskeletal pain)"
+    },
+    "unclear_sections": [
+        {
+            "timestamp_or_location": "Mid-transcript, after alcohol discussion",
+            "original_text": "La dernière patiente, il a été déjà vu à Sainte-Anne-de-Neve-Jambier. Ça va, il s'avait demandé un passantine, mais il parait qu'il n'en avait pas.",
+            "reason": "Garbled speech-to-text output. Appears to reference another patient, a location (possibly Sainte-Anne or Namur region), and possibly a persantine\/dipyridamole stress test. Context and clinical relevance to this patient are unclear."
+        },
+        {
+            "timestamp_or_location": "Discussion of coronary CT scan date",
+            "original_text": "C'était fait le 32-5.",
+            "reason": "Date is unintelligible or incorrectly transcribed ('32-5' is not a valid date). Likely a speech-to-text artifact."
+        }
+    ]
+}

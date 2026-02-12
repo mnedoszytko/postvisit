@@ -1,0 +1,278 @@
+{
+    "chief_complaint": [
+        {
+            "term": "Pre-operative cardiology evaluation",
+            "start": 0,
+            "end": 35,
+            "definition": "A heart-related assessment done before surgery to make sure your heart is healthy enough to safely undergo the procedure."
+        },
+        {
+            "term": "gastric bypass surgery",
+            "start": 48,
+            "end": 70,
+            "definition": "A weight-loss surgery that changes how your stomach and small intestine handle food, helping you eat less and absorb fewer calories."
+        },
+        {
+            "term": "pre-surgical assessments",
+            "start": 152,
+            "end": 176,
+            "definition": "A series of medical tests and evaluations completed before surgery to ensure you are safe and ready for the procedure."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "cardiac clearance",
+            "start": 21,
+            "end": 38,
+            "definition": "A formal approval from a heart doctor confirming that your heart is healthy enough to safely undergo surgery."
+        },
+        {
+            "term": "gastric bypass procedure",
+            "start": 58,
+            "end": 82,
+            "definition": "A weight-loss operation that reroutes part of your digestive system so you eat less and absorb fewer calories."
+        },
+        {
+            "term": "pre-operative evaluations",
+            "start": 125,
+            "end": 150,
+            "definition": "Medical tests and check-ups done before surgery to identify any health risks that need to be addressed first."
+        },
+        {
+            "term": "chest pain",
+            "start": 228,
+            "end": 238,
+            "definition": "Any discomfort or pain felt in the chest area. Doctors ask about this before surgery to rule out heart problems."
+        },
+        {
+            "term": "shortness of breath",
+            "start": 248,
+            "end": 267,
+            "definition": "A feeling of not being able to get enough air. In your case, it is described as mild and is being evaluated to make sure it is not related to a heart condition."
+        },
+        {
+            "term": "analgesics",
+            "start": 364,
+            "end": 374,
+            "definition": "Medications used to relieve pain, commonly known as painkillers."
+        },
+        {
+            "term": "chronic knee pain",
+            "start": 408,
+            "end": 425,
+            "definition": "Long-lasting pain in the knee joints that has persisted over time."
+        },
+        {
+            "term": "osteoarthritis",
+            "start": 440,
+            "end": 454,
+            "definition": "A common joint condition where the protective cartilage that cushions the ends of your bones wears down over time, causing pain and stiffness. In your case, it affects your knees."
+        },
+        {
+            "term": "exercise stress test",
+            "start": 503,
+            "end": 523,
+            "definition": "A test where you exercise (usually on a treadmill) while your heart is monitored to see how well it handles physical activity. Your only discomfort during this test was knee pain, not heart-related symptoms."
+        },
+        {
+            "term": "cardiac disease",
+            "start": 565,
+            "end": 580,
+            "definition": "Any disease affecting the heart or blood vessels. Your family has no history of this, which is a favorable finding for your surgical evaluation."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "Cardiovascular",
+            "start": 4,
+            "end": 18,
+            "definition": "Relating to the heart and blood vessels. This section reviews any symptoms you may have involving your heart or circulation."
+        },
+        {
+            "term": "chest pain",
+            "start": 32,
+            "end": 42,
+            "definition": "Discomfort or pain in the chest area. You reported this occurs very rarely."
+        },
+        {
+            "term": "dyspnea on exertion",
+            "start": 49,
+            "end": 68,
+            "definition": "Difficulty breathing or feeling winded during physical activity. In your case, this is described as mild."
+        },
+        {
+            "term": "Respiratory",
+            "start": 73,
+            "end": 84,
+            "definition": "Relating to the lungs and breathing. No significant issues were noted in this area."
+        },
+        {
+            "term": "Musculoskeletal",
+            "start": 127,
+            "end": 142,
+            "definition": "Relating to muscles, bones, and joints. This section covers your chronic knee pain."
+        },
+        {
+            "term": "bilateral knee pain",
+            "start": 154,
+            "end": 173,
+            "definition": "Pain affecting both knees. 'Bilateral' means both sides of the body are involved."
+        },
+        {
+            "term": "osteoarthritis",
+            "start": 187,
+            "end": 201,
+            "definition": "A degenerative joint condition where cartilage breaks down, leading to pain and stiffness. This is the known cause of your knee pain."
+        },
+        {
+            "term": "exercise stress test",
+            "start": 231,
+            "end": 251,
+            "definition": "A test that monitors your heart while you exercise to check for heart problems. Your knee pain was the only discomfort experienced during this test."
+        },
+        {
+            "term": "Constitutional",
+            "start": 256,
+            "end": 270,
+            "definition": "General body symptoms such as fever, fatigue, or weight changes. No additional symptoms were reported in this category."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "BMI",
+            "start": 45,
+            "end": 48,
+            "definition": "Body Mass Index — a number calculated from your height and weight that helps determine if your weight is in a healthy range. Your BMI of approximately 33.1 places you in the Class I obesity category."
+        },
+        {
+            "term": "Class I obesity",
+            "start": 92,
+            "end": 107,
+            "definition": "A classification for a BMI between 30 and 34.9, indicating a level of excess body weight that can increase health risks. This is one reason gastric bypass surgery has been recommended for you."
+        },
+        {
+            "term": "Echocardiography",
+            "start": 114,
+            "end": 130,
+            "definition": "An ultrasound of the heart that uses sound waves to create images showing the heart's structure and how well it pumps blood. Your results were normal."
+        },
+        {
+            "term": "Exercise stress test",
+            "start": 176,
+            "end": 196,
+            "definition": "A test where you walk on a treadmill or pedal a bike while your heart rhythm, blood pressure, and breathing are monitored. It checks how your heart responds to physical effort."
+        },
+        {
+            "term": "épreuve d'effort",
+            "start": 198,
+            "end": 215,
+            "definition": "The French term for an exercise stress test — a test that evaluates your heart's function during physical activity."
+        },
+        {
+            "term": "osteoarthritis",
+            "start": 324,
+            "end": 338,
+            "definition": "A wear-and-tear joint condition causing pain and stiffness. Your knee pain during the stress test was attributed to this known condition, not to a heart problem."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "Pre-operative cardiology evaluation",
+            "start": 0,
+            "end": 35,
+            "definition": "A heart assessment performed before surgery to confirm that your heart is healthy enough for the planned operation."
+        },
+        {
+            "term": "gastric bypass surgery",
+            "start": 40,
+            "end": 62,
+            "definition": "A surgical weight-loss procedure that modifies your digestive system to help you lose weight."
+        },
+        {
+            "term": "obesity",
+            "start": 81,
+            "end": 88,
+            "definition": "A medical condition involving excess body fat that can increase the risk of health problems. Your BMI of approximately 33.1 qualifies as Class I obesity."
+        },
+        {
+            "term": "BMI",
+            "start": 90,
+            "end": 93,
+            "definition": "Body Mass Index — a measure of body fat based on your height and weight. A BMI of 33.1 falls in the obesity range."
+        },
+        {
+            "term": "Echocardiography",
+            "start": 112,
+            "end": 128,
+            "definition": "An ultrasound imaging test of the heart. Your results showed normal heart structure and function."
+        },
+        {
+            "term": "Exercise stress test",
+            "start": 139,
+            "end": 159,
+            "definition": "A test that monitors how your heart performs during physical activity. Your results were normal."
+        },
+        {
+            "term": "cardiovascular disease",
+            "start": 197,
+            "end": 219,
+            "definition": "Diseases that affect the heart or blood vessels, such as heart attacks or heart failure. No evidence of this was found in your evaluation."
+        },
+        {
+            "term": "cardiac contraindication",
+            "start": 225,
+            "end": 249,
+            "definition": "A heart-related reason that would make a surgery unsafe. None was found in your case, meaning your heart is considered safe for the planned surgery."
+        },
+        {
+            "term": "Osteoarthritis",
+            "start": 313,
+            "end": 327,
+            "definition": "A degenerative joint disease causing pain and stiffness due to breakdown of cartilage. Yours affects the knees and is noted as stable."
+        }
+    ],
+    "plan": [
+        {
+            "term": "Cardiac clearance",
+            "start": 5,
+            "end": 22,
+            "definition": "Official approval from the cardiologist that your heart is healthy enough for surgery. You have been granted this clearance."
+        },
+        {
+            "term": "cardiac contraindication",
+            "start": 37,
+            "end": 61,
+            "definition": "A heart condition that would make surgery too risky. None was identified in your evaluation."
+        },
+        {
+            "term": "gastric bypass surgery",
+            "start": 89,
+            "end": 111,
+            "definition": "The weight-loss surgery you are planning to have, which modifies your digestive system to help you lose weight."
+        },
+        {
+            "term": "analgesics",
+            "start": 308,
+            "end": 318,
+            "definition": "Pain-relieving medications, also known as painkillers. You reported past use of these."
+        },
+        {
+            "term": "cardiology follow-up",
+            "start": 396,
+            "end": 416,
+            "definition": "A future appointment with a heart doctor to check on your heart health. In your case, none is needed unless new heart symptoms develop."
+        },
+        {
+            "term": "cardiac symptoms",
+            "start": 450,
+            "end": 466,
+            "definition": "Signs or sensations that may indicate a heart problem, such as chest pain, palpitations, or severe shortness of breath. You should seek medical attention if any arise."
+        },
+        {
+            "term": "pre-operative assessments",
+            "start": 508,
+            "end": 533,
+            "definition": "Additional medical tests and evaluations that need to be completed before your surgery can be scheduled."
+        }
+    ]
+}

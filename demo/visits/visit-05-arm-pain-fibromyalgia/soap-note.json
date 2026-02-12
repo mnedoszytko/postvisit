@@ -1,0 +1,123 @@
+{
+    "clean_transcript": "Doctor: Bon, madame, donc dites-moi quelle est la raison de votre visite ? Oui, quelle est la raison de votre visite ?\nPatient: Oui, parce qu'il y a eu un... un douleur, quelque chose qui est venu ici dans mes bras, mais depuis déjà quelques mois qu'il a commencé et on ne savait pas les problèmes, c'est pour ça qu'on est venu.\nDoctor: Ok, la douleur a commencé il y a quelques mois, oui ?\nPatient: Oui, il y a quelques mois qu'il a commencé mais je ne sais pas tout le temps, mais il a commencé une fois, une fois par mois, moi maintenant c'est deux fois par mois et le douleur commence d'ici, comme quelque chose qu'elle a mangé et très fort comme ça, et elles sont ici à l'estomac. On ne savait pas du tout.\nDoctor: Donc la douleur arrive après que madame mange quelque chose ?\nPatient: Non, non, c'est déjà comme pour le sang, c'est quelque chose que je mange et c'est très fort, mais ce n'est pas apte à manger n'importe quel ordre.\nDoctor: Ok, est-ce que madame prend des médicaments ? Pour le stress, elle ne prend pas de [UNCLEAR: pantomètre] ?\nPatient: Elle ne prend pas de [UNCLEAR: pantomètre] ?\nDoctor: Oui.\nPatient: Ok.\nDoctor: Est-ce qu'il y a d'autres médicaments qu'elle prend ?\nPatient: Non, non, il y en a des fois de [UNCLEAR: gants d'alcool], mais pas tout le temps.\nDoctor: Sauf de fibromyalgie ?\nPatient: Oui, celle-là, oui.\nDoctor: Ok, bon écoutez, on fera quelques examens donc madame, elle peut enlever la blouse et s'installer ici sur le dos.\nPatient: Ok.\nDoctor: On fera rien pour le moment. Voilà, ça c'est parfait, maintenant tournez-vous vers le côté gauche s'il vous plaît. Gauche, ça c'est droite. Mettez la main droite ici, et la main gauche derrière la tête. Ok, maintenant on va faire des examens. Mettez la main droite ici, et la main gauche derrière la tête.\nDoctor: Donc la douleur n'est pas liée à l'effort ?\nPatient: La douleur n'est pas liée à l'effort. [UNCLEAR: Je suppose qu'elle est en train d'améliorer son effort.]\nDoctor: Je n'ai pas compris, donc la douleur est arrivée quand vous avez fait un effort ?\nPatient: Non, non, ça revient là. Même si elle était dans la douleur.\nDoctor: Ok. Madame, elle filme ?\nPatient: Non.\nDoctor: Ok, maintenant on va se rhabiller.\nDoctor: Est-ce qu'elle a fait une prise de sang récemment ? Elle est suivie par un médecin traitant ?\nPatient: Oui.\nDoctor: Ok, donc la prochaine fois n'oubliez pas quand vous faites une prise de sang de regarder les niveaux de cholestérol.\nDoctor: Donc là ici je ne vois rien au niveau de l'examen. Donc les douleurs ne sont pas typiques pour des problèmes du cœur. Madame elle a quand même une fibromyalgie et un problème aussi de colonne vertébrale, donc en toute probabilité c'est lié à ça. Donc je ne veux pas faire de tests supplémentaires ici, s'il n'y a pas d'autres facteurs de risque, je ne pense pas que ça vient du cœur.\nDoctor: Est-ce que vous avez des questions ?\nPatient: [No response]\nDoctor: Donc c'est probablement lié à fibromyalgie et problème de la colonne vertébrale. Ici madame elle a un problème de la colonne, il y a une protrusion de disque au niveau L4 et L5. Donc ça vous voyez avec le généraliste, mais je peux juste dire qu'à l'heure actuelle c'est le cas.\nDoctor: Le résultat sera envoyé vers votre médecin traitant. Merci beaucoup.\nPatient: Voilà, merci beaucoup et bonne journée.",
+    "speakers": {
+        "doctor": "Dr. Nedo",
+        "patient": "Patient (with accompanying companion\/interpreter)"
+    },
+    "extracted_entities": {
+        "symptoms": [
+            {
+                "description": "Arm pain (bilateral or unilateral, unspecified)",
+                "onset": "A few months ago",
+                "frequency": "Initially once per month, now twice per month",
+                "severity": "Described as very strong",
+                "relation_to_effort": "Not related to physical effort",
+                "relation_to_food": "Unclear — patient denies post-prandial trigger but description is ambiguous"
+            },
+            {
+                "description": "Epigastric\/stomach area pain component",
+                "onset": "Associated with arm pain episodes",
+                "notes": "Patient references pain radiating or present in the stomach area"
+            }
+        ],
+        "diagnoses": [
+            {
+                "name": "Non-cardiac chest\/arm pain",
+                "status": "current assessment",
+                "details": "Pain not typical for cardiac problems per Dr. Nedo"
+            },
+            {
+                "name": "Fibromyalgia",
+                "status": "pre-existing",
+                "details": "Known diagnosis, likely contributing to current symptoms"
+            },
+            {
+                "name": "Disc protrusion at L4-L5",
+                "status": "pre-existing",
+                "details": "Known spinal pathology, likely contributing to current symptoms"
+            }
+        ],
+        "medications": [
+            {
+                "name": "[UNCLEAR: 'pantomètre' — possibly pantoprazole or another medication]",
+                "dose": "Unknown",
+                "frequency": "Unknown",
+                "route": "Unknown",
+                "status": "continued",
+                "notes": "Doctor asked if patient takes this medication; confirmation is ambiguous"
+            },
+            {
+                "name": "[UNCLEAR: 'gants d'alcool' — possibly alcohol-based drops\/tincture]",
+                "dose": "Unknown",
+                "frequency": "Occasional — not taken regularly",
+                "route": "Unknown",
+                "status": "continued"
+            },
+            {
+                "name": "Fibromyalgia medication (unspecified)",
+                "dose": "Unknown",
+                "frequency": "Unknown",
+                "route": "Unknown",
+                "status": "continued",
+                "notes": "Patient confirms taking medication for fibromyalgia, specific name not stated"
+            }
+        ],
+        "tests_ordered": [
+            {
+                "name": "Cholesterol panel (lipid levels)",
+                "details": "To be checked at next blood draw with the general practitioner"
+            }
+        ],
+        "test_results": [
+            {
+                "name": "Cardiac examination (echocardiography)",
+                "result": "Normal — no abnormalities detected",
+                "details": "Patient positioned in left lateral decubitus; doctor found nothing on examination"
+            }
+        ],
+        "vitals": [],
+        "allergies": [],
+        "procedures": [
+            {
+                "name": "Cardiac examination \/ Echocardiography",
+                "details": "Performed during visit — patient positioned supine then in left lateral decubitus (right hand on chest, left hand behind head). No abnormalities found."
+            }
+        ]
+    },
+    "soap_note": {
+        "chief_complaint": "Arm pain of several months' duration, progressively increasing in frequency, referred for cardiology evaluation to rule out a cardiac cause.",
+        "history_of_present_illness": "The patient is a female presenting with pain in the arm(s) that began several months ago. The pain was initially occurring once per month and has now progressed to approximately twice per month. She describes the pain as very strong, with a sensation that also involves the epigastric\/stomach area.\n\nThe pain is not related to physical effort — it can occur at rest. The relationship to food intake is unclear; the patient appears to deny a direct post-prandial trigger, but the description is ambiguous due to communication difficulties.\n\nThe patient was unsure of the cause and sought evaluation. She is followed by a general practitioner.\n\nMedical history:\n- Fibromyalgia (on treatment, medication name unspecified)\n- Disc protrusion at L4-L5 (spinal column pathology)\n\nFamily history:\n- Not discussed\n\nSocial history:\n- Not discussed",
+        "review_of_systems": "Cardiovascular:\n- Arm pain — not typical anginal pattern, not exertional\n- No palpitations, syncope, or dyspnea reported\n\nGastrointestinal:\n- Epigastric discomfort associated with pain episodes\n- Unclear relationship to food intake\n\nMusculoskeletal:\n- Known fibromyalgia\n- Known lumbar disc protrusion (L4-L5)\n\nOther systems:\n- Not reviewed during this visit",
+        "physical_exam": "Cardiac examination performed with patient positioned supine and then in left lateral decubitus position (standard echocardiographic positioning).\n\nFindings:\n- No abnormalities detected on cardiac examination\n- Doctor states: \"I see nothing on the examination\"\n\nNote: No vitals were recorded or mentioned during the transcript.",
+        "assessment": "Non-cardiac arm and epigastric pain. The pain pattern is not typical for cardiac disease. No abnormalities found on cardiac examination.\n\nThe symptoms are most likely attributable to the patient's known pre-existing conditions:\n- Fibromyalgia\n- Lumbar disc protrusion at L4-L5\n\nNo additional cardiac risk factors were identified. The doctor does not believe the pain is of cardiac origin.",
+        "plan": "1. No additional cardiac tests ordered at this time, as the presentation is not consistent with a cardiac etiology and no significant risk factors were identified.\n\n2. Cholesterol levels to be checked at the next routine blood draw with the general practitioner.\n\n3. Patient advised to follow up with her general practitioner regarding the spinal column pathology (L4-L5 disc protrusion) and fibromyalgia management.\n\n4. Examination results to be sent to the patient's treating physician.\n\n5. Continue current medications (fibromyalgia treatment and other ongoing medications as prescribed by the general practitioner).",
+        "current_medications": "- [UNCLEAR: 'pantomètre'] — possibly pantoprazole or another medication; dose and frequency unknown; status: continued (ambiguous confirmation)\n- [UNCLEAR: 'gants d'alcool'] — possibly alcohol-based drops\/tincture; taken occasionally; status: continued\n- Fibromyalgia medication (name not specified) — dose and frequency unknown; status: continued"
+    },
+    "unclear_sections": [
+        {
+            "timestamp_or_context": "Doctor asking about medications: 'Pour le stress, elle ne prend pas de pantomètre?'",
+            "issue": "The word 'pantomètre' does not correspond to a known medication. Likely a speech-to-text artifact. Possible intended words: pantoprazole (proton pump inhibitor), propranolol (beta-blocker for stress\/anxiety), or another medication. The patient's confirmation ('Oui') is also ambiguous — it is unclear whether she confirms taking or not taking the medication.",
+            "original_text": "Pour le stress, elle ne prend pas de pantomètre? Elle ne prend pas de pantomètre? Oui"
+        },
+        {
+            "timestamp_or_context": "Patient describing other medications: 'il y en a des fois de gants d'alcool'",
+            "issue": "The phrase 'gants d'alcool' is not a recognizable medication or preparation. Possible intended meaning: 'gouttes d'alcool' (alcohol drops — an alcohol-based tincture or herbal preparation) taken occasionally. The exact substance is unknown.",
+            "original_text": "Non, non, il y en a des fois de gants d'alcool, mais pas tout le temps"
+        },
+        {
+            "timestamp_or_context": "Patient describing pain characteristics and food relationship",
+            "issue": "The patient's description of the pain and its relationship to food is difficult to follow, possibly due to a language barrier or a companion interpreting. The patient says 'c'est déjà comme pour le sang, c'est quelque chose que je mange et c'est très fort, mais ce n'est pas apte à manger n'importe quel ordre' — the meaning is unclear. It may suggest a burning sensation or a feeling as though something was eaten, rather than actual food-related pain.",
+            "original_text": "Non, non, c'est déjà comme pour le sang, c'est quelque chose que je mange et c'est très fort, mais ce n'est pas apte à manger n'importe quel ordre"
+        },
+        {
+            "timestamp_or_context": "Patient's statement about effort and pain",
+            "issue": "The phrase 'Je suppose qu'elle est en train d'améliorer son effort' is unclear and the doctor also states he did not understand. Likely a communication difficulty; the key confirmed fact is that the pain is NOT related to physical effort.",
+            "original_text": "Je suppose qu'elle est en train d'améliorer son effort"
+        },
+        {
+            "timestamp_or_context": "Companion\/interpreter presence",
+            "issue": "The transcript suggests a third party (companion or interpreter) is speaking on behalf of the patient at times, as evidenced by alternating use of first person ('je', 'mes bras') and third person ('elle a mangé', 'elle ne prend pas'). This may account for some communication ambiguity throughout the visit.",
+            "original_text": "Multiple instances throughout transcript"
+        }
+    ]
+}

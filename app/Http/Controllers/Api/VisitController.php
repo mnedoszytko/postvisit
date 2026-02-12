@@ -19,6 +19,22 @@ class VisitController extends Controller
         return response()->json(['data' => $practitioners]);
     }
 
+    public function storePractitioner(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'first_name' => ['required', 'string', 'max:100'],
+            'last_name' => ['required', 'string', 'max:100'],
+            'primary_specialty' => ['required', 'string', 'max:150'],
+            'medical_degree' => ['nullable', 'string', 'max:50'],
+        ]);
+
+        $validated['fhir_practitioner_id'] = 'Practitioner/'.\Illuminate\Support\Str::uuid();
+
+        $practitioner = Practitioner::create($validated);
+
+        return response()->json(['data' => $practitioner], 201);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([

@@ -1,0 +1,87 @@
+{
+    "clean_transcript": "Doctor: Dobrze, czy mogę pomóc? Jaki jest powód Pana wizyty?\nPatient: Właśnie ja mam problem z ciśnieniem, takie nierównomierne. I wcześniej byłem u kardiologa dwa, trzy miesiące wcześniej, przepisał mi lekarstwa. I później, podczas świąt, podskoczyło prawie do 200. I teraz tak unormowało się, ale chciałem sprawdzić jeszcze.\nDoctor: Co Pan bierze za leki aktualnie?\nPatient: Amlodypina piątka.\nDoctor: I to jest wszystko, tak?\nPatient: Tak. No i sprawdzam też tak samo rano, wieczorem. [UNCLEAR]\nDoctor: Dobrze, a niech Pan powie w takim razie, jak wyglądają wartości ciśnienia w domu. Ma Pan gdzieś to zapisane?\nPatient: Ja nie mam zapisane, ale mierzę i pamiętam. Także rano mierzę to 130, 137, 130 — w tych granicach — na 70, 80. A wieczorem tak troszeczkę wyżej, 140, 150 na 90.\nDoctor: A niech Pan mi powie, jak to wygląda w tej chwili, jeżeli chodzi o tą zmienność. Mówi Pan, że czasami Panu do 200 idzie — czy to jest często, czy rzadko?\nPatient: Nie, nie, nie, to tylko był raz. Raz tylko było, podczas świąt. Teraz wszystko unormowało się.\nDoctor: Czyli generalnie aktualnie ciśnienie jest stabilne, tak?\nPatient: Teraz jest stabilne, tak, tak, już cały czas jest stabilne. Ale że wziąłem wizytę już nie wiem, może miesiąc wcześniej, dlatego jestem, żeby jeszcze upewnić się. Normalnie teraz jest stabilne i normalnie nic nie dokucza.\nDoctor: A czy pali Pan papierosy?\nPatient: Nie.\nDoctor: Nigdy?\nPatient: Nie.\nDoctor: W rodzinie ktoś umarł z powodu serca?\nPatient: Nie umarł, ale moja mama ma problemy z sercem. Ona, jak pamiętam, ma cały czas z nadciśnieniem problemy. No i rodzeństwo tak samo też biorą lekarstwa.\nDoctor: Jak u Pana konsumpcja alkoholu wygląda?\nPatient: Od czasu do czasu. Nie piję dużo, ale zdarza się czasami.\nDoctor: Jakieś bóle w klatce piersiowej, duszności?\nPatient: Nie, nie ma.\nDoctor: Robił Pan jakieś badania krwi ostatnio?\nPatient: Badania krwi robiłem, tak, to było miesiąc wcześniej.\nDoctor: Coś tam niepokojącego w tych badaniach?\nPatient: Normalnie, chyba raczej nie.\nDoctor: Cholesterol?\nPatient: Cholesterol jest... [UNCLEAR]\nDoctor: Nie ma w ostatnich badaniach niestety nic. Jakieś z grudnia... Dobra, zrobimy echo serca. Proszę Pana zdjąć górę i się położyć tam na plecach, poproszę. Na plecy, i proszę się przekręcić na lewy bok. Lewą rękę proszę podłożyć pod głowę.\nDoctor: Kiedy Pan ostatnio był u kardiologa?\nPatient: To było może 3–4 miesiące wcześniej.\nDoctor: I gdzie Pan się leczył?\nPatient: To znaczy, ja się nie leczyłem, tylko byłem na wizytę, żeby sprawdzić. I to kardiolog Nowak, to też kardiolog. [UNCLEAR]\nDoctor: Dobrze, a doktor Nowak wspominała, że jest troszeczkę powiększony lewy przedsionek?\nPatient: Nie, nic o tym nie wspominała. Tylko przepisała te lekarstwo i to wszystko.\nDoctor: Dobra. [UNCLEAR] Dobra, więc tak. Ja tutaj nic szczególnego nie widzę. EKG wygląda dobrze. Zrobił Pan również próbę wysiłkową, która wypadła dobrze. Jeżeli Pan nie ma na co dzień bólu w klatce piersiowej, to ok. Natomiast ten cholesterol to raz na jakiś czas trzeba sprawdzać. A ciśnienie — jeżeli ono aktualnie jest stabilne — to nie będziemy zmieniać leków.\nPatient: To jeśli ono takie jest, jakie jest, to nie ma wielkiego zagrożenia?\nDoctor: No nie, jeżeli ono jest 130 rano, to wszystko ładnie wygląda. Tutaj dzisiaj miał Pan to ciśnienie dosyć duże — było ono 170 na 96 — więc pewno się Pan zestresował albo jest coś na rzeczy. Ale rozumiem, że dzisiaj rano Pan mierzył to ciśnienie?\nPatient: Tak, miałem też 130 i nawet przed przyjściem tutaj miałem 148.\nDoctor: A jakiego ciśnieniomierza Pan używa?\nPatient: No kupiłem taki profesjonalny urządzenie właśnie w aptece, pod poleceniem. Profesjonalny, miałem już drugi aparat, ale ten jest — on jest dobry.\nDoctor: Ok.\nPatient: A z tym ciśnieniem to też, bo właśnie doktor Nowak mówiła, żeby sprawdzać za trzecim razem. Rzeczywiście sprawdzam trzy razy, bo to trzecie jest najniższe — w tym poradzie.\nDoctor: Dobrze, no to wie Pan co? Możemy jeszcze jedną rzecz zrobić. Mogę Pana wysłać na coś takiego, co się nazywa monitoring ciśnienia 24 godziny, i wtedy będziemy na 100% pewni, że u Pana te leki są dobre. Dobra? Ja tylko pójdę po skierowanie, zaraz przyjdę.\nPatient: Dobra.\nDoctor: Ok, dobrze. No to tak. Dobra, to jest to. Niech Pan weźmie randewu w sekretariacie. I po wynikach proszę się pojawić jeszcze raz i wtedy Panu powiem, czy to leczenie kontynuujemy, czy nie. Dobra?\nPatient: Aha, ok. Wziąć randewu i on tam po skierowaniu dalej, tak?\nDoctor: Tak, dokładnie.\nPatient: Dziękuję bardzo.\nDoctor: No dobra, dziękuję. Z mojej strony wszystko. Wszystkiego dobrego.\nPatient: Dziękuję bardzo. Do widzenia.\nPatient: A co — chodzi tutaj, żeby się umówić na wizytę? To już muszę wziąć randewu teraz?\nDoctor: Najlepiej tak, bo mamy taki miesiąc ciśnienia tutaj, mniej więcej. Więc jak Pan weźmie już wizytę na ten — na ten ciśnieniomierz — to od razu niech Pan się umówi już na kolejną, dobra?\nPatient: Ok, dziękuję bardzo.\nDoctor: Dziękuję, do widzenia.",
+    "speakers": {
+        "doctor": "Dr. Nedo",
+        "patient": "Patient"
+    },
+    "extracted_entities": {
+        "symptoms": [
+            "Irregular\/uneven blood pressure (hypertension)",
+            "Blood pressure spike to ~200 mmHg (single episode during holidays)",
+            "Elevated in-office blood pressure (white coat effect suspected)"
+        ],
+        "diagnoses": [
+            "Arterial hypertension"
+        ],
+        "medications": [
+            {
+                "name": "Amlodipine",
+                "dose": "5 mg",
+                "frequency": "Not specified (presumed daily)",
+                "route": "Oral",
+                "status": "continued"
+            }
+        ],
+        "tests_ordered": [
+            "24-hour ambulatory blood pressure monitoring (ABPM)"
+        ],
+        "test_results": [
+            "Echocardiogram: No significant abnormalities",
+            "ECG: Normal",
+            "Exercise stress test: Normal (performed previously, results reviewed)",
+            "Blood work (~1 month prior): Patient reports nothing abnormal; cholesterol results unavailable\/unclear"
+        ],
+        "vitals": {
+            "blood_pressure_in_office": "170\/96 mmHg",
+            "blood_pressure_home_morning": "130–137\/70–80 mmHg",
+            "blood_pressure_home_evening": "140–150\/90 mmHg",
+            "blood_pressure_pre_visit": "148 mmHg systolic (diastolic not stated)"
+        },
+        "allergies": [],
+        "procedures": [
+            "Transthoracic echocardiogram (performed during visit)",
+            "ECG (performed during visit or reviewed)"
+        ]
+    },
+    "soap_note": {
+        "chief_complaint": "Patient presents for follow-up of blood pressure irregularity and to reassess current antihypertensive therapy after a hypertensive episode (BP ~200 mmHg) during the holiday period.",
+        "history_of_present_illness": "Male patient with a history of arterial hypertension, previously evaluated by cardiologist Dr. Nowak approximately 3–4 months ago, at which time antihypertensive medication was prescribed.\n\nThe patient reports a single episode of severely elevated blood pressure (approximately 200 mmHg systolic) during the holiday season. Since then, blood pressure has stabilized. The appointment was booked about a month prior as a precautionary follow-up.\n\nHome blood pressure readings:\n- Morning: 130–137\/70–80 mmHg\n- Evening: 140–150\/90 mmHg\n\nThe patient monitors blood pressure at home using a professional-grade device purchased at a pharmacy. Per Dr. Nowak's advice, he measures three times consecutively and takes the third (lowest) reading. Today before the visit, the patient measured 130 mmHg in the morning and 148 mmHg systolic just before arrival.\n\nThe patient denies any current symptoms of dizziness or other complaints.\n\nBlood work was performed approximately one month ago with reportedly unremarkable results. Cholesterol values were not available for review.\n\nSocial history:\n- Smoking: Never\n- Alcohol: Occasional, moderate consumption\n\nFamily history:\n- Mother: Chronic hypertension and cardiac problems\n- Siblings: On antihypertensive medications",
+        "review_of_systems": "- **Constitutional:** No complaints reported\n- **Cardiovascular:** No chest pain, no palpitations. Single episode of severely elevated blood pressure (~200 mmHg) during holidays, now resolved. No ongoing dizziness.\n- **Respiratory:** No dyspnea reported\n- **Other systems:** No additional symptoms reported",
+        "physical_exam": "- **Blood pressure (in-office):** 170\/96 mmHg (elevated; likely white coat hypertension vs. stress-related, given normal home readings)\n- **Echocardiogram:** No significant abnormalities detected. No mention of left atrial enlargement (previously asked about — Dr. Nowak had not mentioned it either).\n- **ECG:** Normal sinus rhythm, no abnormalities\n- **Exercise stress test:** Previously performed, results normal (reviewed during this visit)",
+        "assessment": "Arterial hypertension, currently well-controlled on home monitoring (morning 130–137\/70–80 mmHg), though with elevated in-office readings (170\/96 mmHg) suggestive of possible white coat hypertension or situational stress response.\n\nEchocardiogram and ECG are unremarkable. Prior exercise stress test was normal.\n\nThe single hypertensive crisis episode during the holidays appears isolated and has not recurred.\n\nCholesterol status is unknown — recent lab results were not available for review.",
+        "plan": "1. **24-hour ambulatory blood pressure monitoring (ABPM):** Referral issued to confirm adequacy of current blood pressure control and rule out white coat hypertension vs. sustained hypertension. Patient to schedule the ABPM appointment at the front desk.\n\n2. **Medication — no changes at this time:**\n   - Continue Amlodipine 5 mg daily. Final decision on whether to continue or adjust therapy will be made after ABPM results are available.\n\n3. **Cholesterol monitoring:** Patient advised to check cholesterol levels periodically. No recent values available — should be included in next blood work.\n\n4. **Follow-up appointment:** Patient to schedule a return visit after ABPM results are completed. Treatment plan will be reassessed at that time.\n\n5. **Home blood pressure monitoring:** Continue current routine (morning and evening measurements, three consecutive readings per Dr. Nowak's advice).",
+        "current_medications": "- Amlodipine 5 mg, oral, daily (presumed) — status: **continued** (originally prescribed by Dr. Nowak ~3–4 months ago; no changes made at this visit)"
+    },
+    "unclear_sections": [
+        {
+            "timestamp_approx": "Early in transcript",
+            "original_text": "Tam ledypina piątka",
+            "issue": "Speech-to-text artifact. 'Ledypina' is most likely 'Amlodypina' (Amlodipine) based on clinical context (calcium channel blocker, 5 mg dose, used for hypertension). Corrected to Amlodipine 5 mg."
+        },
+        {
+            "timestamp_approx": "Early in transcript",
+            "original_text": "No i sprawdzam też tak samo rano, wieczorem i w czerwcu",
+            "issue": "'w czerwcu' (in June) does not fit the context. Likely a speech-to-text error — the patient may have said 'w ogóle' (in general) or another phrase. Meaning unclear."
+        },
+        {
+            "timestamp_approx": "Mid-transcript, regarding cholesterol",
+            "original_text": "Cholesterol jest trzeci",
+            "issue": "Meaning unclear. Patient may have been referring to the third measurement, a value of 3 (mmol\/L), or the statement may be garbled. Cholesterol result could not be confirmed."
+        },
+        {
+            "timestamp_approx": "Mid-transcript",
+            "original_text": "Nazwałem wtedy",
+            "issue": "Sentence fragment, unclear meaning. Possibly garbled speech-to-text artifact related to the patient describing Dr. Nowak."
+        },
+        {
+            "timestamp_approx": "Mid-transcript, during echocardiogram",
+            "original_text": "Ja się upierdlę",
+            "issue": "Likely an audio artifact, background noise, or irrelevant muttering. Not medically relevant."
+        },
+        {
+            "timestamp_approx": "Mid-transcript",
+            "original_text": "moja mama ma cały czas z naciśnieniem prądu",
+            "issue": "'naciśnieniem prądu' is garbled. Most likely 'nadciśnieniem' (hypertension). Corrected in clean transcript."
+        }
+    ]
+}

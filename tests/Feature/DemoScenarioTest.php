@@ -220,6 +220,43 @@ class DemoScenarioTest extends TestCase
         ]);
     }
 
+    public function test_can_start_fibromyalgia_scenario(): void
+    {
+        $response = $this->postJson('/api/v1/demo/start-scenario', [
+            'scenario' => 'fibromyalgia',
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('data.user.role', 'patient')
+            ->assertJsonPath('data.scenario', 'fibromyalgia');
+
+        $this->assertDatabaseHas('patients', [
+            'first_name' => 'Fatima',
+            'last_name' => 'Benali',
+        ]);
+
+        // Verify conditions loaded (ICD-10 for fibromyalgia)
+        $this->assertDatabaseHas('conditions', [
+            'code' => 'M79.7',
+            'code_display' => 'Fibromyalgia',
+        ]);
+
+        // Verify non-numeric lab value (ANA = "negative") is stored correctly
+        $this->assertDatabaseHas('observations', [
+            'code' => '8060-1',
+            'code_display' => 'ANA',
+            'value_type' => 'string',
+            'value_string' => 'negative',
+        ]);
+
+        // Verify numeric lab values also work
+        $this->assertDatabaseHas('observations', [
+            'code' => '718-7',
+            'code_display' => 'Hemoglobin',
+            'value_type' => 'quantity',
+        ]);
+    }
+
     public function test_specialty_practitioners_are_separate_from_default_doctor(): void
     {
         $this->postJson('/api/v1/demo/start-scenario', ['scenario' => 'pvcs']);

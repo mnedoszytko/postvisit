@@ -2,7 +2,7 @@
   <PatientLayout>
     <div class="space-y-6">
       <!-- Profile header -->
-      <div class="bg-white rounded-2xl border border-gray-200 p-6 flex items-center gap-6">
+      <router-link to="/health" class="block bg-white rounded-2xl border border-gray-200 p-6 flex items-center gap-6 hover:border-emerald-300 hover:shadow-md transition-all duration-200 group cursor-pointer">
         <img
           v-if="auth.user?.photo_url"
           :src="auth.user.photo_url"
@@ -16,7 +16,8 @@
           <h1 class="text-2xl font-bold text-gray-900">{{ auth.user?.name || 'Patient' }}</h1>
           <p class="text-gray-500">{{ auth.user?.email }}</p>
         </div>
-      </div>
+        <svg class="w-5 h-5 ml-auto text-gray-300 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </router-link>
 
       <!-- Visit history -->
       <section>
@@ -84,8 +85,12 @@
       <!-- Record New Visit (primary action) -->
       <router-link
         to="/scribe"
-        class="block w-full text-center py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors"
+        class="flex items-center justify-center gap-2 w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors"
       >
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-300 opacity-60"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-red-400"></span>
+        </span>
         Record New Visit
       </router-link>
 

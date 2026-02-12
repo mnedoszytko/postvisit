@@ -1,0 +1,428 @@
+{
+    "chief_complaint": [
+        {
+            "term": "endocrinology",
+            "start": 21,
+            "end": 34,
+            "definition": "A branch of medicine that focuses on hormones and conditions like diabetes. You are seeing a specialist in this field for your diabetes care."
+        },
+        {
+            "term": "blood sugars",
+            "start": 68,
+            "end": 80,
+            "definition": "The amount of glucose (sugar) circulating in your bloodstream. Poorly controlled blood sugars mean the levels are frequently higher than the healthy range."
+        },
+        {
+            "term": "tingling",
+            "start": 95,
+            "end": 103,
+            "definition": "A pins-and-needles sensation, often a sign of nerve irritation or damage. In your case, this is occurring in your feet and may be related to your diabetes."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "type 2 diabetes mellitus",
+            "start": 42,
+            "end": 66,
+            "definition": "A chronic condition where your body doesn't use insulin properly, causing blood sugar levels to stay too high. This is the main condition being managed at this visit."
+        },
+        {
+            "term": "endocrinology",
+            "start": 92,
+            "end": 105,
+            "definition": "The specialty of medicine dealing with hormones and metabolism, including diabetes management."
+        },
+        {
+            "term": "fasting blood glucose",
+            "start": 147,
+            "end": 168,
+            "definition": "A measurement of your blood sugar level taken after not eating for several hours, usually overnight. It helps show how well your diabetes is being controlled."
+        },
+        {
+            "term": "mg\/dL",
+            "start": 225,
+            "end": 230,
+            "definition": "Milligrams per deciliter — a unit of measurement used for blood sugar and other lab tests. Your fasting readings of 170–180 mg\/dL are above the recommended range of around 80–130 mg\/dL."
+        },
+        {
+            "term": "oral diabetes medication",
+            "start": 290,
+            "end": 314,
+            "definition": "Diabetes medicines taken by mouth (as pills) to help lower blood sugar, as opposed to injectable medications like insulin."
+        },
+        {
+            "term": "insulin",
+            "start": 372,
+            "end": 379,
+            "definition": "A hormone that helps move sugar from your blood into your cells for energy. When your body can't make enough or use it well, you may need to inject insulin as a medication."
+        },
+        {
+            "term": "bilateral",
+            "start": 446,
+            "end": 455,
+            "definition": "Affecting both sides of the body. In your case, this means the tingling is happening in both feet."
+        },
+        {
+            "term": "diabetic peripheral neuropathy",
+            "start": 493,
+            "end": 523,
+            "definition": "Nerve damage in the hands or feet caused by long-term high blood sugar from diabetes. It often causes tingling, numbness, or pain, especially at night."
+        },
+        {
+            "term": "bilateral knee pain",
+            "start": 631,
+            "end": 650,
+            "definition": "Pain in both knees. This is limiting your ability to exercise, which is an important part of diabetes management."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "Endocrine\/Metabolic",
+            "start": 4,
+            "end": 23,
+            "definition": "Refers to your body's hormone and metabolism systems, including how your body processes sugar. This section reviews symptoms related to your diabetes."
+        },
+        {
+            "term": "fasting blood glucose",
+            "start": 48,
+            "end": 69,
+            "definition": "Your blood sugar level measured after not eating for several hours. Your readings of 170–180 mg\/dL are above the target range."
+        },
+        {
+            "term": "mg\/dL",
+            "start": 90,
+            "end": 95,
+            "definition": "Milligrams per deciliter — the unit used to measure blood sugar concentration."
+        },
+        {
+            "term": "Neurological",
+            "start": 119,
+            "end": 131,
+            "definition": "Relating to the nervous system, including the brain, spinal cord, and nerves throughout your body."
+        },
+        {
+            "term": "bilateral",
+            "start": 145,
+            "end": 154,
+            "definition": "Occurring on both sides of the body — here meaning both of your feet are affected."
+        },
+        {
+            "term": "paresthesias",
+            "start": 164,
+            "end": 176,
+            "definition": "Abnormal sensations like tingling, prickling, or numbness, often described as a 'pins and needles' feeling. This is what you're experiencing in your feet."
+        },
+        {
+            "term": "Musculoskeletal",
+            "start": 231,
+            "end": 246,
+            "definition": "Relating to your muscles, bones, and joints. This section notes your knee pain that limits your activity."
+        },
+        {
+            "term": "Bilateral knee pain",
+            "start": 250,
+            "end": 269,
+            "definition": "Pain affecting both knees, which is making it harder for you to stay physically active."
+        },
+        {
+            "term": "Constitutional",
+            "start": 302,
+            "end": 316,
+            "definition": "General body symptoms like fatigue, sleep problems, or weight changes that affect your overall well-being."
+        },
+        {
+            "term": "neuropathic symptoms",
+            "start": 351,
+            "end": 371,
+            "definition": "Symptoms caused by nerve damage, such as the tingling in your feet that is disrupting your sleep."
+        },
+        {
+            "term": "Genitourinary",
+            "start": 376,
+            "end": 389,
+            "definition": "Relating to the urinary system and reproductive organs. No issues were reported in this area."
+        },
+        {
+            "term": "Cardiovascular",
+            "start": 420,
+            "end": 434,
+            "definition": "Relating to your heart and blood vessels. No heart-related concerns were reported at this visit."
+        },
+        {
+            "term": "Gastrointestinal",
+            "start": 465,
+            "end": 481,
+            "definition": "Relating to your digestive system, including the stomach and intestines. No digestive issues were reported."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "BMI",
+            "start": 4,
+            "end": 7,
+            "definition": "Body Mass Index — a number calculated from your height and weight that indicates whether you are underweight, normal weight, overweight, or obese. Your BMI of 32.4 falls in the obese category."
+        },
+        {
+            "term": "obese",
+            "start": 17,
+            "end": 22,
+            "definition": "A medical classification for a BMI of 30 or higher, indicating excess body weight that can increase health risks like worsening diabetes and joint problems."
+        },
+        {
+            "term": "Creatinine",
+            "start": 47,
+            "end": 57,
+            "definition": "A waste product from normal muscle activity that your kidneys filter out of your blood. Measuring it helps check how well your kidneys are working. Your level of 1.1 is within the normal range."
+        },
+        {
+            "term": "Peripheral neuropathy",
+            "start": 89,
+            "end": 110,
+            "definition": "Damage to the nerves in your extremities (hands and feet), causing symptoms like tingling, numbness, or pain. Yours has been documented before and is now worsening."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "Type 2 diabetes mellitus",
+            "start": 5,
+            "end": 29,
+            "definition": "A chronic condition in which your body has difficulty using insulin effectively, leading to elevated blood sugar levels. Yours is currently classified as uncontrolled."
+        },
+        {
+            "term": "uncontrolled",
+            "start": 34,
+            "end": 46,
+            "definition": "Means your blood sugar levels are not staying within the target range set by your doctor, indicating that your current treatment plan needs adjustment."
+        },
+        {
+            "term": "HbA1c",
+            "start": 50,
+            "end": 55,
+            "definition": "Hemoglobin A1c — a blood test that shows your average blood sugar level over the past 2–3 months. It gives a bigger picture of your diabetes control than daily readings alone."
+        },
+        {
+            "term": "insulin adherence",
+            "start": 140,
+            "end": 157,
+            "definition": "How consistently you take your insulin as prescribed. Missing doses, especially on weekends, can cause blood sugar levels to spike."
+        },
+        {
+            "term": "Diabetic peripheral neuropathy",
+            "start": 227,
+            "end": 257,
+            "definition": "Nerve damage in the feet and hands caused by prolonged high blood sugar from diabetes. Your doctor notes that your symptoms are getting worse."
+        },
+        {
+            "term": "bilateral",
+            "start": 303,
+            "end": 312,
+            "definition": "Affecting both sides — in your case, tingling is present in both feet."
+        },
+        {
+            "term": "hyperglycemia",
+            "start": 400,
+            "end": 413,
+            "definition": "Abnormally high blood sugar levels. Sustained hyperglycemia over time can damage nerves and blood vessels throughout the body."
+        },
+        {
+            "term": "Obesity",
+            "start": 421,
+            "end": 428,
+            "definition": "A condition of excess body fat, defined as a BMI of 30 or higher. Your BMI of 32.4 places you in this category."
+        },
+        {
+            "term": "BMI",
+            "start": 432,
+            "end": 435,
+            "definition": "Body Mass Index — a measure of body fat based on height and weight. Yours is 32.4, which is in the obese range."
+        },
+        {
+            "term": "insulin resistance",
+            "start": 458,
+            "end": 476,
+            "definition": "A condition where your body's cells don't respond well to insulin, making it harder to move sugar from your blood into your cells. Excess weight can worsen this."
+        },
+        {
+            "term": "Hypercholesterolemia",
+            "start": 551,
+            "end": 571,
+            "definition": "Higher-than-normal cholesterol levels in your blood. High cholesterol can increase the risk of heart disease and stroke, which is especially important to monitor with diabetes."
+        },
+        {
+            "term": "Total cholesterol",
+            "start": 575,
+            "end": 592,
+            "definition": "A blood test that measures the overall amount of cholesterol in your blood. Your level of 228 is mildly above the desirable range of under 200."
+        },
+        {
+            "term": "Creatinine",
+            "start": 708,
+            "end": 718,
+            "definition": "A blood test measuring kidney function. Your level of 1.1 is normal, which means your kidneys are working well enough to safely start a new medication."
+        },
+        {
+            "term": "SGLT2 inhibitor",
+            "start": 757,
+            "end": 772,
+            "definition": "A type of diabetes medication that works by helping your kidneys remove extra sugar from your body through urine. Your doctor is considering starting you on one of these drugs."
+        }
+    ],
+    "plan": [
+        {
+            "term": "empagliflozin",
+            "start": 9,
+            "end": 22,
+            "definition": "A diabetes medication (generic name) that lowers blood sugar by helping your kidneys remove excess glucose through your urine. This is being added to your treatment plan."
+        },
+        {
+            "term": "Jardiance",
+            "start": 24,
+            "end": 33,
+            "definition": "The brand name for empagliflozin, a diabetes medication. This is the new drug being prescribed for you at this visit."
+        },
+        {
+            "term": "SGLT2 inhibitor",
+            "start": 45,
+            "end": 60,
+            "definition": "A class of diabetes drugs that work in the kidneys to help your body get rid of excess sugar through urine, which helps lower blood sugar levels."
+        },
+        {
+            "term": "glycemic control",
+            "start": 72,
+            "end": 88,
+            "definition": "How well your blood sugar levels are managed and kept within a healthy range. The goal of adding this new medication is to improve your glycemic control."
+        },
+        {
+            "term": "renal glucose excretion",
+            "start": 190,
+            "end": 213,
+            "definition": "The process by which your kidneys filter out and remove excess sugar from your blood into your urine. This is how empagliflozin works to lower your blood sugar."
+        },
+        {
+            "term": "urinary tract infections",
+            "start": 278,
+            "end": 302,
+            "definition": "Infections in the bladder or urinary system. These are a possible side effect of SGLT2 inhibitors because extra sugar in the urine can promote bacterial growth."
+        },
+        {
+            "term": "yeast infections",
+            "start": 307,
+            "end": 323,
+            "definition": "Fungal infections that can occur in warm, moist areas of the body. SGLT2 inhibitors can increase the risk because of extra sugar passing through the urinary tract."
+        },
+        {
+            "term": "hydration",
+            "start": 352,
+            "end": 361,
+            "definition": "Drinking enough fluids to keep your body functioning properly. Staying well-hydrated is especially important with this new medication since it increases urination."
+        },
+        {
+            "term": "metformin",
+            "start": 378,
+            "end": 387,
+            "definition": "A widely used oral diabetes medication that helps lower blood sugar by reducing the amount of sugar your liver produces and improving how your body responds to insulin."
+        },
+        {
+            "term": "1000 mg",
+            "start": 388,
+            "end": 395,
+            "definition": "The dose of metformin you take — 1000 milligrams. You take this amount twice a day with meals."
+        },
+        {
+            "term": "twice daily",
+            "start": 396,
+            "end": 407,
+            "definition": "A dosing schedule meaning you take the medication two times per day — in your case, once in the morning and once at night with meals."
+        },
+        {
+            "term": "insulin glargine",
+            "start": 476,
+            "end": 492,
+            "definition": "A long-acting form of insulin that works steadily over about 24 hours to help keep your blood sugar levels stable, especially overnight and between meals."
+        },
+        {
+            "term": "Lantus",
+            "start": 494,
+            "end": 500,
+            "definition": "The brand name for insulin glargine, a long-acting insulin. You inject this at bedtime to help control your blood sugar throughout the night."
+        },
+        {
+            "term": "subcutaneously",
+            "start": 511,
+            "end": 525,
+            "definition": "Injected just under the skin, into the fat layer. This is the standard way to give insulin so it absorbs steadily into your bloodstream."
+        },
+        {
+            "term": "Diabetic peripheral neuropathy",
+            "start": 682,
+            "end": 712,
+            "definition": "Nerve damage in your feet caused by diabetes, producing the tingling sensation you've been experiencing, especially at night."
+        },
+        {
+            "term": "glucose control",
+            "start": 756,
+            "end": 771,
+            "definition": "Keeping your blood sugar levels within a healthy target range. Better glucose control is the primary approach to managing your nerve-related symptoms."
+        },
+        {
+            "term": "gabapentin",
+            "start": 834,
+            "end": 844,
+            "definition": "A medication originally used for seizures that is also effective at relieving nerve pain and tingling. Your doctor may prescribe it at your next visit if your symptoms don't improve."
+        },
+        {
+            "term": "refined carbohydrates",
+            "start": 924,
+            "end": 945,
+            "definition": "Processed foods like white rice, white bread, and sugary drinks that are quickly broken down into sugar in your body, causing rapid blood sugar spikes. Limiting these can help with diabetes control."
+        },
+        {
+            "term": "complex carbohydrates",
+            "start": 1046,
+            "end": 1067,
+            "definition": "Carbohydrates found in whole grains, beans, and vegetables that are digested more slowly, causing a gentler rise in blood sugar compared to refined carbohydrates."
+        },
+        {
+            "term": "insulin sensitivity",
+            "start": 1506,
+            "end": 1525,
+            "definition": "How effectively your body's cells respond to insulin. Losing weight can improve insulin sensitivity, meaning your body can use insulin more efficiently to lower blood sugar."
+        },
+        {
+            "term": "Total cholesterol",
+            "start": 1583,
+            "end": 1600,
+            "definition": "A blood test measuring all types of cholesterol combined. Your level of 228 is slightly high and will be rechecked at your next visit."
+        },
+        {
+            "term": "HbA1c",
+            "start": 1708,
+            "end": 1713,
+            "definition": "A blood test showing your average blood sugar over the past 2–3 months. This will be repeated before your next appointment to see if your treatment changes are working."
+        },
+        {
+            "term": "comprehensive labs",
+            "start": 1718,
+            "end": 1736,
+            "definition": "A broad set of blood tests that check multiple aspects of your health, including kidney function, blood sugar, cholesterol, and more."
+        },
+        {
+            "term": "empagliflozin",
+            "start": 9,
+            "end": 22,
+            "definition": "The new diabetes medication (Jardiance) being added to your regimen. Your doctor will check at the next visit how well it is working for you."
+        },
+        {
+            "term": "neuropathy",
+            "start": 702,
+            "end": 712,
+            "definition": "Nerve damage — in your case, affecting your feet and causing tingling. Your doctor will reassess whether these symptoms have improved at your next visit."
+        },
+        {
+            "term": "Cholesterol",
+            "start": 1557,
+            "end": 1568,
+            "definition": "A waxy substance in your blood. While your body needs some cholesterol, too much can increase the risk of heart disease. Your levels will be rechecked to decide if treatment is needed."
+        }
+    ]
+}

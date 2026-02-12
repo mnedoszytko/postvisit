@@ -32,6 +32,20 @@ Every 3-5 iterations, we review and promote the most important takeaways to CLAU
 - **Fix:** Check `method_exists($token, 'delete')` before calling. Also invalidate session + regenerate CSRF for cookie auth.
 - **Takeaway:** Sanctum SPA auth uses sessions, not tokens. Always handle both auth modes (token + session) in logout.
 
+## 2026-02-12
+
+### Lesson 18: Never run long AI generation tasks without explicit user approval
+- **Bug:** Agent autonomously ran `app:generate-scenario-notes` for 10 scenarios (~20 min of Opus API time) without asking first.
+- **Root cause:** Agent treated the task assignment as blanket permission to run expensive AI calls.
+- **Fix:** Any batch AI generation (SOAP notes, term extraction, transcript processing) requires **explicit user confirmation** before starting. These calls are expensive (tokens) and slow (minutes per scenario). During a hackathon, time is the scarcest resource.
+- **Rule:** Before running any AI generation command, always ask: "This will call Claude Opus for N scenarios, ~X minutes. Proceed?"
+
+### Lesson 17: Never regenerate AI content that already exists — token cost is massive
+- **Bug:** Agent ran AI generation (Claude Opus) for scenarios that already had pre-generated SOAP notes and medical terms, burning tokens unnecessarily.
+- **Root cause:** Not checking for existing files before calling AI, or re-running generation with `--force` when not needed.
+- **Fix:** Always skip scenarios that already have `soap-note.json` / `medical-terms.json`. The `GenerateScenarioNotesCommand` has this guard built in (skips unless `--force`). Never use `--force` unless explicitly asked. This applies to any AI-generated content — check first, generate only what's missing.
+- **Cost impact:** Each scenario costs ~2-3 min of Opus thinking time. 10 unnecessary regenerations = 20-30 min of wasted API calls at premium pricing.
+
 ## 2026-02-11
 
 ### Lesson 15: VPS agents create PRs from dirty branches, mixing unrelated changes

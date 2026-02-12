@@ -74,6 +74,7 @@ Route::prefix('v1')->group(function () {
 
         // Practitioners (for visit form dropdown)
         Route::get('practitioners', [VisitController::class, 'practitioners']);
+        Route::post('practitioners', [VisitController::class, 'storePractitioner']);
 
         // ----- Module 2: Companion Scribe — Visits & Transcripts -----
         Route::post('visits', [VisitController::class, 'store'])->middleware('audit');

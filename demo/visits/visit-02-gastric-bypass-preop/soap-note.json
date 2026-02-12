@@ -1,0 +1,87 @@
+{
+    "clean_transcript": "Doctor: Donc vous m'avez dit que vous n'avez pas encore la date de l'opération, oui?\nPatient: Oui, il reste encore pour le moment.\nDoctor: Ah, encore pour le moment. Ok, ça va.\nPatient: Ils m'ont dit de tout refaire et puis repartir chez eux.\nDoctor: Ok, donc c'est bien un bypass gastrique ou ils ont dit quelque chose plus en détail?\nPatient: Non, non, non. Un bypass gastrique, c'est ce qu'ils m'ont dit.\nDoctor: Ok, ça va. Vous faites des douleurs dans la poitrine?\nPatient: Oh, c'est très, très rare.\nDoctor: Vous êtes essoufflée?\nPatient: Pas beaucoup.\nDoctor: Est-ce que vous fumez?\nPatient: Non, je n'ai pas.\nDoctor: Vous prenez des médicaments?\nPatient: Oui, maintenant.\nDoctor: Vous avez pris des médicaments avant?\nPatient: Euh, oui. Des antidouleurs, plus ou moins.\nDoctor: Ok, ça va. Donc, dans la famille, est-ce qu'il y avait des antécédents? Quelqu'un a décédé pour des raisons du cœur?\nPatient: Non.\nDoctor: Ok, donc ici, vous avez fait une épreuve d'effort. Est-ce que vous avez fait des douleurs quand vous avez fait l'épreuve d'effort? Pas de problème?\nPatient: Non, juste des genoux, c'est tout. Parce que j'ai l'arthrose.\nDoctor: Quel est votre poids et quelle est votre taille?\nPatient: 1m65 et 90 kg.\nDoctor: 1m65 et 90 kg, ok. Bon, écoutez, on fera maintenant une échographie. Donc, vous pouvez enlever la blouse et se faire coucher ici sur le dos.\nPatient: Ok.\nDoctor: Euh, oui, s'il vous plaît. Voilà. Ok. Donc, le côté gauche maintenant. Rappellez-moi le nom de famille. C'était? [UNCLEAR]\nDoctor: Et maintenant, on va [UNCLEAR] et on va régler la tête. On va enlever la blouse.\nPatient: Oui, oui, oui.\nDoctor: Voilà. Je vous avise. Ok. Donc, l'échographie est normale. L'épreuve d'effort est normale. Donc, moi, je ne vois pas de contre-indication ici pour votre intervention.\nPatient: Ils ont dit pourquoi? Vous devez voir un cardiologue. Ils avaient des questions particulières, non?\nDoctor: Ok, mais bon. Apparemment, il faut passer par tous les contrôles.\nPatient: Oui, tout à fait.\nDoctor: Mais bon, en tout cas, pour moi, il n'y a pas de problème. Donc, je veux noter tout ça. Et, bon, j'espère que tout va bien se passer pour votre opération.\nPatient: Ok, merci.\nDoctor: Vous avez des questions encore?\nPatient: Non.\nDoctor: Ok. Voilà. Donc, c'est tout de mon côté alors. Merci beaucoup. Salut.",
+    "speakers": {
+        "doctor": "Dr. Nedo",
+        "patient": "Patient"
+    },
+    "extracted_entities": {
+        "symptoms": [
+            "Rare chest pain",
+            "Mild shortness of breath",
+            "Knee pain during exercise stress test"
+        ],
+        "diagnoses": [
+            "Osteoarthritis (knees)",
+            "Obesity (BMI ~33.1, scheduled for gastric bypass)",
+            "No cardiac contraindication identified"
+        ],
+        "medications": [
+            {
+                "name": "Analgesics (unspecified)",
+                "dose": "[UNCLEAR]",
+                "frequency": "[UNCLEAR]",
+                "route": "[UNCLEAR]",
+                "status": "continued"
+            },
+            {
+                "name": "Current medications (unspecified)",
+                "dose": "[UNCLEAR]",
+                "frequency": "[UNCLEAR]",
+                "route": "[UNCLEAR]",
+                "status": "continued"
+            }
+        ],
+        "tests_ordered": [],
+        "test_results": [
+            "Echocardiography: normal",
+            "Exercise stress test (épreuve d'effort): normal"
+        ],
+        "vitals": {
+            "height": "1.65 m",
+            "weight": "90 kg",
+            "bmi_calculated": "33.1 kg\/m²"
+        },
+        "allergies": [],
+        "procedures": [
+            "Transthoracic echocardiography (performed during visit)",
+            "Exercise stress test (performed prior to or during visit)",
+            "Gastric bypass surgery (planned, date pending)"
+        ]
+    },
+    "soap_note": {
+        "chief_complaint": "Pre-operative cardiology evaluation for planned gastric bypass surgery. The patient does not yet have a surgery date and was instructed to complete all pre-surgical assessments.",
+        "history_of_present_illness": "Patient presents for cardiac clearance ahead of a planned gastric bypass procedure. The surgical team has requested that all pre-operative evaluations be completed before scheduling the operation.\n\nThe patient reports very rare chest pain and mild shortness of breath. She denies smoking.\n\nShe is currently taking medications (unspecified) and has previously used analgesics (painkillers).\n\nShe also reports chronic knee pain attributed to osteoarthritis, which was the only discomfort noted during the exercise stress test.\n\nFamily history:\n- No family history of cardiac disease or cardiac-related death.",
+        "review_of_systems": "- **Cardiovascular:** Very rare chest pain; mild dyspnea on exertion\n- **Respiratory:** No significant complaints reported\n- **Musculoskeletal:** Chronic bilateral knee pain secondary to osteoarthritis; knee pain reproduced during exercise stress test\n- **Constitutional:** No additional symptoms reported",
+        "physical_exam": "- **Height:** 1.65 m\n- **Weight:** 90 kg\n- **BMI (calculated):** approximately 33.1 kg\/m² (Class I obesity)\n\n- **Echocardiography:** Normal cardiac structure and function\n- **Exercise stress test (épreuve d'effort):** Normal; no chest pain or cardiac symptoms during exertion; only knee pain reported (attributed to known osteoarthritis)",
+        "assessment": "Pre-operative cardiology evaluation for gastric bypass surgery in a patient with obesity (BMI ~33.1 kg\/m²).\n\n- Echocardiography: normal\n- Exercise stress test: normal\n- No evidence of significant cardiovascular disease\n- No cardiac contraindication to the planned gastric bypass surgery\n\nNon-cardiac findings:\n- Osteoarthritis of the knees (known, stable)",
+        "plan": "1. **Cardiac clearance granted:** No cardiac contraindication identified for the planned gastric bypass surgery. Findings will be documented and communicated to the surgical team.\n\n2. **Medications:** Patient reports currently taking medications (names and doses not specified during visit) and prior use of analgesics. No changes made to medications at this visit.\n\n3. **Follow-up:** No further cardiology follow-up required at this time unless new cardiac symptoms arise. Patient to proceed with remaining pre-operative assessments as directed by the surgical team.",
+        "current_medications": "- Analgesics (unspecified name, dose, and frequency) — status: continued (previously taken, possibly ongoing)\n- Current medications (unspecified) — status: continued; patient confirmed she is taking medications but did not provide specific names or dosages"
+    },
+    "unclear_sections": [
+        {
+            "timestamp_or_location": "Early in transcript — 'pour le sommet'",
+            "original_text": "Il reste encore pour le sommet.",
+            "issue": "Likely a speech-to-text error for 'pour le moment' (for the moment). Corrected in clean transcript to 'pour le moment'."
+        },
+        {
+            "timestamp_or_location": "Mid-transcript — 'prévalophore' (appears twice)",
+            "original_text": "vous avez fait une prévalophore",
+            "issue": "STT artifact. Based on cardiology context, this is clearly 'épreuve d'effort' (exercise stress test). Corrected in clean transcript."
+        },
+        {
+            "timestamp_or_location": "During echocardiography — 'on va faire une douche'",
+            "original_text": "Et maintenant, on va faire une douche, et on va régler la tête. On va enlever la blouse. Et maintenant, on va faire une douche.",
+            "issue": "Garbled STT output during the echocardiography procedure. Likely procedural instructions to the patient (repositioning, probe adjustments). Marked [UNCLEAR] in clean transcript. No clinically relevant content lost."
+        },
+        {
+            "timestamp_or_location": "During echocardiography — patient's family name",
+            "original_text": "Rappellez-moi le nom de famille. C'était? C'était?",
+            "issue": "Doctor asks for the patient's family name but the response is not captured in the transcript. Marked [UNCLEAR]."
+        },
+        {
+            "timestamp_or_location": "Medication discussion",
+            "original_text": "Vous prenez des médicaments? Oui, maintenant.",
+            "issue": "Patient confirms currently taking medications but does not specify names, doses, or indications. No further detail available in the transcript."
+        }
+    ]
+}

@@ -6,6 +6,27 @@ All notable changes to PostVisit.ai are documented here in reverse chronological
 
 ### Added
 - **HIPAA-inspired audit logging middleware for all PHI access** -- Terminable `AuditMiddleware` logs every authenticated access to patient data, clinical notes, transcripts, chat sessions, medications, and documents. Tracks user, action type (CRUD + download/export), resource, success/failure, IP address, session ID, and specific PHI element categories per resource type. Applied to all PHI route groups. Audit API at `GET /api/v1/audit/logs` with filters (doctor/admin only). Login/logout events logged in AuthController.
+- Chat panel flash animation (emerald glow) when "Ask AI" is clicked — draws attention to chat
+- "+" button next to Healthcare Provider dropdown in Companion Scribe to add new doctors inline
+- Add Healthcare Provider modal (first name, last name, specialty, degree)
+- `POST /api/v1/practitioners` endpoint for patient-created practitioners
+- Patient Profile header now links to Health Record page
+- Record New Visit button: subtle pulsing red dot indicator
+- `chat-flash` CSS keyframe animation
+- Doctor Dashboard Quick Actions mock panel (Schedule, Renew Rx, Recommend, Request Labs)
+- Settings Audit Logs table with PHI tracking and Data Governance toggles
+- Health Dashboard Documents tab with clinical SVG icons replacing emoji
+- Attachments upload progress indicator and Send button highlight
+
+### Changed
+- Chat panel height adapts to left column height with max viewport cap (was fixed viewport height)
+- AI Analyzing spinner: removed excessive pulsating dot, kept spinner + progress bar
+- Practitioner fields (`email`, `npi`, `license_number`, `medical_degree`, `organization_id`) now nullable — allows patient-created practitioners
+- Profile UI: shorter visit titles (line-clamp-1), reordered sections
+
+### Fixed
+- Profile UI section ordering and visit title truncation
+- Attachments upload progress and Send button highlight state
 
 ## 2026-02-11
 

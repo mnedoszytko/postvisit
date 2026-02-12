@@ -1,0 +1,120 @@
+{
+    "clean_transcript": "Doctor: Dobrze, dziękuję panie prezesie. Do widzenia, wszystkiego dobrego.\n\n[Nowy pacjent wchodzi]\n\nDoctor: Dzień dobry.\nPatient: Dzień dobry.\nDoctor: Dzień dobry. Dobrze, w czym mogę panu pomóc?\nPatient: Badanie przed operacją, chodzi o narkozę chyba.\nDoctor: Okej, jaką operacją?\nPatient: Ramię. Nie wziąłem jakichś pudeł dokumentów. To tutaj będzie robione, trzy dziury tu będą gdzieś.\nDoctor: Dobra. Pan widzi, że miał zawał, tak? W 2020 miał pan dwa stenty wszczepione w prawą tętnicę wieńcową. Jak sytuacja wygląda w tej chwili? Czy ma pan jakieś bóle w klatce piersiowej?\nPatient: Nie mam bólu w klatce piersiowej. Problem z tym, że ja podczas zawału nie miałem bólu w klatce piersiowej, tylko z tyłu, między łopatkami. Ja właśnie jeden tak jakby przechodziłem zawał, i drugi w poniedziałek — w poniedziałek piątego, potem w poniedziałek drugi nastąpił. Dopiero wtedy do szpitala przyjechałem. Ból też pojechałem, no, bo myślę, że to kręgosłup mi siada.\nDoctor: Aktualnie pan nie odczuwa już takich?\nPatient: Odczuwam te bóle, tylko że ja nawet i przed zawałem odczuwałem te bóle. Z tego, co ortopeda mówił, że bardziej mięśnie są winne.\nDoctor: Kiedy to było? Jeszcze raz, ten zawał?\nPatient: Zawał był czerwiec 2020.\nDoctor: Jakie leki pan aktualnie przyjmuje?\nPatient: Jakie leki? No, sporo jest. Biorę Asaflow. Biorę sywiker [UNCLEAR].\nDoctor: Jaka dawka sywikaru?\nPatient: 20 przez 0,5. Teraz biorę połówkę, bo takie wystarczają. Miałem zawał i zaczęło mi spadać nisko ciśnienie.\nDoctor: Jeszcze raz, ile miligramów?\nPatient: 20 przez 0,5.\nDoctor: Co jeszcze oprócz sywikaru pan bierze?\nPatient: Brałem Lipitor, ale od dwóch miesięcy nie biorę, bo mnie tak mięśnie bolały.\nDoctor: Od dwóch miesięcy pan nie bierze?\nPatient: Tak.\nDoctor: Prawdopodobnie cholesterol do góry poszedł.\nPatient: Biorę Bisoprol.\nDoctor: Dawka?\nPatient: [UNCLEAR]\nDoctor: Co jeszcze?\nPatient: Antydepresyjne biorę. Alkazol [UNCLEAR].\nDoctor: Tak, dobra. To zróbmy kilka badań w takim razie. Teraz zdjąć górę i się położyć tutaj na plecach.\n\n[Badanie echokardiograficzne]\n\nDoctor: Niech pan się przekręci na lewy bok, proszę. Podłożyć lewą rękę w górę.\n\n[Trwa badanie]\n\nDoctor: Od kiedy pan bierze tę atorwastatynę? Czy tę suwazenę [UNCLEAR]?\nPatient: Lipitor od zawału brałem.\nDoctor: Dopiero teraz pana mięśnie zaczęły boleć?\nPatient: Bolały, potem przestało i okej, już było, i teraz znowu zaczęło.\nDoctor: Wie pan co, jest to trochę problem, ponieważ jeżeli pan nie bierze tego leku, to cholesterol panu idzie do góry i mogą być nowe blaszki. Więc coś trzeba będzie wymyślać. To co ja proponuję — czyli pan nie bierze to już dwa miesiące — i co, minęły panu w tej chwili te bóle?\nPatient: Jakby trochę, ale nie do końca.\nDoctor: No właśnie. To niech pan weźmie to z powrotem. I zrobimy tak, że pan sobie oznacza badania krwi za jakieś 4 tygodnie. I wtedy zobaczymy, czy realnie to jest nietolerancja na statyny — czyli na ten lek, który pan teraz bierze — czy to jest coś innego. Bo mówię, nie może pan tego nie brać, bo inaczej wszystko to postąpi — te blaszki, które pan ma w tej chwili.\nDoctor: Jeżeli chodzi o operację, to ja nie widzę w tej chwili przeciwwskazań. No bo to jest jakby podstawowa przyczyna, dla której pan przychodzi. Ale jeżeli chodzi o te leki, no to musimy sprawę ustalić. To może być problem — jeżeli będzie cholesterol tak wysoki, to prędzej czy później może pan mieć kolejny zawał.\nDoctor: I schudnąć przede wszystkim, bo ma pan dosyć dużą nadwagę.\nPatient: Zaczynam, no, zacząłem podjadać, podjadać, podjadać. Ale z tego się cieszę — waga już powoli też spadła, bo ważyłem 119 kilogramów.\nDoctor: Dobrze. Więc tak: niech pan zrobi za 4 tygodnie te badania. Lek proszę wziąć na nowo. Teraz będzie pan miał rozregulowany ten cholesterol niezależnie, ze względu na to, że nie bierze pan tego leku.\nPatient: Nie powiem panu, co teraz brać, co nie. Nie rozumiem pytania.\nDoctor: No, mam nadzieję, że nie. Jeżeli pan mówi, że panu te bóle nie przeszły po odstawieniu tego, to prawdopodobnie nie ma pan nietolerancji na statyny. A jeżeli okaże się, że bóle są silniejsze, to niech pan odstawi. Ale tak czy siak musi zrobić pan badania za 4 tygodnie i wrócić, tak? Dobra?\nPatient: Tak.\nDoctor: To wszystko z mojej strony. Dziękuję i wszystkiego dobrego.",
+    "speakers": {
+        "doctor": "Dr. Nedo",
+        "patient": "Patient"
+    },
+    "extracted_entities": {
+        "symptoms": [
+            "Interscapular pain (pain between shoulder blades) — present before and during myocardial infarction, currently ongoing",
+            "No chest pain (angina denied)",
+            "Muscle pain (myalgia) — attributed to statin use, persists partially despite discontinuation",
+            "Low blood pressure after myocardial infarction"
+        ],
+        "diagnoses": [
+            "History of myocardial infarction (June 2020)",
+            "Coronary artery disease — two stents in right coronary artery (2020)",
+            "Possible statin intolerance (under investigation)",
+            "Significant overweight \/ obesity (weight 119 kg reported)"
+        ],
+        "medications": [
+            {
+                "name": "Asaflow (acetylsalicylic acid \/ aspirin)",
+                "dose": "not specified",
+                "frequency": "not specified",
+                "route": "oral",
+                "status": "continued"
+            },
+            {
+                "name": "[UNCLEAR: 'sywiker' \/ 'suwazenę' — unidentified medication]",
+                "dose": "20 mg tablet, taking half (10 mg effective dose)",
+                "frequency": "not specified",
+                "route": "oral",
+                "status": "continued (dose reduced due to low blood pressure)"
+            },
+            {
+                "name": "Lipitor (atorvastatin)",
+                "dose": "not specified (previously prescribed since MI)",
+                "frequency": "not specified",
+                "route": "oral",
+                "status": "discontinued 2 months ago by patient due to muscle pain — instructed to resume"
+            },
+            {
+                "name": "Bisoprolol (referred to as 'Bisoprol')",
+                "dose": "not specified",
+                "frequency": "not specified",
+                "route": "oral",
+                "status": "continued"
+            },
+            {
+                "name": "Antidepressant (specific name not clearly stated)",
+                "dose": "not specified",
+                "frequency": "not specified",
+                "route": "oral",
+                "status": "continued"
+            },
+            {
+                "name": "[UNCLEAR: 'alkazol' — unidentified medication]",
+                "dose": "not specified",
+                "frequency": "not specified",
+                "route": "oral",
+                "status": "continued"
+            }
+        ],
+        "tests_ordered": [
+            "Blood tests including lipid panel (cholesterol) — in 4 weeks",
+            "Echocardiography (performed during visit)"
+        ],
+        "test_results": [],
+        "vitals": {
+            "weight": "119 kg (historical peak; currently losing weight)"
+        },
+        "allergies": [],
+        "procedures": [
+            "Echocardiography performed during visit",
+            "History: Two stents implanted in right coronary artery (June 2020)",
+            "Planned: Arthroscopic shoulder surgery (three portals) — reason for pre-operative evaluation"
+        ]
+    },
+    "soap_note": {
+        "chief_complaint": "Pre-operative cardiac evaluation (clearance for anesthesia) prior to planned arthroscopic shoulder surgery.",
+        "history_of_present_illness": "Male patient with a history of myocardial infarction in June 2020, during which two stents were implanted in the right coronary artery. He presents today for pre-operative cardiac clearance before an upcoming arthroscopic shoulder surgery (three-portal technique).\n\nThe patient reports that during his myocardial infarction he did not experience typical chest pain but instead felt pain between his shoulder blades (interscapular region). He experienced two episodes — the first one he initially dismissed, and the second occurred the following Monday, which prompted hospitalization. He thought the pain was spinal in origin.\n\nCurrently, the patient denies chest pain but continues to experience interscapular pain, which was also present before the infarction. An orthopedic evaluation previously attributed these symptoms to muscular origin.\n\nThe patient reports discontinuing his statin (Lipitor \/ atorvastatin) approximately two months ago due to muscle pain (myalgia). He notes the muscle pain has partially improved but not fully resolved since discontinuation.\n\nThe patient also reports that his blood pressure dropped significantly after the infarction, prompting him to reduce his antihypertensive medication to half the prescribed dose.\n\nThe patient reports significant overweight, with a peak weight of 119 kg. He states he has begun losing weight and is making dietary efforts.\n\nMedical history:\n- Myocardial infarction (June 2020)\n- Percutaneous coronary intervention with 2 stents to right coronary artery (2020)\n- Coronary artery disease\n- Depression (on antidepressant therapy)\n- Significant overweight \/ obesity",
+        "review_of_systems": "- **Cardiovascular:** Denies current chest pain or angina. Reports interscapular pain that was the presenting symptom of prior myocardial infarction; this pain persists intermittently. Reports episodes of low blood pressure post-MI.\n- **Musculoskeletal:** Reports diffuse muscle pain (myalgia), initially attributed to statin use. Pain partially improved after statin discontinuation but not fully resolved. Orthopedic evaluation previously attributed interscapular pain to muscular origin. Right shoulder pathology requiring planned surgical repair.\n- **Psychiatric:** On antidepressant therapy (no further details reported).\n- **Constitutional:** Significant overweight (peak 119 kg); reports recent weight loss efforts with some progress.",
+        "physical_exam": "**Echocardiography:** Performed during the visit. Patient positioned supine and then left lateral decubitus with left arm raised. No specific findings were verbally reported during the recorded portion of the examination.\n\nNo additional physical examination findings (vital signs, auscultation results, etc.) were documented in the transcript.",
+        "assessment": "1. **Coronary artery disease, status post myocardial infarction (June 2020) with two stents in right coronary artery** — currently stable, no active anginal symptoms. No cardiac contraindications identified for planned shoulder surgery under general anesthesia.\n\n2. **Possible statin intolerance vs. unrelated myalgia** — Patient self-discontinued atorvastatin (Lipitor) two months ago due to muscle pain. Muscle symptoms have only partially improved after discontinuation, which argues against true statin intolerance. Further evaluation with blood work required.\n\n3. **Hypercholesterolemia risk** — Uncontrolled due to two months without statin therapy. Significant concern for atherosclerotic plaque progression and risk of recurrent myocardial infarction.\n\n4. **Obesity** — Significant overweight (peak weight 119 kg). Patient reports initiating weight loss efforts with some early progress.",
+        "plan": "1. **Cardiac clearance for surgery:** No cardiac contraindications identified for the planned arthroscopic shoulder surgery under general anesthesia. Patient is cleared from a cardiovascular standpoint.\n\n2. **Resume statin therapy:** Patient instructed to restart Lipitor (atorvastatin) immediately. Extended period without statin therapy poses significant risk for cholesterol elevation and new plaque formation in coronary arteries.\n\n3. **Blood work in 4 weeks:** Patient to obtain lipid panel and relevant blood tests in approximately 4 weeks to assess cholesterol levels and evaluate the impact of resumed statin therapy.\n\n4. **Statin tolerance monitoring:** If muscle pain worsens significantly after restarting atorvastatin, the patient may discontinue and report at follow-up. If muscle pain does not worsen (given it did not fully resolve after stopping), this suggests the myalgia is likely unrelated to statin use.\n\n5. **Follow-up visit:** Return in approximately 4 weeks with blood test results to reassess statin tolerance and cholesterol management. Alternative lipid-lowering strategies may be considered if true statin intolerance is confirmed.\n\n6. **Weight loss:** Strongly advised to lose weight given significant obesity. Encouraged to continue current dietary and lifestyle modifications.\n\n7. **Continue all other current medications:** Asaflow (aspirin), bisoprolol, antidepressant, and other current medications to be continued at current doses.",
+        "current_medications": "- **Asaflow (acetylsalicylic acid \/ aspirin):** dose not specified — continued\n- **[UNCLEAR: 'sywiker' \/ 'suwazenę']:** 20 mg tablet, currently taking half (10 mg) due to low blood pressure — continued at reduced dose\n- **Lipitor (atorvastatin):** dose not specified — was discontinued 2 months ago by patient due to myalgia; **instructed to resume**\n- **Bisoprolol ('Bisoprol'):** dose not specified — continued\n- **Antidepressant:** name and dose not clearly stated — continued\n- **[UNCLEAR: 'alkazol']:** dose not specified — continued"
+    },
+    "unclear_sections": [
+        {
+            "timestamp_context": "Medication list — 'sywiker' \/ 'suwazenę'",
+            "original_text": "biorę sywiker... jaka dawka sywikaru? 20,05... 20 przez 0,5... \/ od kiedy pan bierze tę atorwastatynę? czy tę suwazenę?",
+            "issue": "Medication name unclear due to speech-to-text distortion. 'Sywiker' and 'suwazenę' appear to refer to the same medication but cannot be reliably identified. Dose described as '20 by 0.5' — likely means the patient takes half of a 20 mg tablet (effective dose 10 mg). Could potentially be a combination antihypertensive given the context of blood pressure dropping. Requires clarification with patient or pharmacy records."
+        },
+        {
+            "timestamp_context": "Medication list — 'alkazol'",
+            "original_text": "antydepresyjne biorę, alkazol",
+            "issue": "Medication name 'alkazol' is unclear. It may be the brand name of the antidepressant mentioned, or a separate medication. Cannot be reliably identified from the audio transcription. Requires clarification."
+        },
+        {
+            "timestamp_context": "Medication list — bisoprolol dose",
+            "original_text": "biorę bisopho... dawka?",
+            "issue": "The patient's response to the dose question for bisoprolol was not clearly captured in the transcript. Dose is unknown."
+        },
+        {
+            "timestamp_context": "Lipitor dose",
+            "original_text": "brałem lipitor ale od dwóch miesięcy nie biorę",
+            "issue": "The original prescribed dose of Lipitor (atorvastatin) is not stated in the transcript."
+        },
+        {
+            "timestamp_context": "Near end of conversation — patient statement",
+            "original_text": "Nie powiem panu, co teraz brać, co nie. Nie rozumiem pytania.",
+            "issue": "This exchange is contextually unclear. The patient appears to be responding to an unrecorded or unclear question from the doctor. The conversational flow suggests a possible question about medication management that was not fully captured."
+        },
+        {
+            "timestamp_context": "Echocardiography results",
+            "original_text": "[examination instructions only]",
+            "issue": "Echocardiography was performed during the visit, but no findings or results were verbalized in the recorded portion of the transcript. Results may have been communicated non-verbally or after recording stopped."
+        }
+    ]
+}

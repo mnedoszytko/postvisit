@@ -1,0 +1,410 @@
+{
+    "chief_complaint": [
+        {
+            "term": "hypertension",
+            "start": 20,
+            "end": 32,
+            "definition": "A condition where the pressure of blood against your artery walls is consistently too high. This visit is to check how well your blood pressure is being managed."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "hypertension",
+            "start": 44,
+            "end": 56,
+            "definition": "A condition where blood pressure is consistently higher than normal, which can strain your heart and blood vessels over time."
+        },
+        {
+            "term": "antihypertensive regimen",
+            "start": 120,
+            "end": 144,
+            "definition": "The combination of medications prescribed to lower your blood pressure. Your regimen was changed at the last visit to try to improve your blood pressure control."
+        },
+        {
+            "term": "Biprésil 5\/10",
+            "start": 150,
+            "end": 164,
+            "definition": "A combination blood pressure medication containing two active ingredients in one pill (5 mg of one and 10 mg of the other). This is the medication you have been taking that was originally prescribed by your general practitioner."
+        },
+        {
+            "term": "copérindopril",
+            "start": 168,
+            "end": 182,
+            "definition": "A blood pressure-lowering medication that belongs to a class of drugs that relax blood vessels. You experienced side effects when taking this medication."
+        },
+        {
+            "term": "bisoprolol",
+            "start": 187,
+            "end": 197,
+            "definition": "A beta-blocker medication that slows the heart rate and lowers blood pressure. You reported constipation and insomnia while taking this along with copérindopril."
+        },
+        {
+            "term": "blood pressure",
+            "start": 206,
+            "end": 220,
+            "definition": "The force of blood pushing against the walls of your arteries. Keeping it in a healthy range reduces your risk of heart attack and stroke."
+        },
+        {
+            "term": "constipation",
+            "start": 342,
+            "end": 354,
+            "definition": "Difficulty or infrequent bowel movements. You experienced this as a side effect when you tried the new medications."
+        },
+        {
+            "term": "insomnia",
+            "start": 359,
+            "end": 367,
+            "definition": "Difficulty falling asleep or staying asleep. This was one of the side effects you reported with the new medications."
+        },
+        {
+            "term": "Biprésil 5\/10",
+            "start": 150,
+            "end": 164,
+            "definition": "Your current combination blood pressure medication, containing two active substances in a single tablet."
+        },
+        {
+            "term": "systolic",
+            "start": 600,
+            "end": 608,
+            "definition": "The top number in a blood pressure reading, representing the pressure in your arteries when your heart beats. Your systolic values at home have ranged from 130 to 155."
+        },
+        {
+            "term": "mmHg",
+            "start": 636,
+            "end": 640,
+            "definition": "Millimeters of mercury — the standard unit used to measure blood pressure."
+        },
+        {
+            "term": "138\/76 mmHg",
+            "start": 668,
+            "end": 679,
+            "definition": "Your average home blood pressure reading, where 138 is the systolic (heart beating) pressure and 76 is the diastolic (heart resting) pressure. This is slightly above the ideal target."
+        },
+        {
+            "term": "Biprésil",
+            "start": 150,
+            "end": 159,
+            "definition": "Your combination blood pressure medication that you ran out of three days ago."
+        },
+        {
+            "term": "copérindopril",
+            "start": 168,
+            "end": 182,
+            "definition": "A blood pressure medication you retried three days ago after running out of Biprésil."
+        },
+        {
+            "term": "bisoprolol",
+            "start": 187,
+            "end": 197,
+            "definition": "A beta-blocker medication you retried alongside copérindopril three days ago."
+        },
+        {
+            "term": "lower back pain",
+            "start": 816,
+            "end": 831,
+            "definition": "Pain in the lower part of your spine area. You developed this after restarting the new medications three days ago."
+        },
+        {
+            "term": "joint pain",
+            "start": 836,
+            "end": 846,
+            "definition": "Pain in the areas where two bones meet, such as knees, hips, or shoulders. This started when you retried the new medications."
+        },
+        {
+            "term": "cardiac arrhythmias",
+            "start": 997,
+            "end": 1016,
+            "definition": "Irregular heartbeats — your heart may beat too fast, too slow, or with an uneven rhythm. You have a history of these occurring on and off."
+        },
+        {
+            "term": "Biprésil",
+            "start": 150,
+            "end": 159,
+            "definition": "Your combination medication. Your doctor noted that your irregular heartbeats have markedly improved while you have been on this medication."
+        },
+        {
+            "term": "arrhythmias",
+            "start": 1005,
+            "end": 1016,
+            "definition": "Irregular heart rhythms. One of the components in your combination medication may have properties that help manage these."
+        },
+        {
+            "term": "coronary CT scan",
+            "start": 1305,
+            "end": 1321,
+            "definition": "A specialized imaging test that takes detailed pictures of the blood vessels that supply your heart. Your previous scan was normal, which is reassuring."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "Cardiovascular",
+            "start": 4,
+            "end": 18,
+            "definition": "Relating to the heart and blood vessels. This section reviews any symptoms involving your heart and circulation."
+        },
+        {
+            "term": "chest pain",
+            "start": 25,
+            "end": 35,
+            "definition": "Pain or discomfort in the chest area, which can sometimes signal heart problems. You are not experiencing this symptom."
+        },
+        {
+            "term": "cardiac arrhythmias",
+            "start": 50,
+            "end": 69,
+            "definition": "Irregular heartbeats that can cause sensations of fluttering or skipping. Yours have significantly improved on your current medication."
+        },
+        {
+            "term": "Gastrointestinal",
+            "start": 124,
+            "end": 140,
+            "definition": "Relating to the stomach and intestines — the digestive system."
+        },
+        {
+            "term": "Constipation",
+            "start": 144,
+            "end": 156,
+            "definition": "Difficulty having regular bowel movements. You experienced this when taking copérindopril and bisoprolol, but it went away after you stopped them."
+        },
+        {
+            "term": "copérindopril",
+            "start": 178,
+            "end": 192,
+            "definition": "A blood pressure medication that caused digestive side effects for you."
+        },
+        {
+            "term": "bisoprolol",
+            "start": 197,
+            "end": 207,
+            "definition": "A beta-blocker medication that you took alongside copérindopril, during which time you had constipation."
+        },
+        {
+            "term": "Neurological",
+            "start": 245,
+            "end": 257,
+            "definition": "Relating to the brain, nerves, and nervous system."
+        },
+        {
+            "term": "Insomnia",
+            "start": 269,
+            "end": 277,
+            "definition": "Difficulty sleeping. You experienced this as a side effect of copérindopril and bisoprolol, which resolved after stopping them."
+        },
+        {
+            "term": "copérindopril",
+            "start": 178,
+            "end": 192,
+            "definition": "A blood pressure medication that contributed to your sleep difficulties."
+        },
+        {
+            "term": "bisoprolol",
+            "start": 197,
+            "end": 207,
+            "definition": "A beta-blocker that you took alongside copérindopril when you experienced insomnia."
+        },
+        {
+            "term": "Musculoskeletal",
+            "start": 366,
+            "end": 381,
+            "definition": "Relating to the muscles, bones, and joints of your body."
+        },
+        {
+            "term": "lower back pain",
+            "start": 392,
+            "end": 407,
+            "definition": "Pain in the lower spine area that you have been experiencing over the last three days."
+        },
+        {
+            "term": "joint pain",
+            "start": 412,
+            "end": 422,
+            "definition": "Pain in the areas where bones connect, which started when you retried the new medications."
+        },
+        {
+            "term": "copérindopril",
+            "start": 178,
+            "end": 192,
+            "definition": "A blood pressure medication whose retrial coincided with your musculoskeletal symptoms."
+        },
+        {
+            "term": "bisoprolol",
+            "start": 197,
+            "end": 207,
+            "definition": "A beta-blocker whose retrial coincided with your back and joint pain."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "Blood pressure",
+            "start": 4,
+            "end": 18,
+            "definition": "The force of blood pushing on your artery walls, measured in the office today. Your reading was described as good by the clinician."
+        },
+        {
+            "term": "blood pressure log",
+            "start": 107,
+            "end": 125,
+            "definition": "A record of blood pressure readings you have taken at home over time, which helps your doctor see patterns between visits."
+        },
+        {
+            "term": "Systolic",
+            "start": 138,
+            "end": 146,
+            "definition": "The top number in your blood pressure reading, measured when your heart contracts. Your home readings ranged from 130 to 155."
+        },
+        {
+            "term": "mmHg",
+            "start": 163,
+            "end": 167,
+            "definition": "Millimeters of mercury, the standard unit for measuring blood pressure."
+        },
+        {
+            "term": "138\/76 mmHg",
+            "start": 177,
+            "end": 188,
+            "definition": "Your average home blood pressure. 138 is the systolic (top) number and 76 is the diastolic (bottom) number. This average is slightly above the ideal target."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "Hypertension",
+            "start": 5,
+            "end": 17,
+            "definition": "High blood pressure. Yours is reasonably controlled on your current medication, though home readings are slightly above the ideal range."
+        },
+        {
+            "term": "Biprésil 5\/10 mg",
+            "start": 49,
+            "end": 66,
+            "definition": "Your current combination blood pressure pill containing two active ingredients at doses of 5 mg and 10 mg."
+        },
+        {
+            "term": "blood pressure",
+            "start": 147,
+            "end": 161,
+            "definition": "The measurement of force exerted by blood on artery walls. Your in-office reading today was satisfactory."
+        },
+        {
+            "term": "cardiac arrhythmias",
+            "start": 204,
+            "end": 223,
+            "definition": "Irregular heartbeats. Your doctor noted these have markedly improved while you have been on Biprésil."
+        },
+        {
+            "term": "Biprésil",
+            "start": 49,
+            "end": 58,
+            "definition": "Your combination blood pressure medication that your doctor is keeping you on."
+        },
+        {
+            "term": "copérindopril",
+            "start": 283,
+            "end": 297,
+            "definition": "A blood pressure medication you cannot tolerate due to multiple side effects."
+        },
+        {
+            "term": "bisoprolol",
+            "start": 302,
+            "end": 312,
+            "definition": "A beta-blocker medication that caused adverse effects and will not be prescribed to you again."
+        },
+        {
+            "term": "constipation",
+            "start": 356,
+            "end": 368,
+            "definition": "Difficulty having regular bowel movements, which you experienced as a side effect of the discontinued medications."
+        },
+        {
+            "term": "insomnia",
+            "start": 370,
+            "end": 378,
+            "definition": "Difficulty sleeping, documented as a side effect of copérindopril and bisoprolol for you."
+        },
+        {
+            "term": "joint pain",
+            "start": 406,
+            "end": 416,
+            "definition": "Pain in your joints that occurred when you retried the alternative medications."
+        },
+        {
+            "term": "Coronary artery disease",
+            "start": 467,
+            "end": 490,
+            "definition": "A condition where the arteries supplying blood to the heart become narrowed or blocked. Your screening for this came back normal."
+        },
+        {
+            "term": "Coronary CT scan",
+            "start": 507,
+            "end": 523,
+            "definition": "A specialized imaging test of the heart's blood vessels. Your previous scan was normal, which is reassuring for your coronary health."
+        }
+    ],
+    "plan": [
+        {
+            "term": "Biprésil 5\/10 mg",
+            "start": 14,
+            "end": 31,
+            "definition": "Your combination blood pressure medication. You will continue taking one tablet each morning as your ongoing treatment."
+        },
+        {
+            "term": "copérindopril",
+            "start": 130,
+            "end": 144,
+            "definition": "A blood pressure medication that is being permanently discontinued for you due to documented side effects."
+        },
+        {
+            "term": "bisoprolol",
+            "start": 149,
+            "end": 159,
+            "definition": "A beta-blocker medication that is being permanently stopped due to side effects you experienced."
+        },
+        {
+            "term": "constipation",
+            "start": 192,
+            "end": 204,
+            "definition": "Difficulty with bowel movements — one of the documented side effects that led to permanently stopping the alternative medications."
+        },
+        {
+            "term": "insomnia",
+            "start": 206,
+            "end": 214,
+            "definition": "Sleep difficulty — documented as a side effect to prevent these medications from being prescribed to you in the future."
+        },
+        {
+            "term": "lower back pain",
+            "start": 216,
+            "end": 231,
+            "definition": "Pain in the lower spine area, documented as a possible side effect of the discontinued medications."
+        },
+        {
+            "term": "joint pain",
+            "start": 233,
+            "end": 243,
+            "definition": "Pain in the joints, also documented to ensure these medications are not re-prescribed."
+        },
+        {
+            "term": "blood pressure monitoring",
+            "start": 300,
+            "end": 325,
+            "definition": "The practice of regularly checking your blood pressure at home using a cuff device. You should continue recording values in a log to share with your doctor."
+        },
+        {
+            "term": "Alcohol counseling",
+            "start": 427,
+            "end": 445,
+            "definition": "Guidance from your doctor about the health effects of drinking alcohol. Your doctor reminded you that daily alcohol consumption can harm the liver and other organs."
+        },
+        {
+            "term": "Coronary CT scan",
+            "start": 621,
+            "end": 637,
+            "definition": "A detailed imaging test of the arteries that supply blood to your heart. Yours was previously normal, so no repeat is needed."
+        },
+        {
+            "term": "ECG",
+            "start": 642,
+            "end": 645,
+            "definition": "Electrocardiogram — a test that records the electrical activity of your heart to check for rhythm problems. Your previous ECG was normal."
+        }
+    ]
+}

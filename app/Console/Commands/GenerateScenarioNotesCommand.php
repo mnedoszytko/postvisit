@@ -130,10 +130,15 @@ class GenerateScenarioNotesCommand extends Command
     {
         $systemPrompt = $this->promptLoader->load('scribe-processor');
 
+        $practitionerKey = $scenario['practitioner'] ?? null;
+        $practitionerName = $practitionerKey
+            ? config("demo-scenarios.practitioners.{$practitionerKey}.name", config('demo-scenarios.doctor.name', 'Dr. Nedoszytko'))
+            : config('demo-scenarios.doctor.name', 'Dr. Nedoszytko');
+
         $metadata = [
-            'specialty' => 'cardiology',
+            'specialty' => $scenario['specialty'] ?? 'cardiology',
             'visit_date' => now()->subDays($scenario['visit']['days_ago'] ?? 1)->toDateString(),
-            'practitioner' => config('demo-scenarios.doctor.name', 'Dr. Nedoszytko'),
+            'practitioner' => $practitionerName,
         ];
 
         $messages = [

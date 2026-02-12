@@ -1,0 +1,470 @@
+{
+    "chief_complaint": [
+        {
+            "term": "abdominal pain",
+            "start": 10,
+            "end": 24,
+            "definition": "Pain felt in the belly area. In your case, this is a key symptom suggesting your Crohn's disease may be flaring up."
+        },
+        {
+            "term": "bloody diarrhea",
+            "start": 26,
+            "end": 41,
+            "definition": "Frequent loose or watery stools that contain visible blood, which can indicate active inflammation or damage in the intestines."
+        },
+        {
+            "term": "fatigue",
+            "start": 68,
+            "end": 75,
+            "definition": "An overwhelming feeling of tiredness or exhaustion that doesn't improve with rest, often caused by inflammation or blood loss."
+        },
+        {
+            "term": "Crohn's disease",
+            "start": 124,
+            "end": 139,
+            "definition": "A chronic inflammatory bowel disease that causes inflammation in the lining of the digestive tract, leading to symptoms like pain, diarrhea, and fatigue."
+        },
+        {
+            "term": "active disease flare",
+            "start": 159,
+            "end": 179,
+            "definition": "A period when a chronic condition like Crohn's disease suddenly worsens, with a return or increase of symptoms after a period of being controlled."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "Crohn's disease",
+            "start": 60,
+            "end": 75,
+            "definition": "A chronic condition that causes inflammation in your digestive tract, leading to pain, diarrhea, and other symptoms. It can go through periods of remission and flare-ups."
+        },
+        {
+            "term": "biologic",
+            "start": 102,
+            "end": 110,
+            "definition": "A type of medication made from living cells that targets specific parts of the immune system to reduce inflammation. Adalimumab (Humira) is the biologic you are currently taking."
+        },
+        {
+            "term": "aminosalicylate",
+            "start": 115,
+            "end": 130,
+            "definition": "A class of anti-inflammatory medication used to treat inflammatory bowel disease. Mesalamine, which you take, belongs to this drug class."
+        },
+        {
+            "term": "exacerbation",
+            "start": 167,
+            "end": 179,
+            "definition": "A worsening or flare-up of a disease, meaning your symptoms have become more severe after a period of being more controlled."
+        },
+        {
+            "term": "fecal urgency",
+            "start": 235,
+            "end": 248,
+            "definition": "A sudden, strong need to have a bowel movement that is difficult to delay, commonly experienced during Crohn's disease flares."
+        },
+        {
+            "term": "frank blood",
+            "start": 310,
+            "end": 321,
+            "definition": "Visible, obvious blood (as opposed to blood only detectable by testing), in this case seen in your stool."
+        },
+        {
+            "term": "diarrhea",
+            "start": 507,
+            "end": 515,
+            "definition": "Frequent, loose, or watery bowel movements. You are currently experiencing 8–10 episodes per day, which is a sign of significant intestinal inflammation."
+        },
+        {
+            "term": "low-grade fever",
+            "start": 640,
+            "end": 655,
+            "definition": "A mild elevation in body temperature, typically between 99°F and 100.9°F, which can indicate your body is fighting inflammation or infection."
+        },
+        {
+            "term": "acetaminophen",
+            "start": 702,
+            "end": 715,
+            "definition": "A common over-the-counter pain and fever-reducing medication (also known as Tylenol) that you used to bring down your fever."
+        },
+        {
+            "term": "fatigue",
+            "start": 742,
+            "end": 749,
+            "definition": "Persistent tiredness and lack of energy. Your fatigue may be related to active inflammation, blood loss, and reduced food intake."
+        },
+        {
+            "term": "colonoscopy",
+            "start": 932,
+            "end": 943,
+            "definition": "A procedure where a doctor uses a long, flexible camera to look inside your colon and intestines, used both to diagnose and monitor Crohn's disease."
+        },
+        {
+            "term": "adalimumab",
+            "start": 973,
+            "end": 983,
+            "definition": "A biologic medication that works by blocking a protein called TNF-alpha that causes inflammation. You have been taking it for about 3 years to help keep your Crohn's disease under control."
+        },
+        {
+            "term": "Humira",
+            "start": 985,
+            "end": 991,
+            "definition": "The brand name for adalimumab, a biologic injection used to treat Crohn's disease by reducing inflammation in the digestive tract."
+        },
+        {
+            "term": "mesalamine",
+            "start": 1023,
+            "end": 1033,
+            "definition": "An anti-inflammatory medication (an aminosalicylate) that works directly on the lining of your intestines to reduce inflammation from Crohn's disease."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "Fatigue",
+            "start": 20,
+            "end": 27,
+            "definition": "Persistent, overwhelming tiredness that interferes with daily activities. In your case, it is affecting your ability to concentrate and keep up with school."
+        },
+        {
+            "term": "low-grade fever",
+            "start": 61,
+            "end": 76,
+            "definition": "A mildly elevated body temperature, in your case 100.4°F, which can be a sign of active inflammation from your Crohn's disease."
+        },
+        {
+            "term": "abdominal cramping pain",
+            "start": 141,
+            "end": 164,
+            "definition": "Intense, squeezing pain in the belly that comes and goes, caused by inflammation and spasms in the intestinal walls."
+        },
+        {
+            "term": "diarrhea",
+            "start": 178,
+            "end": 186,
+            "definition": "Frequent loose or watery bowel movements. At 8–10 times daily, this indicates significant intestinal irritation and inflammation."
+        },
+        {
+            "term": "hematochezia",
+            "start": 207,
+            "end": 219,
+            "definition": "The medical term for passing bright red blood from the rectum, usually mixed with stool. This indicates bleeding from the lower part of the digestive tract."
+        },
+        {
+            "term": "fecal urgency",
+            "start": 260,
+            "end": 273,
+            "definition": "A sudden and intense need to have a bowel movement that is hard to control, a common symptom during active Crohn's flares."
+        },
+        {
+            "term": "anemia",
+            "start": 342,
+            "end": 348,
+            "definition": "A condition where you don't have enough healthy red blood cells to carry adequate oxygen to your body's tissues, which can cause tiredness and weakness."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "acetaminophen",
+            "start": 173,
+            "end": 186,
+            "definition": "An over-the-counter medication used to reduce fever and relieve pain, which you used to treat your low-grade fever."
+        },
+        {
+            "term": "CRP",
+            "start": 222,
+            "end": 225,
+            "definition": "C-reactive protein, a blood test that measures inflammation in the body. Your level of 28 is significantly above the normal limit of less than 3, confirming active inflammation."
+        },
+        {
+            "term": "ESR",
+            "start": 274,
+            "end": 277,
+            "definition": "Erythrocyte sedimentation rate, a blood test that measures how quickly red blood cells settle in a tube. A higher number (yours is 42) indicates more inflammation in the body."
+        },
+        {
+            "term": "Hemoglobin",
+            "start": 297,
+            "end": 307,
+            "definition": "The protein in red blood cells that carries oxygen throughout your body. Your level of 10.2 g\/dL is below the normal range for women (12–16), indicating anemia."
+        },
+        {
+            "term": "g\/dL",
+            "start": 314,
+            "end": 318,
+            "definition": "Grams per deciliter, a unit of measurement used for blood test results such as hemoglobin and albumin levels."
+        },
+        {
+            "term": "anemia",
+            "start": 360,
+            "end": 366,
+            "definition": "A condition where your blood doesn't have enough healthy red blood cells or hemoglobin. Your hemoglobin of 10.2 is below normal, likely due to blood loss from your intestines."
+        },
+        {
+            "term": "Fecal calprotectin",
+            "start": 369,
+            "end": 387,
+            "definition": "A stool test that measures a specific protein released by white blood cells in the intestines. Your level of 890 (normal is under 50) is very high, indicating significant inflammation in your gut."
+        },
+        {
+            "term": "Albumin",
+            "start": 433,
+            "end": 440,
+            "definition": "A protein made by the liver that is important for keeping fluid in your blood vessels and carrying nutrients. Your low level of 3.1 suggests poor nutrition or that your inflamed intestines are not absorbing nutrients well."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "Crohn's disease",
+            "start": 5,
+            "end": 20,
+            "definition": "A chronic inflammatory bowel disease affecting your digestive tract, causing symptoms like pain, diarrhea, and bleeding during flare-ups."
+        },
+        {
+            "term": "active flare",
+            "start": 25,
+            "end": 37,
+            "definition": "A period when Crohn's disease becomes significantly more active, with worsening symptoms and increased inflammation, as you are currently experiencing."
+        },
+        {
+            "term": "bloody diarrhea",
+            "start": 87,
+            "end": 102,
+            "definition": "Frequent loose stools containing visible blood, indicating active inflammation and damage to the intestinal lining."
+        },
+        {
+            "term": "abdominal pain",
+            "start": 104,
+            "end": 118,
+            "definition": "Pain in the belly area, in your case caused by inflammation in the intestines from your Crohn's disease flare."
+        },
+        {
+            "term": "biologic",
+            "start": 162,
+            "end": 170,
+            "definition": "A type of advanced medication derived from living cells that targets specific parts of the immune system to control inflammation."
+        },
+        {
+            "term": "aminosalicylate",
+            "start": 175,
+            "end": 190,
+            "definition": "A class of anti-inflammatory drugs used to treat inflammatory bowel disease by reducing inflammation directly in the intestinal lining."
+        },
+        {
+            "term": "inflammatory markers",
+            "start": 218,
+            "end": 238,
+            "definition": "Blood test results that indicate the level of inflammation in your body. Your CRP, ESR, and fecal calprotectin are all elevated, confirming active inflammation."
+        },
+        {
+            "term": "CRP",
+            "start": 240,
+            "end": 243,
+            "definition": "C-reactive protein, a marker of inflammation. Your level of 28 is well above the normal limit of less than 3."
+        },
+        {
+            "term": "ESR",
+            "start": 248,
+            "end": 251,
+            "definition": "Erythrocyte sedimentation rate, another marker of inflammation. Your level of 42 is elevated."
+        },
+        {
+            "term": "fecal calprotectin",
+            "start": 256,
+            "end": 274,
+            "definition": "A stool test measuring intestinal inflammation. Your level of 890 is far above the normal value of less than 50, indicating significant gut inflammation."
+        },
+        {
+            "term": "intestinal inflammation",
+            "start": 307,
+            "end": 330,
+            "definition": "Swelling and irritation of the lining of the intestines, which is the core problem in Crohn's disease and is causing your current symptoms."
+        },
+        {
+            "term": "loss of response",
+            "start": 341,
+            "end": 357,
+            "definition": "When a medication that was previously working well to control your disease stops being as effective over time. Your doctor wants to check whether this is happening with your adalimumab."
+        },
+        {
+            "term": "adalimumab",
+            "start": 361,
+            "end": 371,
+            "definition": "A biologic medication (brand name Humira) you take to control Crohn's disease by blocking an inflammation-causing protein called TNF-alpha."
+        },
+        {
+            "term": "colonoscopy",
+            "start": 404,
+            "end": 415,
+            "definition": "A procedure using a flexible camera to examine the inside of your colon and intestines, which will help your doctor see how much inflammation is present and whether your treatment needs to change."
+        },
+        {
+            "term": "Iron-deficiency anemia",
+            "start": 423,
+            "end": 445,
+            "definition": "A type of anemia caused by not having enough iron, often due to blood loss. In your case, the bleeding from your intestines has led to low iron and low hemoglobin levels."
+        },
+        {
+            "term": "gastrointestinal blood loss",
+            "start": 459,
+            "end": 486,
+            "definition": "Bleeding from somewhere in the digestive tract. Your bloody stools indicate that you are losing blood from your inflamed intestines."
+        },
+        {
+            "term": "Hemoglobin",
+            "start": 490,
+            "end": 500,
+            "definition": "The oxygen-carrying protein in your red blood cells. Your level of 10.2 g\/dL is below normal, which explains your fatigue and exhaustion."
+        },
+        {
+            "term": "Malnutrition",
+            "start": 559,
+            "end": 571,
+            "definition": "A condition where your body isn't getting enough nutrients, in your case because you're eating less and your inflamed intestines may not be absorbing food well."
+        },
+        {
+            "term": "malabsorption",
+            "start": 572,
+            "end": 585,
+            "definition": "When your intestines are unable to properly absorb nutrients from food, which can happen during active Crohn's disease flares."
+        },
+        {
+            "term": "hypoalbuminemia",
+            "start": 587,
+            "end": 602,
+            "definition": "A lower-than-normal level of albumin (a protein) in the blood. Your albumin is 3.1, below the normal range, indicating poor nutrition or absorption."
+        },
+        {
+            "term": "Albumin",
+            "start": 607,
+            "end": 614,
+            "definition": "A blood protein made by the liver that helps maintain fluid balance and transport nutrients. Your low level reflects the nutritional impact of your flare."
+        }
+    ],
+    "plan": [
+        {
+            "term": "corticosteroid therapy",
+            "start": 14,
+            "end": 36,
+            "definition": "Treatment with powerful anti-inflammatory medications (like prednisone) that quickly reduce inflammation. This is being used to bring your Crohn's flare under control."
+        },
+        {
+            "term": "prednisone",
+            "start": 72,
+            "end": 82,
+            "definition": "A corticosteroid medication that suppresses the immune system and reduces inflammation. It is being prescribed at 20 mg daily to help control your Crohn's disease flare."
+        },
+        {
+            "term": "taper",
+            "start": 120,
+            "end": 125,
+            "definition": "Gradually reducing the dose of a medication over time rather than stopping it suddenly. Your prednisone will be slowly decreased over about 6 weeks to safely wean you off it."
+        },
+        {
+            "term": "insomnia",
+            "start": 264,
+            "end": 272,
+            "definition": "Difficulty falling or staying asleep. This is a common temporary side effect of prednisone that your doctor wants you to be aware of."
+        },
+        {
+            "term": "adalimumab",
+            "start": 407,
+            "end": 417,
+            "definition": "Your biologic medication (also called Humira) given as an injection every two weeks. It will be continued for now while your doctor waits for colonoscopy results to decide if changes are needed."
+        },
+        {
+            "term": "Humira",
+            "start": 419,
+            "end": 425,
+            "definition": "The brand name for adalimumab, the biologic injection you take every two weeks to manage your Crohn's disease."
+        },
+        {
+            "term": "colonoscopy",
+            "start": 477,
+            "end": 488,
+            "definition": "A procedure to look inside your colon with a camera. Your doctor wants to see the colonoscopy results before making any changes to this medication."
+        },
+        {
+            "term": "mesalamine",
+            "start": 511,
+            "end": 521,
+            "definition": "An anti-inflammatory medication you take three times daily that works directly in the intestines to help control Crohn's disease symptoms."
+        },
+        {
+            "term": "anemia",
+            "start": 552,
+            "end": 558,
+            "definition": "A condition where you have too few healthy red blood cells. Your anemia is being treated with iron supplements to replace the iron lost through intestinal bleeding."
+        },
+        {
+            "term": "iron supplementation",
+            "start": 564,
+            "end": 584,
+            "definition": "Taking extra iron (in pill form) to help your body make more red blood cells and raise your hemoglobin level back to normal."
+        },
+        {
+            "term": "ferrous sulfate",
+            "start": 599,
+            "end": 614,
+            "definition": "A form of iron supplement taken by mouth. You'll take 325 mg once daily to treat your iron-deficiency anemia from blood loss."
+        },
+        {
+            "term": "constipation",
+            "start": 730,
+            "end": 742,
+            "definition": "Difficulty having bowel movements or having them less often. This is a common side effect of iron supplements."
+        },
+        {
+            "term": "colonoscopy",
+            "start": 477,
+            "end": 488,
+            "definition": "A procedure scheduled for February 25, 2026, where a doctor will use a camera to examine the inside of your intestines to assess inflammation and guide treatment decisions."
+        },
+        {
+            "term": "biopsies",
+            "start": 903,
+            "end": 911,
+            "definition": "Small tissue samples taken during a procedure like a colonoscopy. These are examined under a microscope to get detailed information about the inflammation in your intestines."
+        },
+        {
+            "term": "strictures",
+            "start": 1010,
+            "end": 1020,
+            "definition": "Narrowed areas in the intestines caused by scar tissue from chronic inflammation. Your doctor will check for these during the colonoscopy."
+        },
+        {
+            "term": "fistulas",
+            "start": 1024,
+            "end": 1032,
+            "definition": "Abnormal tunnel-like connections that can form between the intestine and other organs or the skin, a complication of Crohn's disease that your doctor will look for."
+        },
+        {
+            "term": "adalimumab",
+            "start": 407,
+            "end": 417,
+            "definition": "Your current biologic medication. The colonoscopy will help determine whether it is still effectively controlling your Crohn's disease."
+        },
+        {
+            "term": "Bowel preparation",
+            "start": 1087,
+            "end": 1104,
+            "definition": "A process of cleaning out your intestines before a colonoscopy, usually involving drinking a special solution and following dietary restrictions so the doctor can see clearly inside."
+        },
+        {
+            "term": "electrolyte replacement",
+            "start": 1500,
+            "end": 1523,
+            "definition": "Drinks or solutions that replenish important minerals (like sodium, potassium, and chloride) that your body loses through diarrhea. These help keep your body's chemistry balanced."
+        },
+        {
+            "term": "Pedialyte",
+            "start": 1538,
+            "end": 1547,
+            "definition": "A commercially available electrolyte drink that can help replace fluids and minerals lost from frequent diarrhea."
+        },
+        {
+            "term": "rectal bleeding",
+            "start": 1837,
+            "end": 1852,
+            "definition": "Bleeding from the rectum (the lower end of the intestines), which would come out with or instead of stool. Heavy rectal bleeding is a reason to seek emergency care."
+        }
+    ]
+}

@@ -1,0 +1,71 @@
+{
+    "clean_transcript": "Doctor: Dites-moi, monsieur, qu'est-ce que je peux faire pour vous aujourd'hui ?\n\nPatient: Ben écoutez, je sais pas, moi, normalement, c'est le médecin de l'hôpital qui avait pris la consultation. Et en fait, c'est parce qu'ici, ils ont découvert... Ici, c'est monté ici. Ils ont fait un IRM, et alors ils ont vu... C'est monté ici. Donc, dilatation de l'aorte descendante.\n\nDoctor: Et pourquoi ils ont fait le scanner aussi, oui ?\n\nPatient: Non, en fait, au départ, j'étais rentré pour des calculs à la vésicule biliaire. Il y avait un calcul qui s'était bloqué. Donc, ils avaient fait plusieurs examens dont l'IRM. Et là, ils ont constaté...\n\nDoctor: Ça, c'est l'aorte abdominale. Et le 19 janvier, ils ont fait un angioscanner de l'aorte ou pas ?\n\nPatient: Normalement, oui.\n\nDoctor: Trois zones d'anévrismes de l'aorte abdominale. Et il n'y a pas d'anévrismes au niveau de l'aorte thoracique. Donc, l'anévrisme, il est au niveau, bon, ici, de l'abdomen. Est-ce qu'ils vous ont dit qu'est-ce qu'il faut faire avec ça ?\n\nPatient: Je sais pas. Ils m'ont dit de prendre rendez-vous. Ils m'ont mis le rendez-vous avec vous, je pense.\n\nDoctor: En fait, ici, on parle de l'aorte qui est au niveau du ventre et pas au niveau du thorax. Donc, habituellement, ils envoient chez les cardiologues s'il s'agit de l'anévrisme de l'aorte ascendante. Donc, ici. Donc, c'est pas le cas chez vous. Donc, j'essaie de comprendre un petit peu pourquoi. Mais bon. Maintenant, est-ce que vous prenez des médicaments ?\n\nPatient: Pour l'instant, non.\n\nDoctor: Vous êtes essoufflé ou vous avez des douleurs dans la poitrine ?\n\nPatient: Des douleurs dans la poitrine, non. Mais c'est vrai que quand je fais un petit effort ou quoi, je m'essouffle assez. Voilà.\n\nDoctor: [UNCLEAR] OK. Alors. Essayons maintenant de voir un petit peu pour une échographie. Donc, vous pouvez enlever la blouse et vous installer sur le dos.\n\nDoctor: OK. Donc, vous fumez, oui ?\n\nPatient: Oui. Bon, j'ai diminué la quantité. Je vais essayer d'arrêter. Moi, je suis plus ou moins à 10 cigarettes par jour. Maintenant, j'étais quand même à environ 25 cigarettes. Maintenant, j'essaie de tenir les 10 cigarettes par jour. Mais je vais essayer d'arrêter.\n\nDoctor: Couchez-vous sur le dos.\n\nPatient: Sur le dos ?\n\nDoctor: Oui. Là, c'est comme ça.\n\nPatient: D'accord, OK.\n\nDoctor: Couchez-vous sur le dos.\n\nPatient: Sur le dos ?\n\nDoctor: Oui. Maintenant, tournez-vous vers le côté gauche. Mettez la main droite le long du corps et la main gauche derrière la tête. C'est bon. C'est bon. C'est bon.\n\nDoctor: Voilà. Écoutez, ici, au niveau de l'échographie, je ne vois pas de gros soucis. Vous avez fait une [UNCLEAR — possibly \"épreuve d'effort\" (stress test)] ici ?\n\nPatient: Oui.\n\nDoctor: OK, ça c'est bien. Donc, la [UNCLEAR — possibly \"épreuve d'effort\"] était aussi normale. Et alors ? Donc, je vais essayer de faire un scanner coronaire. C'est un examen qui va nous permettre de voir les artères du cœur tenant compte de tous les facteurs de risque que vous avez ici. Donc, j'aimerais bien voir s'il n'y a pas de problème là, mais généralement, à l'instant, je n'ai rien trouvé. Est-ce que vous avez des questions ?\n\nPatient: Voilà, donc ça c'est la demande.\n\nDoctor: Vous allez au niveau deux pour le faire, OK ?\n\nPatient: Ça, je vous donne ? Je suppose.\n\nDoctor: Normalement, oui.\n\nPatient: Ils vont le faire aujourd'hui ?\n\nDoctor: Non, il y a un petit peu d'attente. Je vais aller prendre le rendez-vous au niveau deux.\n\nPatient: Oui, au niveau deux. OK.\n\nDoctor: Ça va ? OK, c'est tout de mon côté. Merci beaucoup.\n\nPatient: Merci. Bonne journée.\n\nDoctor: Merci, bonne journée également.",
+    "speakers": {
+        "doctor": "Dr. Nedo",
+        "patient": "Patient"
+    },
+    "extracted_entities": {
+        "symptoms": [
+            "Dyspnea on exertion",
+            "No chest pain (explicitly denied)"
+        ],
+        "diagnoses": [
+            "Abdominal aortic aneurysm — three zones (incidental finding)",
+            "Dilation of the descending aorta",
+            "Gallbladder calculi with obstruction (prior hospitalization)"
+        ],
+        "medications": [],
+        "tests_ordered": [
+            "Coronary CT scan (scanner coronaire) — to evaluate coronary arteries given cardiovascular risk factors"
+        ],
+        "test_results": [
+            {
+                "test": "MRI (performed during hospitalization)",
+                "result": "Dilation of the descending aorta identified"
+            },
+            {
+                "test": "CT angiography of the aorta (January 19)",
+                "result": "Three zones of abdominal aortic aneurysm; no thoracic aortic aneurysm"
+            },
+            {
+                "test": "Transthoracic echocardiography (performed today by Dr. Nedo)",
+                "result": "Normal — no major abnormalities"
+            },
+            {
+                "test": "[UNCLEAR — possibly stress test \/ épreuve d'effort] (performed at hospital)",
+                "result": "Normal"
+            }
+        ],
+        "vitals": [],
+        "allergies": [],
+        "procedures": [
+            "Transthoracic echocardiography (performed today)"
+        ]
+    },
+    "soap_note": {
+        "chief_complaint": "Patient referred to cardiology after incidental discovery of abdominal aortic aneurysms during hospitalization for obstructing gallbladder calculi.",
+        "history_of_present_illness": "Male patient referred from hospital after an incidental finding of aortic dilation during workup for gallbladder disease.\n\nThe patient was initially hospitalized for gallbladder calculi with an obstructing stone. During that admission, an MRI was performed which revealed dilation of the descending aorta. A subsequent CT angiography of the aorta on January 19 demonstrated three zones of abdominal aortic aneurysm with no thoracic aortic involvement.\n\nThe patient was referred to cardiology, although Dr. Nedo notes that abdominal aortic aneurysms are not typically within the cardiologist's scope (ascending aortic aneurysms are), and questions the rationale for this specific referral.\n\nThe patient denies chest pain. He reports dyspnea on mild exertion.\n\nSocial history:\n- Active smoker: approximately 10 cigarettes per day, reduced from approximately 25 cigarettes per day\n- Patient expresses intent to quit smoking\n\nCurrent medications: none.",
+        "review_of_systems": "- Cardiovascular: no chest pain\n- Respiratory: dyspnea on mild exertion\n- Gastrointestinal: recent hospitalization for gallbladder calculi (resolved)\n- Constitutional: no other symptoms reported",
+        "physical_exam": "- Transthoracic echocardiography: no significant abnormalities identified\n- A prior test performed at the hospital [UNCLEAR — possibly stress test \/ épreuve d'effort]: reported as normal",
+        "assessment": "1. Abdominal aortic aneurysm (three zones) — incidentally discovered during hospitalization for gallbladder calculi. No thoracic aortic involvement. Dr. Nedo notes this is typically not managed by cardiology (ascending aortic aneurysms would be); referral rationale unclear.\n\n2. Dyspnea on exertion — to be further evaluated.\n\n3. Active smoking — significant cardiovascular risk factor.\n\n4. Echocardiography today shows no major cardiac structural abnormality.",
+        "plan": "1. Coronary CT scan ordered to evaluate coronary arteries in light of the patient's cardiovascular risk factors (smoking, aortic aneurysmal disease, dyspnea on exertion). Appointment to be scheduled at level 2 of the facility.\n\n2. Smoking cessation strongly encouraged — patient currently smoking approximately 10 cigarettes per day (reduced from 25).\n\n3. Follow-up after coronary CT scan results are available.\n\n4. Management of the abdominal aortic aneurysm may require referral to vascular surgery (not explicitly stated but implied given Dr. Nedo's remarks about scope of practice).",
+        "current_medications": "No current medications. Patient explicitly states he is not taking any medications."
+    },
+    "unclear_sections": [
+        {
+            "timestamp_or_context": "Doctor's remark immediately after the patient describes dyspnea on exertion",
+            "original_text": "C'est pas si seul que vous êtes devenu.",
+            "issue": "Speech-to-text artifact. The sentence is grammatically incoherent in French and its clinical meaning cannot be determined. Possibly a garbled comment about the patient's condition or a conversational aside."
+        },
+        {
+            "timestamp_or_context": "During echocardiography results discussion — doctor asks if a specific test was done at the hospital",
+            "original_text": "Vous avez fait une prévalophore ici ? ... la prévalophore était aussi normale.",
+            "issue": "Speech-to-text artifact. 'Prévalophore' is not a recognized medical term. Most likely refers to 'épreuve d'effort' (exercise stress test) based on clinical context, but could also be another investigation. The result was reported as normal. Term could not be confirmed."
+        },
+        {
+            "timestamp_or_context": "Near the end — patient's remark about the prescription\/order form",
+            "original_text": "Voilà, donc ça c'est la demande. \/ Ça, je vous donne ? Je suppose.",
+            "issue": "Minor conversational ambiguity regarding handling of the test order document. No clinical impact."
+        }
+    ]
+}

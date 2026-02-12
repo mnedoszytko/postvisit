@@ -5,7 +5,7 @@
       embedded
         ? 'w-full h-full rounded-2xl border shadow-sm'
         : 'fixed inset-y-0 right-0 w-full sm:w-96 border-l shadow-xl z-50',
-      highlight ? 'border-emerald-400 shadow-emerald-200/50 ring-2 ring-emerald-300' : 'border-gray-200'
+      highlight ? 'border-emerald-400 shadow-lg shadow-emerald-200/60 ring-2 ring-emerald-300 animate-[chat-flash_1.5s_ease-out]' : 'border-gray-200'
     ]"
   >
     <!-- Header -->

@@ -1,0 +1,458 @@
+{
+    "chief_complaint": [
+        {
+            "term": "cough",
+            "start": 10,
+            "end": 15,
+            "definition": "A forceful expulsion of air from the lungs, often a sign of airway irritation or infection. Your worsening cough is one of the key symptoms being evaluated at this visit."
+        },
+        {
+            "term": "yellow-green sputum production",
+            "start": 21,
+            "end": 51,
+            "definition": "Coughing up mucus that is yellow or green in color, which often suggests a bacterial infection in the airways."
+        },
+        {
+            "term": "shortness of breath",
+            "start": 68,
+            "end": 87,
+            "definition": "Difficulty breathing or feeling like you cannot get enough air. Yours has been getting progressively worse over the past four weeks."
+        },
+        {
+            "term": "COPD",
+            "start": 145,
+            "end": 149,
+            "definition": "Chronic Obstructive Pulmonary Disease — a long-term lung condition that makes it hard to breathe by blocking airflow. You have a severe form of this disease."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "COPD",
+            "start": 50,
+            "end": 54,
+            "definition": "Chronic Obstructive Pulmonary Disease — a long-term lung disease that causes blocked airflow and difficulty breathing. You have been diagnosed with a severe form."
+        },
+        {
+            "term": "respiratory symptoms",
+            "start": 106,
+            "end": 126,
+            "definition": "Symptoms related to breathing and the lungs, such as cough, shortness of breath, and wheezing."
+        },
+        {
+            "term": "upper respiratory symptoms",
+            "start": 152,
+            "end": 178,
+            "definition": "Symptoms affecting the nose, throat, and upper airways, such as a runny nose and sore throat, often seen with colds."
+        },
+        {
+            "term": "sore throat",
+            "start": 204,
+            "end": 215,
+            "definition": "Pain or irritation in the throat, often caused by a viral infection like the common cold."
+        },
+        {
+            "term": "sputum",
+            "start": 361,
+            "end": 367,
+            "definition": "Mucus or phlegm that is coughed up from the lungs and airways. Changes in its color can indicate infection."
+        },
+        {
+            "term": "Shortness of breath",
+            "start": 391,
+            "end": 410,
+            "definition": "Difficulty breathing or a feeling that you cannot get enough air. Yours has worsened beyond what is typical for you."
+        },
+        {
+            "term": "chest tightness",
+            "start": 549,
+            "end": 564,
+            "definition": "A sensation of pressure or squeezing in the chest, which in your case is associated with forceful coughing episodes."
+        },
+        {
+            "term": "wheezing",
+            "start": 657,
+            "end": 665,
+            "definition": "A high-pitched whistling sound when breathing, caused by narrowed airways. Your wife can hear yours from across the room, indicating significant airway narrowing."
+        },
+        {
+            "term": "rescue inhaler",
+            "start": 719,
+            "end": 733,
+            "definition": "A quick-relief inhaler (usually albuterol) used to rapidly open the airways during breathing difficulty. Your increased use from 1–2 to 6–7 times daily indicates your symptoms have significantly worsened."
+        },
+        {
+            "term": "FEV1",
+            "start": 847,
+            "end": 851,
+            "definition": "Forced Expiratory Volume in 1 second — a breathing test measurement that shows how much air you can forcefully blow out in one second. Your prior result of 48% means your lungs were working at less than half of normal capacity."
+        },
+        {
+            "term": "heart disease",
+            "start": 930,
+            "end": 943,
+            "definition": "A general term for conditions affecting the heart and blood vessels. Your father's history of heart disease is noted because it can be relevant to your overall health risk."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "Productive cough",
+            "start": 19,
+            "end": 35,
+            "definition": "A cough that brings up mucus or phlegm from the lungs, as opposed to a dry cough. This helps your doctor assess whether infection may be present."
+        },
+        {
+            "term": "yellow-green sputum",
+            "start": 41,
+            "end": 60,
+            "definition": "Mucus coughed up from the lungs that is yellow or green, which can suggest a bacterial infection."
+        },
+        {
+            "term": "dyspnea on exertion",
+            "start": 73,
+            "end": 92,
+            "definition": "Shortness of breath that occurs during physical activity. Yours has been getting worse, meaning activities that were previously manageable are now difficult."
+        },
+        {
+            "term": "wheezing",
+            "start": 103,
+            "end": 111,
+            "definition": "A whistling sound during breathing caused by narrowed or inflamed airways in the lungs."
+        },
+        {
+            "term": "Chest tightness",
+            "start": 114,
+            "end": 129,
+            "definition": "A feeling of pressure or constriction in the chest, which in your case occurs with coughing."
+        },
+        {
+            "term": "chest pain",
+            "start": 222,
+            "end": 232,
+            "definition": "Pain felt in the chest area. Your doctor noted you do not have sharp chest pain, which helps rule out certain heart or lung emergencies."
+        },
+        {
+            "term": "sore throat",
+            "start": 268,
+            "end": 279,
+            "definition": "Pain or irritation in the throat, which you had at the start of your illness but has since resolved."
+        },
+        {
+            "term": "hemoptysis",
+            "start": 375,
+            "end": 385,
+            "definition": "Coughing up blood or blood-stained mucus from the lungs. You denied having this symptom, which is a good sign."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "Oxygen saturation",
+            "start": 14,
+            "end": 31,
+            "definition": "A measurement of how much oxygen your blood is carrying, expressed as a percentage. A healthy level is typically 95% or higher."
+        },
+        {
+            "term": "room air",
+            "start": 40,
+            "end": 48,
+            "definition": "Normal air without any supplemental oxygen. Your oxygen level was measured while breathing regular air to see how well your lungs are working on their own."
+        },
+        {
+            "term": "wheezing",
+            "start": 116,
+            "end": 124,
+            "definition": "A whistling sound heard through a stethoscope when you breathe, caused by narrowed airways in your lungs."
+        },
+        {
+            "term": "auscultation",
+            "start": 128,
+            "end": 140,
+            "definition": "The process of listening to sounds inside your body using a stethoscope. Your doctor used this to evaluate your lung sounds."
+        },
+        {
+            "term": "Crackles",
+            "start": 143,
+            "end": 151,
+            "definition": "Popping or crackling sounds heard through a stethoscope when you breathe in, often caused by fluid or mucus in the small airways of the lungs."
+        },
+        {
+            "term": "lung bases",
+            "start": 159,
+            "end": 169,
+            "definition": "The lower portions of your lungs. Crackles heard here can indicate fluid, mucus buildup, or infection in the lower airways."
+        },
+        {
+            "term": "bilaterally",
+            "start": 170,
+            "end": 181,
+            "definition": "On both sides. In your case, abnormal sounds were heard in both lungs."
+        },
+        {
+            "term": "Diminished breath sounds",
+            "start": 184,
+            "end": 208,
+            "definition": "Quieter-than-normal breathing sounds heard through a stethoscope, which can indicate trapped air or reduced airflow in the lungs, as seen in COPD."
+        },
+        {
+            "term": "Spirometry",
+            "start": 247,
+            "end": 257,
+            "definition": "A breathing test where you blow into a device as hard and fast as you can to measure how well your lungs are working. This was performed during your visit."
+        },
+        {
+            "term": "FEV1",
+            "start": 284,
+            "end": 288,
+            "definition": "Forced Expiratory Volume in 1 second — the amount of air you can forcefully blow out in one second. Your result of 42% predicted means your lungs are working at less than half their expected capacity, which is classified as severe."
+        },
+        {
+            "term": "Peak expiratory flow",
+            "start": 344,
+            "end": 364,
+            "definition": "The maximum speed at which you can blow air out of your lungs. Your result of 210 L\/min helps your doctor gauge the severity of your airway obstruction."
+        },
+        {
+            "term": "WBC",
+            "start": 403,
+            "end": 406,
+            "definition": "White Blood Cell count — a blood test measuring infection-fighting cells. Your mildly elevated level of 12.4 suggests your body may be fighting an infection."
+        },
+        {
+            "term": "BNP",
+            "start": 475,
+            "end": 478,
+            "definition": "B-type Natriuretic Peptide — a blood test used to check for heart failure. Your normal result is reassuring and helps rule out heart failure as a cause of your breathing problems."
+        },
+        {
+            "term": "heart failure",
+            "start": 499,
+            "end": 512,
+            "definition": "A condition where the heart cannot pump blood efficiently enough to meet the body's needs. Your doctor tested for this to make sure it is not contributing to your symptoms."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "Acute exacerbation of severe COPD",
+            "start": 5,
+            "end": 38,
+            "definition": "A sudden worsening or flare-up of your chronic lung disease, causing increased cough, mucus production, and breathing difficulty beyond your usual baseline. This is what brought you in today."
+        },
+        {
+            "term": "infectious etiology",
+            "start": 52,
+            "end": 71,
+            "definition": "An infection as the likely cause. Your doctor believes a respiratory infection is what triggered this flare-up of your COPD."
+        },
+        {
+            "term": "purulent sputum",
+            "start": 85,
+            "end": 100,
+            "definition": "Thick mucus that is yellow or green in color, which typically indicates a bacterial infection in the airways."
+        },
+        {
+            "term": "WBC",
+            "start": 129,
+            "end": 132,
+            "definition": "White Blood Cell count — a measure of infection-fighting cells in your blood. Your mildly elevated count supports the possibility of an infection."
+        },
+        {
+            "term": "FEV1",
+            "start": 149,
+            "end": 153,
+            "definition": "Forced Expiratory Volume in 1 second — a key measurement of lung function. Yours has declined from 48% to 42%, showing your breathing capacity has worsened."
+        },
+        {
+            "term": "BNP",
+            "start": 192,
+            "end": 195,
+            "definition": "B-type Natriuretic Peptide — a blood marker for heart failure. Your normal result rules out heart failure as a factor in your breathing problems."
+        },
+        {
+            "term": "heart failure",
+            "start": 230,
+            "end": 243,
+            "definition": "A condition where the heart doesn't pump blood as well as it should. Your doctor confirmed this is not contributing to your current symptoms."
+        },
+        {
+            "term": "smoking cessation",
+            "start": 368,
+            "end": 385,
+            "definition": "The process of quitting smoking. Although you quit 18 years ago, COPD can continue to progress even after stopping smoking."
+        },
+        {
+            "term": "exacerbation",
+            "start": 11,
+            "end": 23,
+            "definition": "A flare-up or worsening of a chronic condition. Your doctor expects your current flare-up to be at least partially reversible with treatment."
+        },
+        {
+            "term": "Borderline hypoxemia",
+            "start": 488,
+            "end": 508,
+            "definition": "A blood oxygen level that is just below normal. Your oxygen saturation of 91% is lower than the ideal 95%, but not yet low enough to require supplemental oxygen."
+        },
+        {
+            "term": "SpO2",
+            "start": 515,
+            "end": 519,
+            "definition": "A measurement of blood oxygen levels taken with a small clip placed on your finger. Your reading of 91% indicates your lungs are not delivering quite enough oxygen."
+        },
+        {
+            "term": "supplemental oxygen",
+            "start": 575,
+            "end": 594,
+            "definition": "Extra oxygen delivered through a tube or mask to help maintain adequate oxygen levels when the lungs cannot supply enough on their own."
+        }
+    ],
+    "plan": [
+        {
+            "term": "Antibiotic therapy",
+            "start": 5,
+            "end": 23,
+            "definition": "Treatment with medication that kills or stops the growth of bacteria. This is being prescribed to treat the suspected bacterial infection causing your COPD flare-up."
+        },
+        {
+            "term": "acute exacerbation",
+            "start": 28,
+            "end": 46,
+            "definition": "A sudden worsening or flare-up of your chronic lung disease. The antibiotic is being used to treat the infection that is believed to have triggered this episode."
+        },
+        {
+            "term": "azithromycin",
+            "start": 61,
+            "end": 73,
+            "definition": "An antibiotic medication used to treat bacterial infections. It is being prescribed as a 5-day course to address the infection contributing to your COPD flare-up."
+        },
+        {
+            "term": "Z-pack",
+            "start": 75,
+            "end": 81,
+            "definition": "A common brand-name packaging of azithromycin — a 5-day antibiotic course where you take a higher dose on day 1 and a lower dose on days 2 through 5."
+        },
+        {
+            "term": "orally",
+            "start": 91,
+            "end": 97,
+            "definition": "Taken by mouth, as a pill or tablet."
+        },
+        {
+            "term": "nausea",
+            "start": 185,
+            "end": 191,
+            "definition": "A feeling of sickness in the stomach with an urge to vomit. This can be a side effect of azithromycin, which is why your doctor recommends taking it with a light snack."
+        },
+        {
+            "term": "diarrhea",
+            "start": 211,
+            "end": 219,
+            "definition": "Frequent loose or watery bowel movements. This is a possible side effect of antibiotics, and your doctor wants you to report it if it occurs."
+        },
+        {
+            "term": "maintenance inhalers",
+            "start": 235,
+            "end": 255,
+            "definition": "Inhalers used on a regular daily schedule to keep your airways open and control symptoms long-term, as opposed to rescue inhalers used only when needed."
+        },
+        {
+            "term": "Spiriva",
+            "start": 264,
+            "end": 271,
+            "definition": "A brand-name inhaler containing tiotropium, a long-acting medication that helps keep your airways open. You take this once daily as part of your regular COPD management."
+        },
+        {
+            "term": "tiotropium",
+            "start": 273,
+            "end": 283,
+            "definition": "A long-acting bronchodilator medication that relaxes the muscles around your airways to help you breathe more easily. It is the active ingredient in Spiriva."
+        },
+        {
+            "term": "Advair",
+            "start": 311,
+            "end": 317,
+            "definition": "A brand-name combination inhaler containing two medications — fluticasone (a steroid to reduce inflammation) and salmeterol (a bronchodilator to open airways). You take this twice daily."
+        },
+        {
+            "term": "fluticasone\/salmeterol",
+            "start": 319,
+            "end": 341,
+            "definition": "A combination of two medications: fluticasone, an inhaled steroid that reduces airway inflammation, and salmeterol, a long-acting bronchodilator that keeps airways open."
+        },
+        {
+            "term": "Albuterol rescue inhaler",
+            "start": 370,
+            "end": 394,
+            "definition": "A quick-relief inhaler that rapidly opens your airways when you are having difficulty breathing. It is meant for use as needed, not on a regular schedule."
+        },
+        {
+            "term": "Inhaler technique optimization",
+            "start": 421,
+            "end": 451,
+            "definition": "Improving the way you use your inhaler so that the medication reaches deep into your lungs where it is needed. Proper technique makes your medication more effective."
+        },
+        {
+            "term": "Respiratory therapist",
+            "start": 460,
+            "end": 481,
+            "definition": "A healthcare professional specially trained in lung treatments, breathing exercises, and proper inhaler use."
+        },
+        {
+            "term": "dry powder inhaler",
+            "start": 506,
+            "end": 524,
+            "definition": "A type of inhaler that delivers medication as a fine powder you breathe in deeply. It requires a specific breathing technique to work properly."
+        },
+        {
+            "term": "oral thrush",
+            "start": 664,
+            "end": 675,
+            "definition": "A fungal infection in the mouth that can develop as a side effect of inhaled steroid medications like Advair. Rinsing your mouth after each dose helps prevent it."
+        },
+        {
+            "term": "Pulmonary rehabilitation",
+            "start": 682,
+            "end": 706,
+            "definition": "A supervised program of exercise and education designed to help people with chronic lung diseases like COPD improve their breathing, physical endurance, and quality of life."
+        },
+        {
+            "term": "pulmonary rehab program",
+            "start": 733,
+            "end": 756,
+            "definition": "A structured program involving supervised exercise sessions and education to help strengthen your body and improve your ability to manage COPD."
+        },
+        {
+            "term": "supplemental oxygen",
+            "start": 1071,
+            "end": 1090,
+            "definition": "Extra oxygen delivered through a nasal tube or mask to help maintain healthy blood oxygen levels when your lungs cannot supply enough on their own."
+        },
+        {
+            "term": "SpO2",
+            "start": 1105,
+            "end": 1109,
+            "definition": "A measure of blood oxygen saturation taken with a clip on your finger. Your current reading of 91% is borderline low."
+        },
+        {
+            "term": "oximetry study",
+            "start": 1151,
+            "end": 1165,
+            "definition": "A test that monitors your blood oxygen levels, often done overnight while you sleep, to check if your oxygen drops to dangerously low levels during rest."
+        },
+        {
+            "term": "spirometry",
+            "start": 1381,
+            "end": 1391,
+            "definition": "A breathing test where you blow into a device to measure how well your lungs are working. This will be repeated at your follow-up to check whether your lung function has improved after treatment."
+        },
+        {
+            "term": "FEV1",
+            "start": 1415,
+            "end": 1419,
+            "definition": "Forced Expiratory Volume in 1 second — the key measurement from your breathing test that shows how much air you can blow out quickly. Your doctor will recheck this to see if treatment has helped your lung function recover."
+        },
+        {
+            "term": "hemoptysis",
+            "start": 1542,
+            "end": 1552,
+            "definition": "Coughing up blood or blood-tinged mucus. This would be a serious warning sign requiring immediate emergency care."
+        }
+    ]
+}

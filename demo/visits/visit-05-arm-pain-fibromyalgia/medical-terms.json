@@ -1,0 +1,260 @@
+{
+    "chief_complaint": [
+        {
+            "term": "Arm pain",
+            "start": 0,
+            "end": 8,
+            "definition": "Pain felt in one or both arms. In your case, this has been occurring for several months and is being evaluated to determine whether it could be related to a heart problem."
+        },
+        {
+            "term": "cardiology",
+            "start": 90,
+            "end": 100,
+            "definition": "The branch of medicine that deals with the heart and blood vessels. You were referred to a cardiologist to check whether your arm pain might be coming from a heart condition."
+        },
+        {
+            "term": "cardiac",
+            "start": 126,
+            "end": 133,
+            "definition": "Relating to the heart. Your doctor wanted to determine whether your symptoms have a cardiac (heart-related) cause."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "epigastric",
+            "start": 274,
+            "end": 284,
+            "definition": "Referring to the upper middle area of the abdomen, just below the ribcage. You described a sensation of discomfort in this area along with your arm pain."
+        },
+        {
+            "term": "post-prandial",
+            "start": 450,
+            "end": 463,
+            "definition": "Occurring after eating a meal. Your doctor was trying to determine whether your pain episodes are triggered by eating, but this was unclear."
+        },
+        {
+            "term": "Fibromyalgia",
+            "start": 664,
+            "end": 676,
+            "definition": "A chronic condition that causes widespread muscle pain, tenderness, and fatigue throughout the body. You are currently being treated for this condition."
+        },
+        {
+            "term": "Disc protrusion",
+            "start": 723,
+            "end": 738,
+            "definition": "A condition where one of the cushioning discs between the bones of the spine bulges outward, which can press on nearby nerves and cause pain."
+        },
+        {
+            "term": "L4-L5",
+            "start": 742,
+            "end": 747,
+            "definition": "The area between the fourth and fifth lumbar (lower back) vertebrae. This is where your disc protrusion is located, which can cause pain that radiates to other parts of the body."
+        },
+        {
+            "term": "spinal column",
+            "start": 749,
+            "end": 762,
+            "definition": "The backbone, made up of a series of small bones (vertebrae) stacked on top of each other, which protects the spinal cord and supports the body."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "Cardiovascular",
+            "start": 0,
+            "end": 14,
+            "definition": "Relating to the heart and blood vessels. This section of the review checks for symptoms that might indicate a heart or circulation problem."
+        },
+        {
+            "term": "anginal",
+            "start": 43,
+            "end": 50,
+            "definition": "Related to angina, which is chest pain or discomfort caused by reduced blood flow to the heart muscle. Your arm pain was noted to not follow a typical angina pattern."
+        },
+        {
+            "term": "exertional",
+            "start": 64,
+            "end": 74,
+            "definition": "Triggered by physical activity or exercise. Your pain was noted to not be brought on by exertion, which makes a heart-related cause less likely."
+        },
+        {
+            "term": "palpitations",
+            "start": 80,
+            "end": 92,
+            "definition": "A sensation of your heart beating rapidly, fluttering, or pounding. You did not report experiencing this symptom."
+        },
+        {
+            "term": "syncope",
+            "start": 94,
+            "end": 101,
+            "definition": "Fainting or temporary loss of consciousness, usually caused by a drop in blood flow to the brain. You did not report this symptom."
+        },
+        {
+            "term": "dyspnea",
+            "start": 106,
+            "end": 113,
+            "definition": "Difficulty breathing or shortness of breath. You did not report experiencing this symptom."
+        },
+        {
+            "term": "Gastrointestinal",
+            "start": 124,
+            "end": 140,
+            "definition": "Relating to the stomach and intestines (the digestive system). This section reviews symptoms related to your digestive tract."
+        },
+        {
+            "term": "Epigastric discomfort",
+            "start": 144,
+            "end": 165,
+            "definition": "Pain or an uneasy feeling in the upper middle part of the abdomen, just below the ribcage. You reported this sensation along with your pain episodes."
+        },
+        {
+            "term": "Musculoskeletal",
+            "start": 235,
+            "end": 250,
+            "definition": "Relating to the muscles, bones, and joints. This section reviews symptoms involving your body's structural and movement systems."
+        },
+        {
+            "term": "fibromyalgia",
+            "start": 260,
+            "end": 272,
+            "definition": "A chronic condition that causes widespread pain, tenderness, and fatigue. This is a known condition in your medical history."
+        },
+        {
+            "term": "lumbar disc protrusion",
+            "start": 281,
+            "end": 303,
+            "definition": "A bulging disc in the lower back area of the spine. This is a known condition in your history that may contribute to pain in various parts of your body."
+        },
+        {
+            "term": "L4-L5",
+            "start": 305,
+            "end": 310,
+            "definition": "The location between the fourth and fifth vertebrae in your lower back where your disc protrusion is found."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "Cardiac examination",
+            "start": 0,
+            "end": 19,
+            "definition": "A physical examination of the heart, where the doctor listens to your heart sounds and checks for abnormalities using a stethoscope and other techniques."
+        },
+        {
+            "term": "supine",
+            "start": 54,
+            "end": 60,
+            "definition": "Lying flat on your back, face up. This is a standard position used during a heart examination."
+        },
+        {
+            "term": "left lateral decubitus",
+            "start": 73,
+            "end": 95,
+            "definition": "Lying on your left side. This position brings the heart closer to the chest wall, making it easier for the doctor to listen to heart sounds and perform an echocardiographic exam."
+        },
+        {
+            "term": "echocardiographic",
+            "start": 115,
+            "end": 132,
+            "definition": "Related to an echocardiogram, which is an ultrasound test that uses sound waves to create images of the heart. This positioning helps get clearer views of the heart."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "Non-cardiac",
+            "start": 0,
+            "end": 11,
+            "definition": "Not related to the heart. Your doctor concluded that your arm and stomach area pain is not caused by a heart problem."
+        },
+        {
+            "term": "epigastric pain",
+            "start": 20,
+            "end": 35,
+            "definition": "Pain in the upper middle area of the abdomen. Your doctor assessed that this symptom, along with your arm pain, is not heart-related."
+        },
+        {
+            "term": "cardiac disease",
+            "start": 73,
+            "end": 88,
+            "definition": "Any disease or disorder affecting the heart. Your doctor determined that your pain pattern does not suggest heart disease."
+        },
+        {
+            "term": "cardiac examination",
+            "start": 116,
+            "end": 135,
+            "definition": "A physical exam focused on the heart. No abnormalities were found during your exam."
+        },
+        {
+            "term": "Fibromyalgia",
+            "start": 230,
+            "end": 242,
+            "definition": "A chronic condition causing widespread muscle pain and tenderness. Your doctor believes this may be contributing to your symptoms."
+        },
+        {
+            "term": "Lumbar disc protrusion",
+            "start": 245,
+            "end": 267,
+            "definition": "A bulging disc in the lower back. Your doctor believes this existing condition, along with fibromyalgia, is the most likely explanation for your pain."
+        },
+        {
+            "term": "L4-L5",
+            "start": 271,
+            "end": 276,
+            "definition": "The specific lower back spinal level where your disc protrusion is located, between the fourth and fifth lumbar vertebrae."
+        },
+        {
+            "term": "cardiac risk factors",
+            "start": 292,
+            "end": 312,
+            "definition": "Conditions or habits that increase the chance of developing heart disease, such as high blood pressure, high cholesterol, diabetes, or smoking. None were identified in your case."
+        }
+    ],
+    "plan": [
+        {
+            "term": "cardiac tests",
+            "start": 17,
+            "end": 30,
+            "definition": "Medical tests used to evaluate how well the heart is functioning, such as ECGs, stress tests, or imaging studies. None were needed in your case because your symptoms do not suggest a heart problem."
+        },
+        {
+            "term": "cardiac etiology",
+            "start": 98,
+            "end": 114,
+            "definition": "A heart-related cause of symptoms. Your doctor determined your symptoms are not consistent with a cardiac origin."
+        },
+        {
+            "term": "risk factors",
+            "start": 134,
+            "end": 146,
+            "definition": "Conditions or habits that increase the likelihood of developing a disease. No significant heart-related risk factors were found in your evaluation."
+        },
+        {
+            "term": "Cholesterol levels",
+            "start": 168,
+            "end": 186,
+            "definition": "A measurement of fats in the blood. High cholesterol can increase the risk of heart disease. Your doctor recommended checking these at your next routine blood draw."
+        },
+        {
+            "term": "blood draw",
+            "start": 221,
+            "end": 231,
+            "definition": "A procedure where a small sample of blood is taken from a vein, usually in the arm, to be tested in a laboratory."
+        },
+        {
+            "term": "spinal column pathology",
+            "start": 340,
+            "end": 363,
+            "definition": "A disease or abnormal condition affecting the backbone. In your case, this refers to the disc protrusion in your lower back."
+        },
+        {
+            "term": "L4-L5 disc protrusion",
+            "start": 365,
+            "end": 386,
+            "definition": "A bulging disc between the fourth and fifth lumbar vertebrae in your lower back. Your doctor recommends following up with your general practitioner for management of this condition."
+        },
+        {
+            "term": "fibromyalgia",
+            "start": 392,
+            "end": 404,
+            "definition": "A chronic condition causing widespread pain and fatigue. Your doctor recommends continuing to manage this condition with your general practitioner."
+        }
+    ]
+}

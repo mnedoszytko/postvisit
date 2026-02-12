@@ -1,0 +1,102 @@
+{
+    "clean_transcript": "Doctor: Good morning.\nPatient: Good morning.\nDoctor: Can you tell me what I can help you with today?\nPatient: So let's start with the fact that four months ago — here are my papers, all of them, the doctor's instructions — four months ago I had a surgery for a bilateral hernia, and I had general anesthesia. After that I felt very bad, my heart was beating. And now, seven weeks ago, I had a knee prosthesis, seven weeks ago. And I also had general anesthesia. But much earlier, I was treated by a cardiologist, by Dr. Kowalski — I don't know if you know him, doctor — but the doctors at Delta wanted to check what was going on with me and they couldn't, there was nothing on the computer. So they advised me to change the doctor, to do all the tests all over again, because we don't know what has been done so far.\nDoctor: Okay, but tell me, what is the basic problem?\nPatient: The problem is that sometimes I have pain here, right here in my chest. I know it's the heart, and I don't know what to do.\nDoctor: You know it's the heart?\nPatient: Yes, I think so, because I don't know what else it could be.\nDoctor: It doesn't have to be the heart.\nPatient: But I know that earlier… I just feel it, I feel it…\nDoctor: So you have chest pain, we can sum it up.\nPatient: Yes.\nDoctor: I understand, okay. Do you take any medication?\nPatient: I take Belsar, I take 10 mg of Belsar, and I have the pressure regulated, so it's okay. Maybe today, a little bit of emotions, it may have jumped up a bit today, because I already had kinesitherapy today, I had osteopathy on my knees today.\nDoctor: Do you have a problem with cholesterol?\nPatient: I don't know. In the hospital, after the surgery, when they did the tests, the results showed that I never had such problems, but it was known that I was on morphine, after all the anesthesia, because I had this prosthesis inserted in my knee.\nDoctor: Do you have a problem with cholesterol?\nPatient: Until now, normally, I never had it.\nDoctor: Okay. That's the point. When was the last time you did a blood test?\nPatient: In the hospital, it was a month ago, but they didn't do anything specific, because it was a lot of pills, a lot of drugs, so the results were definitely not as they should be.\nDoctor: Do you smoke?\nPatient: No, I don't smoke.\nDoctor: Did anyone in your family die from a heart attack?\nPatient: No.\nDoctor: And did Dr. Kowalski prescribe any medicine for the pain in the chest?\nPatient: Yes.\nDoctor: And what did he say?\nPatient: Well, I've been taking medicine for many years. I used to take Diovan, such a medicine, some of those, but later, somehow, it all stopped. I just stopped taking these medicines, but it was a long time ago. And there were simply no records of what was done. And with Dr. Kowalski — I mean, I know one thing — that I definitely had some plaques here in the arteries, so these plaques here, somewhere I had some…\nDoctor: In the arteries of the neck?\nPatient: Yes.\nDoctor: So you don't have any of those records?\nPatient: No.\nDoctor: And were you given anything for cholesterol?\nPatient: Excuse me?\nDoctor: Were you given anything for cholesterol?\nPatient: No, not at the moment. No, no. But it was, I say it was a long time ago. The last time I did it was a few months ago, but there are no such records anywhere. In the computer, the doctors wanted to check it before the surgery and it just wasn't there. So I was advised to just change the doctor, and that's it. And I would like to check all this to know if it is okay or not okay.\nDoctor: I understand. Since when do you have this pain?\nPatient: After this surgery. Well, after the surgery it started, it will be four months already, because it was the first surgery here in this hospital.\nDoctor: You were with Dr. Wiśniewski earlier, right?\nPatient: Earlier, yes, yes.\nDoctor: And then you also had pain.\nPatient: Yes, but it was a few years ago. These visits every six months, these visits to Dr. Wiśniewski, were every six months, every year — it was different. Even every few years, well, it was a lot of years ago.\nDoctor: Okay. We'll do a few tests then. If you could, Mrs. Kowalska, take off the top and lie down here on your back.\nPatient: Okay, good. And now I'm not working, so there is an opportunity — because when a person works, there is no time for such things, health is always at the end.\nDoctor: Can you just pull the paper down a little bit on this bed, Mrs. Kowalska?\nPatient: From here, right?\nDoctor: Good. Okay. And now turn a little to the left. A little bit toward the wall. A little bit to the left. Good. Good. Good.\nPatient: Is that all?\nDoctor: Yes, that's all. I don't see anything wrong here. Pain in the chest may result from various things. This is not necessarily the heart. However, if you had plaques in the neck vessels, I will order something called a CT angiography. Thanks to this, we will be able to see if there is any problem in the heart. However, it would be good if the family doctor would also do a cholesterol level test, because this may also be a problem. If you already have plaques in the neck vessels, you may need to lower the cholesterol level. I don't see anything terrible here.\nPatient: And there is nothing reduced in the heart? Because I remember something there — Dr. Wiśniewski said there is some something, something reduced, I don't know. There is nothing there?\nDoctor: I don't see anything special in any case. However, the most important thing is to do this test. Please make an appointment at floor minus two, there is a radiologist there.\nPatient: At floor minus two. Okay.\nDoctor: How much do you weigh now?\nPatient: Ninety-five.\nDoctor: You have to lose a little weight.\nPatient: Yes, I know, but I am now on sick leave from this hospital stay, I have been without work for four months, I gained a few kilograms. Yes, yes, this is a bit too much, I know.\nDoctor: This is quite a lot, too much. You have obesity of the second degree, BMI 35. This is something you have to address quite seriously, because then there will really be problems with the heart.\nPatient: Okay.\nDoctor: Do you have any questions?\nPatient: Can you write a prescription for Belsar, by the way? I will need it — or maybe the doctor will write it down for me?\nDoctor: Belsar. You can wait a moment.\nPatient: Great. Okay, so now floor minus two and an appointment for the scan, and then back here to you.\nDoctor: Okay. Do you measure blood pressure at home?\nPatient: Yes.\nDoctor: How regularly do you check your pressure?\nPatient: Good, good. Regularly.\nDoctor: Ten milligrams, right, for Belsar?\nPatient: Yes.\nDoctor: Okay. Thank you very much.\nPatient: Thank you. All the best.\nDoctor: Goodbye.\nPatient: Goodbye.",
+    "speakers": {
+        "doctor": "Dr. Nedo",
+        "patient": "Mrs. Kowalska"
+    },
+    "extracted_entities": {
+        "symptoms": [
+            "Intermittent chest pain, localized to central chest, onset approximately 4 months ago following bilateral hernia surgery",
+            "Palpitations following bilateral hernia surgery (historical)",
+            "Weight gain over the past 4 months during post-surgical inactivity"
+        ],
+        "diagnoses": [
+            "Grade 2 obesity (BMI 35)",
+            "Hypertension (controlled on medication)",
+            "History of carotid artery plaques (previously identified by Dr. Kowalski)"
+        ],
+        "medications": [
+            {
+                "name": "Belsar (olmesartan)",
+                "dose": "10 mg",
+                "frequency": "daily",
+                "route": "oral",
+                "status": "continued"
+            },
+            {
+                "name": "Diovan (valsartan)",
+                "dose": "",
+                "frequency": "",
+                "route": "oral",
+                "status": "discontinued"
+            },
+            {
+                "name": "Morphine",
+                "dose": "",
+                "frequency": "",
+                "route": "",
+                "status": "discontinued"
+            }
+        ],
+        "tests_ordered": [
+            "CT angiography (coronary\/cardiac) — to evaluate for coronary artery disease given history of carotid plaques and chest pain",
+            "Cholesterol level blood test (recommended via family doctor)"
+        ],
+        "test_results": [
+            "Echocardiogram (performed in-office): No significant abnormalities identified"
+        ],
+        "vitals": {
+            "weight": "95 kg",
+            "bmi": "35 (Grade 2 obesity)",
+            "blood_pressure": "Not measured at visit; patient reports it is usually well-controlled at home"
+        },
+        "allergies": [],
+        "procedures": [
+            "Bilateral hernia repair — approximately 4 months ago, under general anesthesia",
+            "Knee arthroplasty (prosthesis) — 7 weeks ago, under general anesthesia"
+        ]
+    },
+    "soap_note": {
+        "chief_complaint": "Intermittent chest pain that began approximately 4 months ago following bilateral hernia surgery, with a request to re-establish cardiac workup due to unavailable prior records.",
+        "history_of_present_illness": "Mrs. Kowalska is a female patient presenting with intermittent chest pain localized to the central chest area. The pain began approximately 4 months ago following bilateral hernia repair surgery performed under general anesthesia. She also underwent knee arthroplasty 7 weeks ago under general anesthesia.\n\nShe reports palpitations and feeling unwell after the hernia surgery. She believes the pain is cardiac in origin, though she is uncertain.\n\nCardiac history:\n- Previously followed by cardiologist Dr. Kowalski, who identified carotid artery plaques\n- Previously followed by Dr. Wiśniewski for cardiac evaluations several years ago, with visits every 6–12 months; patient vaguely recalls being told something about reduced cardiac function or a finding, but cannot provide details\n- Prior medical records are unavailable in the hospital computer system; patient was advised by physicians at Delta hospital to change providers and repeat all testing\n- Dr. Kowalski prescribed an unspecified medication for chest pain in the past\n- Patient previously took Diovan but discontinued it on her own a long time ago\n\nSocial and lifestyle history:\n- Non-smoker\n- Has been off work for 4 months since the hernia surgery, with associated weight gain and reduced physical activity\n- Currently receiving osteopathy and possibly kinesitherapy for post-operative knee rehabilitation\n\nFamily history:\n- No family history of myocardial infarction\n\nLast blood work was approximately 1 month ago during hospitalization for knee surgery, but patient states results were unreliable due to concurrent use of multiple medications including morphine.",
+        "review_of_systems": "- **Cardiovascular:** Intermittent chest pain (central), history of palpitations post-surgery\n- **Musculoskeletal:** Post-operative knee pain and rehabilitation following arthroplasty\n- **Constitutional:** Weight gain over the past 4 months during post-surgical inactivity\n- **Respiratory:** No complaints reported\n- **Gastrointestinal:** No complaints reported\n- **Neurological:** No complaints reported",
+        "physical_exam": "**Echocardiogram:** Performed in-office. No significant structural or functional abnormalities identified. Doctor states: \"I don't see anything wrong here\" and \"I don't see anything special.\"\n\n**Anthropometrics:**\n- Weight: 95 kg\n- BMI: 35 (Grade 2 obesity)\n\n**General:** Patient appeared in no acute distress. Noted to be emotionally somewhat anxious due to multiple appointments earlier in the day.\n\n**Blood pressure:** Not explicitly measured or reported during this visit; patient reports home monitoring shows well-controlled values.",
+        "assessment": "1. **Chest pain, unspecified** — Onset 4 months ago following bilateral hernia surgery. Echocardiogram today shows no significant abnormalities. Etiology to be determined; doctor notes chest pain may result from various causes and is not necessarily cardiac. However, given history of carotid artery plaques, coronary artery disease must be ruled out.\n\n2. **Grade 2 obesity** — BMI 35, weight 95 kg. Contributing cardiovascular risk factor requiring attention.\n\n3. **Hypertension** — Currently controlled on antihypertensive medication. Patient monitors blood pressure at home.\n\n4. **History of carotid artery plaques** — Previously identified by Dr. Kowalski. No prior cholesterol-lowering therapy prescribed. Raises concern for generalized atherosclerotic disease.\n\n5. **Status post bilateral hernia repair** — 4 months ago.\n\n6. **Status post knee arthroplasty** — 7 weeks ago, currently in rehabilitation.",
+        "plan": "1. **CT angiography ordered** to evaluate for coronary artery disease, given history of carotid artery plaques and persistent chest pain. Patient to schedule appointment at radiology department (floor -2).\n\n2. **Cholesterol level testing** — Recommended via family doctor. If cholesterol is elevated, lipid-lowering therapy may be necessary given existing carotid plaques.\n\n3. **Weight loss counseling** — Patient strongly advised to lose weight. Current BMI of 35 (Grade 2 obesity) is a significant cardiovascular risk factor. Doctor warned that continued obesity will lead to serious cardiac problems.\n\n4. **Continue Belsar 10 mg daily** for blood pressure control. Prescription renewed at this visit.\n\n5. **Continue home blood pressure monitoring** — Patient confirms she monitors regularly.\n\n6. **Follow-up appointment** after CT angiography results are available for review and further management.\n\n7. **Establish new baseline records** — Since prior cardiac records from Dr. Kowalski and Dr. Wiśniewski are unavailable, this visit and the ordered tests will serve as a new baseline for ongoing cardiac care.",
+        "current_medications": "- Belsar (olmesartan) 10 mg, oral, once daily — continued, prescription renewed (antihypertensive)\n- Diovan (valsartan) — previously taken for an unspecified duration, discontinued by patient on her own (timing unclear, described as \"a long time ago\")\n- Morphine — administered during hospitalization for knee arthroplasty 7 weeks ago, discontinued upon discharge\n- Unspecified medication prescribed by Dr. Kowalski for chest pain — status unclear, patient states she stopped taking it"
+    },
+    "unclear_sections": [
+        {
+            "transcript_segment": "I had a concussion",
+            "issue": "The word 'concussion' appears twice in the context of surgical procedures. This is almost certainly a mistranslation of the Polish word for 'general anesthesia' (znieczulenie ogólne \/ narkoza). Interpreted as general anesthesia in the clean transcript."
+        },
+        {
+            "transcript_segment": "I already had the cinema today",
+            "issue": "The word 'cinema' (kino) is likely a speech-to-text or translation error for 'kinesitherapy' (kinezyterapia) — physical therapy. Interpreted as kinesitherapy given the rehabilitation context and the adjacent mention of osteopathy."
+        },
+        {
+            "transcript_segment": "I definitely had some platelets here in the tendons",
+            "issue": "Translation artifact. 'Platelets' (płytki) likely refers to 'plaques' (blaszki miażdżycowe), and 'tendons' (ścięgna) likely refers to 'arteries' (tętnice). Interpreted as carotid artery plaques."
+        },
+        {
+            "transcript_segment": "Dr. Wiśniewski, there is some tumor, something reduced, I don't know",
+            "issue": "Patient vaguely recalls a previous finding from Dr. Wiśniewski — possibly reduced ejection fraction or a cardiac structural finding. Unable to determine specifics from the transcript. Today's echocardiogram showed no abnormalities."
+        },
+        {
+            "transcript_segment": "after all those insensitive things",
+            "issue": "Likely a mistranslation of 'anesthesia' or 'analgesic medications' from Polish. Interpreted as anesthesia\/analgesia in context."
+        },
+        {
+            "transcript_segment": "And did you take Dr. Kowalski's medicine for the pain in the chest? Yes.",
+            "issue": "Patient confirms Dr. Kowalski prescribed medication for chest pain, but the specific medication name, dose, and current status are never identified in the conversation."
+        },
+        {
+            "transcript_segment": "You have the back of the second degree, 35 BMI",
+            "issue": "'Back' is likely a mistranslation of 'obesity' (otyłość). Interpreted as 'obesity of the second degree' (Grade 2 obesity, BMI 35)."
+        },
+        {
+            "transcript_segment": "I hope people enjoy our social media. The first day of the operation",
+            "issue": "Ambient speech at the beginning of the recording, likely unrelated to the clinical encounter. Possibly the doctor or staff speaking about a social media recording or clinic operations. Excluded from the clinical transcript."
+        }
+    ]
+}

@@ -1,0 +1,452 @@
+{
+    "chief_complaint": [
+        {
+            "term": "Pre-operative cardiac evaluation",
+            "start": 0,
+            "end": 32,
+            "definition": "A heart checkup done before surgery to make sure your heart is healthy enough to safely undergo anesthesia and the planned procedure."
+        },
+        {
+            "term": "clearance for anesthesia",
+            "start": 34,
+            "end": 58,
+            "definition": "A doctor's approval confirming that your heart can safely handle the medications used to put you to sleep during surgery."
+        },
+        {
+            "term": "arthroscopic shoulder surgery",
+            "start": 77,
+            "end": 106,
+            "definition": "A minimally invasive surgical procedure where a small camera and instruments are inserted through tiny incisions to repair problems inside the shoulder joint."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "myocardial infarction",
+            "start": 31,
+            "end": 52,
+            "definition": "A heart attack, which occurs when blood flow to part of the heart muscle is blocked, causing damage. You experienced this in June 2020."
+        },
+        {
+            "term": "stents",
+            "start": 84,
+            "end": 90,
+            "definition": "Small mesh tubes placed inside a narrowed or blocked artery to hold it open and restore blood flow. Two were placed in your right coronary artery during your heart attack treatment."
+        },
+        {
+            "term": "right coronary artery",
+            "start": 113,
+            "end": 134,
+            "definition": "One of the main blood vessels that supplies oxygen-rich blood to the heart muscle, specifically the right and bottom portions of the heart."
+        },
+        {
+            "term": "pre-operative cardiac clearance",
+            "start": 158,
+            "end": 189,
+            "definition": "A medical evaluation to confirm your heart is safe enough for the upcoming surgery and anesthesia."
+        },
+        {
+            "term": "arthroscopic shoulder surgery",
+            "start": 209,
+            "end": 238,
+            "definition": "A minimally invasive surgery using small incisions and a camera to repair shoulder problems."
+        },
+        {
+            "term": "three-portal technique",
+            "start": 240,
+            "end": 262,
+            "definition": "A specific arthroscopic method where three small incisions (portals) are made around the shoulder to insert the camera and surgical instruments."
+        },
+        {
+            "term": "chest pain",
+            "start": 354,
+            "end": 364,
+            "definition": "Pain or discomfort in the chest area, which is a common warning sign of heart problems, though in your case you did not experience this typical symptom during your heart attack."
+        },
+        {
+            "term": "interscapular region",
+            "start": 416,
+            "end": 436,
+            "definition": "The area between your shoulder blades on your back. This is where you felt pain during your heart attack instead of typical chest pain."
+        },
+        {
+            "term": "interscapular pain",
+            "start": 699,
+            "end": 717,
+            "definition": "Pain felt between the shoulder blades. In your case, this pain was present before and after your heart attack, and an orthopedic doctor attributed it to muscle problems."
+        },
+        {
+            "term": "infarction",
+            "start": 42,
+            "end": 52,
+            "definition": "Death of tissue due to lack of blood supply — in your case, referring to the heart muscle damage from your 2020 heart attack."
+        },
+        {
+            "term": "statin",
+            "start": 886,
+            "end": 892,
+            "definition": "A type of cholesterol-lowering medication. Statins are important for patients with heart disease to help prevent further artery blockages."
+        },
+        {
+            "term": "Lipitor",
+            "start": 894,
+            "end": 901,
+            "definition": "The brand name for atorvastatin, a cholesterol-lowering medication you were prescribed after your heart attack."
+        },
+        {
+            "term": "atorvastatin",
+            "start": 904,
+            "end": 916,
+            "definition": "A generic cholesterol-lowering statin medication (brand name Lipitor) used to reduce the risk of future heart attacks by controlling cholesterol levels."
+        },
+        {
+            "term": "myalgia",
+            "start": 967,
+            "end": 974,
+            "definition": "Muscle pain or aching. You reported this as the reason you stopped taking your statin medication."
+        },
+        {
+            "term": "antihypertensive medication",
+            "start": 1193,
+            "end": 1220,
+            "definition": "Medication used to lower high blood pressure. You reduced your dose to half after your blood pressure dropped significantly following your heart attack."
+        },
+        {
+            "term": "Percutaneous coronary intervention",
+            "start": 1449,
+            "end": 1483,
+            "definition": "A non-surgical procedure where a catheter is threaded through a blood vessel to open a blocked coronary artery, often with stent placement. This was done during your heart attack treatment."
+        },
+        {
+            "term": "Coronary artery disease",
+            "start": 1532,
+            "end": 1555,
+            "definition": "A condition where the arteries supplying blood to your heart become narrowed or blocked by plaque buildup, which led to your heart attack."
+        },
+        {
+            "term": "Depression",
+            "start": 1558,
+            "end": 1568,
+            "definition": "A mental health condition involving persistent feelings of sadness or loss of interest. You are currently being treated with antidepressant medication."
+        },
+        {
+            "term": "antidepressant therapy",
+            "start": 1573,
+            "end": 1595,
+            "definition": "Medication prescribed to help manage depression symptoms."
+        },
+        {
+            "term": "obesity",
+            "start": 1624,
+            "end": 1631,
+            "definition": "A medical condition involving excess body weight that increases the risk of heart disease, diabetes, and other health problems."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "Cardiovascular",
+            "start": 4,
+            "end": 18,
+            "definition": "Relating to the heart and blood vessels. This section reviews symptoms related to your heart health."
+        },
+        {
+            "term": "chest pain",
+            "start": 37,
+            "end": 47,
+            "definition": "Pain or discomfort in the chest, often a sign of heart problems. You denied having this symptom currently."
+        },
+        {
+            "term": "angina",
+            "start": 51,
+            "end": 57,
+            "definition": "Chest pain or pressure caused by reduced blood flow to the heart muscle. You are not currently experiencing this."
+        },
+        {
+            "term": "interscapular pain",
+            "start": 67,
+            "end": 85,
+            "definition": "Pain between the shoulder blades, which in your case was the unusual symptom you experienced during your prior heart attack."
+        },
+        {
+            "term": "myocardial infarction",
+            "start": 127,
+            "end": 148,
+            "definition": "A heart attack — damage to the heart muscle from blocked blood flow. You experienced this in June 2020."
+        },
+        {
+            "term": "post-MI",
+            "start": 224,
+            "end": 231,
+            "definition": "After a myocardial infarction (heart attack). This refers to the period following your 2020 heart attack."
+        },
+        {
+            "term": "Musculoskeletal",
+            "start": 237,
+            "end": 252,
+            "definition": "Relating to the muscles and bones. This section reviews your muscle and joint symptoms."
+        },
+        {
+            "term": "myalgia",
+            "start": 285,
+            "end": 292,
+            "definition": "Muscle pain or soreness. You experienced this, which was initially thought to be caused by your statin medication."
+        },
+        {
+            "term": "statin",
+            "start": 319,
+            "end": 325,
+            "definition": "A cholesterol-lowering medication. Muscle pain is a known possible side effect of statins."
+        },
+        {
+            "term": "antidepressant therapy",
+            "start": 573,
+            "end": 595,
+            "definition": "Medication used to treat depression. You are currently taking this, though specific details were not reported."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "Echocardiography",
+            "start": 2,
+            "end": 18,
+            "definition": "An ultrasound test of the heart that uses sound waves to create images showing how your heart chambers and valves are working."
+        },
+        {
+            "term": "supine",
+            "start": 69,
+            "end": 75,
+            "definition": "Lying flat on your back. This is one of the positions used during your heart ultrasound."
+        },
+        {
+            "term": "left lateral decubitus",
+            "start": 85,
+            "end": 107,
+            "definition": "Lying on your left side. This position helps get better ultrasound images of the heart."
+        },
+        {
+            "term": "auscultation",
+            "start": 281,
+            "end": 293,
+            "definition": "Listening to sounds inside the body (such as heart and lung sounds) using a stethoscope."
+        },
+        {
+            "term": "vital signs",
+            "start": 268,
+            "end": 279,
+            "definition": "Basic measurements of body function including blood pressure, heart rate, temperature, and breathing rate."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "Coronary artery disease",
+            "start": 5,
+            "end": 28,
+            "definition": "A condition where plaque builds up inside the arteries that supply blood to your heart, narrowing them and reducing blood flow."
+        },
+        {
+            "term": "myocardial infarction",
+            "start": 42,
+            "end": 63,
+            "definition": "A heart attack. Yours occurred in June 2020 and was treated with stent placement."
+        },
+        {
+            "term": "stents",
+            "start": 85,
+            "end": 91,
+            "definition": "Small mesh tubes placed inside blocked arteries to keep them open. You have two in your right coronary artery."
+        },
+        {
+            "term": "right coronary artery",
+            "start": 95,
+            "end": 116,
+            "definition": "One of the main arteries supplying blood to the heart. This is the artery that was blocked during your heart attack."
+        },
+        {
+            "term": "anginal symptoms",
+            "start": 151,
+            "end": 167,
+            "definition": "Chest pain or discomfort caused by reduced blood flow to the heart. Your doctor noted you are not currently experiencing these."
+        },
+        {
+            "term": "cardiac contraindications",
+            "start": 172,
+            "end": 197,
+            "definition": "Heart-related reasons that would make a procedure unsafe. None were found for your planned surgery."
+        },
+        {
+            "term": "general anesthesia",
+            "start": 244,
+            "end": 262,
+            "definition": "Medication that puts you into a deep sleep during surgery so you feel no pain and are completely unconscious."
+        },
+        {
+            "term": "statin intolerance",
+            "start": 279,
+            "end": 297,
+            "definition": "The inability to take statin medications due to side effects like muscle pain. Your doctor is evaluating whether you truly have this condition."
+        },
+        {
+            "term": "myalgia",
+            "start": 312,
+            "end": 319,
+            "definition": "Muscle pain. You reported this as the reason for stopping your statin, but since the pain only partially improved after stopping, it may not be caused by the medication."
+        },
+        {
+            "term": "atorvastatin",
+            "start": 352,
+            "end": 364,
+            "definition": "A generic cholesterol-lowering statin medication (brand name Lipitor) that you stopped taking two months ago."
+        },
+        {
+            "term": "Lipitor",
+            "start": 366,
+            "end": 373,
+            "definition": "The brand name for atorvastatin, your prescribed cholesterol-lowering medication."
+        },
+        {
+            "term": "Hypercholesterolemia",
+            "start": 575,
+            "end": 595,
+            "definition": "Abnormally high cholesterol levels in the blood. Without your statin medication for two months, your cholesterol is likely uncontrolled, which is a concern."
+        },
+        {
+            "term": "atherosclerotic plaque",
+            "start": 686,
+            "end": 708,
+            "definition": "Fatty deposits that build up inside artery walls, which can narrow arteries and potentially cause heart attacks. Going without statin therapy increases the risk of this."
+        },
+        {
+            "term": "recurrent myocardial infarction",
+            "start": 733,
+            "end": 764,
+            "definition": "Another heart attack. Your doctor is concerned about this risk because your cholesterol has been uncontrolled without statin therapy."
+        },
+        {
+            "term": "Obesity",
+            "start": 772,
+            "end": 779,
+            "definition": "A medical condition of significantly excess body weight that raises your risk of heart disease and other health problems."
+        }
+    ],
+    "plan": [
+        {
+            "term": "Cardiac clearance",
+            "start": 5,
+            "end": 22,
+            "definition": "Official medical approval that your heart is healthy enough to safely undergo surgery and anesthesia."
+        },
+        {
+            "term": "cardiac contraindications",
+            "start": 41,
+            "end": 66,
+            "definition": "Heart-related reasons that would make surgery unsafe. None were identified for you."
+        },
+        {
+            "term": "arthroscopic shoulder surgery",
+            "start": 94,
+            "end": 123,
+            "definition": "A minimally invasive procedure using small incisions and a camera to repair your shoulder."
+        },
+        {
+            "term": "general anesthesia",
+            "start": 130,
+            "end": 148,
+            "definition": "Medication that puts you completely to sleep during surgery. Your heart has been cleared for this."
+        },
+        {
+            "term": "cardiovascular",
+            "start": 176,
+            "end": 190,
+            "definition": "Relating to the heart and blood vessels."
+        },
+        {
+            "term": "statin therapy",
+            "start": 216,
+            "end": 230,
+            "definition": "Treatment with cholesterol-lowering medication to protect your heart and arteries from further plaque buildup."
+        },
+        {
+            "term": "Lipitor",
+            "start": 264,
+            "end": 271,
+            "definition": "The brand name for atorvastatin, the cholesterol-lowering medication your doctor instructed you to restart immediately."
+        },
+        {
+            "term": "atorvastatin",
+            "start": 273,
+            "end": 285,
+            "definition": "A generic statin medication (brand name Lipitor) used to lower cholesterol and reduce heart attack risk."
+        },
+        {
+            "term": "cholesterol",
+            "start": 366,
+            "end": 377,
+            "definition": "A waxy substance in the blood. High levels contribute to plaque buildup in arteries. Yours needs to be controlled with medication."
+        },
+        {
+            "term": "plaque formation",
+            "start": 396,
+            "end": 412,
+            "definition": "The buildup of fatty deposits inside artery walls that can narrow or block blood flow to the heart."
+        },
+        {
+            "term": "coronary arteries",
+            "start": 416,
+            "end": 433,
+            "definition": "The blood vessels that supply oxygen-rich blood to your heart muscle. You already have disease in these arteries."
+        },
+        {
+            "term": "lipid panel",
+            "start": 484,
+            "end": 495,
+            "definition": "A blood test that measures different types of cholesterol and fats in your blood to assess your heart disease risk."
+        },
+        {
+            "term": "atorvastatin",
+            "start": 273,
+            "end": 285,
+            "definition": "Your prescribed cholesterol-lowering medication that you are being asked to restart and monitor for muscle pain side effects."
+        },
+        {
+            "term": "myalgia",
+            "start": 882,
+            "end": 889,
+            "definition": "Muscle pain. If your muscle pain does not worsen after restarting the statin, it may suggest the pain is not related to the medication."
+        },
+        {
+            "term": "statin intolerance",
+            "start": 1127,
+            "end": 1145,
+            "definition": "The inability to take statin medications due to side effects. If confirmed, your doctor will consider alternative cholesterol-lowering options."
+        },
+        {
+            "term": "lipid-lowering",
+            "start": 1075,
+            "end": 1089,
+            "definition": "Medications or treatments designed to reduce cholesterol and fat levels in your blood to protect against heart disease."
+        },
+        {
+            "term": "Asaflow",
+            "start": 1356,
+            "end": 1363,
+            "definition": "A brand name for enteric-coated aspirin, a blood-thinning medication that helps prevent blood clots in your coronary stents and arteries."
+        },
+        {
+            "term": "aspirin",
+            "start": 1365,
+            "end": 1372,
+            "definition": "A medication that thins the blood and helps prevent clot formation, which is important for patients with coronary stents."
+        },
+        {
+            "term": "bisoprolol",
+            "start": 1375,
+            "end": 1385,
+            "definition": "A beta-blocker medication that slows the heart rate and lowers blood pressure, commonly prescribed after a heart attack to protect the heart."
+        },
+        {
+            "term": "antidepressant",
+            "start": 1387,
+            "end": 1401,
+            "definition": "Medication used to treat depression, which you are currently taking as part of your regular medications."
+        }
+    ]
+}

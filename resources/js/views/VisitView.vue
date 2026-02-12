@@ -370,11 +370,11 @@
         <div
           v-if="chatVisible || mobileTab === 'chat'"
           :class="[
-            'lg:w-[400px] lg:shrink-0 overflow-hidden',
+            'lg:w-[400px] lg:shrink-0',
             mobileTab === 'visit' ? 'hidden lg:block' : 'w-full'
           ]"
         >
-          <div class="lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)]">
+          <div ref="chatColumnRef" class="h-full lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)]">
             <ChatPanel
               :visit-id="route.params.id"
               :initial-context="chatContext"
@@ -438,6 +438,7 @@ const mobileTab = ref('visit');
 const chatVisible = ref(true);
 const chatContext = ref('');
 const chatHighlight = ref(false);
+const chatColumnRef = ref(null);
 const obsExpanded = ref(false);
 const condExpanded = ref(false);
 const rxExpanded = ref(false);
@@ -703,13 +704,18 @@ function openChat(context = '') {
     popoverVisible.value = false;
     chatVisible.value = true;
     chatHighlight.value = true;
-    setTimeout(() => { chatHighlight.value = false; }, 600);
+    setTimeout(() => { chatHighlight.value = false; }, 1500);
     // Reset first to ensure watcher fires even if same section clicked again
     chatContext.value = '';
     nextTick(() => { chatContext.value = context; });
     // On mobile, switch to chat tab
     if (window.innerWidth < 1024) {
         mobileTab.value = 'chat';
+    } else {
+        // Scroll chat panel into view on desktop
+        nextTick(() => {
+            chatColumnRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
     }
 }
 

@@ -1,0 +1,326 @@
+{
+    "chief_complaint": [
+        {
+            "term": "blood pressure irregularity",
+            "start": 34,
+            "end": 61,
+            "definition": "A variation or abnormality in the force of blood pushing against your artery walls. Your doctor is monitoring this because your blood pressure readings have not been consistently in a healthy range."
+        },
+        {
+            "term": "antihypertensive therapy",
+            "start": 86,
+            "end": 110,
+            "definition": "Treatment, usually with medication, designed to lower high blood pressure. Your doctor wants to reassess whether your current treatment plan is working well enough."
+        },
+        {
+            "term": "hypertensive episode",
+            "start": 119,
+            "end": 139,
+            "definition": "A sudden, temporary spike in blood pressure to dangerously high levels. You experienced one of these during the holiday period."
+        },
+        {
+            "term": "BP",
+            "start": 141,
+            "end": 143,
+            "definition": "An abbreviation for blood pressure — the measurement of the force of blood against the walls of your arteries."
+        },
+        {
+            "term": "mmHg",
+            "start": 149,
+            "end": 153,
+            "definition": "Short for 'millimeters of mercury,' this is the standard unit used to measure blood pressure."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "arterial hypertension",
+            "start": 31,
+            "end": 52,
+            "definition": "A chronic condition where the pressure in your arteries is persistently higher than normal. This is the main condition your doctor is managing for you."
+        },
+        {
+            "term": "cardiologist",
+            "start": 78,
+            "end": 90,
+            "definition": "A doctor who specializes in diagnosing and treating heart and blood vessel conditions. Dr. Nowak is the cardiologist who previously evaluated you."
+        },
+        {
+            "term": "antihypertensive medication",
+            "start": 147,
+            "end": 174,
+            "definition": "Drugs prescribed specifically to lower high blood pressure. You were started on this type of medication a few months ago."
+        },
+        {
+            "term": "blood pressure",
+            "start": 250,
+            "end": 264,
+            "definition": "The force exerted by your blood against the walls of your arteries. It is measured as two numbers — systolic (top) over diastolic (bottom)."
+        },
+        {
+            "term": "mmHg",
+            "start": 284,
+            "end": 288,
+            "definition": "Millimeters of mercury — the standard unit of measurement for blood pressure readings."
+        },
+        {
+            "term": "systolic",
+            "start": 289,
+            "end": 297,
+            "definition": "The top number in a blood pressure reading, representing the pressure in your arteries when your heart beats and pumps blood out. Your reading of approximately 200 mmHg systolic was dangerously high."
+        },
+        {
+            "term": "blood pressure readings",
+            "start": 452,
+            "end": 475,
+            "definition": "The recorded measurements of the force of blood in your arteries, typically taken at home or in a doctor's office to track your condition over time."
+        },
+        {
+            "term": "130–137\/70–80 mmHg",
+            "start": 488,
+            "end": 510,
+            "definition": "Your morning home blood pressure range. The first number (130–137) is systolic pressure and the second (70–80) is diastolic pressure. These readings are in a near-normal range."
+        },
+        {
+            "term": "140–150\/90 mmHg",
+            "start": 522,
+            "end": 539,
+            "definition": "Your evening home blood pressure range. These readings are mildly elevated, especially the top number, which is above the ideal target for most people."
+        },
+        {
+            "term": "dizziness",
+            "start": 900,
+            "end": 909,
+            "definition": "A feeling of being lightheaded, unsteady, or faint. It can sometimes be a symptom of very high or very low blood pressure. You reported not experiencing this."
+        },
+        {
+            "term": "Blood work",
+            "start": 932,
+            "end": 942,
+            "definition": "Laboratory tests performed on a sample of your blood to check for various health markers such as cholesterol, blood sugar, and organ function."
+        },
+        {
+            "term": "Cholesterol",
+            "start": 1023,
+            "end": 1034,
+            "definition": "A fatty substance in your blood. High cholesterol can increase the risk of heart disease and stroke. Your cholesterol values were not available at this visit."
+        },
+        {
+            "term": "hypertension",
+            "start": 40,
+            "end": 52,
+            "definition": "The medical term for high blood pressure. Your mother has a history of this condition, which can run in families."
+        },
+        {
+            "term": "antihypertensive medications",
+            "start": 1235,
+            "end": 1263,
+            "definition": "Medications used to treat high blood pressure. The fact that your siblings also take these suggests a family tendency toward high blood pressure."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "chest pain",
+            "start": 70,
+            "end": 80,
+            "definition": "Discomfort or pain felt in the chest area, which can be a sign of heart problems. You denied having this symptom."
+        },
+        {
+            "term": "palpitations",
+            "start": 85,
+            "end": 97,
+            "definition": "The sensation of your heart beating unusually fast, hard, or irregularly. You denied experiencing this."
+        },
+        {
+            "term": "blood pressure",
+            "start": 135,
+            "end": 149,
+            "definition": "The measurement of the force of blood pushing against artery walls. You had a severely elevated episode during the holidays that has since resolved."
+        },
+        {
+            "term": "mmHg",
+            "start": 156,
+            "end": 160,
+            "definition": "Millimeters of mercury, the standard unit for measuring blood pressure."
+        },
+        {
+            "term": "dizziness",
+            "start": 204,
+            "end": 213,
+            "definition": "A sensation of feeling lightheaded or unsteady. You are not currently experiencing this."
+        },
+        {
+            "term": "dyspnea",
+            "start": 237,
+            "end": 244,
+            "definition": "The medical term for difficulty breathing or shortness of breath. You did not report this symptom."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "Blood pressure",
+            "start": 4,
+            "end": 18,
+            "definition": "The force of blood against artery walls, measured during your visit today to assess how well your condition is being managed."
+        },
+        {
+            "term": "170\/96 mmHg",
+            "start": 34,
+            "end": 45,
+            "definition": "Your in-office blood pressure reading today. The top number (170, systolic) and bottom number (96, diastolic) are both elevated above normal targets."
+        },
+        {
+            "term": "white coat hypertension",
+            "start": 64,
+            "end": 87,
+            "definition": "A phenomenon where blood pressure readings are higher in a medical setting than at home, often due to anxiety or stress about seeing a doctor. Your doctor suspects this may explain your elevated in-office reading."
+        },
+        {
+            "term": "Echocardiogram",
+            "start": 140,
+            "end": 154,
+            "definition": "An ultrasound of the heart that uses sound waves to create images showing how well your heart is pumping and whether its structure is normal. Yours showed no significant problems."
+        },
+        {
+            "term": "left atrial enlargement",
+            "start": 211,
+            "end": 234,
+            "definition": "An increase in the size of the left atrium, one of the upper chambers of the heart. This can sometimes result from long-standing high blood pressure. Your doctor confirmed this was not found in your case."
+        },
+        {
+            "term": "ECG",
+            "start": 307,
+            "end": 310,
+            "definition": "Short for electrocardiogram — a quick, painless test that records the electrical activity of your heart to detect rhythm problems or other abnormalities."
+        },
+        {
+            "term": "Normal sinus rhythm",
+            "start": 314,
+            "end": 333,
+            "definition": "The normal, regular electrical pattern of your heartbeat, originating from the heart's natural pacemaker. This means your heart rhythm is healthy."
+        },
+        {
+            "term": "Exercise stress test",
+            "start": 356,
+            "end": 376,
+            "definition": "A test where you exercise (usually on a treadmill) while your heart is monitored to see how it performs under physical exertion. Your previous test was normal."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "Arterial hypertension",
+            "start": 0,
+            "end": 21,
+            "definition": "A chronic condition of persistently elevated blood pressure in the arteries. Your doctor notes that your condition is currently well-controlled based on your home readings."
+        },
+        {
+            "term": "130–137\/70–80 mmHg",
+            "start": 77,
+            "end": 99,
+            "definition": "Your morning home blood pressure range. These values suggest your blood pressure is reasonably well-controlled in the morning."
+        },
+        {
+            "term": "170\/96 mmHg",
+            "start": 143,
+            "end": 154,
+            "definition": "The blood pressure reading taken at the doctor's office today, which was notably higher than your home measurements."
+        },
+        {
+            "term": "white coat hypertension",
+            "start": 179,
+            "end": 202,
+            "definition": "A condition where blood pressure is elevated in a clinical setting but normal at home. Your doctor suspects this may explain the difference between your home and office readings."
+        },
+        {
+            "term": "Echocardiogram",
+            "start": 236,
+            "end": 250,
+            "definition": "An ultrasound test of the heart. Yours was found to be unremarkable, meaning no abnormalities were detected."
+        },
+        {
+            "term": "ECG",
+            "start": 255,
+            "end": 258,
+            "definition": "Electrocardiogram — a test that records the electrical activity of the heart. Yours showed no abnormalities."
+        },
+        {
+            "term": "exercise stress test",
+            "start": 283,
+            "end": 303,
+            "definition": "A test monitoring your heart during physical activity. Your prior test result was normal."
+        },
+        {
+            "term": "hypertensive crisis",
+            "start": 328,
+            "end": 347,
+            "definition": "A dangerously high spike in blood pressure that can potentially damage organs. Your episode during the holidays appears to have been an isolated event."
+        },
+        {
+            "term": "Cholesterol",
+            "start": 416,
+            "end": 427,
+            "definition": "A waxy, fat-like substance in the blood. Knowing your cholesterol levels is important because high cholesterol combined with high blood pressure increases heart disease risk."
+        }
+    ],
+    "plan": [
+        {
+            "term": "24-hour ambulatory blood pressure monitoring",
+            "start": 5,
+            "end": 49,
+            "definition": "A test where you wear a portable blood pressure cuff for a full day and night that automatically takes readings at regular intervals. This gives your doctor a complete picture of your blood pressure throughout your daily activities and sleep."
+        },
+        {
+            "term": "ABPM",
+            "start": 51,
+            "end": 55,
+            "definition": "Abbreviation for ambulatory blood pressure monitoring — a 24-hour test that tracks your blood pressure outside of the doctor's office."
+        },
+        {
+            "term": "blood pressure control",
+            "start": 107,
+            "end": 129,
+            "definition": "How well your blood pressure is being kept within a healthy range through medication and lifestyle measures."
+        },
+        {
+            "term": "white coat hypertension",
+            "start": 143,
+            "end": 166,
+            "definition": "A condition where blood pressure is elevated only in a medical setting. The ABPM test will help determine if this is what's happening with you."
+        },
+        {
+            "term": "sustained hypertension",
+            "start": 171,
+            "end": 193,
+            "definition": "Consistently high blood pressure that remains elevated throughout the day, not just in a doctor's office. The ABPM will help determine whether your high blood pressure is sustained or only occurs in clinical settings."
+        },
+        {
+            "term": "Amlodipine",
+            "start": 317,
+            "end": 327,
+            "definition": "A medication that relaxes and widens blood vessels, making it easier for blood to flow and lowering blood pressure. You are currently taking 5 mg daily."
+        },
+        {
+            "term": "5 mg",
+            "start": 328,
+            "end": 332,
+            "definition": "The dose of your Amlodipine medication — 5 milligrams taken once each day."
+        },
+        {
+            "term": "Cholesterol monitoring",
+            "start": 449,
+            "end": 471,
+            "definition": "Regularly checking the levels of cholesterol in your blood through lab tests. This is important because high cholesterol combined with high blood pressure increases the risk of heart disease."
+        },
+        {
+            "term": "blood work",
+            "start": 591,
+            "end": 601,
+            "definition": "Laboratory tests performed on a blood sample to evaluate your overall health, including cholesterol and other important markers."
+        },
+        {
+            "term": "blood pressure monitoring",
+            "start": 24,
+            "end": 49,
+            "definition": "The regular measurement and recording of your blood pressure, which you do at home in the morning and evening to help track how well your treatment is working."
+        }
+    ]
+}

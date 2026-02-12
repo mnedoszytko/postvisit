@@ -1,0 +1,266 @@
+{
+    "chief_complaint": [
+        {
+            "term": "cardiology",
+            "start": 20,
+            "end": 30,
+            "definition": "The branch of medicine that specializes in diagnosing and treating diseases of the heart and blood vessels."
+        },
+        {
+            "term": "abdominal aortic aneurysms",
+            "start": 61,
+            "end": 87,
+            "definition": "Abnormal bulging or widening of the aorta — the body's largest blood vessel — in the area that runs through the abdomen. If they grow too large, they can be dangerous because they may rupture."
+        },
+        {
+            "term": "hospitalization",
+            "start": 95,
+            "end": 110,
+            "definition": "A period of being admitted and staying in a hospital for medical care and treatment."
+        },
+        {
+            "term": "obstructing gallbladder calculi",
+            "start": 115,
+            "end": 146,
+            "definition": "Gallstones (hardened deposits in the gallbladder) that are blocking the normal flow of bile. This was the original reason for your hospital stay."
+        }
+    ],
+    "history_of_present_illness": [
+        {
+            "term": "aortic dilation",
+            "start": 67,
+            "end": 82,
+            "definition": "Widening or stretching of the aorta, the main artery that carries blood from the heart to the rest of the body. In your case, this was found unexpectedly during imaging for another condition."
+        },
+        {
+            "term": "gallbladder disease",
+            "start": 101,
+            "end": 120,
+            "definition": "A condition affecting the gallbladder, a small organ under the liver that stores bile. In your case, this involved gallstones causing a blockage."
+        },
+        {
+            "term": "gallbladder calculi",
+            "start": 166,
+            "end": 185,
+            "definition": "Gallstones — small, hard deposits that form inside the gallbladder. Yours included a stone that was blocking normal bile flow."
+        },
+        {
+            "term": "obstructing stone",
+            "start": 194,
+            "end": 211,
+            "definition": "A gallstone that is physically blocking the passage through which bile normally drains, which can cause pain and complications."
+        },
+        {
+            "term": "MRI",
+            "start": 239,
+            "end": 242,
+            "definition": "Magnetic Resonance Imaging — a scan that uses strong magnets and radio waves to create detailed pictures of the inside of your body without using radiation."
+        },
+        {
+            "term": "dilation of the descending aorta",
+            "start": 272,
+            "end": 304,
+            "definition": "Widening of the lower portion of the aorta that runs down through the chest and into the abdomen. This was the unexpected finding during your hospital stay."
+        },
+        {
+            "term": "CT angiography",
+            "start": 319,
+            "end": 333,
+            "definition": "A specialized CT scan that uses contrast dye to create detailed images of blood vessels. This test was used to get a closer look at the widening found in your aorta."
+        },
+        {
+            "term": "abdominal aortic aneurysm",
+            "start": 389,
+            "end": 414,
+            "definition": "A bulging or ballooning in the wall of the aorta where it passes through the abdomen. You were found to have three separate areas of this bulging."
+        },
+        {
+            "term": "thoracic aortic involvement",
+            "start": 423,
+            "end": 450,
+            "definition": "Damage or abnormality in the portion of the aorta that runs through the chest. In your case, imaging confirmed this area was not affected."
+        },
+        {
+            "term": "ascending aortic aneurysms",
+            "start": 600,
+            "end": 626,
+            "definition": "Bulging of the aorta in its uppermost portion, near where it exits the heart. Unlike abdominal aortic aneurysms, these are typically managed by cardiologists."
+        },
+        {
+            "term": "chest pain",
+            "start": 709,
+            "end": 719,
+            "definition": "Pain or discomfort felt in the chest area, which can sometimes indicate a heart or lung problem. You reported not having this symptom."
+        },
+        {
+            "term": "dyspnea",
+            "start": 732,
+            "end": 739,
+            "definition": "The medical term for shortness of breath or difficulty breathing. You reported experiencing this with even mild physical activity."
+        },
+        {
+            "term": "exertion",
+            "start": 748,
+            "end": 756,
+            "definition": "Physical effort or activity. Your shortness of breath occurs even with mild levels of physical effort."
+        }
+    ],
+    "review_of_systems": [
+        {
+            "term": "Cardiovascular",
+            "start": 2,
+            "end": 16,
+            "definition": "Relating to the heart and blood vessels. This section of the review checks for symptoms like chest pain or irregular heartbeat."
+        },
+        {
+            "term": "chest pain",
+            "start": 21,
+            "end": 31,
+            "definition": "Pain or discomfort in the chest area that can be related to heart or lung conditions. You denied having this symptom."
+        },
+        {
+            "term": "Respiratory",
+            "start": 34,
+            "end": 45,
+            "definition": "Relating to the lungs and breathing. This section checks for symptoms like shortness of breath or coughing."
+        },
+        {
+            "term": "dyspnea on mild exertion",
+            "start": 47,
+            "end": 71,
+            "definition": "Shortness of breath that occurs with only light physical activity, such as walking a short distance. This is a symptom your doctor wants to investigate further."
+        },
+        {
+            "term": "Gastrointestinal",
+            "start": 74,
+            "end": 90,
+            "definition": "Relating to the stomach, intestines, and other digestive organs. This section reviews symptoms involving the digestive system."
+        },
+        {
+            "term": "gallbladder calculi",
+            "start": 119,
+            "end": 138,
+            "definition": "Gallstones — hard deposits in the gallbladder that caused your recent hospitalization. This issue has been resolved."
+        }
+    ],
+    "physical_exam": [
+        {
+            "term": "Transthoracic echocardiography",
+            "start": 2,
+            "end": 32,
+            "definition": "An ultrasound of the heart performed by placing a device on the outside of your chest. It creates images showing how your heart is structured and how well it pumps blood."
+        },
+        {
+            "term": "stress test",
+            "start": 137,
+            "end": 148,
+            "definition": "A test that monitors your heart while you exercise (usually on a treadmill) to see how it responds to physical effort. It helps detect problems with blood flow to the heart."
+        },
+        {
+            "term": "épreuve d'effort",
+            "start": 151,
+            "end": 168,
+            "definition": "The French term for a stress test — an exercise test that checks how your heart performs under physical exertion."
+        }
+    ],
+    "assessment": [
+        {
+            "term": "Abdominal aortic aneurysm",
+            "start": 3,
+            "end": 28,
+            "definition": "A bulging or widening of the aorta in the abdominal area. You have three separate zones of this bulging, which were found by chance during your gallbladder hospitalization."
+        },
+        {
+            "term": "gallbladder calculi",
+            "start": 98,
+            "end": 117,
+            "definition": "Gallstones — hardened deposits in the gallbladder that were the original reason for your hospital admission."
+        },
+        {
+            "term": "thoracic aortic involvement",
+            "start": 122,
+            "end": 149,
+            "definition": "Abnormality in the chest portion of the aorta. Your imaging confirmed this area is not affected."
+        },
+        {
+            "term": "ascending aortic aneurysms",
+            "start": 211,
+            "end": 237,
+            "definition": "Bulging of the aorta near the heart, which is the type of aortic aneurysm typically managed by a cardiologist."
+        },
+        {
+            "term": "Dyspnea on exertion",
+            "start": 281,
+            "end": 300,
+            "definition": "Shortness of breath during physical activity. Your doctor has noted this needs further investigation to determine the cause."
+        },
+        {
+            "term": "cardiovascular risk factor",
+            "start": 365,
+            "end": 391,
+            "definition": "A habit, condition, or trait that increases your chance of developing heart or blood vessel disease. Your active smoking is a significant one."
+        },
+        {
+            "term": "Echocardiography",
+            "start": 397,
+            "end": 413,
+            "definition": "An ultrasound examination of the heart. Your test today showed no major problems with the structure of your heart."
+        },
+        {
+            "term": "cardiac structural abnormality",
+            "start": 435,
+            "end": 465,
+            "definition": "A problem with the physical structure of the heart, such as valve defects or enlarged chambers. None were found on your echocardiogram today."
+        }
+    ],
+    "plan": [
+        {
+            "term": "Coronary CT scan",
+            "start": 3,
+            "end": 19,
+            "definition": "A specialized CT scan that takes detailed pictures of the blood vessels supplying your heart (coronary arteries). This is being ordered to check whether your risk factors may have affected these vessels."
+        },
+        {
+            "term": "coronary arteries",
+            "start": 40,
+            "end": 57,
+            "definition": "The blood vessels that supply oxygen-rich blood to your heart muscle. Blockages in these arteries can lead to chest pain or heart attacks."
+        },
+        {
+            "term": "cardiovascular risk factors",
+            "start": 84,
+            "end": 111,
+            "definition": "Conditions, habits, or traits that increase your likelihood of developing heart disease. For you, these include smoking and aortic aneurysmal disease."
+        },
+        {
+            "term": "aortic aneurysmal disease",
+            "start": 122,
+            "end": 147,
+            "definition": "A condition in which the aorta has developed one or more aneurysms (abnormal bulges). This is one of the risk factors being considered in your cardiac evaluation."
+        },
+        {
+            "term": "dyspnea on exertion",
+            "start": 149,
+            "end": 168,
+            "definition": "Shortness of breath during physical activity, which is one of the reasons your doctor is ordering further testing."
+        },
+        {
+            "term": "Smoking cessation",
+            "start": 231,
+            "end": 248,
+            "definition": "The process of quitting smoking. Your doctor strongly recommends this because smoking significantly increases your risk of heart disease and can worsen aortic aneurysms."
+        },
+        {
+            "term": "abdominal aortic aneurysm",
+            "start": 436,
+            "end": 461,
+            "definition": "Bulging of the aorta in the abdomen. Your doctor suggests this condition may need to be managed by a vascular surgeon rather than a cardiologist."
+        },
+        {
+            "term": "vascular surgery",
+            "start": 486,
+            "end": 502,
+            "definition": "A surgical specialty focused on treating diseases of the blood vessels (arteries and veins). This may be the appropriate specialty to manage your abdominal aortic aneurysms."
+        }
+    ]
+}
