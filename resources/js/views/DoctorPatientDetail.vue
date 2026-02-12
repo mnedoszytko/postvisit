@@ -25,6 +25,62 @@
         </div>
       </div>
 
+      <!-- Active Alerts -->
+      <section v-if="patientAlerts.length > 0">
+        <h2 class="text-lg font-semibold text-red-700 mb-3 flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+          Active Alerts
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div
+            v-for="(alert, idx) in patientAlerts"
+            :key="idx"
+            :class="[
+              'rounded-2xl border p-5',
+              alert.severity === 'high'
+                ? 'bg-red-50 border-red-300'
+                : 'bg-amber-50 border-amber-300'
+            ]"
+          >
+            <div class="flex items-start gap-3">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span
+                    :class="[
+                      'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
+                      alert.severity === 'high'
+                        ? 'bg-red-100 text-red-700'
+                        : 'bg-amber-100 text-amber-700'
+                    ]"
+                  >
+                    {{ alert.type === 'weight_gain' ? 'Weight Alert' : 'BP Trend' }}
+                  </span>
+                </div>
+                <p class="text-sm text-gray-600 mt-1">{{ alert.message }}</p>
+
+                <div v-if="alert.type === 'weight_gain'" class="mt-2 text-xs text-gray-500">
+                  {{ alert.data.from }} kg &rarr; {{ alert.data.to }} kg
+                  <span class="text-red-600 font-medium">(+{{ alert.data.delta_kg }} kg)</span>
+                </div>
+
+                <div v-if="alert.type === 'elevated_bp' && alert.data.readings" class="mt-2 flex gap-2 flex-wrap">
+                  <span
+                    v-for="(r, i) in alert.data.readings"
+                    :key="i"
+                    class="text-xs bg-white/70 border border-amber-200 rounded px-2 py-0.5"
+                  >
+                    {{ r.systolic }}/{{ r.diastolic }} <span class="text-gray-400">{{ r.date }}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Weight Monitoring Chart -->
       <WeightChart v-if="weightObservations.length >= 2" :weights="weightObservations" />
 
@@ -195,9 +251,11 @@ import { useApi } from '@/composables/useApi';
 import DoctorLayout from '@/layouts/DoctorLayout.vue';
 import WeightChart from '@/components/WeightChart.vue';
 import BloodPressureChart from '@/components/BloodPressureChart.vue';
+import { useDoctorStore } from '@/stores/doctor';
 
 const route = useRoute();
 const api = useApi();
+const doctorStore = useDoctorStore();
 
 const patient = ref(null);
 const visits = ref([]);
@@ -234,6 +292,10 @@ const activeConditions = computed(() => {
     return patient.value.conditions.map(c => c.code_display);
 });
 
+const patientAlerts = computed(() => {
+    return doctorStore.alerts.filter(a => a.patient_id === route.params.id);
+});
+
 onMounted(async () => {
     try {
         const [patientRes, visitsRes, engagementRes, chatAuditRes, obsRes, bpRes] = await Promise.all([
@@ -255,6 +317,8 @@ onMounted(async () => {
     }
 
     await fetchNotifications();
+
+    doctorStore.fetchAlerts();
 });
 
 async function fetchNotifications() {
