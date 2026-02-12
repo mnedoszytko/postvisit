@@ -148,6 +148,7 @@
           >
             Log Out
           </button>
+          <p class="text-[10px] text-gray-300 px-3 mt-1">build {{ gitHash }}</p>
         </div>
       </aside>
 
@@ -163,6 +164,8 @@
 import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
+
+const gitHash = __GIT_HASH__;
 
 const auth = useAuthStore();
 const router = useRouter();

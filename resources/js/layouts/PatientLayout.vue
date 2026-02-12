@@ -210,6 +210,7 @@
         All clinical scenarios, patient data, and medical records displayed in this application are entirely fictional,
         created for demonstration purposes only, and do not depict any real person or actual medical encounter.
       </p>
+      <p class="text-[10px] text-gray-300 mt-2">build {{ gitHash }}</p>
     </footer>
 
     <!-- Desktop: fixed chat panel (right side, below headers) -->
@@ -274,6 +275,8 @@ import ChatPanel from '@/components/ChatPanel.vue';
 defineProps({
     wide: { type: Boolean, default: false },
 });
+
+const gitHash = __GIT_HASH__;
 
 const auth = useAuthStore();
 const visitStore = useVisitStore();

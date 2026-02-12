@@ -1,3 +1,7 @@
+/** Build-time constants injected by Vite (vite.config.js define) */
+declare const __GIT_HASH__: string;
+declare const __BUILD_TIME__: string;
+
 /** Shim: allow importing .vue SFCs without lang="ts" */
 declare module '*.vue' {
     import type { DefineComponent } from 'vue';
