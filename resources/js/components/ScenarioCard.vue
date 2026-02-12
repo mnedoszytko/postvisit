@@ -2,6 +2,9 @@
   <div
     @mouseenter="onHover"
     @mouseleave="onLeave"
+    @touchstart.passive="onTouch"
+    @touchend.passive="onLeave"
+    @touchcancel.passive="onLeave"
   >
     <!-- Photo / Animation -->
     <div class="aspect-square overflow-hidden bg-gray-200 relative">
@@ -83,7 +86,12 @@ function onHover() {
   if (videoEl.value.ended) {
     videoEl.value.currentTime = 0;
   }
-  videoEl.value.play();
+  videoEl.value.play().catch(() => {});
+}
+
+function onTouch() {
+  // On mobile, play when finger touches the card (e.g. while scrolling)
+  onHover();
 }
 
 function onLeave() {
