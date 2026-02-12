@@ -12,7 +12,8 @@ class ExampleTest extends TestCase
      */
     public function test_the_application_returns_a_successful_response(): void
     {
-        $response = $this->get('/');
+        // SPA root requires a built Vite manifest; use the health endpoint for a stable 200 in tests.
+        $response = $this->get('/up');
 
         $response->assertStatus(200);
     }

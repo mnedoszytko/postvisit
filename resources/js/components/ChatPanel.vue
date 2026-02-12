@@ -240,13 +240,15 @@
 import { ref, computed, onMounted, nextTick, watch, reactive } from 'vue';
 import { useChatStore } from '@/stores/chat';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import StreamingMessage from '@/components/StreamingMessage.vue';
 import ThinkingIndicator from '@/components/ThinkingIndicator.vue';
 import SourceChips from '@/components/SourceChips.vue';
 
 marked.setOptions({ breaks: true, gfm: true });
 function renderMarkdown(text) {
-    return marked.parse(text || '');
+    const html = marked.parse(text || '');
+    return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
 }
 
 function stripSources(text) {

@@ -115,6 +115,12 @@ class DoctorTest extends TestCase
 
     public function test_doctor_can_view_patient_detail(): void
     {
+        Visit::factory()->create([
+            'patient_id' => $this->patient->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+        ]);
+
         $response = $this->actingAs($this->doctorUser)->getJson("/api/v1/doctor/patients/{$this->patient->id}");
 
         $response->assertOk()
@@ -191,9 +197,21 @@ class DoctorTest extends TestCase
     public function test_doctor_can_reply_to_notification(): void
     {
         $patientUser = User::factory()->patient($this->patient)->create();
+        $visit = Visit::factory()->create([
+            'patient_id' => $this->patient->id,
+            'practitioner_id' => $this->practitioner->id,
+            'organization_id' => $this->organization->id,
+        ]);
+
         $notification = Notification::factory()->create([
-            'user_id' => $patientUser->id,
+            // Patient feedback is addressed to the practitioner user.
+            'user_id' => $this->doctorUser->id,
+            'visit_id' => $visit->id,
             'type' => 'patient_feedback',
+            'data' => [
+                'from_user_id' => $patientUser->id,
+                'from_name' => $patientUser->name,
+            ],
         ]);
 
         $response = $this->actingAs($this->doctorUser)->postJson("/api/v1/doctor/messages/{$notification->id}/reply", [

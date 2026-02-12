@@ -13,6 +13,18 @@ return [
     |
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Demo Reset Token
+    |--------------------------------------------------------------------------
+    |
+    | Optional shared secret used to protect destructive demo endpoints
+    | (e.g. /api/v1/demo/reset). Keep demo browsing public, but avoid random
+    | visitors nuking the database during the hackathon.
+    |
+    */
+    'reset_token' => env('DEMO_RESET_TOKEN'),
+
     'doctor' => [
         'name' => 'Dr. Nedo',
         'email' => 'doctor@demo.postvisit.ai',

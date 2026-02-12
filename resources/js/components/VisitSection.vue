@@ -43,13 +43,15 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import HighlightedText from '@/components/HighlightedText.vue';
 
 marked.setOptions({ breaks: true, gfm: true });
 
 function renderContent(text) {
     if (!text) return '';
-    return marked.parse(text);
+    const html = marked.parse(text);
+    return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
 }
 
 const props = defineProps({

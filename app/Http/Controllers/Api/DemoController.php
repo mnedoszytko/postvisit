@@ -19,6 +19,26 @@ class DemoController extends Controller
         }
     }
 
+    private function requireResetToken(Request $request): void
+    {
+        $expected = (string) config('demo-scenarios.reset_token', '');
+
+        // In production, require the token if it is configured.
+        if (app()->environment('production') && $expected === '') {
+            abort(403, 'Demo reset is disabled.');
+        }
+
+        if ($expected === '') {
+            return;
+        }
+
+        $provided = (string) ($request->header('X-Demo-Reset-Token') ?? $request->query('reset_token') ?? '');
+
+        if (! hash_equals($expected, $provided)) {
+            abort(403, 'Invalid demo reset token.');
+        }
+    }
+
     public function start(Request $request): JsonResponse
     {
         $role = $request->input('role', 'patient');
@@ -73,6 +93,8 @@ class DemoController extends Controller
 
     public function reset(): JsonResponse
     {
+        $this->requireResetToken(request());
+
         Artisan::call('migrate:fresh');
         Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\DemoSeeder']);
 
