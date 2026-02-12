@@ -35,29 +35,29 @@
     <div class="bg-white rounded-2xl border border-gray-200 p-5">
       <h3 class="font-semibold text-gray-900 mb-3">Personal Information</h3>
       <div v-if="!editing" class="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
-        <div>
+        <div class="min-w-0">
           <p class="text-gray-400 text-xs">Full Name</p>
-          <p class="text-gray-900 font-medium">{{ patientFullName || '\u2014' }}</p>
+          <p class="text-gray-900 font-medium truncate">{{ patientFullName || '\u2014' }}</p>
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-gray-400 text-xs">Date of Birth</p>
           <p class="text-gray-900 font-medium">{{ formatDate(patient?.dob) || '\u2014' }}</p>
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-gray-400 text-xs">Gender</p>
           <p class="text-gray-900 font-medium capitalize">{{ patient?.gender || '\u2014' }}</p>
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-gray-400 text-xs">Phone</p>
           <p class="text-gray-900 font-medium">{{ patient?.phone || '\u2014' }}</p>
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-gray-400 text-xs">Email</p>
-          <p class="text-gray-900 font-medium">{{ patient?.email || '\u2014' }}</p>
+          <p class="text-gray-900 font-medium truncate">{{ patient?.email || '\u2014' }}</p>
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-gray-400 text-xs">MRN</p>
-          <p class="text-gray-900 font-medium font-mono">{{ patient?.mrn || '\u2014' }}</p>
+          <p class="text-gray-900 font-medium font-mono truncate">{{ patient?.mrn || '\u2014' }}</p>
         </div>
       </div>
       <div v-else class="grid grid-cols-2 gap-3">
