@@ -2,6 +2,7 @@
 
 **Cel:** Przejrzeć cały demo flow, skategoryzować każdy element jako MUST/NICE/SKIP.
 **Data:** 2026-02-12
+**Last audit:** 2026-02-12 (code audit vs main)
 **Deadline:** 16/2, 21:00 CET
 
 ---
@@ -10,11 +11,11 @@
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| PostVisit.ai title + tagline | OK | MUST | |
-| "Try Demo" button | OK | MUST | |
-| "Sign In" button | OK | MUST | |
-| Medical disclaimer | OK | MUST | |
-| Background gradient | OK | NICE | |
+| PostVisit.ai title + tagline | ✅ DONE | MUST | |
+| "Try Demo" button | ✅ DONE | MUST | |
+| "Sign In" button | ✅ DONE | MUST | |
+| Medical disclaimer | ✅ DONE | MUST | |
+| Background gradient | ✅ DONE | NICE | |
 
 ---
 
@@ -22,48 +23,44 @@
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| "Try Demo" → goes to /login (NOT auto-login) | BROKEN | MUST | Currently auto-logs as patient, should show login page |
-| Demo Access section — move higher, more prominent | TODO | MUST | Should be above or equal to email/password form |
-| Demo Access — highlight/glow effect | TODO | MUST | More visually prominent than regular login |
-| Demo Access — entrance animation | TODO | MUST | Subtle animation when page loads |
-| "Sign in as Patient" button | OK | MUST | |
-| "Sign in as Doctor" button | OK | MUST | |
-| Email/Password form | OK | MUST | Keep as-is |
-| "Sign up" link | OK | NICE | |
+| "Try Demo" → goes to /login (NOT auto-login) | ✅ DONE | MUST | Fixed — goes to /login now |
+| Demo Access section — move higher, more prominent | ✅ DONE | MUST | Above email/password form |
+| Demo Access — highlight/glow effect | ✅ DONE | MUST | Emerald glow animation |
+| Demo Access — entrance animation | ✅ DONE | MUST | Subtle animation on load |
+| "Sign in as Patient" button | ✅ DONE | MUST | |
+| "Sign in as Doctor" button | ✅ DONE | MUST | |
+| Email/Password form | ✅ DONE | MUST | |
+| "Sign up" link | ✅ DONE | NICE | |
 
 ---
 
-## Screen 2.5: Patient Scenario Picker (NEW)
+## Screen 2.5: Patient Scenario Picker
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| Scenario selection screen after "Sign in as Patient" | TODO | MUST | Pick your patient profile before entering |
-| 3 patient scenarios: PVCs/palpitations, Heart Failure, Hypertension | TODO | MUST | Each = fresh user + visit data |
-| Each scenario: name, age, short description, condition | TODO | MUST | |
-| Fresh user per demo session (isolation) | TODO | MUST | Multiple judges can't corrupt each other's data |
-| Scenario creates user + visits + labs + notes on click | TODO | MUST | Replaces current shared Alex Johnson |
+| Scenario selection screen after "Sign in as Patient" | ✅ DONE | MUST | `/demo/scenarios` route + ScenarioPicker.vue |
+| 12 patient scenarios across specialties | ✅ DONE | MUST | 12 scenarios in config/demo-scenarios.php |
+| Each scenario: name, age, short description, condition | ✅ DONE | MUST | |
+| Fresh user per demo session (isolation) | ✅ DONE | MUST | Fresh user created per session |
+| Scenario creates user + visits + labs + notes on click | ✅ DONE | MUST | Config-driven, DemoSeeder handles all data |
+| 4 featured scenarios + "Show more" for rest | ✅ DONE | MUST | Featured cards prominent, rest behind expander |
+| Specialty filter pills | ✅ DONE | MUST | Filter by specialty |
+| Fibromyalgia (Fatima Benali) scenario | ⚠️ BUG | MUST | Config exists but "Error loading scenario" — known bug |
 
-**Architecture note:** Each "Sign in as Patient" click → scenario picker → creates a new user (e.g. `demo-pvcs-abc123@postvisit.ai`), seeds their data, logs them in. Old demo users cleaned up via cron.
-
-**Scenarios (MVP):**
-1. PVCs/Palpitations (existing — Alex Johnson cardiology case)
-2. Heart Failure (existing in seeder — HF case)
-3. (more added later by Nedo)
-
-**Architecture must support:** adding new scenarios = just adding a new array/config entry with patient data + visit notes. No code changes needed per scenario.
+---
 
 ## Screen 3: Patient — Visit List (Profile)
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| Visit History — primary element | OK-ish | MUST | Titles too long, need shorter summaries |
-| Visit titles — shorter, cleaner | TODO | MUST | Currently showing full AI chief complaint text |
-| Record New Visit — right below Visit History | OK | MUST | Already there but after Health Dashboard |
+| Visit History — primary element | ✅ DONE | MUST | |
+| Visit titles — shorter, cleaner | TODO | MUST | Still showing full AI chief complaint text |
+| Record New Visit — right below Visit History | ✅ DONE | MUST | |
 | Layout order: Visits → Record → Health Dashboard → Library | TODO | MUST | Reorder: primary actions first |
-| Health Dashboard link | OK | NICE | Move to bottom |
-| Library link | OK | NICE | Move to bottom |
-| User avatar + name + email | OK | NICE | |
-| Fictional data disclaimer | OK | MUST | Already present at bottom |
+| Health Dashboard link | ✅ DONE | NICE | |
+| Library link | ✅ DONE | NICE | |
+| User avatar + name + email | ✅ DONE | NICE | |
+| Fictional data disclaimer | ✅ DONE | MUST | |
 
 ---
 
@@ -71,41 +68,41 @@
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| Visit Summary header (date, type, doctor) | OK | MUST | |
-| **Short visit summary at top** (2-3 sentences, what the visit was about) | TODO | MUST | Before SOAP sections, plain language for patient |
-| SOAP sections (CC, HPI, Symptoms, Exam, Assessment, Plan) | OK | MUST | Collapsible, working |
-| Medical term highlighting (green underline) | OK | MUST | Working — terms clickable |
-| "Explain this" button per section | OK | MUST | |
-| **"Explain this" → highlight Send button** visually when explanation loads | TODO | MUST | Send button should glow/colorize to draw attention to click it |
+| Visit Summary header (date, type, doctor) | ✅ DONE | MUST | |
+| **Short visit summary at top** (2-3 sentences, plain language) | ✅ DONE | MUST | Gradient card at top of visit |
+| SOAP sections (CC, HPI, Symptoms, Exam, Assessment, Plan) | ✅ DONE | MUST | Collapsible, working |
+| Medical term highlighting (green underline) | ✅ DONE | MUST | Working — terms clickable |
+| "Explain this" button per section | ✅ DONE | MUST | |
+| **"Explain this" → highlight Send button** visually | ✅ DONE | MUST | `animate-send-glow` on Send button + chat flash animation |
 | Select any text → explain via AI | TODO | NICE | User selects arbitrary text, popup offers "Explain this" |
-| AI-Extracted Clinical Entities | OK | NICE | |
-| Visit Transcript | OK | NICE | |
-| **Doctor's recommendations / action items** (at bottom of SOAP, before extras) | TODO | MUST | What the doctor told the patient to DO — meds, follow-ups, lifestyle |
-| **Next actions checklist** (very bottom) | TODO | MUST | Actionable items: "Schedule follow-up in 2 weeks", "Take propranolol 2x/day", etc. |
-| **Attachments — AI Analysis auto-refresh** when analysis completes (no manual reload) | BUG | MUST | Currently requires page refresh to see results |
-| **Attachments — AI Analysis expanded by default** after completion | TODO | MUST | Should show findings immediately, not collapsed |
-| **Attachments — "Analyzing document..." progress** more visible, bigger, with animation | TODO | MUST | Currently tiny spinner, no sense of progress |
-| Attachments — Upload files drop zone too large | OK | NICE | Smaller would look cleaner |
-| **Demo: pre-loaded sample document** for attachment analysis | TODO | NICE | E.g. sample lab report PDF or ECG report — so demo user can see AI analysis without uploading their own file |
-| **Auto-categorization of uploaded documents** | TODO | NICE | AI analyzes uploaded file and assigns category (EKG, Lab Report, Imaging, Prescription, Referral, etc.). Shows as badge/tag on the document |
-| **Auto-extraction of document date** | TODO | NICE | AI extracts the date from the document content. Critical for timeline ordering and clinical context — a lab from 3 months ago vs today changes everything |
-| Remove PII from AI-generated notes | TODO | MUST | "Dr. Ciarka" and any other real names |
-| Chat button (?) bottom-right | OK | MUST | Floating action button |
-| **"Ask about this" button on EVERY section** — visible without expanding | TODO | MUST | Each SOAP section, Attachments, AI Analysis — all need a quick chat entry point. Click → opens chat pre-filled with context of that section |
-| **Term Highlighter in AI Analysis (attachments)** | MISSING | MUST | Attachment analysis results have no highlighted terms — same TermExtractor should run on AI Analysis text |
+| AI-Extracted Clinical Entities | ✅ DONE | NICE | |
+| Visit Transcript | ✅ DONE | NICE | |
+| **Doctor's recommendations / action items** | ✅ DONE | MUST | Numbered items parsed from plan text, with AskAiButton |
+| **Next actions checklist** | ✅ DONE | MUST | Interactive checkboxes with strikethrough, derived from follow_up + prescriptions |
+| **Attachments — AI Analysis auto-refresh** | ✅ DONE | MUST | Polling in VisitAttachments.vue |
+| **Attachments — AI Analysis expanded by default** | TODO | MUST | Should show findings immediately, not collapsed |
+| **Attachments — "Analyzing document..." progress** more visible | TODO | MUST | Currently tiny spinner, no sense of progress |
+| Attachments — Upload files drop zone too large | OK | NICE | |
+| **Demo: pre-loaded sample document** | TODO | NICE | Sample lab report PDF or ECG report for demo |
+| **Auto-categorization of uploaded documents** | TODO | NICE | AI assigns category badge |
+| **Auto-extraction of document date** | TODO | NICE | AI extracts date from document content |
+| Remove PII from AI-generated notes | ✅ DONE | MUST | "Dr. Ciarka" removed |
+| Chat button bottom-right | ✅ DONE | MUST | Floating action button |
+| **"Ask about this" button on EVERY section** | ✅ DONE | MUST | AskAiButton on all SOAP sections, recommendations, next actions, observations, diagnosis, meds, entities, transcript |
+| **Term Highlighter in AI Analysis (attachments)** | ✅ DONE | MUST | HighlightedText + matchTermsInText() in VisitAttachments.vue |
 
 ## Screen 5: Patient — Chat
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| **Two-column layout: Visit Summary (left) + Chat (right)** | TODO | MUST | Like Claude Cowork. Chat always visible on desktop, no hidden button. Visit scrolls independently. |
-| **Mobile: tab switcher** ("Summary" / "Chat") or bottom sheet | TODO | MUST | Single column on mobile, easy toggle between views |
-| Green floating ? button — remove or redesign | TODO | MUST | Current button is invisible and ugly |
-| Suggested questions (4 quick-picks) | OK | MUST | Already good: diagnosis, meds, watch out, call doctor |
-| **Add suggested Q: "Can I drink alcohol with my medication?"** | TODO | MUST | Common real patient question, great demo showcase |
-| **Section-specific "Ask about this" buttons** feed context into chat | TODO | MUST | Clicking "Ask about this" on Assessment → chat opens pre-loaded with that section's context |
-| Chat streaming response (SSE) | OK | MUST | Already works |
-| Chat input field + Send | OK | MUST | |
+| **Two-column layout: Visit Summary (left) + Chat (right)** | ✅ DONE | MUST | Working on desktop, visit scrolls independently |
+| **Mobile: tab switcher** ("Summary" / "Chat") or bottom sheet | TODO | MUST | Single column on mobile, needs toggle |
+| Green floating ? button — remove or redesign | ✅ DONE | MUST | Redesigned — emerald chat icon with pulse dot |
+| Suggested questions (5 quick-picks) | ✅ DONE | MUST | diagnosis, meds, watch out, call doctor, alcohol |
+| **Add suggested Q: "Can I drink alcohol with my medication?"** | ✅ DONE | MUST | Added to suggestions |
+| **Section-specific "Ask about this" buttons** feed context into chat | ✅ DONE | MUST | AskAiButton passes section context to chat |
+| Chat streaming response (SSE) | ✅ DONE | MUST | |
+| Chat input field + Send | ✅ DONE | MUST | |
 
 ---
 
@@ -113,15 +110,15 @@
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| Microphone permission + recording starts | OK | MUST | Working |
-| Timer / recording indicator | OK | MUST | |
-| Stop recording button | OK | MUST | |
-| **"Use Demo Recording" button** — appears ~2s after recording starts, below Stop | TODO | MUST | Fades in after 2s delay. Clicking it stops recording, loads demo transcript, goes straight to processing |
-| Demo data loads pre-recorded transcript + processes it | OK | MUST | Already works via useDemoTranscript() |
-| Real recording → upload → Whisper transcription | OK | MUST | Working (with retry logic) |
-| Process Visit after recording stops | OK | MUST | |
-| **Playback pre-recorded audio scenarios** — user picks a scenario, audio plays, system transcribes it live | TODO | NICE | Shows real Whisper transcription working on realistic audio |
-| Generate audio scenarios via ElevenLabs TTS | TODO | NICE | Nedo writes scripts → ElevenLabs generates doctor-patient dialog audio → stored in demo/audio/ |
+| Microphone permission + recording starts | ✅ DONE | MUST | |
+| Timer / recording indicator | ✅ DONE | MUST | |
+| Stop recording button | ✅ DONE | MUST | |
+| **"Use Demo Recording" button** | ✅ DONE | MUST | In CompanionScribe.vue |
+| Demo data loads pre-recorded transcript + processes it | ✅ DONE | MUST | Via useDemoTranscript() |
+| Real recording → upload → Whisper transcription | ✅ DONE | MUST | Working with retry logic |
+| Process Visit after recording stops | ✅ DONE | MUST | |
+| **Playback pre-recorded audio scenarios** | TODO | NICE | Picks scenario, audio plays, Whisper transcribes live |
+| Generate audio scenarios via ElevenLabs TTS | ✅ DONE | NICE | Audio files in demo/visits/visit-XX-*/dialogue-tts.mp3 |
 
 ---
 
@@ -129,28 +126,26 @@
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| Processing screen shows progress | OK | MUST | Currently working |
-| **Quality gate after transcription** — AI evaluates if transcript has enough clinical content | TODO | MUST | If insufficient data (e.g. 10s of "hello") → don't generate garbage visit → offer fallback: "Not enough clinical data. Use demo recording instead?" with scenario picker |
-| Fallback to demo transcript preserves same flow (processing → visit) | TODO | MUST | User picks a demo scenario, system uses that transcript, continues processing normally |
-| **Smoother, more polished animations** — step-by-step with fluid transitions | TODO | NICE | Better visual feedback: processing transcript → generating notes → extracting terms → done |
+| Processing screen shows progress | ✅ DONE | MUST | |
+| **Quality gate after transcription** | ✅ DONE | MUST | TranscriptController validates clinical content |
+| Fallback to demo transcript preserves same flow | ✅ DONE | MUST | |
+| **Smoother, more polished animations** | TODO | NICE | Step-by-step fluid transitions |
 
 ---
 
 ## Screen 8: Doctor — Dashboard
 
-**Philosophy:** Doctor panel is NOT the focus — patient side is. Doctor view = "Doctor in the Loop" — see alerts, review trends, contact patient. Reuse patient-side components (charts, health data) where possible.
-
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| Stats cards (Patients, Unread Messages, Total Visits) | OK | MUST | Working but visually plain |
-| Patient list with search | OK | MUST | Working, search UI present (backend filter missing) |
-| **Patient search — backend filtering** | BUG | MUST | Vue sends search param but DoctorController doesn't filter by it |
-| **Alert Panel — "Requires Attention"** at top of dashboard | TODO | MUST | Above patient list. Shows clinical alerts: weight gain >2kg/3d (HF), elevated BP streak, AI escalations. Data/logic already exists in WeightChart + EscalationDetector |
-| **Patient cards — richer info** | TODO | MUST | Replace plain list with cards: main condition + severity badge, last visit date, status (Stable/Needs Review/Alert), engagement summary |
-| **Patient cards — mini sparklines** | TODO | MUST | Tiny inline chart of last 7 weight/BP readings per patient — visual trend at a glance |
-| **Quick action buttons per patient** | TODO | MUST | "View Latest Visit", "Review AI Chat", "Send Message" — one click to action |
-| **AI Insights Summary panel** | TODO | NICE | "47 questions answered by AI this week", "3 escalations flagged", "Most common topics: side effects, diet" — doctor oversight of AI without reading every chat |
-| **Notification bell / unread counter** in layout header | TODO | NICE | Real-time or polling-based unread count in DoctorLayout |
+| Stats cards (Patients, Unread Messages, Total Visits) | ✅ DONE | MUST | |
+| Patient list with search | ✅ DONE | MUST | |
+| **Patient search — backend filtering** | ✅ DONE | MUST | DoctorController filters by name |
+| **Alert Panel — "Requires Attention"** at top | ✅ DONE | MUST | Weight/BP trend alerts |
+| **Patient cards — richer info** (condition, status, vitals) | ✅ DONE | MUST | Condition badge, alert status color, last vitals, visits count |
+| **Patient cards — mini sparklines** | TODO | MUST | Tiny inline chart of last 7 weight/BP readings |
+| **Quick action buttons per patient** | ✅ DONE | MUST | Follow-up, Prescription, Message + More dropdown |
+| **AI Insights Summary panel** | TODO | NICE | AI oversight stats for doctor |
+| **Notification bell / unread counter** | TODO | NICE | In DoctorLayout header |
 
 ---
 
@@ -158,18 +153,18 @@
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| Patient profile card (name, age, conditions) | OK | MUST | Working |
-| Weight monitoring chart (clinical-grade SVG) | OK | MUST | Working — dry weight ref, alert threshold, color-coded |
-| Blood pressure chart (systolic + diastolic) | OK | MUST | Working — clinical thresholds, elevated count |
-| Visit history list | OK | MUST | Working |
-| AI Chat Audit Trail (expandable sessions) | OK | MUST | Working — full transcript, color-coded messages |
-| Notifications / Messages with inline reply | OK | MUST | Working — bidirectional messaging |
-| **Shared documents from patient** | TODO | MUST | Documents/files patient shares with doctor — viewable, usable as context |
-| **Patient health data — reuse patient-side components** | TODO | MUST | Labs, vitals, health profile — same data views as patient sees, reuse components (BP chart, weight chart already done) |
-| **Doctor actions panel** | TODO | MUST | "Send message", "Schedule follow-up", "Renew prescription", "Add recommendation" — doctor-in-the-loop response actions |
-| **Alert detail view** — when clicking alert from dashboard | TODO | MUST | Shows full context: what triggered alert, relevant data trend, suggested action |
-| **Patient timeline** — unified chronological view | TODO | NICE | Single timeline combining: visits, abnormal vitals, AI chat sessions, messages — instead of separate sections |
-| **Follow-up / Prescription / Message actions actually work** | TODO | NICE | Doctor panel action buttons (Follow-up, Prescription, Message) should do something real: (1) Follow-up — invite patient to next visit, show scheduling screen. (2) Prescription — show patient's current meds, allow renew/new prescription with simple form. (3) Message — compose and send message to patient with channel picker (in-app, email, SMS). Currently buttons are present but non-functional |
+| Patient profile card (name, age, conditions) | ✅ DONE | MUST | |
+| Weight monitoring chart (clinical-grade SVG) | ✅ DONE | MUST | Dry weight ref, alert threshold, color-coded |
+| Blood pressure chart (systolic + diastolic) | ✅ DONE | MUST | Clinical thresholds, elevated count |
+| Visit history list | ✅ DONE | MUST | |
+| AI Chat Audit Trail (expandable sessions) | ✅ DONE | MUST | Full transcript, color-coded |
+| Notifications / Messages with inline reply | ✅ DONE | MUST | Bidirectional messaging |
+| **Shared documents from patient** | TODO | MUST | Patient-uploaded documents visible to doctor |
+| **Patient health data — reuse patient-side components** | ⚠️ PARTIAL | MUST | Weight + BP charts reused; missing Vitals/Labs tabs |
+| **Doctor actions panel** | TODO | MUST | Schedule, renew, recommend — even mock UI |
+| **Alert detail view** — click from dashboard | ⚠️ PARTIAL | MUST | Links to patient page but no scroll/highlight to alert |
+| **Patient timeline** — unified chronological view | TODO | NICE | Combine visits, vitals, chat, messages |
+| **Follow-up / Prescription / Message actions work** | TODO | NICE | Buttons present but show "coming soon" toast |
 
 ---
 
@@ -177,57 +172,52 @@
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| Health Profile tab — Personal Info, Biometrics, Allergies, Emergency Contact | OK | MUST | Working but too basic |
-| **Health Profile — expand significantly** | TODO | MUST | Research standardized health records (FHIR Patient, US Core, Apple Health). Add: chronic conditions, surgical history, family history, current medications list, immunizations, implants/devices, smoking/alcohol status |
-| **Research task: standardized health record formats** | TODO | MUST | Look at FHIR Patient resource, Apple Health categories, Epic MyChart fields, OpenEHR archetypes — find the right level of detail for a patient-facing app |
-| Connected Services tab — structure exists (Wearables, EHR, Pharmacies, Labs, Insurance) | OK | NICE | Categories good, 14 services listed |
-| **Connected Services — visual polish** | TODO | NICE | Use real brand logos (mockup OK), more professional card design, less generic look |
-| **Connected Services — click into connected service → show mock data** | TODO | NICE | E.g. click Apple Health → show mock heart rate, steps, sleep data. Click Epic MyChart → show mock records/labs. All mockup but demonstrates the integration concept |
-| **Vitals & Labs — split into two separate tabs** (Vitals / Labs) | TODO | MUST | Currently combined, should be separate |
-| **Vitals tab:** BP trend, HR trend, HRV (add), Weight (bar chart + avg + delta), Sleep (add) | TODO | MUST | Weight = bar chart with average line + period change info. All vitals need time range filter (7d/30d/90d/1y) |
-| **Labs tab:** dedicated browser with trends per marker | TODO | MUST | Each lab value (cholesterol, K+, TSH, etc.) shows trend over time, reference ranges, last value highlighted |
-| **Labs: connect to lab provider** (Quest, Labcorp) | TODO | NICE | Pull results automatically via integration |
-| **Labs: upload results** — PDF upload + AI extraction | TODO | MUST | Upload lab report PDF → AI extracts values → populates trends. Same pattern as attachment analysis |
-| **Labs: photo/scan upload** → AI reads lab results from image | TODO | NICE | Take photo of paper lab results → AI OCR + extraction → structured data |
-| Apple Watch summary card (Resting HR, PVC Events, Steps) | OK | MUST | Already working |
-| Blood Pressure Trend chart | OK | MUST | Already working |
-| Heart Rate Trend chart | OK | MUST | Already working |
-| **Add: Heart Rate Variability (HRV) chart** | TODO | MUST | Popular health metric, important for cardiac patients |
-| **Add: Sleep information** (duration, quality, stages) | TODO | MUST | Critical health metric, ties to connected devices |
-| **Weight Trend — change to bar chart** with average line + period delta | TODO | MUST | Currently line chart, should be bars + "−2.3kg in last 30 days" type summary |
-| **All vitals: time range filter** (7d / 30d / 90d / 1y) | TODO | MUST | Sorting/filtering by time period |
+| Health Profile tab — Personal Info, Biometrics, Allergies, Emergency Contact | ✅ DONE | MUST | |
+| **Health Profile — expand significantly** | ⚠️ PARTIAL | MUST | Basics done; missing chronic conditions, surgical/family history, smoking |
+| **Research task: standardized health record formats** | TODO | MUST | FHIR, Apple Health, Epic MyChart, OpenEHR |
+| Connected Services tab | ✅ DONE | NICE | 14 services, categories good |
+| **Connected Services — visual polish** | TODO | NICE | Real brand logos, more professional design |
+| **Connected Services — click → show mock data** | TODO | NICE | Click Apple Health → mock HR, steps, sleep |
+| **Vitals & Labs — split into two separate tabs** | ✅ DONE | MUST | VitalsTab + LabResultsTab |
+| **Vitals tab:** BP, HR, Weight charts | ✅ DONE | MUST | Working with Chart.js |
+| **Add: HRV chart** | TODO | MUST | Heart Rate Variability — important for cardiac patients |
+| **Add: Sleep information** | TODO | MUST | Duration, quality, stages |
+| **Weight Trend — bar chart + avg line + delta** | ⚠️ PARTIAL | MUST | Doctor-side has bar chart; patient-side still line chart |
+| **All vitals: time range filter** (7d/30d/90d/1y) | ✅ DONE | MUST | Buttons in VitalsTab, cutoffDate computed |
+| **Labs tab:** browser with trends per marker | ⚠️ PARTIAL | MUST | List with values/ranges/coloring; no per-marker trend charts |
+| **Labs: connect to lab provider** | TODO | NICE | Quest, Labcorp integration |
+| **Labs: upload results** — PDF + AI extraction | TODO | MUST | Upload PDF → AI extracts values → trends |
+| **Labs: photo/scan upload** → AI OCR | TODO | NICE | Photo of paper results → AI extraction |
+| Apple Watch summary card | ✅ DONE | MUST | |
+| Blood Pressure Trend chart | ✅ DONE | MUST | |
+| Heart Rate Trend chart | ✅ DONE | MUST | |
+| **Lab Results & Vitals: term explainer (tap-to-explain)** | TODO | MUST | Medical term highlighter on lab/vital names |
 
-### Cross-cutting: Context → Chat (MUST — applies to ALL My Health sections)
+### Cross-cutting: Context → Chat
 
-Every element across Health Profile, Connected Services, Vitals, Labs must be **selectable as context for the AI chat**. User can pick any data point (BP trend, lab result, medication, allergy, connected device data) and ask the AI about it in relation to their visit.
-
-Example: Patient looks at BP trend → clicks "Ask about this" → Chat opens with context: "Looking at my blood pressure trend from the last 2 weeks and my last cardiology visit, is my current blood pressure good?"
-
-This is the **core value loop**: visit data + health data + AI chat = personalized health understanding.
+| Requirement | Status | Notes |
+|-------------|--------|-------|
+| Every health element selectable as chat context | TODO | MUST — "Ask about this" on vitals, labs, meds, allergies |
 
 ### Documents Tab (inside My Health)
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| Documents list — icons look poor | TODO | MUST | Generic/ugly icons, need proper file type icons |
-| Documents list — status badges look mockup-ish | TODO | MUST | Need more polished design |
-| **Each document = database entry** | TODO | MUST | Every document stored as DB record, queryable, not just file storage |
-| **Each document usable as chat context** | TODO | MUST | User can select any document and ask AI about it in relation to their health |
+| Documents list — icons look poor | TODO | MUST | Need proper file type icons |
+| Documents list — status badges look mockup-ish | TODO | MUST | Need polished design |
+| **Each document = database entry** | ✅ DONE | MUST | Document model exists, stored in DB |
+| **Each document usable as chat context** | ✅ DONE | MUST | ContextAssembler loads library items; ChatPanel has Documents context source |
 
 ---
 
 ## Cross-cutting: AI Chat Assistant on EVERY Page (CRITICAL MUST)
 
-The AI chat assistant MUST be available on **every page and section** of the application, not just the Visit Detail screen. This is the core product differentiator.
-
 | Requirement | Status | Category | Notes |
 |-------------|--------|----------|-------|
-| **AI Chat accessible from every page** | TODO | MUST | Visit Detail, My Health, Library, Doctor views — all need chat entry |
-| **Context selection from any section** | TODO | MUST | User can select any data point as context: SOAP section, vital trend, lab result, document, medication, condition |
-| **"Ask about this" button on every data element** | TODO | MUST | Consistent UX pattern across all screens — click → chat opens with that element as context |
-| **Chat panel architecture** | TODO | MUST | Reusable side panel (desktop: right column, mobile: tab/bottom sheet) that works across all pages |
-
-**This is the core value loop:** visit data + health data + documents + AI chat = personalized health understanding. The chat must be omnipresent.
+| **AI Chat accessible from every page** | ✅ DONE | MUST | Global ChatPanel in PatientLayout.vue — fixed right panel on desktop, floating button + slide-over on mobile |
+| **Context selection from any section** | ⚠️ PARTIAL | MUST | Works on Visit Detail (SOAP sections); NOT yet on health/labs/library |
+| **"Ask about this" button on every data element** | ⚠️ PARTIAL | MUST | Done on Visit Detail; NOT done on health/labs/library sections |
+| **Chat panel architecture** | ✅ DONE | MUST | Reusable ChatPanel.vue, works across all patient pages |
 
 ---
 
@@ -235,58 +225,48 @@ The AI chat assistant MUST be available on **every page and section** of the app
 
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| Your Conditions (auto-populated from visits) | OK | MUST | Working — shows PVCs |
-| Your Medications (auto-populated) | OK | MUST | Working — Propranolol with "Drug info" |
-| Clinical References (PubMed Verified) | OK | MUST | 8 guidelines, good quality |
-| "Relevant for You" / "Ask AI" / "Search Databases" tabs | OK | MUST | |
-| OpenEvidence Integration | COMING SOON | NICE | Banner present |
-| **Add custom documents: URL, PDF upload** | TODO | MUST | Patient can add their own references, doctor's handouts, hospital PDFs |
-| **Per-profile library** — each scenario/patient has own conditions + meds + refs | TODO | MUST | Tied to scenario picker — PVC patient gets cardiac refs, HF patient gets HF refs |
-| Search Databases tab — currently shows only ICD-10 codes, no clinical value | WEAK | SKIP | Needs richer data sources, source management. Too much work for demo — Linear issue |
+| Your Conditions (auto-populated from visits) | ✅ DONE | MUST | |
+| Your Medications (auto-populated) | ✅ DONE | MUST | |
+| Clinical References (PubMed Verified) | ✅ DONE | MUST | |
+| "Relevant for You" / "Ask AI" / "Search Databases" tabs | ✅ DONE | MUST | |
+| OpenEvidence Integration | COMING SOON | NICE | |
+| **Add custom documents: URL, PDF upload** | ✅ DONE | MUST | "My Library" tab with drag-drop PDF + URL input |
+| **Per-profile library** — each scenario has own data | ✅ DONE | MUST | Loads per-patient conditions/meds/refs |
+| Search Databases tab — ICD-10 only | WEAK | SKIP | |
 
 ---
 
 ## Screen 12: Settings
 
-**Philosophy:** Mock for demo. Show the structure exists, don't build real functionality.
-
 | Element | Status | Category | Notes |
 |---------|--------|----------|-------|
-| **Audit Logs viewer** — list of system events | TODO | MUST | Mock UI showing audit trail (login, data access, AI queries). Backend endpoint already exists (`GET /audit/logs`) |
-| **Document permissions** — who can see what | TODO | MUST | Mock UI: list of documents with toggles for sharing with doctor/family. Demonstrates privacy control concept |
-| **System logs viewer** | TODO | NICE | Mock — show recent system activity |
-| Profile settings (name, email, password) | TODO | NICE | Standard account settings, low priority |
+| **Audit Logs viewer** | ✅ DONE | MUST | Patient-side mock + doctor-side real (DoctorAuditLog.vue with filters, CSV export) |
+| **Document permissions** | ✅ DONE | MUST | Data Governance section with toggles (share docs, AI analysis, care team) |
+| **System logs viewer** | TODO | NICE | |
+| Profile settings (name, email, password) | TODO | NICE | |
 
 ---
 
 ## Bugs Found During Review
 
-| # | Screen | Bug | Severity | Fix? |
-|---|--------|-----|----------|------|
-| 1 | Visit Detail | "Dr. Ciarka" — real PII in AI-generated visit note (Chief Complaint) | HIGH | MUST — remove/replace with fictional name before demo |
-| 2 | Visit Detail | "Current medications" appear inside Reported Symptoms and Physical Examination sections — wrong SOAP classification | HIGH | MUST — ScribeProcessor puts meds in wrong sections |
-| 3 | Visit Detail | Physical Exam section shows "Physical examination of reported symptoms" — nonsensical content, meds mixed in | HIGH | MUST — same root cause as #2 |
-| 4 | Visit Detail | AI Analysis only appears after manual page refresh — should auto-update when done | HIGH | MUST — polling/SSE needed |
+| # | Screen | Bug | Status | Severity |
+|---|--------|-----|--------|----------|
+| 1 | Visit Detail | "Dr. Ciarka" — real PII in notes | ✅ FIXED | HIGH |
+| 2 | Visit Detail | Meds in wrong SOAP sections | TODO | HIGH |
+| 3 | Visit Detail | Physical Exam nonsensical content | TODO | HIGH |
+| 4 | Visit Detail | AI Analysis no auto-refresh | ✅ FIXED | HIGH |
+| 5 | Doctor Dashboard | Patient search doesn't filter | ✅ FIXED | LOW |
+| 6 | Scenario Picker | Fibromyalgia "Error loading scenario" | ⚠️ BUG | HIGH |
 
 ---
 
-## Summary
+## Summary (Updated 2026-02-12)
 
 ### Status Counts
-- **MUST items OK/working:** ~22 (Landing, Login buttons, SOAP sections, term highlighting, chat streaming, recording, processing, vitals charts, library conditions/meds/refs)
-- **MUST items TODO:** ~45 (scenario picker, layout reorder, visit summary, chat two-column, quality gate, health profile expansion, labs tab, HRV/sleep, time filters, AI chat everywhere, ask-about-this buttons, documents DB, etc.)
-- **MUST items BROKEN/BUG:** 5 (Try Demo auto-login, PII in notes, meds in wrong SOAP sections, AI Analysis no auto-refresh, term highlighter missing in AI Analysis)
-- **NICE items:** ~15 (background gradient, signup link, text selection explain, connected services polish, ElevenLabs audio, smoother animations, photo scan upload)
+- **MUST items DONE:** ~45 (landing, login, scenario picker, visit detail SOAP + summary + recommendations + next actions + term highlighting + ask-about-this, chat two-column + suggestions + streaming, recording + quality gate, doctor dashboard alerts + patient cards + search + actions, health vitals/labs split + time filter, library custom docs + per-profile, settings audit + permissions, global chat panel)
+- **MUST items TODO:** ~18 (visit titles shorter, profile layout reorder, mobile chat tab, health profile expansion, HRV chart, sleep info, weight bar chart patient-side, labs trend charts, labs PDF upload, "ask about this" on health/labs/library, sparklines, doctor actions panel, shared docs to doctor, alert detail view, document icons, analyzing progress, SOAP bug #2/#3, Fatima bug)
+- **MUST items PARTIAL:** 5 (patient health in doctor view, alert detail, weight chart, labs browser, health profile expansion)
+- **NICE items:** ~12 (text selection explain, connected services polish, ElevenLabs playback, smoother animations, photo scan upload, patient timeline, AI insights, notification bell, connected services mock data)
 - **SKIP items:** 1 (Search Databases ICD-10 only)
 
-### Bugs Found: 4
-
-| # | Screen | Bug | Severity | Fix? |
-|---|--------|-----|----------|------|
-| 1 | Visit Detail | "Dr. Ciarka" — real PII in AI-generated visit note (Chief Complaint) | HIGH | MUST — remove/replace with fictional name before demo |
-| 2 | Visit Detail | "Current medications" appear inside Reported Symptoms and Physical Examination sections — wrong SOAP classification | HIGH | MUST — ScribeProcessor puts meds in wrong sections |
-| 3 | Visit Detail | Physical Exam section shows "Physical examination of reported symptoms" — nonsensical content, meds mixed in | HIGH | MUST — same root cause as #2 |
-| 4 | Visit Detail | AI Analysis only appears after manual page refresh — should auto-update when done | HIGH | MUST — polling/SSE needed |
-| 5 | Doctor Dashboard | Patient search sends param but backend doesn't filter — search does nothing | LOW | MUST — add WHERE first_name/last_name LIKE in DoctorController::patients() |
-
-### All Screens Reviewed
+### Bugs: 3 fixed, 3 remaining
