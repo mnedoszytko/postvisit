@@ -4,6 +4,7 @@ namespace App\Services\AI;
 
 use App\Models\ChatSession;
 use Generator;
+use Illuminate\Support\Facades\Log;
 
 class QaAssistant
 {
@@ -16,6 +17,43 @@ class QaAssistant
     ) {}
 
     /**
+     * Generate a quick first response using Haiku with minimal context.
+     * Yields 'quick' type chunks for the SSE stream.
+     *
+     * @return Generator<array{type: string, content: string}>
+     */
+    public function quickAnswer(ChatSession $session, string $question): Generator
+    {
+        $visit = $session->visit;
+        $context = $this->contextAssembler->assembleQuickContext($visit);
+
+        $messages = $context['context_messages'];
+
+        // Only last 2 history messages for speed
+        $history = $session->messages()
+            ->orderBy('created_at', 'desc')
+            ->limit(2)
+            ->get()
+            ->reverse();
+
+        foreach ($history as $msg) {
+            $messages[] = [
+                'role' => $msg->sender_type === 'patient' ? 'user' : 'assistant',
+                'content' => $msg->message_text,
+            ];
+        }
+
+        $messages[] = ['role' => 'user', 'content' => $question];
+
+        foreach ($this->client->stream($context['system_prompt'], $messages, [
+            'model' => 'claude-haiku-4-5-20251001',
+            'max_tokens' => 300,
+        ]) as $chunk) {
+            yield ['type' => 'quick', 'content' => $chunk];
+        }
+    }
+
+    /**
      * Answer a patient question about their visit via streaming.
      *
      * Uses extended thinking for clinical reasoning, then streams
@@ -23,7 +61,11 @@ class QaAssistant
      * Complex clinical questions (drug safety, dosage, symptom combinations)
      * trigger the Plan-Execute-Verify pipeline on Opus 4.6 tier.
      *
-     * @return Generator<array{type: string, content: string}> Yields thinking/text/phase chunks
+     * When thinking is enabled, a quick Haiku response is streamed first,
+     * followed by status events during context assembly, then the full
+     * Opus response.
+     *
+     * @return Generator<array{type: string, content: string}> Yields quick/status/thinking/text/phase chunks
      */
     public function answer(ChatSession $session, string $question): Generator
     {
@@ -39,9 +81,26 @@ class QaAssistant
 
         $tier = $this->tierManager->current();
 
+        // --- Quick first response via Haiku (only when thinking/Opus is enabled) ---
+        if ($tier->thinkingEnabled()) {
+            try {
+                yield from $this->quickAnswer($session, $question);
+                yield ['type' => 'quick_done', 'content' => ''];
+            } catch (\Throwable $e) {
+                Log::warning('Quick answer failed, continuing to full answer', [
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            // Send status events during context assembly
+            yield ['type' => 'status', 'content' => 'Loading clinical data...'];
+        }
+
         // Deep reasoning pipeline for complex clinical questions on Opus 4.6 tier
         if ($tier->thinkingEnabled() && $this->reasoningPipeline->shouldUseDeepReasoning($question)) {
             $visit->load(['patient', 'practitioner', 'visitNote', 'observations', 'conditions', 'prescriptions.medication', 'transcript']);
+
+            yield ['type' => 'status', 'content' => 'Deep clinical reasoning...'];
 
             // Build conversation history for the pipeline
             $historyMessages = [];
@@ -62,6 +121,8 @@ class QaAssistant
         }
 
         // Standard path: assemble context + stream response
+        yield ['type' => 'status', 'content' => 'Preparing detailed analysis...'];
+
         $context = $this->contextAssembler->assembleForVisit($visit, 'qa-assistant');
 
         // Build message array: static context + conversation history + new question

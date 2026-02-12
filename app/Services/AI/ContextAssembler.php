@@ -20,6 +20,27 @@ class ContextAssembler
     ) {}
 
     /**
+     * Assemble minimal context for a quick first response.
+     * Skips FDA safety data, library items, and guidelines for speed.
+     *
+     * @return array{system_prompt: string, context_messages: array}
+     */
+    public function assembleQuickContext(Visit $visit): array
+    {
+        $visit->loadMissing(['practitioner', 'visitNote', 'conditions', 'prescriptions.medication']);
+
+        $systemPrompt = $this->promptLoader->load('qa-assistant-quick');
+
+        $contextMessages = [
+            ['role' => 'user', 'content' => $this->formatVisitContext($visit)],
+            ['role' => 'user', 'content' => $this->formatPatientContext($visit)],
+            ['role' => 'assistant', 'content' => 'I have the visit context. Ready to help the patient.'],
+        ];
+
+        return ['system_prompt' => $systemPrompt, 'context_messages' => $contextMessages];
+    }
+
+    /**
      * Assemble the full context for an AI call about a specific visit.
      *
      * Returns a system prompt (as cacheable TextBlockParam array) and

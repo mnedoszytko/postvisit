@@ -23,7 +23,9 @@ use App\Models\User;
 use App\Models\Visit;
 use App\Models\VisitNote;
 use App\Services\AI\TermExtractor;
+use App\Services\Medications\OpenFdaClient;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -806,6 +808,9 @@ class DemoSeeder extends Seeder
         // Extract medical terms for visit notes that don't have them yet
         // (PVC visit has hardcoded terms; HF and HTN need AI extraction)
         $this->extractMissingMedicalTerms();
+
+        // Pre-warm FDA safety cache for demo medications
+        $this->warmFdaCache();
     }
 
     /**
@@ -833,6 +838,63 @@ class DemoSeeder extends Seeder
             } catch (\Throwable $e) {
                 Log::warning('DemoSeeder: term extraction failed (non-fatal)', [
                     'visit_id' => $note->visit_id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Pre-warm the FDA safety cache for all demo medications.
+     *
+     * This prevents 5-15s blocking calls to the FDA API on the first chat
+     * request for each medication. The cache key mirrors ContextAssembler::getFdaSafetyForMedication().
+     */
+    private function warmFdaCache(): void
+    {
+        $openFda = app(OpenFdaClient::class);
+        $medications = Medication::all();
+
+        foreach ($medications as $med) {
+            if (! $med->generic_name) {
+                continue;
+            }
+
+            $cacheKey = 'fda_safety:'.mb_strtolower($med->generic_name);
+
+            if (Cache::has($cacheKey)) {
+                continue;
+            }
+
+            try {
+                $parts = [];
+
+                $adverse = $openFda->getAdverseEvents($med->generic_name, 5);
+                if (! empty($adverse['events'])) {
+                    $parts[] = "\nFDA Adverse Event Reports for {$med->generic_name}:";
+                    foreach ($adverse['events'] as $event) {
+                        $parts[] = "- {$event['reaction']}: {$event['count']} reports";
+                    }
+                }
+
+                $label = $openFda->getDrugLabel($med->generic_name);
+                if (! empty($label)) {
+                    if (! empty($label['boxed_warning'])) {
+                        $parts[] = "\nBOXED WARNING: ".mb_substr($label['boxed_warning'], 0, 500);
+                    }
+                    if (! empty($label['information_for_patients'])) {
+                        $parts[] = "\nPatient Info: ".mb_substr($label['information_for_patients'], 0, 500);
+                    }
+                }
+
+                $value = $parts !== [] ? implode("\n", $parts) : null;
+                Cache::put($cacheKey, $value, 86400);
+
+                Log::info("DemoSeeder: warmed FDA cache for {$med->generic_name}");
+            } catch (\Throwable $e) {
+                // Non-fatal — cache miss just means slower first chat request
+                Log::warning('DemoSeeder: FDA cache warm failed (non-fatal)', [
+                    'medication' => $med->generic_name,
                     'error' => $e->getMessage(),
                 ]);
             }

@@ -71,14 +71,51 @@
               : 'bg-gray-100 text-gray-800'
           ]"
         >
-          <!-- Streaming with thinking active -->
+          <!-- Phase 1: Initial thinking (before quick answer arrives) -->
           <ThinkingIndicator
-            v-if="msg.streaming && !msg.content"
+            v-if="msg.streaming && !msg.quickContent && !msg.content"
             :query="lastUserMessage"
             :thinking-active="msg.thinkingPhase"
           />
-          <StreamingMessage v-else-if="msg.streaming" :text="stripSources(msg.content)" />
+
+          <!-- Phase 2: Quick answer streaming / displayed -->
+          <div v-else-if="msg.streaming && msg.quickContent && !msg.content">
+            <div class="flex items-center gap-1.5 mb-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-medium">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                </svg>
+                Quick answer
+              </span>
+            </div>
+            <p class="text-sm leading-relaxed">{{ msg.quickContent }}</p>
+
+            <div v-if="msg.quickDone" class="mt-3 pt-3 border-t border-gray-200/60">
+              <DeepAnalysisIndicator
+                :status-text="msg.statusText"
+                :thinking="msg.thinking"
+                :thinking-active="msg.thinkingPhase"
+              />
+            </div>
+          </div>
+
+          <!-- Phase 3: Opus answer streaming (deep analysis in progress) -->
+          <div v-else-if="msg.streaming && msg.content">
+            <div class="flex items-center gap-1.5 mb-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-medium">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+                </svg>
+                Detailed clinical analysis
+              </span>
+            </div>
+            <StreamingMessage :text="stripSources(msg.content)" />
+          </div>
+
+          <!-- Phase 4: Completed message -->
           <div v-else-if="msg.role === 'assistant'" class="prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
+
+          <!-- User message -->
           <p v-else>{{ msg.content }}</p>
         </div>
         <!-- Source chips for completed assistant messages -->
@@ -243,6 +280,7 @@ import { marked } from 'marked';
 import StreamingMessage from '@/components/StreamingMessage.vue';
 import ThinkingIndicator from '@/components/ThinkingIndicator.vue';
 import SourceChips from '@/components/SourceChips.vue';
+import DeepAnalysisIndicator from '@/components/DeepAnalysisIndicator.vue';
 
 marked.setOptions({ breaks: true, gfm: true });
 function renderMarkdown(text) {
