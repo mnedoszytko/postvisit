@@ -43,3 +43,15 @@
     50% { box-shadow: 0 0 12px 2px rgb(16 185 129 / 0.2); }
     100% { box-shadow: none; }
 }
+
+/* Global chat slide-in/out */
+.chat-slide-enter-active { transition: transform 0.25s ease-out; }
+.chat-slide-leave-active { transition: transform 0.2s ease-in; }
+.chat-slide-enter-from,
+.chat-slide-leave-to { transform: translateX(100%); }
+
+/* Backdrop fade */
+.fade-enter-active { transition: opacity 0.2s ease-out; }
+.fade-leave-active { transition: opacity 0.15s ease-in; }
+.fade-enter-from,
+.fade-leave-to { opacity: 0; }

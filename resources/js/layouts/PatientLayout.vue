@@ -29,7 +29,7 @@
     </div>
 
     <!-- Header -->
-    <header class="bg-white border-b border-emerald-200 sticky top-0 z-40">
+    <header :class="['bg-white border-b border-emerald-200 sticky z-40', isDemoUser ? 'top-10' : 'top-0']">
       <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <router-link to="/profile" class="text-xl font-semibold text-emerald-700">
@@ -191,37 +191,113 @@
       </div>
     </header>
 
-    <!-- Main content -->
-    <main :class="[wide ? 'max-w-7xl' : 'max-w-4xl', 'mx-auto px-4 py-6']">
+    <!-- Main content — add right margin on desktop when chat is open -->
+    <main :class="[
+      wide ? 'max-w-7xl' : 'max-w-4xl',
+      'mx-auto px-4 py-6',
+      showGlobalChat && latestVisitId && chatOpen ? 'lg:mr-96' : ''
+    ]">
       <slot />
     </main>
 
     <!-- Disclaimer footer -->
-    <footer :class="[wide ? 'max-w-7xl' : 'max-w-4xl', 'mx-auto px-4 py-4 text-center']">
+    <footer :class="[
+      wide ? 'max-w-7xl' : 'max-w-4xl',
+      'mx-auto px-4 py-4 text-center',
+      showGlobalChat && latestVisitId && chatOpen ? 'lg:mr-96' : ''
+    ]">
       <p class="text-xs text-gray-400 leading-relaxed">
         All clinical scenarios, patient data, and medical records displayed in this application are entirely fictional,
         created for demonstration purposes only, and do not depict any real person or actual medical encounter.
       </p>
     </footer>
+
+    <!-- Desktop: fixed chat panel (right side, below headers) -->
+    <div
+      v-if="showGlobalChat && latestVisitId && chatOpen"
+      class="hidden lg:flex fixed right-0 w-96 border-l border-gray-200 bg-white z-30 flex-col"
+      :style="{ top: chatTopOffset + 'px', height: 'calc(100vh - ' + chatTopOffset + 'px)' }"
+    >
+      <ChatPanel
+        :visit-id="latestVisitId"
+        :embedded="true"
+        @close="chatOpen = false"
+      />
+    </div>
+
+    <!-- Global AI Chat — mobile/tablet overlay + floating button -->
+    <template v-if="showGlobalChat && latestVisitId">
+      <!-- Floating chat button (shown when chat is closed, or always on mobile) -->
+      <button
+        v-if="!chatOpen"
+        class="fixed bottom-6 right-6 z-40 w-14 h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center group"
+        title="Ask PostVisit AI"
+        @click="chatOpen = true"
+      >
+        <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+        <span class="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full animate-pulse"></span>
+      </button>
+
+      <!-- Mobile/tablet: chat panel overlay -->
+      <Transition name="chat-slide">
+        <div v-if="chatOpen" class="lg:hidden fixed inset-y-0 right-0 z-50 w-full sm:w-96 flex flex-col bg-white shadow-2xl border-l border-gray-200">
+          <ChatPanel
+            :visit-id="latestVisitId"
+            :embedded="true"
+            @close="chatOpen = false"
+          />
+        </div>
+      </Transition>
+
+      <!-- Mobile backdrop -->
+      <Transition name="fade">
+        <div
+          v-if="chatOpen"
+          class="lg:hidden fixed inset-0 z-40 bg-black/30"
+          @click="chatOpen = false"
+        ></div>
+      </Transition>
+    </template>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useVisitStore } from '@/stores/visit';
 import { useApi } from '@/composables/useApi';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import ChatPanel from '@/components/ChatPanel.vue';
 
 defineProps({
     wide: { type: Boolean, default: false },
 });
 
 const auth = useAuthStore();
+const visitStore = useVisitStore();
 const api = useApi();
 const router = useRouter();
+const route = useRoute();
 const mobileOpen = ref(false);
 const dropdownOpen = ref(false);
 const switchingRole = ref(false);
+const chatOpen = ref(window.innerWidth >= 1024);
+const latestVisitId = ref(null);
+
+// Hide global chat on pages that have their own chat or where it doesn't make sense
+const hideChatRoutes = ['visit-view', 'meds-detail', 'companion-scribe', 'processing', 'feedback'];
+const showGlobalChat = computed(() => {
+    return !hideChatRoutes.includes(route.name);
+});
+
+// Close chat when navigating to a page with its own chat
+watch(() => route.name, (newRoute) => {
+    if (hideChatRoutes.includes(newRoute)) {
+        chatOpen.value = false;
+    }
+});
 
 function closeDropdown(e) {
     if (dropdownOpen.value && !e.target.closest('.relative')) {
@@ -229,8 +305,22 @@ function closeDropdown(e) {
     }
 }
 
-onMounted(() => {
+onMounted(async () => {
     document.addEventListener('click', closeDropdown);
+
+    // Fetch latest visit ID for global chat context
+    if (auth.user?.patient_id) {
+        try {
+            if (!visitStore.visits.length) {
+                await visitStore.fetchVisits(auth.user.patient_id);
+            }
+            if (visitStore.visits.length > 0) {
+                latestVisitId.value = visitStore.visits[0].id;
+            }
+        } catch {
+            // No visits — chat button won't show
+        }
+    }
 });
 
 onBeforeUnmount(() => {
@@ -239,6 +329,11 @@ onBeforeUnmount(() => {
 
 const isDemoUser = computed(() => {
     return auth.user?.email?.endsWith('@demo.postvisit.ai') ?? false;
+});
+
+// Chat panel top offset: header (64px) + demo banner (40px) if present
+const chatTopOffset = computed(() => {
+    return isDemoUser.value ? 104 : 64;
 });
 
 const initials = computed(() => {
