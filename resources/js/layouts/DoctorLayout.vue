@@ -14,7 +14,7 @@
           to="/demo/scenarios"
           class="px-3 py-1 bg-white/15 hover:bg-white/25 rounded-lg text-xs font-semibold transition-colors"
         >
-          Switch Patient
+          Switch to Patient
         </router-link>
       </div>
     </div>
