@@ -1,5 +1,5 @@
 <template>
-  <div class="prose prose-sm max-w-none" v-html="renderedHtml"></div>
+  <div class="chat-prose prose prose-sm max-w-none" v-html="renderedHtml"></div>
   <span v-if="showCursor" class="inline-block w-1.5 h-3.5 bg-gray-400 rounded-sm animate-pulse align-text-bottom ml-0.5"></span>
 </template>
 

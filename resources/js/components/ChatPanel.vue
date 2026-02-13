@@ -86,12 +86,16 @@
         :key="i"
         :class="msg.role === 'user' ? 'ml-8' : 'mr-8'"
       >
+        <!-- Context pill above user bubble -->
+        <div v-if="msg.role === 'user' && extractContext(msg.content)" class="flex justify-end mb-1">
+          <span class="text-[10px] font-medium text-emerald-600 bg-emerald-50 rounded-full px-2 py-0.5">{{ extractContext(msg.content) }}</span>
+        </div>
         <div
           :class="[
             'rounded-2xl px-4 py-3 text-sm',
             msg.role === 'user'
               ? 'bg-emerald-600 text-white'
-              : 'bg-amber-50 text-gray-800 border border-amber-100'
+              : 'bg-emerald-50 text-gray-800 border border-emerald-100'
           ]"
         >
           <!-- Thinking indicator (before content arrives) -->
@@ -108,13 +112,10 @@
           />
 
           <!-- Completed assistant message -->
-          <div v-else-if="msg.role === 'assistant'" class="prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
+          <div v-else-if="msg.role === 'assistant'" class="chat-prose prose prose-sm max-w-none" v-html="renderMarkdown(stripSources(msg.content))" />
 
           <!-- User message -->
-          <template v-else>
-            <span v-if="extractContext(msg.content)" class="inline-block text-[10px] font-medium bg-white/20 rounded px-1.5 py-0.5 mb-1 mr-1">{{ extractContext(msg.content) }}</span>
-            <p class="inline">{{ stripContext(msg.content) }}</p>
-          </template>
+          <p v-else>{{ stripContext(msg.content) }}</p>
         </div>
         <!-- Source chips for completed assistant messages -->
         <SourceChips
@@ -128,7 +129,7 @@
           v-if="msg.role === 'assistant' && !msg.streaming && msg.content"
           class="mt-1.5 flex items-center gap-2"
         >
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 text-[9px] font-medium border border-amber-200/50">
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-[9px] font-medium border border-emerald-200/50">
             <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
             </svg>

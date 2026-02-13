@@ -55,3 +55,11 @@
 .fade-leave-active { transition: opacity 0.15s ease-in; }
 .fade-enter-from,
 .fade-leave-to { opacity: 0; }
+
+/* Chat prose — tighter headings to match chat text-sm context */
+.chat-prose h1 { font-size: 0.95rem; margin-top: 0.75em; margin-bottom: 0.25em; }
+.chat-prose h2 { font-size: 0.875rem; margin-top: 0.75em; margin-bottom: 0.25em; }
+.chat-prose h3 { font-size: 0.8125rem; margin-top: 0.5em; margin-bottom: 0.25em; }
+.chat-prose p { font-size: 0.8125rem; margin-top: 0.25em; margin-bottom: 0.5em; }
+.chat-prose ul, .chat-prose ol { font-size: 0.8125rem; margin-top: 0.25em; margin-bottom: 0.5em; }
+.chat-prose li { margin-top: 0.125em; margin-bottom: 0.125em; }
