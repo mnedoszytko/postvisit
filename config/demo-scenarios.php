@@ -295,6 +295,7 @@ return [
             'color' => 'red',
             'specialty' => 'cardiology',
             'featured' => true,
+            'practitioner' => 'cardiologist-chen',
             'source_dir' => 'demo/visits/visit-01-coronarography-stenosis',
             'visit' => [
                 'visit_type' => 'office_visit',
@@ -771,6 +772,18 @@ return [
             'medical_degree' => 'MD, FCCP',
             'primary_specialty' => 'pulmonology',
             'secondary_specialties' => ['internal_medicine', 'critical_care'],
+        ],
+
+        'cardiologist-chen' => [
+            'name' => 'Dr. Sarah Chen',
+            'email' => 'dr.sarah.chen@demo.postvisit.ai',
+            'first_name' => 'Sarah',
+            'last_name' => 'Chen',
+            'npi' => '5678901234',
+            'license_number' => 'BE-CARD-2024-002',
+            'medical_degree' => 'MD',
+            'primary_specialty' => 'cardiology',
+            'secondary_specialties' => ['internal_medicine'],
         ],
 
     ],
