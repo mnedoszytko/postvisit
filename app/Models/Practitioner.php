@@ -46,6 +46,7 @@ class Practitioner extends Model
             'dr.patel@demo.postvisit.ai' => 'endocrinologist',
             'dr.chen@demo.postvisit.ai' => 'gastroenterologist',
             'dr.okafor@demo.postvisit.ai' => 'pulmonologist',
+            'dr.sarah.chen@demo.postvisit.ai' => 'cardiologist-chen',
         ];
 
         $key = $emailMap[$this->email] ?? null;
