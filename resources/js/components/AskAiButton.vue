@@ -7,7 +7,7 @@
     @click.stop="$emit('ask')"
     @keydown.enter.stop="$emit('ask')"
   >
-    <img src="/images/logo-icon.png" alt="" class="w-3.5 h-3.5" />
+    <img src="/images/logo-icon.png" alt="" class="h-3.5 w-auto" />
     Ask
   </span>
 </template>
