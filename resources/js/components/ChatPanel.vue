@@ -88,7 +88,13 @@
       >
         <!-- Context pill above user bubble -->
         <div v-if="msg.role === 'user' && extractContext(msg.content)" class="flex justify-end mb-1">
-          <span class="text-[10px] font-medium text-emerald-600 bg-emerald-50 rounded-full px-2 py-0.5">{{ extractContext(msg.content) }}</span>
+          <span class="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-600 bg-emerald-50 rounded-full px-2 py-0.5">
+            <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+            </svg>
+            {{ extractContext(msg.content) }}
+          </span>
         </div>
         <div
           :class="[
