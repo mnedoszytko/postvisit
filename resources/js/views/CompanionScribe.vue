@@ -635,7 +635,7 @@ onMounted(async () => {
     try {
         const { data } = await api.get('/practitioners');
         practitioners.value = data.data || [];
-        if (practitioners.value.length === 1) {
+        if (practitioners.value.length > 0) {
             selectedPractitionerId.value = practitioners.value[0].id;
         }
     } catch {

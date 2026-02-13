@@ -359,18 +359,11 @@
                     </svg>
                   </span>
                   <h3 class="font-semibold text-gray-800">Visit Recording</h3>
-                  <span v-if="visit.transcript.audio_duration_seconds" class="text-xs text-gray-500">
-                    {{ formatDuration(visit.transcript.audio_duration_seconds) }}
-                  </span>
                 </div>
-                <audio
-                  controls
-                  preload="none"
-                  class="w-full"
+                <AudioPlayer
                   :src="`/api/v1/visits/${visit.id}/transcript/audio`"
-                >
-                  Your browser does not support the audio element.
-                </audio>
+                  :known-duration="visit.transcript.audio_duration_seconds || 0"
+                />
               </div>
             </div>
 
@@ -472,6 +465,7 @@ import TermPopover from '@/components/TermPopover.vue';
 import VisitAttachments from '@/components/VisitAttachments.vue';
 import AskAiButton from '@/components/AskAiButton.vue';
 import VisitDateBadge from '@/components/VisitDateBadge.vue';
+import AudioPlayer from '@/components/AudioPlayer.vue';
 
 function inlineMd(text) {
     if (!text) return '';

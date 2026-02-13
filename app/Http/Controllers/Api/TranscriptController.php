@@ -332,9 +332,9 @@ class TranscriptController extends Controller
     }
 
     /**
-     * Stream the audio file for the visit's transcript.
+     * Serve the audio file for the visit's transcript with Range request support.
      */
-    public function audio(Visit $visit): \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\JsonResponse
+    public function audio(Visit $visit): \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
     {
         $transcript = $visit->transcript;
 
@@ -348,26 +348,27 @@ class TranscriptController extends Controller
             return response()->json(['error' => ['message' => 'Audio file not found on disk']], 404);
         }
 
-        $mimeType = 'audio/wav';
-        $ext = strtolower(pathinfo($transcript->audio_file_path, PATHINFO_EXTENSION));
-        if ($ext === 'mp3') {
-            $mimeType = 'audio/mpeg';
-        } elseif ($ext === 'webm') {
-            $mimeType = 'audio/webm';
-        } elseif ($ext === 'ogg') {
-            $mimeType = 'audio/ogg';
+        $driver = config("filesystems.disks.{$disk}.driver");
+
+        // Cloud storage (S3): download to temp file, then serve with Range support
+        if ($driver === 's3') {
+            $absolutePath = $this->resolveLocalPath($disk, $transcript->audio_file_path);
+            // Clean up temp file after response is sent
+            app()->terminating(function () use ($disk, $absolutePath) {
+                $this->cleanupTempFile($disk, $absolutePath);
+            });
+        } else {
+            // Local disk: serve directly
+            $absolutePath = Storage::disk($disk)->path($transcript->audio_file_path);
         }
 
-        $size = Storage::disk($disk)->size($transcript->audio_file_path);
+        $mimeType = 'audio/wav';
+        $ext = strtolower(pathinfo($transcript->audio_file_path, PATHINFO_EXTENSION));
+        $mimeTypes = ['mp3' => 'audio/mpeg', 'webm' => 'audio/webm', 'ogg' => 'audio/ogg', 'm4a' => 'audio/mp4'];
+        $mimeType = $mimeTypes[$ext] ?? $mimeType;
 
-        return response()->stream(function () use ($disk, $transcript) {
-            $stream = Storage::disk($disk)->readStream($transcript->audio_file_path);
-            fpassthru($stream);
-            fclose($stream);
-        }, 200, [
+        return response()->file($absolutePath, [
             'Content-Type' => $mimeType,
-            'Content-Length' => $size,
-            'Accept-Ranges' => 'bytes',
             'Cache-Control' => 'private, max-age=3600',
         ]);
     }
