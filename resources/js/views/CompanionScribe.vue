@@ -508,7 +508,7 @@ async function processVisit() {
         uploadStatusText.value = 'Done!';
 
         // Navigate to processing view
-        router.push({ path: '/processing', query: { visitId } });
+        router.push({ path: '/processing', query: { visitId, duration: seconds.value } });
     } catch (err) {
         error.value = err.response?.data?.message || err.message || 'Upload failed. Please try again.';
         uploading.value = false;

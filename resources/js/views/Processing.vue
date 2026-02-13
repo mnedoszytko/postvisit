@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-emerald-50 to-white px-4">
-    <div class="text-center space-y-8 max-w-md">
+    <div class="text-center space-y-8 max-w-md w-full">
       <LoadingParticles />
 
       <div class="space-y-2">
@@ -8,11 +8,26 @@
           {{ insufficientContent ? 'Not enough content' : failed ? 'Processing failed' : 'Analyzing your visit...' }}
         </h1>
         <p class="text-gray-500 text-sm">{{ currentStep.label }}</p>
-        <p v-if="!failed && !insufficientContent" class="text-gray-400 text-xs">
-          {{ elapsedFormatted }} elapsed
-          <span v-if="activeStep > 0 && activeStep < steps.length" class="ml-1">&middot; usually takes about a minute</span>
-        </p>
       </div>
+
+      <!-- Progress bar with time estimate -->
+      <div v-if="!failed && !insufficientContent && estimatedTotalSeconds > 0" class="space-y-2 px-2">
+        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div
+            class="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-linear"
+            :style="{ width: progressPercent + '%' }"
+          />
+        </div>
+        <div class="flex justify-between text-xs text-gray-400">
+          <span>{{ elapsedFormatted }}</span>
+          <span v-if="remainingText">{{ remainingText }}</span>
+        </div>
+      </div>
+
+      <!-- Elapsed only (no duration info) -->
+      <p v-else-if="!failed && !insufficientContent" class="text-gray-400 text-xs">
+        {{ elapsedFormatted }} elapsed
+      </p>
 
       <!-- Progress steps -->
       <div class="space-y-3 text-left">
@@ -94,6 +109,30 @@ const elapsedSeconds = ref(0);
 let pollInterval = null;
 let timerInterval = null;
 
+// Estimated processing time: ~1 sec processing per 5 sec of audio, minimum 30s
+const audioDuration = parseInt(route.query.duration) || 0;
+const estimatedTotalSeconds = computed(() => {
+    if (!audioDuration) return 0;
+    return Math.max(30, Math.round(audioDuration / 5));
+});
+
+const progressPercent = computed(() => {
+    if (estimatedTotalSeconds.value <= 0) return 0;
+    // Cap at 95% — last 5% fills when actually complete
+    const raw = (elapsedSeconds.value / estimatedTotalSeconds.value) * 100;
+    if (activeStep.value >= steps.length) return 100;
+    return Math.min(95, raw);
+});
+
+const remainingText = computed(() => {
+    if (activeStep.value >= steps.length) return '';
+    const remaining = Math.max(0, estimatedTotalSeconds.value - elapsedSeconds.value);
+    if (remaining <= 0) return 'finishing up...';
+    if (remaining < 60) return `~${remaining}s remaining`;
+    const m = Math.ceil(remaining / 60);
+    return `~${m} min remaining`;
+});
+
 const elapsedFormatted = computed(() => {
     const m = Math.floor(elapsedSeconds.value / 60);
     const s = elapsedSeconds.value % 60;
@@ -105,7 +144,6 @@ const currentStep = computed(() => steps[activeStep.value] || steps[steps.length
 async function pollStatus() {
     const visitId = route.query.visitId;
     if (!visitId) {
-        // No visit ID — fall back to simulation mode for demo
         startSimulation();
         return;
     }
@@ -123,9 +161,7 @@ async function pollStatus() {
             if (status === 'completed') {
                 clearInterval(pollInterval);
                 clearInterval(timerInterval);
-                // Mark all steps as complete
                 activeStep.value = steps.length;
-                // Short delay to show all checkmarks before redirect
                 setTimeout(() => {
                     router.push(`/visits/${visitId}`);
                 }, 1000);
@@ -138,19 +174,14 @@ async function pollStatus() {
                 clearInterval(timerInterval);
                 insufficientContent.value = true;
             } else if (hasSoapNote) {
-                // SOAP note built — cross-referencing guidelines, then medications
                 activeStep.value = 4;
             } else if (hasEntities) {
-                // Entities extracted — building visit summary
                 activeStep.value = 2;
             } else if (status === 'transcribing') {
-                // Whisper transcription in progress on the server
                 activeStep.value = 0;
             } else if (status === 'processing') {
-                // Processing started but no structured data yet — extracting
                 activeStep.value = Math.max(activeStep.value, 1);
             }
-            // 'pending' — stay at step 0
         } catch {
             // Network error — keep polling silently
         }
@@ -158,7 +189,6 @@ async function pollStatus() {
 }
 
 function startSimulation() {
-    // Fallback: simulate processing steps (for demo without real visitId)
     let step = 0;
     const interval = setInterval(() => {
         if (step < steps.length - 1) {
@@ -166,7 +196,6 @@ function startSimulation() {
             activeStep.value = step;
         } else {
             clearInterval(interval);
-            // Try to find the visit from the store
             const visitId = route.query.visitId;
             if (visitId) {
                 router.push(`/visits/${visitId}`);
@@ -175,7 +204,7 @@ function startSimulation() {
             }
         }
     }, 2000);
-    pollInterval = interval; // store for cleanup
+    pollInterval = interval;
 }
 
 onMounted(() => {
