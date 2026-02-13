@@ -8,6 +8,11 @@
   >
     <!-- Photo / Animation -->
     <div class="aspect-square overflow-hidden bg-gray-200 relative">
+      <!-- Skeleton loader — shown while video is loading -->
+      <div
+        v-if="scenario.animation_url && !videoReady"
+        class="absolute inset-0 bg-gray-300 animate-pulse z-[1]"
+      />
       <!-- Video: preloaded paused on 1st frame, plays on hover -->
       <video
         v-if="scenario.animation_url"
@@ -17,6 +22,7 @@
         muted
         playsinline
         preload="auto"
+        @loadeddata="videoReady = true"
       />
       <!-- Static photo fallback (no animation available) -->
       <img
@@ -80,6 +86,7 @@ defineProps({
 });
 
 const videoEl = ref(null);
+const videoReady = ref(false);
 
 function onHover() {
   if (!videoEl.value) return;

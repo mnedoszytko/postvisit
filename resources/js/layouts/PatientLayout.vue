@@ -237,7 +237,7 @@
       <!-- Floating chat button (shown when chat is closed, or always on mobile) -->
       <button
         v-if="!chatOpen"
-        class="fixed bottom-6 right-6 z-40 w-14 h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center group"
+        class="fixed bottom-20 right-6 sm:bottom-6 z-40 w-14 h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center group"
         title="Ask PostVisit AI"
         @click="chatOpen = true"
       >

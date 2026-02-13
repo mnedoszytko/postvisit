@@ -35,7 +35,7 @@
           <p class="text-2xl font-bold text-violet-600">{{ deviceSleepAvg }}</p>
           <p class="text-xs text-gray-500 mt-1">Avg Sleep (h)</p>
         </div>
-        <div v-if="deviceData?.blood_oxygen" class="bg-gray-50 rounded-xl p-3 text-center">
+        <div v-if="deviceData?.blood_oxygen?.average_spo2" class="bg-gray-50 rounded-xl p-3 text-center">
           <p class="text-2xl font-bold text-cyan-600">{{ deviceData.blood_oxygen.average_spo2 }}%</p>
           <p class="text-xs text-gray-500 mt-1">Avg SpO2</p>
         </div>

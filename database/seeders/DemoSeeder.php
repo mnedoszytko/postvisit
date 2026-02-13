@@ -786,6 +786,39 @@ class DemoSeeder extends Seeder
             'initiated_at' => now(),
         ]);
 
+        // 12b. Demo Document — clinically meaningful name
+        Document::create([
+            'fhir_document_reference_id' => 'DocumentReference/'.Str::uuid(),
+            'patient_id' => $patient->id,
+            'visit_id' => $visit->id,
+            'title' => 'ECG_Report_Feb2026.pdf',
+            'description' => '12-lead ECG report showing frequent PVCs with normal sinus rhythm',
+            'document_type' => 'lab_result',
+            'content_type' => 'pdf',
+            'file_path' => 'documents/demo/ecg-report-feb2026.pdf',
+            'file_size' => 245_760,
+            'file_hash' => hash('sha256', 'demo-ecg-report-feb2026'),
+            'status' => 'current',
+            'document_date' => now()->subDay()->toDateString(),
+            'confidentiality_level' => 'M',
+            'analysis_status' => 'completed',
+            'ai_analysis' => [
+                'summary' => 'Normal sinus rhythm with frequent premature ventricular complexes (PVCs). No ST-segment changes. Normal axis and intervals.',
+                'findings' => [
+                    ['finding' => 'Frequent PVCs', 'significance' => 'moderate', 'location' => 'Rhythm strip'],
+                    ['finding' => 'Normal sinus rhythm baseline', 'significance' => 'normal', 'location' => 'Lead II'],
+                    ['finding' => 'Normal QTc interval (420ms)', 'significance' => 'normal', 'location' => 'Global'],
+                ],
+                'key_values' => [
+                    ['label' => 'Heart Rate', 'value' => '78 bpm'],
+                    ['label' => 'QTc', 'value' => '420 ms'],
+                    ['label' => 'PR Interval', 'value' => '160 ms'],
+                ],
+            ],
+            'analyzed_at' => now()->subDay(),
+            'created_by' => $doctorUser->id,
+        ]);
+
         // 13. Longitudinal vitals for Alex (home readings over 2 weeks)
         $this->seedAlexLongitudinalVitals($patient, $practitioner, $doctorUser);
 

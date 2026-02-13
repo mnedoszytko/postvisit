@@ -365,7 +365,7 @@
                 </div>
                 <audio
                   controls
-                  preload="none"
+                  preload="metadata"
                   class="w-full"
                   :src="`/api/v1/visits/${visit.id}/transcript/audio`"
                 >
