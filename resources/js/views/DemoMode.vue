@@ -3,8 +3,8 @@
     <!-- Header -->
     <header class="bg-white/80 backdrop-blur border-b border-gray-200 sticky top-0 z-40">
       <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-        <router-link to="/" class="text-xl font-semibold text-emerald-700">
-          PostVisit.ai
+        <router-link to="/" class="flex items-center">
+          <img src="/images/logo-full.png" alt="PostVisit.ai" class="h-7" />
         </router-link>
         <span class="text-xs font-medium bg-amber-100 text-amber-700 px-3 py-1 rounded-full">
           Demo Mode

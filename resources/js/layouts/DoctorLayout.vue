@@ -23,8 +23,8 @@
     <header class="lg:hidden bg-white border-b border-indigo-200 sticky top-0 z-40">
       <div class="px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <router-link to="/doctor" class="text-xl font-semibold text-indigo-700">
-            PostVisit.ai
+          <router-link to="/doctor" class="flex items-center">
+            <img src="/images/logo-full.png" alt="PostVisit.ai" class="h-6" />
           </router-link>
           <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
             Doctor Panel
@@ -93,8 +93,8 @@
       <!-- Desktop sidebar -->
       <aside class="hidden lg:flex w-64 bg-white border-r border-indigo-200 flex-col shrink-0 sticky top-0 h-screen">
         <div class="h-16 flex items-center justify-between px-6 border-b border-indigo-200">
-          <router-link to="/doctor" class="text-xl font-semibold text-indigo-700">
-            PostVisit.ai
+          <router-link to="/doctor" class="flex items-center">
+            <img src="/images/logo-full.png" alt="PostVisit.ai" class="h-6" />
           </router-link>
         </div>
 

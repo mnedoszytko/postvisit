@@ -2,7 +2,10 @@
   <div class="min-h-screen bg-gray-100 px-4 py-10 sm:px-6">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-8">
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">PostVisit.ai — Select Demo Scenario</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center justify-center gap-3">
+          <img src="/images/logo-icon.png" alt="" class="h-8" />
+          Select Demo Scenario
+        </h1>
         <p class="text-sm text-gray-500 mt-2 max-w-2xl mx-auto">
           Select a patient to start a demo session. Each scenario loads a realistic visit transcript and clinical data relevant to the individual pathology.
         </p>

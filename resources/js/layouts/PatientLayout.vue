@@ -32,8 +32,8 @@
     <header :class="['bg-white border-b border-emerald-200 sticky z-40', isDemoUser ? 'top-10' : 'top-0']">
       <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <router-link to="/profile" class="text-xl font-semibold text-emerald-700">
-            PostVisit.ai
+          <router-link to="/profile" class="flex items-center">
+            <img src="/images/logo-full.png" alt="PostVisit.ai" class="h-7" />
           </router-link>
           <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
             Patient Panel

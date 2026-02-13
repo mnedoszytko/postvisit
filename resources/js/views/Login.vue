@@ -2,7 +2,7 @@
   <div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
     <div class="w-full max-w-sm">
       <div class="text-center mb-8">
-        <router-link to="/" class="text-2xl font-bold text-emerald-700">PostVisit.ai</router-link>
+        <router-link to="/" class="inline-block"><img src="/images/logo-full.png" alt="PostVisit.ai" class="h-8 mx-auto" /></router-link>
       </div>
 
       <!-- Demo Access — prominent, above login form -->
