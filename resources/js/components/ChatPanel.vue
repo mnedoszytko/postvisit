@@ -12,9 +12,7 @@
     <div class="h-16 border-b border-gray-200 flex items-center justify-between px-4 shrink-0">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-          <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
-          </svg>
+          <img src="/images/logo-icon.png" alt="" class="h-4 w-auto" />
         </div>
         <div>
           <h3 class="font-semibold text-gray-800 text-sm">PostVisit AI</h3>
@@ -50,9 +48,7 @@
     <!-- Welcome message when empty -->
     <div v-if="!chatStore.messages.length && !chatStore.loading" class="flex-1 flex flex-col items-center p-6 pt-12 text-center overflow-y-auto">
       <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mb-4">
-        <svg class="w-8 h-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
-        </svg>
+        <img src="/images/logo-icon.png" alt="" class="h-8 w-auto" />
       </div>
       <h4 class="font-semibold text-gray-800 mb-1">Your visit assistant</h4>
       <p v-if="initialContext" class="text-xs text-emerald-600 font-medium mb-2 px-3 py-1 bg-emerald-50 rounded-full inline-block">
