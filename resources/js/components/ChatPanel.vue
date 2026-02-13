@@ -51,23 +51,13 @@
         <img src="/images/logo-icon.png" alt="" class="h-8 w-auto" />
       </div>
       <h4 class="font-semibold text-gray-800 mb-1">Your visit assistant</h4>
-      <p v-if="initialContext" class="text-xs text-emerald-600 font-medium mb-2 px-3 py-1 bg-emerald-50 rounded-full inline-block">
-        Context: {{ initialContext }}
+      <p v-if="initialContext" class="text-xs text-emerald-600 font-medium mb-2 px-3 py-1 bg-emerald-50 rounded-full inline-block capitalize">
+        {{ suggestionLabel }}
       </p>
       <p class="text-sm text-gray-500 mb-6 max-w-[240px]">
         {{ initialContext ? `Ask me anything about your ${initialContext.toLowerCase()}.` : 'I have the full context of your visit. Ask me anything about your diagnosis, medications, or next steps.' }}
       </p>
       <div class="space-y-2 w-full">
-        <div class="flex items-center gap-1.5 mb-1 px-1">
-          <span
-            class="text-[10px] font-medium px-2 py-0.5 rounded-full"
-            :class="suggestionSource.isDefault
-              ? 'bg-gray-100 text-gray-500'
-              : 'bg-emerald-50 text-emerald-600'"
-          >
-            {{ suggestionLabel }}
-          </span>
-        </div>
         <button
           v-for="q in suggestedQuestions"
           :key="q"
@@ -180,13 +170,13 @@
       <!-- Inline suggestions when context changes mid-conversation -->
       <div v-if="inlineSuggestions.length" class="mt-2 pt-3 border-t border-gray-100">
         <p v-if="initialContext" class="text-[10px] text-emerald-600 font-medium mb-2 px-1">
-          New context: {{ initialContext }}
+          {{ suggestionLabel }}
         </p>
         <div class="space-y-1.5">
           <button
             v-for="q in inlineSuggestions"
             :key="q"
-            class="w-full text-left text-xs px-3 py-2 rounded-lg border border-emerald-200 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300 transition-all"
+            class="w-full text-left text-xs px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all"
             @click="sendQuestion(q)"
           >
             {{ q }}
@@ -359,6 +349,7 @@ const props = defineProps({
     highlight: { type: Boolean, default: false },
     embedded: { type: Boolean, default: false },
     maximized: { type: Boolean, default: false },
+    contextKey: { type: Number, default: 0 },
 });
 
 defineEmits(['close', 'toggle-maximize']);
@@ -498,6 +489,22 @@ const contextSuggestions = {
         'What progress should I expect by then?',
         'Can I reschedule if I feel better?',
         'What should I track between now and the follow-up?',
+    ],
+    "Doctor's Recommendations": [
+        'Why did the doctor recommend this treatment?',
+        'What happens if I don\'t follow these recommendations?',
+        'How soon should I start these changes?',
+        'Are there alternatives to the recommended treatment?',
+        'Which recommendation is the most important?',
+        'Can you explain each recommendation in simple terms?',
+    ],
+    'Next Actions': [
+        'What should I do first from this list?',
+        'How do I schedule the follow-up tests?',
+        'What medications do I need to start taking?',
+        'Are there any time-sensitive actions I need to take?',
+        'What can I start doing today?',
+        'How do I track my progress on these actions?',
     ],
     // Health Profile sections (matched by keyword)
     'biometrics': [
@@ -650,16 +657,8 @@ const defaultSuggestions = [
     'What questions should I ask at my next visit?',
 ];
 
-// Track previously shown suggestions to avoid repeats
-const shownSuggestions = ref(new Set());
-
-function pickRandom(pool, count) {
-    const available = pool.filter(q => !shownSuggestions.value.has(q));
-    const source = available.length >= count ? available : pool;
-    const shuffled = [...source].sort(() => Math.random() - 0.5);
-    const picked = shuffled.slice(0, count);
-    picked.forEach(q => shownSuggestions.value.add(q));
-    return picked;
+function pickSuggestions(pool, count = 3) {
+    return pool.slice(0, count);
 }
 
 // Aliases for context matching (e.g., "health record" → "health")
@@ -710,7 +709,11 @@ function findSuggestionsForContext(context) {
 }
 
 const suggestionSource = computed(() => findSuggestionsForContext(props.initialContext));
-const suggestedQuestions = computed(() => pickRandom(suggestionSource.value.pool, 3));
+const suggestedQuestions = ref([]);
+
+function refreshSuggestions() {
+    suggestedQuestions.value = pickSuggestions(suggestionSource.value.pool, 3);
+}
 const contextLabelMap = {
     'visit': 'Visit Summary',
     'health': 'Patient Record',
@@ -723,6 +726,8 @@ const contextLabelMap = {
     'heart_rate': 'Heart Rate',
     'hrv': 'HRV',
     'apple watch': 'Apple Watch',
+    "doctor's recommendations": 'Recommendations',
+    'next actions': 'Next Actions',
 };
 
 const suggestionLabel = computed(() => {
@@ -807,18 +812,21 @@ function triggerSendGlow() {
 }
 
 // When context changes while chat is already open, sync sources + suggestions
-watch(() => props.initialContext, (newCtx) => {
+// Also watch contextKey so repeated clicks on the same section re-trigger
+watch([() => props.initialContext, () => props.contextKey], ([newCtx]) => {
     if (newCtx) {
         pendingContext.value = newCtx;
         applySourcePreset(newCtx);
 
         if (chatStore.messages.length > 0) {
             const { pool } = findSuggestionsForContext(newCtx);
-            inlineSuggestions.value = pickRandom(pool, 3);
+            inlineSuggestions.value = pickSuggestions(pool, 3);
             message.value = '';
             scrollToBottom();
         }
     }
+    // Always refresh welcome screen suggestions (single update, no reactive loop)
+    refreshSuggestions();
 });
 
 // --- Share actions ---
@@ -869,5 +877,6 @@ onMounted(() => {
         pendingContext.value = props.initialContext;
     }
     applySourcePreset(props.initialContext);
+    refreshSuggestions();
 });
 </script>

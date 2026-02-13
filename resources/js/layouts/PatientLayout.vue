@@ -225,6 +225,7 @@
       <ChatPanel
         :visit-id="latestVisitId"
         :initial-context="chatContext"
+        :context-key="chatContextKey"
         :embedded="true"
         :maximized="chatMaximized"
         @close="chatOpen = false"
@@ -253,7 +254,8 @@
           <ChatPanel
             :visit-id="latestVisitId"
             :initial-context="chatContext"
-                :embedded="true"
+            :context-key="chatContextKey"
+            :embedded="true"
             @close="chatOpen = false"
           />
         </div>
@@ -301,6 +303,7 @@ const chatWidth = ref(384); // default w-96
 const chatMaximized = ref(false);
 const chatWidthBeforeMax = ref(384);
 const isResizing = ref(false);
+const chatContextKey = ref(0);
 
 function toggleMaximize() {
     if (chatMaximized.value) {
@@ -314,11 +317,9 @@ function toggleMaximize() {
 }
 
 function openGlobalChat(context = '') {
-    chatContext.value = '';
-    nextTick(() => {
-        chatContext.value = context;
-        chatOpen.value = true;
-    });
+    chatContext.value = context;
+    chatContextKey.value++;
+    chatOpen.value = true;
 }
 provide('openGlobalChat', openGlobalChat);
 provide('setChatContext', (ctx) => { chatContext.value = ctx; });

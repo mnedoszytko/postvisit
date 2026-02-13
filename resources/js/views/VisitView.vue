@@ -117,7 +117,15 @@
                 </div>
                 <div>
                   <h3 class="font-semibold text-emerald-900 text-sm mb-1">Quick Summary</h3>
-                  <p class="text-sm text-emerald-800 leading-relaxed">{{ visitSummary }}</p>
+                  <HighlightedText
+                    v-if="summaryTerms.length"
+                    :content="visitSummary"
+                    :terms="summaryTerms"
+                    section-key="summary"
+                    class="text-sm !text-emerald-800 leading-relaxed [&_p]:!text-emerald-800 [&_p]:my-0"
+                    @term-click="showTermPopover"
+                  />
+                  <p v-else class="text-sm text-emerald-800 leading-relaxed">{{ visitSummary }}</p>
                 </div>
               </div>
             </div>
@@ -403,17 +411,27 @@
         <div
           v-if="chatVisible || mobileTab === 'chat'"
           :class="[
-            'lg:w-[400px] lg:shrink-0',
-            mobileTab === 'visit' ? 'hidden lg:block' : 'w-full'
+            'lg:shrink-0 relative max-w-full',
+            mobileTab === 'visit' ? 'hidden lg:block' : 'w-full lg:w-auto',
+            chatResizing ? '' : 'transition-[width] duration-300 ease-out'
           ]"
+          :style="{ width: chatWidth + 'px' }"
         >
+          <!-- Drag handle to resize -->
+          <div
+            class="hidden lg:block absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-emerald-400/40 active:bg-emerald-400/60 transition-colors z-10"
+            @mousedown.prevent="startChatResize"
+          />
           <div ref="chatColumnRef" class="h-full lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)]">
             <ChatPanel
               :visit-id="route.params.id"
               :initial-context="chatContext"
+              :context-key="chatContextKey"
               :highlight="chatHighlight"
               :embedded="true"
+              :maximized="chatMaximized"
               @close="closeChat"
+              @toggle-maximize="toggleMaximize"
             />
           </div>
         </div>
@@ -466,6 +484,7 @@ import VisitAttachments from '@/components/VisitAttachments.vue';
 import AskAiButton from '@/components/AskAiButton.vue';
 import VisitDateBadge from '@/components/VisitDateBadge.vue';
 import AudioPlayer from '@/components/AudioPlayer.vue';
+import HighlightedText from '@/components/HighlightedText.vue';
 
 function inlineMd(text) {
     if (!text) return '';
@@ -479,6 +498,44 @@ const chatVisible = ref(true);
 const chatContext = ref('visit');
 const chatHighlight = ref(false);
 const chatColumnRef = ref(null);
+const chatWidth = ref(400);
+const chatMaximized = ref(false);
+const chatWidthBeforeMax = ref(400);
+const chatResizing = ref(false);
+
+function toggleMaximize() {
+    if (chatMaximized.value) {
+        chatWidth.value = chatWidthBeforeMax.value;
+        chatMaximized.value = false;
+    } else {
+        chatWidthBeforeMax.value = chatWidth.value;
+        chatWidth.value = Math.max(600, Math.round(window.innerWidth / 2));
+        chatMaximized.value = true;
+    }
+}
+
+function startChatResize(e) {
+    chatResizing.value = true;
+    const startX = e.clientX;
+    const startWidth = chatWidth.value;
+    function onMove(ev) {
+        const maxWidth = Math.round(window.innerWidth * 0.7);
+        const newWidth = Math.min(maxWidth, Math.max(320, startWidth + (startX - ev.clientX)));
+        chatMaximized.value = false;
+        chatWidth.value = newWidth;
+    }
+    function onUp() {
+        chatResizing.value = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+    }
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+}
 const obsExpanded = ref(false);
 const condExpanded = ref(false);
 const rxExpanded = ref(false);
@@ -579,6 +636,12 @@ const sectionFieldMap = {
     plan: 'plan',
     followup: 'follow_up',
 };
+
+const summaryTerms = computed(() => {
+    const note = visit.value?.visit_note;
+    if (!note?.medical_terms?.summary) return [];
+    return note.medical_terms.summary;
+});
 
 const soapSections = computed(() => {
     const note = visit.value?.visit_note;
@@ -747,14 +810,15 @@ function closeChat() {
     }
 }
 
+const chatContextKey = ref(0);
+
 function openChat(context = '') {
     popoverVisible.value = false;
     chatVisible.value = true;
     chatHighlight.value = true;
     setTimeout(() => { chatHighlight.value = false; }, 1500);
-    // Reset first to ensure watcher fires even if same section clicked again
-    chatContext.value = '';
-    nextTick(() => { chatContext.value = context; });
+    chatContext.value = context;
+    chatContextKey.value++;
     // On mobile, switch to chat tab
     if (window.innerWidth < 1024) {
         mobileTab.value = 'chat';

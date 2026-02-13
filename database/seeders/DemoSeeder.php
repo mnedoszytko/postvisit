@@ -757,6 +757,13 @@ class DemoSeeder extends Seeder
                     ['term' => 'Holter monitor', 'start' => 334, 'end' => 348, 'definition' => 'A portable device you wear for 24 hours that continuously records your heart rhythm. This will show exactly how many PVCs you\'re having and whether the medication is working.'],
                     ['term' => 'PVC burden', 'start' => 373, 'end' => 383, 'definition' => 'The percentage of your total heartbeats that are PVCs. A burden under 10% is generally considered safe. The Holter monitor will measure this.'],
                 ],
+                'summary' => [
+                    ['term' => 'palpitations', 'start' => 46, 'end' => 58, 'definition' => 'A sensation of your heart beating rapidly, fluttering, or pounding. In your case, these are caused by extra heartbeats called PVCs.'],
+                    ['term' => 'EKG', 'start' => 60, 'end' => 63, 'definition' => 'Electrocardiogram — a quick, painless test that records the electrical activity of your heart using small sensors on your chest. It revealed extra heartbeats (PVCs).'],
+                    ['term' => 'PVCs', 'start' => 70, 'end' => 74, 'definition' => 'Premature ventricular contractions — extra heartbeats that start in the lower chambers (ventricles) of your heart. They cause the "skipping" sensation you feel.'],
+                    ['term' => 'Propranolol', 'start' => 87, 'end' => 98, 'definition' => 'A beta-blocker medication that slows your heart rate and reduces extra heartbeats. You\'ve been prescribed this to manage your PVCs.'],
+                    ['term' => 'BID', 'start' => 104, 'end' => 107, 'definition' => '"Bis in die" — a medical abbreviation meaning "twice a day." Take one pill in the morning and one in the evening, with meals.'],
+                ],
             ],
             'follow_up' => '2 weeks for blood pressure check and medication tolerance assessment. 3 months for repeat Holter monitor and cardiology follow-up.',
             'follow_up_timeframe' => '2 weeks',
