@@ -72,16 +72,9 @@
     <!-- Marker cards -->
     <div v-for="group in sortedGroups" :key="group.code" class="bg-white rounded-2xl border border-gray-200 overflow-hidden relative group/card">
       <!-- Ask button — top-right corner, subtle, visible on hover -->
-      <button
-        class="absolute top-2 right-2 z-10 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium text-emerald-600 bg-emerald-50/80 hover:bg-emerald-100 opacity-50 group-hover/card:opacity-100 transition-all cursor-pointer"
-        title="Ask AI about this result"
-        @click="openGlobalChat(group.name)"
-      >
-        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-        </svg>
-        Ask
-      </button>
+      <div class="absolute top-2 right-2 z-10 opacity-50 group-hover/card:opacity-100 transition-all">
+        <AskAiButton @ask="openGlobalChat(group.name)" />
+      </div>
       <!-- Header: marker name, latest value, badge -->
       <div class="flex items-center justify-between px-5 py-4 pr-14">
         <div>
