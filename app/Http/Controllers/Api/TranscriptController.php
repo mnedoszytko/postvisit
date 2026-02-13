@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Concerns\ResolvesAudioPaths;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessTranscriptJob;
+use App\Jobs\TranscribeAudioJob;
 use App\Models\Transcript;
 use App\Models\Visit;
 use App\Models\VisitNote;
@@ -17,32 +19,7 @@ use Illuminate\Support\Facades\Storage;
 
 class TranscriptController extends Controller
 {
-    /**
-     * Resolve a storage path to an absolute local path for CLI tools (Whisper).
-     * For non-local disks, downloads the file to a temp location.
-     */
-    private function resolveLocalPath(string $disk, string $storagePath): string
-    {
-        if ($disk === 'local') {
-            return Storage::disk($disk)->path($storagePath);
-        }
-
-        $ext = pathinfo($storagePath, PATHINFO_EXTENSION);
-        $tmp = tempnam(sys_get_temp_dir(), 'pv_audio_').'.'.$ext;
-        file_put_contents($tmp, Storage::disk($disk)->get($storagePath));
-
-        return $tmp;
-    }
-
-    /**
-     * Clean up temp file created by resolveLocalPath for non-local disks.
-     */
-    private function cleanupTempFile(string $disk, string $path): void
-    {
-        if ($disk !== 'local' && file_exists($path)) {
-            @unlink($path);
-        }
-    }
+    use ResolvesAudioPaths;
 
     /**
      * Backup audio file outside the project directory for safekeeping.
@@ -84,7 +61,6 @@ class TranscriptController extends Controller
         $shouldProcess = $validated['process'] ?? false;
         unset($validated['process'], $validated['use_demo_transcript']);
 
-        // Quality gate: evaluate transcript before storing
         $quality = ScribeProcessor::evaluateQuality($validated['raw_transcript'] ?? '');
 
         $validated['visit_id'] = $visit->id;
@@ -92,19 +68,8 @@ class TranscriptController extends Controller
         $validated['stt_provider'] = $validated['stt_provider'] ?? 'none';
         $validated['audio_duration_seconds'] = $validated['audio_duration_seconds'] ?? 0;
         $validated['consent_timestamp'] = $validated['patient_consent_given'] ? now() : null;
-
-        if (! $quality['sufficient']) {
-            // Still save the transcript but mark as insufficient
-            $validated['processing_status'] = 'insufficient_content';
-            $transcript = Transcript::create($validated);
-
-            return response()->json([
-                'data' => $transcript,
-                'quality' => $quality,
-            ], 201);
-        }
-
         $validated['processing_status'] = $shouldProcess ? 'processing' : 'pending';
+
         $transcript = Transcript::create($validated);
 
         if ($shouldProcess) {
@@ -156,6 +121,58 @@ class TranscriptController extends Controller
         return response()->json([
             'data' => $transcript,
             'processing_status' => 'processing',
+        ], 201);
+    }
+
+    /**
+     * Start background transcription + AI processing.
+     * Called after all audio chunks are saved to the server.
+     * Returns instantly — phone can lock safely.
+     */
+    public function startProcessing(Request $request, Visit $visit): JsonResponse
+    {
+        $validated = $request->validate([
+            'source_type' => ['required', 'in:ambient_phone,ambient_device,manual_upload'],
+            'patient_consent_given' => ['required', 'boolean'],
+            'chunk_count' => ['required', 'integer', 'min:1'],
+            'audio_duration_seconds' => ['nullable', 'integer'],
+        ]);
+
+        // Idempotency: if a transcript already exists for this visit, return it
+        $existing = Transcript::where('visit_id', $visit->id)->first();
+        if ($existing) {
+            return response()->json([
+                'data' => $existing,
+                'processing_status' => $existing->processing_status,
+            ], 200);
+        }
+
+        $disk = config('filesystems.upload');
+        $chunkDir = "transcripts/{$visit->id}/chunks";
+        $files = Storage::disk($disk)->files($chunkDir);
+
+        if (count($files) < $validated['chunk_count']) {
+            return response()->json([
+                'error' => ['message' => 'Not all chunks uploaded yet. Expected '.$validated['chunk_count'].', found '.count($files)],
+            ], 422);
+        }
+
+        $transcript = Transcript::create([
+            'visit_id' => $visit->id,
+            'patient_id' => $visit->patient_id,
+            'source_type' => $validated['source_type'],
+            'stt_provider' => 'whisper',
+            'audio_duration_seconds' => $validated['audio_duration_seconds'] ?? 0,
+            'processing_status' => 'transcribing',
+            'patient_consent_given' => $validated['patient_consent_given'],
+            'consent_timestamp' => $validated['patient_consent_given'] ? now() : null,
+        ]);
+
+        TranscribeAudioJob::dispatch($transcript);
+
+        return response()->json([
+            'data' => $transcript,
+            'processing_status' => 'transcribing',
         ], 201);
     }
 
@@ -316,8 +333,10 @@ class TranscriptController extends Controller
             'chunk_index' => ['required', 'integer', 'min:0'],
         ]);
 
-        $storagePath = $request->file('audio')->store(
+        $ext = $request->file('audio')->getClientOriginalExtension() ?: 'webm';
+        $storagePath = $request->file('audio')->storeAs(
             "transcripts/{$visit->id}/chunks",
+            "chunk-{$request->input('chunk_index')}.{$ext}",
             config('filesystems.upload')
         );
 

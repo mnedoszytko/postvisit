@@ -117,7 +117,7 @@ class TranscriptTest extends TestCase
             ->assertJsonPath('data.has_summary', true);
     }
 
-    public function test_quality_gate_rejects_short_transcript(): void
+    public function test_quality_gate_flags_short_transcript_but_still_saves(): void
     {
         $response = $this->actingAs($this->user)->postJson("/api/v1/visits/{$this->visit->id}/transcript", [
             'raw_transcript' => 'Hello, how are you?',
@@ -128,10 +128,10 @@ class TranscriptTest extends TestCase
         $response->assertStatus(201)
             ->assertJsonPath('quality.sufficient', false)
             ->assertJsonPath('quality.reason', 'insufficient_length')
-            ->assertJsonPath('data.processing_status', 'insufficient_content');
+            ->assertJsonPath('data.processing_status', 'pending');
     }
 
-    public function test_quality_gate_rejects_non_clinical_transcript(): void
+    public function test_quality_gate_flags_non_clinical_but_still_saves(): void
     {
         // Long enough but no clinical keywords
         $nonClinical = 'Today we talked about the weather and sports. '
@@ -148,7 +148,7 @@ class TranscriptTest extends TestCase
         $response->assertStatus(201)
             ->assertJsonPath('quality.sufficient', false)
             ->assertJsonPath('quality.reason', 'insufficient_clinical_content')
-            ->assertJsonPath('data.processing_status', 'insufficient_content');
+            ->assertJsonPath('data.processing_status', 'pending');
     }
 
     public function test_transcript_upload_validates_consent(): void

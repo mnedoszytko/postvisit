@@ -81,9 +81,18 @@
         <ThreeVisualizer />
 
         <p class="text-2xl font-mono text-gray-700 tracking-widest">{{ formattedTime }}</p>
-        <p class="text-xs text-gray-400">
-          {{ audioSegments.length > 0 ? `Segment ${audioSegments.length + 1} · ` : '' }}Your conversation is being captured securely
-        </p>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-left space-y-1.5 text-xs text-amber-800">
+          <p class="font-semibold text-sm flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+            Conversation is being recorded
+          </p>
+          <p>Both parties have consented to this recording.</p>
+          <p class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" /></svg>
+            Please keep your phone facing upward on the table for best audio quality.
+          </p>
+        </div>
         <button
           class="w-full py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors"
           @click="stopRecording"
@@ -103,7 +112,14 @@
 
       <!-- Post-recording / uploading step -->
       <div v-else class="bg-white rounded-2xl border border-gray-200 p-6 text-center space-y-4">
-        <div v-if="!uploading" class="w-16 h-16 mx-auto bg-emerald-100 rounded-full flex items-center justify-center">
+        <!-- Error state icon -->
+        <div v-if="!uploading && error" class="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center">
+          <svg class="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        </div>
+        <!-- Success state icon -->
+        <div v-else-if="!uploading" class="w-16 h-16 mx-auto bg-emerald-100 rounded-full flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-emerald-600">
             <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
           </svg>
@@ -119,7 +135,7 @@
           </div>
         </div>
         <h2 class="text-lg font-semibold text-gray-800">
-          {{ uploading ? uploadStatusText : 'Recording Complete' }}
+          {{ uploading ? uploadStatusText : error ? 'Upload Failed' : 'Recording Complete' }}
         </h2>
         <p class="text-gray-500">{{ formattedTime }} recorded{{ totalSegments > 1 ? ` (${totalSegments} segments)` : '' }}</p>
 
@@ -135,16 +151,29 @@
           </div>
         </div>
 
-        <button
-          v-else
-          class="block w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
-          :disabled="uploading"
-          @click="processVisit"
-        >
-          Process Visit
-        </button>
-
-        <p v-if="error" class="text-red-600 text-sm">{{ error }}</p>
+        <template v-else>
+          <p v-if="error" class="text-red-600 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-3">{{ error }}</p>
+          <!-- Auto-processing countdown (no error state) -->
+          <div v-if="!error && autoProcessCountdown > 0" class="space-y-3">
+            <p class="text-sm text-gray-500">Processing starts in <span class="font-semibold text-emerald-600">{{ autoProcessCountdown }}s</span></p>
+            <button
+              class="block w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors"
+              @click="processVisit"
+            >
+              Process Now
+            </button>
+          </div>
+          <button
+            v-else
+            class="block w-full py-3 rounded-xl font-medium transition-colors"
+            :class="error
+              ? 'bg-red-600 text-white hover:bg-red-700'
+              : 'bg-emerald-600 text-white hover:bg-emerald-700'"
+            @click="processVisit"
+          >
+            {{ error ? 'Retry Upload' : 'Process Visit' }}
+          </button>
+        </template>
       </div>
     </div>
 
@@ -230,7 +259,9 @@ const demoMode = ref(false);
 const demoLoading = ref(false);
 const showDemoRecordingBtn = ref(false);
 const demoRecordingBtnVisible = ref(false);
+const autoProcessCountdown = ref(0);
 let demoRecordingTimer = null;
+let countdownTimer = null;
 
 // Visit info form
 const practitioners = ref([]);
@@ -401,6 +432,13 @@ async function stopRecording() {
 }
 
 async function processVisit() {
+    // Cancel countdown if user clicked manually
+    if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+    }
+    autoProcessCountdown.value = 0;
+
     const segments = audioSegments.value;
     if (segments.length === 0) {
         error.value = 'No recording found. Please record again.';
@@ -455,60 +493,16 @@ async function processVisit() {
             uploadProgress.value = 10 + Math.round(((i + 1) / segments.length) * 25);
         }
 
-        // Phase 2: Transcribe
-        if (segments.length === 1) {
-            // Single segment — direct upload-audio (saves + transcribes + creates Transcript + dispatches job)
-            uploadStatusText.value = 'Transcribing audio...';
-            uploadDetailText.value = 'Sending audio for transcription...';
+        // Phase 2: Start server-side processing (instant — no Whisper in HTTP request)
+        uploadStatusText.value = 'Starting transcription...';
+        uploadDetailText.value = 'All audio saved. Starting AI processing...';
 
-            const formData = new FormData();
-            formData.append('audio', segments[0], `recording.${ext}`);
-            formData.append('source_type', 'ambient_phone');
-            formData.append('patient_consent_given', '1');
-
-            await withRetry(() => api.post(`/visits/${visitId}/transcript/upload-audio`, formData, {
-                timeout: 300000, skipErrorToast: true,
-            }), { onRetry: (a) => { uploadDetailText.value = `Upload failed, retry ${a}/3...`; } });
-
-            uploadProgress.value = 90;
-        } else {
-            // Multiple segments — transcribe each, then combine
-            const transcriptParts = [];
-
-            for (let i = 0; i < segments.length; i++) {
-                uploadStatusText.value = `Transcribing segment ${i + 1} of ${segments.length}...`;
-                uploadDetailText.value = `Transcribing segment ${i + 1}...`;
-
-                const formData = new FormData();
-                formData.append('audio', segments[i], `chunk-${i}.${ext}`);
-                formData.append('chunk_index', String(i));
-                formData.append('total_chunks', String(segments.length));
-
-                const { data } = await withRetry(() => api.post(`/visits/${visitId}/transcript/transcribe-chunk`, formData, {
-                    timeout: 300000, skipErrorToast: true,
-                }), { onRetry: (a) => { uploadDetailText.value = `Transcription retry ${a}/3...`; } });
-
-                transcriptParts.push(data.data.text);
-                uploadProgress.value = 35 + Math.round(((i + 1) / segments.length) * 45);
-            }
-
-            // Phase 3: Combine all chunk transcripts and submit as text
-            uploadStatusText.value = 'Processing combined transcript...';
-            uploadDetailText.value = 'Analyzing with AI...';
-
-            const combinedTranscript = transcriptParts.join('\n\n');
-
-            await withRetry(() => api.post(`/visits/${visitId}/transcript`, {
-                raw_transcript: combinedTranscript,
-                source_type: 'ambient_phone',
-                stt_provider: 'whisper',
-                audio_duration_seconds: seconds.value,
-                patient_consent_given: true,
-                process: true,
-            }, { skipErrorToast: true }), { onRetry: (a) => { uploadDetailText.value = `Processing retry ${a}/3...`; } });
-
-            uploadProgress.value = 90;
-        }
+        await withRetry(() => api.post(`/visits/${visitId}/transcript/start-processing`, {
+            source_type: 'ambient_phone',
+            patient_consent_given: true,
+            chunk_count: segments.length,
+            audio_duration_seconds: seconds.value,
+        }, { skipErrorToast: true }), { onRetry: (a) => { uploadDetailText.value = `Retry ${a}/3...`; } });
 
         uploadProgress.value = 100;
         uploadStatusText.value = 'Done!';
@@ -565,6 +559,7 @@ async function useDemoRecordingDuringCapture() {
     // Stop the active recording, discard it, and use demo transcript instead
     clearInterval(timer);
     clearInterval(chunkTimer);
+    clearInterval(countdownTimer);
     clearTimeout(demoRecordingTimer);
     releaseWakeLock();
 
@@ -670,6 +665,17 @@ watch(step, (val) => {
                 requestAnimationFrame(() => { demoRecordingBtnVisible.value = true; });
             }, 2000);
         }
+    } else if (val === 'done') {
+        // Auto-process after 5 second countdown
+        autoProcessCountdown.value = 5;
+        countdownTimer = setInterval(() => {
+            autoProcessCountdown.value--;
+            if (autoProcessCountdown.value <= 0) {
+                clearInterval(countdownTimer);
+                countdownTimer = null;
+                processVisit();
+            }
+        }, 1000);
     }
 });
 
@@ -678,6 +684,7 @@ onUnmounted(() => {
     document.removeEventListener('visibilitychange', onVisibilityChange);
     clearInterval(timer);
     clearInterval(chunkTimer);
+    clearInterval(countdownTimer);
     clearTimeout(demoRecordingTimer);
     releaseWakeLock();
     if (mediaRecorder && mediaRecorder.state === 'recording') {
