@@ -34,7 +34,7 @@ class AiTierManager
             'value' => $tier->value,
             'label' => $tier->label(),
             'short_label' => $tier->shortLabel(),
-            'model' => $tier->model(),
+            'model' => $tier->displayModel(),
             'features' => $tier->features(),
             'active' => $tier === $current,
         ], AiTier::cases());

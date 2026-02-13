@@ -35,9 +35,28 @@ enum AiTier: string
             return $override;
         }
 
+        return $this->intendedModel();
+    }
+
+    /**
+     * The intended model ID for this tier (ignores env override).
+     */
+    public function intendedModel(): string
+    {
         return match ($this) {
             self::Good => 'claude-sonnet-4-5-20250929',
             self::Better, self::Opus46 => 'claude-opus-4-6',
+        };
+    }
+
+    /**
+     * Human-readable model name for UI display.
+     */
+    public function displayModel(): string
+    {
+        return match ($this) {
+            self::Good => 'Claude Sonnet 4.5',
+            self::Better, self::Opus46 => 'Claude Opus 4.6',
         };
     }
 
