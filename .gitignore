@@ -27,6 +27,10 @@ Thumbs.db
 /.worktrees
 /bun.lock
 /samples/
+/showcase/node_modules/
+/showcase/out/
+/showcase/package-lock.json
+/showcase/bun.lock
 
 # Confidential patient recordings and transcripts — NEVER commit
 /demo/recordings/
