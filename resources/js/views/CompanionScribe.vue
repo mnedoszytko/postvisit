@@ -295,6 +295,7 @@ let timer = null;
 let chunkTimer = null;
 let mediaRecorder = null;
 let mediaStream = null;
+let wakeLock = null;
 
 // Completed audio segments (blobs) — one per CHUNK_DURATION_SEC window
 const audioSegments = ref([]);
@@ -363,6 +364,9 @@ async function startRecording() {
         // Schedule chunk rotation every CHUNK_DURATION_SEC
         chunkTimer = setInterval(rotateChunk, CHUNK_DURATION_SEC * 1000);
 
+        // Prevent screen from locking during recording (iOS Safari 16.4+)
+        await acquireWakeLock();
+
         step.value = 'recording';
     } catch (err) {
         error.value = err.name === 'NotAllowedError'
@@ -392,6 +396,7 @@ async function stopRecording() {
         mediaStream = null;
     }
 
+    releaseWakeLock();
     step.value = 'done';
 }
 
@@ -561,6 +566,7 @@ async function useDemoRecordingDuringCapture() {
     clearInterval(timer);
     clearInterval(chunkTimer);
     clearTimeout(demoRecordingTimer);
+    releaseWakeLock();
 
     if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
@@ -589,6 +595,31 @@ async function getFirstPractitionerId(patientId) {
     throw new Error('No practitioner found. Please contact support.');
 }
 
+// Screen Wake Lock — prevents iPhone screen from locking during recording
+async function acquireWakeLock() {
+    if (!('wakeLock' in navigator)) return;
+    try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } catch {
+        // Wake Lock not available or denied — recording still works, just screen may lock
+    }
+}
+
+function releaseWakeLock() {
+    if (wakeLock) {
+        wakeLock.release();
+        wakeLock = null;
+    }
+}
+
+// Re-acquire wake lock when returning from background (iOS releases it on tab switch)
+function onVisibilityChange() {
+    if (document.visibilityState === 'visible' && step.value === 'recording') {
+        acquireWakeLock();
+    }
+}
+
 // Warn user before closing/navigating away during recording or upload
 function onBeforeUnload(e) {
     if (step.value === 'recording' || uploading.value) {
@@ -599,6 +630,7 @@ function onBeforeUnload(e) {
 
 onMounted(async () => {
     window.addEventListener('beforeunload', onBeforeUnload);
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     try {
         const { data } = await api.get('/practitioners');
@@ -643,9 +675,11 @@ watch(step, (val) => {
 
 onUnmounted(() => {
     window.removeEventListener('beforeunload', onBeforeUnload);
+    document.removeEventListener('visibilitychange', onVisibilityChange);
     clearInterval(timer);
     clearInterval(chunkTimer);
     clearTimeout(demoRecordingTimer);
+    releaseWakeLock();
     if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
     }
