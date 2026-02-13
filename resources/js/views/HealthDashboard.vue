@@ -42,17 +42,17 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, inject, watch } from 'vue';
+import { ref, computed, onMounted, inject, watch, defineAsyncComponent } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useApi } from '@/composables/useApi';
 import { useVisitStore } from '@/stores/visit';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import HealthTabNav from '@/components/health/HealthTabNav.vue';
 import HealthProfileTab from '@/components/health/HealthProfileTab.vue';
-import ConnectedServicesTab from '@/components/health/ConnectedServicesTab.vue';
-import VitalsTab from '@/components/health/VitalsTab.vue';
-import LabResultsTab from '@/components/health/LabResultsTab.vue';
-import DocumentsTab from '@/components/health/DocumentsTab.vue';
+const ConnectedServicesTab = defineAsyncComponent(() => import('@/components/health/ConnectedServicesTab.vue'));
+const VitalsTab = defineAsyncComponent(() => import('@/components/health/VitalsTab.vue'));
+const LabResultsTab = defineAsyncComponent(() => import('@/components/health/LabResultsTab.vue'));
+const DocumentsTab = defineAsyncComponent(() => import('@/components/health/DocumentsTab.vue'));
 const auth = useAuthStore();
 const api = useApi();
 const visitStore = useVisitStore();
