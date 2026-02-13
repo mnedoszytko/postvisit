@@ -136,11 +136,6 @@ const routes = [
         component: () => import('@/views/AgentsPage.vue'),
         meta: { requiresAuth: true, role: 'patient' },
     },
-    {
-        path: '/medical-lookup',
-        name: 'medical-lookup',
-        component: () => import('@/views/MedicalLookupDemo.vue'),
-    },
 ];
 
 const router = createRouter({

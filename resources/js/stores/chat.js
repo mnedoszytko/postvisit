@@ -39,7 +39,6 @@ export const useChatStore = defineStore('chat', {
             });
 
             try {
-                const api = useApi();
                 const body = { message };
                 if (contextSources && contextSources.length > 0) {
                     body.context_sources = contextSources;
@@ -105,8 +104,8 @@ export const useChatStore = defineStore('chat', {
                                     }
                                     this.messages[aiIndex].content += parsed.text;
                                 }
-                            } catch {
-                                // skip malformed chunks
+                            } catch (err) {
+                                console.error('Parse SSE chunk failed:', err);
                             }
                         }
                     }

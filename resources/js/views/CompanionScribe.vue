@@ -583,8 +583,8 @@ async function getFirstPractitionerId(patientId) {
         if (visits.length > 0 && visits[0].practitioner_id) {
             return visits[0].practitioner_id;
         }
-    } catch {
-        // ignore
+    } catch (err) {
+        console.error('Fetch practitioner failed:', err);
     }
     throw new Error('No practitioner found. Please contact support.');
 }
@@ -606,8 +606,8 @@ onMounted(async () => {
         if (practitioners.value.length === 1) {
             selectedPractitionerId.value = practitioners.value[0].id;
         }
-    } catch {
-        // Non-blocking — user can still type manually
+    } catch (err) {
+        console.error('Fetch practitioners failed:', err);
     }
 
     // Pre-fill from existing visit when navigating from Visit Summary
@@ -621,8 +621,8 @@ onMounted(async () => {
             if (visit?.started_at) {
                 visitDate.value = visit.started_at.slice(0, 10);
             }
-        } catch {
-            // Non-blocking — user can still select manually
+        } catch (err) {
+            console.error('Fetch visit details failed:', err);
         }
     }
 });

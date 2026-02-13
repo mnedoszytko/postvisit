@@ -479,8 +479,8 @@ onMounted(async () => {
         engagement.value = engagementRes.data.data;
         chatSessions.value = chatAuditRes.data.data;
         allObservations.value = allObsRes.data.data;
-    } catch {
-        // Handled by API interceptor
+    } catch (err) {
+        console.error('Load patient data failed:', err);
     }
 
     await fetchNotifications();
@@ -496,8 +496,8 @@ async function fetchNotifications() {
         notifications.value = res.data.data.filter(
             n => patientVisitIds.includes(n.visit_id),
         );
-    } catch {
-        // Handled by API interceptor
+    } catch (err) {
+        console.error('Fetch notifications failed:', err);
     } finally {
         loadingNotifications.value = false;
     }
@@ -532,8 +532,8 @@ async function sendReply(notif) {
         });
         cancelReply();
         await fetchNotifications();
-    } catch {
-        // Handled by API interceptor
+    } catch (err) {
+        console.error('Send reply failed:', err);
     } finally {
         sendingReply.value = false;
     }

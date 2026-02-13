@@ -742,8 +742,8 @@ async function loadRelevantData(): Promise<void> {
         conditions.value = condRes.data.data || [];
         medications.value = rxRes.data.data || [];
         references.value = refRes.data.data || [];
-    } catch {
-        // Non-blocking
+    } catch (err) {
+        console.error('Load relevant data failed:', err);
     } finally {
         loadingRelevant.value = false;
     }
@@ -770,7 +770,8 @@ function loadCustomReferences(): CustomReference[] {
     try {
         const stored = localStorage.getItem(CUSTOM_REFS_KEY);
         return stored ? JSON.parse(stored) : [];
-    } catch {
+    } catch (err) {
+        console.error('Load custom references failed:', err);
         return [];
     }
 }
@@ -828,7 +829,8 @@ async function searchCondition(name: string): Promise<void> {
     try {
         const { data } = await api.get('/lookup/conditions', { params: { q: name } });
         conditionLookups[id] = { loading: false, results: data.data?.matches || [] };
-    } catch {
+    } catch (err) {
+        console.error('Search condition failed:', err);
         conditionLookups[id] = { loading: false, results: [] };
     }
 }
@@ -842,7 +844,8 @@ async function lookupDrugLabel(rx: Prescription): Promise<void> {
         const { data } = await api.get('/lookup/drug-label', { params: { drug_name: name } });
         const label = data.data;
         drugLabels[rx.id] = { loading: false, result: label && Object.keys(label).length > 0 ? label : null };
-    } catch {
+    } catch (err) {
+        console.error('Lookup drug label failed:', err);
         drugLabels[rx.id] = { loading: false, result: null };
     }
 }
@@ -882,8 +885,8 @@ async function runSearch(): Promise<void> {
             const { data } = await api.get(endpoint, { params: { q } });
             searchResults.value = data.data?.matches || [];
         }
-    } catch {
-        // Handled by empty state
+    } catch (err) {
+        console.error('Search failed:', err);
     } finally {
         searchLoading.value = false;
         searchSearched.value = true;
@@ -1108,8 +1111,8 @@ async function loadLibraryItems(): Promise<void> {
                 startPolling(item.id);
             }
         });
-    } catch {
-        // Fallback to demo items on API failure
+    } catch (err) {
+        console.error('Load library items failed:', err);
         libraryItems.value = [...demoLibraryItems];
     } finally {
         loadingLibrary.value = false;
@@ -1181,7 +1184,8 @@ function startPolling(itemId: string): void {
                     if (item) Object.assign(item, full.data.data);
                 }
             }
-        } catch {
+        } catch (err) {
+            console.error('Library poll failed:', err);
             clearInterval(pollingIntervals[itemId]);
             delete pollingIntervals[itemId];
         }

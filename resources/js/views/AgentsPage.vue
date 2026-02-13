@@ -333,8 +333,8 @@ async function copyText(text: string): Promise<void> {
     setTimeout(() => {
       copyToast.value = false;
     }, 2000);
-  } catch {
-    // Fallback: select text (no-op in this context)
+  } catch (err) {
+    console.error('Copy to clipboard failed:', err);
   }
 }
 

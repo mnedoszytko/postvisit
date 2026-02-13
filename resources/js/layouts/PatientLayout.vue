@@ -385,8 +385,8 @@ onMounted(async () => {
             if (visitStore.visits.length > 0) {
                 latestVisitId.value = visitStore.visits[0].id;
             }
-        } catch {
-            // No visits — chat button won't show
+        } catch (err) {
+            console.error('Fetch visits for chat failed:', err);
         }
     }
 });
@@ -448,7 +448,8 @@ async function switchToDoctor() {
         auth.user = data.data.user;
         auth.token = data.data.token;
         router.push('/doctor');
-    } catch {
+    } catch (err) {
+        console.error('Switch to doctor failed:', err);
         switchingRole.value = false;
     }
 }

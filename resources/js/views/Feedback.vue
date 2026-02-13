@@ -77,8 +77,8 @@ async function sendMessage() {
         });
         messages.value.push(data.data);
         newMessage.value = '';
-    } catch {
-        // Handled by API interceptor
+    } catch (err) {
+        console.error('Send message failed:', err);
     }
 }
 
@@ -86,8 +86,8 @@ onMounted(async () => {
     try {
         const { data } = await api.get(`/visits/${route.params.id}/messages`);
         messages.value = data.data;
-    } catch {
-        // Handled by API interceptor
+    } catch (err) {
+        console.error('Fetch messages failed:', err);
     }
 });
 </script>

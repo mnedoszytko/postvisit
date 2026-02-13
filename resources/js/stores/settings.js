@@ -23,8 +23,8 @@ export const useSettingsStore = defineStore('settings', {
                 const { data } = await api.get('/settings/ai-tier');
                 this.currentTier = data.data.current;
                 this.tiers = data.data.tiers;
-            } catch {
-                // Use defaults silently
+            } catch (err) {
+                console.error('Fetch AI tier failed:', err);
             }
         },
 

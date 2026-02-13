@@ -128,8 +128,8 @@ async function pollStatus() {
                 activeStep.value = Math.max(activeStep.value, 1);
             }
             // 'pending' — stay at step 0
-        } catch {
-            // Network error — keep polling silently
+        } catch (err) {
+            console.error('Poll status failed:', err);
         }
     }, 3000);
 }

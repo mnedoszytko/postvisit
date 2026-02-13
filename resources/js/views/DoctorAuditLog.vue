@@ -217,7 +217,8 @@ async function fetchLogs(page = 1) {
         pagination.currentPage = paginated.current_page;
         pagination.lastPage = paginated.last_page;
         pagination.total = paginated.total;
-    } catch {
+    } catch (err) {
+        console.error('Fetch audit logs failed:', err);
         logs.value = [];
     } finally {
         loading.value = false;
@@ -242,8 +243,8 @@ async function exportCsv() {
         a.download = `audit-log-${new Date().toISOString().slice(0, 10)}.csv`;
         a.click();
         URL.revokeObjectURL(url);
-    } catch {
-        // silently fail
+    } catch (err) {
+        console.error('Export CSV failed:', err);
     } finally {
         exporting.value = false;
     }
