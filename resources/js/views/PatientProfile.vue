@@ -123,7 +123,15 @@
                 </p>
               </div>
 
-              <svg class="w-5 h-5 text-indigo-300 group-hover:text-indigo-500 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              <div class="flex flex-col items-end justify-between shrink-0 self-stretch">
+                <button
+                  class="text-xs font-medium text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
+                  @click.prevent.stop="openContactModal(visit)"
+                >
+                  Contact
+                </button>
+                <svg class="w-5 h-5 text-indigo-300 group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              </div>
             </router-link>
             <button
               v-if="visitStore.visits.length > visibleCount && !showAll"
@@ -190,6 +198,12 @@
         </div>
       </section>
     </div>
+
+    <!-- Contact Doctor Modal -->
+    <ContactDoctorModal
+      v-model="contactModalOpen"
+      :visit="contactVisit"
+    />
   </PatientLayout>
 </template>
 
@@ -203,6 +217,7 @@ import PatientLayout from '@/layouts/PatientLayout.vue';
 import VisitDateBadge from '@/components/VisitDateBadge.vue';
 import AskAiButton from '@/components/AskAiButton.vue';
 import ScheduleInvitationModal from '@/components/ScheduleInvitationModal.vue';
+import ContactDoctorModal from '@/components/ContactDoctorModal.vue';
 
 const { openGlobalChat } = useChatBus();
 
@@ -214,6 +229,13 @@ const healthRecordCount = ref(0);
 const libraryCount = ref(0);
 const showScheduleModal = ref(false);
 const invitationDismissed = ref(false);
+const contactModalOpen = ref(false);
+const contactVisit = ref(null);
+
+function openContactModal(visit) {
+    contactVisit.value = visit;
+    contactModalOpen.value = true;
+}
 
 const invitationDoctor = computed(() => {
     const firstVisit = visitStore.visits[0];
