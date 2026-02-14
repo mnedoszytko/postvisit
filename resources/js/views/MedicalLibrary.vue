@@ -49,10 +49,7 @@
                 <div class="flex items-start justify-between gap-3">
                   <div>
                     <p class="font-medium text-gray-900">{{ cond.code_display }}</p>
-                    <div class="flex items-center gap-2 mt-1">
-                      <span class="text-xs font-mono bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{{ cond.code }}</span>
-                      <span v-if="cond.clinical_notes" class="text-xs text-gray-500">{{ cond.clinical_notes }}</span>
-                    </div>
+                    <p v-if="cond.clinical_notes" class="text-xs text-gray-500 mt-1">{{ cond.clinical_notes }}</p>
                   </div>
                   <AskAiButton @ask="openGlobalChat(`condition: ${cond.code_display}`)" />
                 </div>
