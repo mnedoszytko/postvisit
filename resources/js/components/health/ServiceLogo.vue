@@ -108,7 +108,38 @@ const LOGOS: Record<string, LogoData> = {
     }],
   },
 
-  // ── EHR Portals ────────────────────────────────────────────
+  // ── EHR Portals (Health Networks) ──────────────────────────
+  'rsb': {
+    viewBox: '0 0 24 24',
+    paths: [{
+      d: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
+      mode: 'stroke',
+      strokeWidth: 1.5,
+    }],
+  },
+  'rsw': {
+    viewBox: '0 0 24 24',
+    paths: [{
+      d: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z',
+      mode: 'stroke',
+      strokeWidth: 1.5,
+    }],
+  },
+  'cozo': {
+    viewBox: '0 0 24 24',
+    paths: [
+      { d: 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101', mode: 'stroke', strokeWidth: 2 },
+      { d: 'M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1', mode: 'stroke', strokeWidth: 2 },
+    ],
+  },
+  'ikp': {
+    viewBox: '0 0 24 24',
+    paths: [{
+      d: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+      mode: 'stroke',
+      strokeWidth: 1.5,
+    }],
+  },
   'epic-mychart': {
     viewBox: '0 0 24 24',
     paths: [{

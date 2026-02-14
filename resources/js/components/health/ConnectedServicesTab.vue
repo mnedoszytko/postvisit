@@ -52,8 +52,12 @@ const services = ref([
     { id: 'samsung-health', name: 'Samsung Health', description: 'Galaxy Watch and phone sensor data', dataTypes: ['Heart Rate', 'BP', 'Body Comp'], connected: false, lastSync: null, brandColor: '#1428A0', category: 'Wearables' },
     { id: 'garmin', name: 'Garmin Connect', description: 'GPS, heart rate, and performance data', dataTypes: ['Heart Rate', 'VO2 Max', 'Steps'], connected: false, lastSync: null, brandColor: '#007CC3', category: 'Wearables' },
     { id: 'withings', name: 'Withings', description: 'Smart scales, BP monitors, sleep trackers', dataTypes: ['Weight', 'BP', 'Sleep', 'ECG'], connected: false, lastSync: null, brandColor: '#00A98F', category: 'Wearables' },
-    // EHR Portals
-    { id: 'epic-mychart', name: 'Epic MyChart', description: 'Access medical records, lab results, and appointments', dataTypes: ['Records', 'Labs', 'Meds', 'Notes'], connected: true, lastSync: '1 day ago', brandColor: '#862074', category: 'EHR Portals' },
+    // EHR Portals — regional health networks
+    { id: 'rsb', name: 'Réseau Santé Bruxellois', description: 'Brussels health network — shared records across all Brussels hospitals and GPs', dataTypes: ['Records', 'Labs', 'Discharge', 'SumEHR'], connected: true, lastSync: '1 day ago', brandColor: '#0054A6', category: 'EHR Portals' },
+    { id: 'rsw', name: 'Réseau Santé Wallon', description: 'Wallonia health network — secure exchange of medical data across care providers', dataTypes: ['Records', 'Labs', 'Meds', 'SumEHR'], connected: false, lastSync: null, brandColor: '#E4002B', category: 'EHR Portals' },
+    { id: 'cozo', name: 'CoZo', description: 'Collaboratief Zorgplatform Vlaanderen — Flemish health data exchange via Vitalink', dataTypes: ['Records', 'Labs', 'Meds', 'Vaccinations'], connected: false, lastSync: null, brandColor: '#009B4D', category: 'EHR Portals' },
+    { id: 'ikp', name: 'IKP (Internetowe Konto Pacjenta)', description: 'Polish national patient portal — e-prescriptions, referrals, vaccination records', dataTypes: ['e-Rx', 'Referrals', 'Vaccinations', 'Records'], connected: false, lastSync: null, brandColor: '#DC143C', category: 'EHR Portals' },
+    { id: 'epic-mychart', name: 'Epic MyChart', description: 'Access medical records, lab results, and appointments via TEFCA', dataTypes: ['Records', 'Labs', 'Meds', 'Notes'], connected: true, lastSync: '1 day ago', brandColor: '#862074', category: 'EHR Portals' },
     { id: 'cerner', name: 'Cerner / Oracle Health', description: 'Hospital records and care summaries', dataTypes: ['Records', 'Labs', 'Discharge'], connected: false, lastSync: null, brandColor: '#E31937', category: 'EHR Portals' },
     // Pharmacies
     { id: 'cvs', name: 'CVS Pharmacy', description: 'Prescription history and refill tracking', dataTypes: ['Rx History', 'Refills', 'Costs'], connected: true, lastSync: '3 days ago', brandColor: '#CC0000', category: 'Pharmacies' },
@@ -77,8 +81,8 @@ const categoryIcons: Record<string, string> = {
 };
 
 const categories = computed(() => [
-    { name: 'Wearables', services: services.value.filter(s => s.category === 'Wearables') },
     { name: 'EHR Portals', services: services.value.filter(s => s.category === 'EHR Portals') },
+    { name: 'Wearables', services: services.value.filter(s => s.category === 'Wearables') },
     { name: 'Pharmacies', services: services.value.filter(s => s.category === 'Pharmacies') },
     { name: 'Labs', services: services.value.filter(s => s.category === 'Labs') },
     { name: 'Insurance', services: services.value.filter(s => s.category === 'Insurance') },
