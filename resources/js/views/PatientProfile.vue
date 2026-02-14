@@ -44,7 +44,7 @@
 
               <div class="flex-1 min-w-0">
                 <!-- Visit type badge -->
-                <div class="flex items-center justify-between mb-2">
+                <div class="mb-2">
                   <span v-if="visit.visit_type" class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
                     {{ formatVisitType(visit.visit_type) }}
                   </span>
@@ -77,16 +77,15 @@
                 </p>
               </div>
 
-              <!-- Contact doctor button -->
-              <button
-                class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors shrink-0"
-                title="Contact doctor"
-                @click.prevent.stop="openContactModal(visit)"
-              >
-                <svg class="w-5 h-5 text-indigo-400 hover:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
-              </button>
-
-              <svg class="w-5 h-5 text-indigo-300 group-hover:text-indigo-500 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              <div class="flex flex-col items-end justify-between shrink-0 self-stretch">
+                <button
+                  class="text-xs font-medium text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
+                  @click.prevent.stop="openContactModal(visit)"
+                >
+                  Contact
+                </button>
+                <svg class="w-5 h-5 text-indigo-300 group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              </div>
             </router-link>
             <button
               v-if="visitStore.visits.length > visibleCount && !showAll"

@@ -95,7 +95,7 @@
         <div
           class="bg-gray-50 rounded-xl p-3 text-center cursor-pointer hover:bg-emerald-50 hover:ring-1 hover:ring-emerald-200 transition-all"
           title="View weight trend"
-          @click="emit('navigate-tab', 'vitals')"
+          @click="emit('navigate-tab', 'vitals', 'weight')"
         >
           <p class="text-2xl font-bold text-gray-900">{{ patient?.weight_kg || '\u2014' }}</p>
           <p class="text-xs text-gray-500 mt-1">Weight (kg)</p>
@@ -103,7 +103,7 @@
         <div
           class="bg-gray-50 rounded-xl p-3 text-center cursor-pointer hover:bg-emerald-50 hover:ring-1 hover:ring-emerald-200 transition-all"
           title="View weight trend"
-          @click="emit('navigate-tab', 'vitals')"
+          @click="emit('navigate-tab', 'vitals', 'weight')"
         >
           <p class="text-2xl font-bold" :class="bmiColor">{{ bmi || '\u2014' }}</p>
           <p class="text-xs text-gray-500 mt-1">BMI</p>

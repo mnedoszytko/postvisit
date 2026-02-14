@@ -17,12 +17,13 @@
           :conditions="conditions"
           :visits="visitStore.visits.slice(0, 3)"
           @patient-updated="onPatientUpdated"
-          @navigate-tab="activeTab = $event"
+          @navigate-tab="onNavigateTab"
         />
         <VitalsTab
           v-if="activeTab === 'vitals'"
           :observations="observations"
           :device-data="deviceData"
+          :scroll-to="vitalsScrollTo"
         />
         <LabResultsTab
           v-if="activeTab === 'labs'"
@@ -67,6 +68,12 @@ const tabContextMap = {
 };
 
 const activeTab = ref('profile');
+const vitalsScrollTo = ref('');
+
+function onNavigateTab(tab, scrollTarget = '') {
+    activeTab.value = tab;
+    vitalsScrollTo.value = scrollTarget;
+}
 
 // Update chat context when switching between health sub-tabs
 watch(activeTab, (tab) => {

@@ -238,13 +238,11 @@
       <!-- Floating chat button (shown when chat is closed, or always on mobile) -->
       <button
         v-if="!chatOpen"
-        class="fixed bottom-6 right-6 z-40 w-14 h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center group"
+        class="fixed bottom-6 right-6 z-40 w-14 h-14 bg-emerald-50 hover:bg-emerald-100 rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center group"
         title="Ask PostVisit AI"
         @click="chatOpen = true"
       >
-        <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-        </svg>
+        <img src="/images/logo-icon.png" alt="PostVisit" class="h-7 w-auto group-hover:scale-110 transition-transform" />
         <span class="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full animate-pulse"></span>
       </button>
 

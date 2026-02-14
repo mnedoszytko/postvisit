@@ -1,8 +1,13 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-    <div class="w-full max-w-sm">
+  <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-emerald-50/80 px-4 relative overflow-hidden">
+    <!-- Subtle decorative circles -->
+    <div class="absolute -top-32 -right-32 w-80 h-80 bg-emerald-100/60 rounded-full blur-3xl" />
+    <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-100/50 rounded-full blur-3xl" />
+
+    <div class="w-full max-w-sm relative z-10">
       <div class="text-center mb-8">
         <router-link to="/" class="inline-block"><img src="/images/logo-full.png" alt="PostVisit.ai" class="h-8 mx-auto" /></router-link>
+        <p class="mt-3 text-sm text-gray-400">Your AI-powered medical visit companion</p>
       </div>
 
       <!-- Demo Access — prominent, above login form -->
@@ -39,7 +44,7 @@
         <div class="flex-1 border-t border-gray-300" />
       </div>
 
-      <form class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4" @submit.prevent="handleLogin">
+      <form class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-sm border border-white/80 p-6 space-y-4" @submit.prevent="handleLogin">
         <div>
           <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
           <input
@@ -47,7 +52,7 @@
             v-model="email"
             type="email"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+            class="w-full px-3 py-2 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white/70"
             placeholder="you@example.com"
           />
         </div>
@@ -59,7 +64,7 @@
             v-model="password"
             type="password"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+            class="w-full px-3 py-2 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white/70"
             placeholder="Your password"
           />
         </div>
@@ -80,6 +85,9 @@
         <router-link to="/register" class="text-emerald-600 font-medium hover:text-emerald-700">Sign up</router-link>
       </p>
     </div>
+
+    <!-- Footer -->
+    <p class="mt-12 text-xs text-gray-300 relative z-10">Powered by Claude Opus 4.6</p>
   </div>
 </template>
 

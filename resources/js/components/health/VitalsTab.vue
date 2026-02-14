@@ -45,6 +45,29 @@
     <!-- Time Range Filter -->
     <TimeRangeFilter v-model="selectedRange" />
 
+    <!-- Weight Trend Chart (Bar) -->
+    <div ref="weightRef" v-if="weightData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-gray-900">Weight Trend</h2>
+        <div class="flex items-center gap-3">
+          <span v-if="weightAvg" class="text-sm text-gray-500">Avg: {{ weightAvg }} kg</span>
+          <span
+            v-if="weightDelta !== null"
+            class="text-sm font-medium px-2 py-0.5 rounded-full"
+            :class="parseFloat(weightDelta) > 0
+              ? 'bg-red-100 text-red-700'
+              : 'bg-emerald-100 text-emerald-700'"
+          >
+            {{ parseFloat(weightDelta) > 0 ? '+' : '' }}{{ weightDelta }} kg
+          </span>
+          <AskAiButton @ask="openGlobalChat('weight')" />
+        </div>
+      </div>
+      <div class="h-64">
+        <Bar :data="weightChartData" :options="weightChartOptions" />
+      </div>
+    </div>
+
     <!-- BP Trend Chart -->
     <div v-if="bpData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
       <div class="flex items-center justify-between mb-4">
@@ -78,29 +101,6 @@
       </div>
     </div>
 
-    <!-- Weight Trend Chart (Bar) -->
-    <div v-if="weightData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="font-semibold text-gray-900">Weight Trend</h2>
-        <div class="flex items-center gap-3">
-          <span v-if="weightAvg" class="text-sm text-gray-500">Avg: {{ weightAvg }} kg</span>
-          <span
-            v-if="weightDelta !== null"
-            class="text-sm font-medium px-2 py-0.5 rounded-full"
-            :class="parseFloat(weightDelta) > 0
-              ? 'bg-red-100 text-red-700'
-              : 'bg-emerald-100 text-emerald-700'"
-          >
-            {{ parseFloat(weightDelta) > 0 ? '+' : '' }}{{ weightDelta }} kg
-          </span>
-          <AskAiButton @ask="openGlobalChat('weight')" />
-        </div>
-      </div>
-      <div class="h-64">
-        <Bar :data="weightChartData" :options="weightChartOptions" />
-      </div>
-    </div>
-
     <!-- Sleep Duration Chart -->
     <div v-if="sleepData.length > 0 || sleepDeviceData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
       <div class="flex items-center justify-between mb-4">
@@ -120,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, inject } from 'vue';
+import { ref, computed, inject, onMounted, nextTick, watch } from 'vue';
 import { Line, Bar } from 'vue-chartjs';
 import {
     Chart as ChartJS,
@@ -144,6 +144,30 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarEleme
 const props = defineProps({
     observations: { type: Array, default: () => [] },
     deviceData: { type: Object, default: null },
+    scrollTo: { type: String, default: '' },
+});
+
+const weightRef = ref<HTMLElement | null>(null);
+
+const scrollTargets: Record<string, () => HTMLElement | null> = {
+    weight: () => weightRef.value,
+};
+
+function scrollToTarget(target: string) {
+    const el = scrollTargets[target]?.();
+    if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+onMounted(() => {
+    if (props.scrollTo) {
+        nextTick(() => scrollToTarget(props.scrollTo));
+    }
+});
+
+watch(() => props.scrollTo, (val) => {
+    if (val) nextTick(() => scrollToTarget(val));
 });
 
 const selectedRange = ref('30d');

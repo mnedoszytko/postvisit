@@ -128,10 +128,24 @@ class LibraryItemAnalyzer
     private function extractFromUrl(LibraryItem $item): string
     {
         $response = Http::timeout(30)
-            ->withUserAgent('PostVisit.ai/1.0 (Medical Library; personal use)')
+            ->withHeaders([
+                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language' => 'en-US,en;q=0.9',
+            ])
+            ->withUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36')
             ->get($item->source_url);
 
-        $response->throw();
+        if ($response->failed()) {
+            // Cloudflare or similar bot protection — save what we can
+            $host = parse_url($item->source_url, PHP_URL_HOST) ?? 'unknown';
+            Log::warning("Library URL fetch failed ({$response->status()}), using URL-only mode", [
+                'item_id' => $item->id,
+                'url' => $item->source_url,
+            ]);
+
+            return "Source URL: {$item->source_url}\nDomain: {$host}\n\nThe full content could not be retrieved (HTTP {$response->status()} — likely bot protection). "
+                . "Please analyze based on the URL and domain context. The user added this to their medical library for reference.";
+        }
 
         $html = $response->body();
         $userId = $item->user_id;

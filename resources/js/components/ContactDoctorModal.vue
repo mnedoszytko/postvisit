@@ -80,9 +80,7 @@
                   :key="cat"
                   type="button"
                   class="px-3 py-1.5 text-sm rounded-full border transition-colors"
-                  :class="category === cat
-                    ? 'bg-emerald-600 text-white border-emerald-600'
-                    : 'bg-white text-gray-600 border-gray-200 hover:border-emerald-300 hover:text-emerald-700'"
+                  :class="categoryClass(cat)"
                   @click="category = cat"
                 >
                   {{ cat }}
@@ -141,6 +139,18 @@ const doctorName = computed(() => {
     if (!p) return 'Your Doctor';
     return `Dr. ${p.first_name} ${p.last_name}`;
 });
+
+function categoryClass(cat) {
+    const isActive = category.value === cat;
+    if (cat === 'Urgent') {
+        return isActive
+            ? 'bg-red-600 text-white border-red-600'
+            : 'bg-white text-red-600 border-red-200 hover:border-red-400 hover:bg-red-50';
+    }
+    return isActive
+        ? 'bg-emerald-600 text-white border-emerald-600'
+        : 'bg-white text-gray-600 border-gray-200 hover:border-emerald-300 hover:text-emerald-700';
+}
 
 function formatDate(dateStr) {
     if (!dateStr) return '';
