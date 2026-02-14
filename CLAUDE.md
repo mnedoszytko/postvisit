@@ -481,6 +481,7 @@ curl -s "$BASE/tasks?scope=active" | python3 -m json.tool
 - [ ] **Voice readout of chat responses** — TTS to read AI answers aloud to the patient
 - [ ] **Voice input for chat** — dictate questions to the chat instead of typing
 - [ ] **Link WAV files to seeded visits** — WAV recordings exported, but not yet linked to demo scenario visits in seeder
+- [ ] **Expose agents.md via HTTP** — serve `agents.md` at `/.well-known/agents.md` or `/agents.md` so AI agents (Claude Code, bots) reviewing the project can discover project context, API docs, and architecture. Similar to `robots.txt` convention but for LLM agents. Judges may use AI tools to verify projects.
 
 ### Dokumentacja (hackathon criterion)
 - [x] README.md — DONE

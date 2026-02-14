@@ -12,9 +12,7 @@
         <!-- Modal panel -->
         <div class="relative w-full max-w-lg bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden">
           <!-- Gradient header -->
-          <div class="bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 px-6 py-5 text-white relative overflow-hidden">
-            <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-white/10"></div>
-            <div class="absolute -right-2 bottom-0 w-16 h-16 rounded-full bg-white/5"></div>
+          <div class="bg-indigo-600 px-6 py-5 text-white">
             <div class="flex items-center justify-between relative">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
@@ -46,9 +44,9 @@
               {{ formatDate(selectedDate) }} at {{ selectedTime }}
             </p>
             <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-left">
-              <p class="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-1">Sent to PreVisit.ai</p>
+              <p class="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-1">Confirmation Sent</p>
               <p class="text-sm text-gray-700">
-                Your visit context, health record, and appointment details have been synced with PreVisit.ai for optimal preparation.
+                Your visit context, health record, and appointment details have been prepared for your doctor.
               </p>
             </div>
           </div>
@@ -152,20 +150,30 @@
               </div>
             </div>
 
-            <!-- Visit context info -->
+            <!-- Share with doctor toggles -->
             <div class="px-6 pb-4">
-              <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-3">
-                <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                  <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
-                  </svg>
-                </div>
-                <div>
-                  <p class="text-xs font-semibold text-amber-800 mb-0.5">PreVisit.ai will prepare</p>
-                  <p class="text-xs text-amber-700 leading-relaxed">
-                    Your complete visit history, health record, medications, and AI-generated pre-visit summary will be ready for your doctor.
-                  </p>
-                </div>
+              <p class="text-sm font-semibold text-gray-800 mb-2.5">
+                <svg class="w-4 h-4 inline-block mr-1 -mt-0.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                </svg>
+                Share with doctor
+              </p>
+              <div class="bg-gray-50 rounded-xl border border-gray-200 divide-y divide-gray-100">
+                <label
+                  v-for="opt in shareOptions"
+                  :key="opt.key"
+                  class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100/50 transition-colors"
+                >
+                  <input
+                    v-model="opt.enabled"
+                    type="checkbox"
+                    class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-800">{{ opt.label }}</p>
+                    <p class="text-xs text-gray-500">{{ opt.description }}</p>
+                  </div>
+                </label>
               </div>
             </div>
 
@@ -175,14 +183,14 @@
                 :disabled="!selectedDate || !selectedTime"
                 class="w-full py-3.5 rounded-xl font-semibold text-white transition-all flex items-center justify-center gap-2"
                 :class="selectedDate && selectedTime
-                  ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:via-indigo-700 hover:to-violet-700 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300'
+                  ? 'bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200 hover:shadow-xl'
                   : 'bg-gray-300 cursor-not-allowed'"
                 @click="scheduleAppointment"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                 </svg>
-                Send to PreVisit.ai & Schedule
+                Schedule Appointment
               </button>
             </div>
           </div>
@@ -193,7 +201,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, reactive, computed } from 'vue';
 
 const props = defineProps<{
   modelValue: boolean;
@@ -215,6 +223,15 @@ const timeSlots = ['9:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00',
 const selectedDate = ref<Date | null>(null);
 const selectedTime = ref<string>('');
 const scheduled = ref(false);
+
+const shareOptions = reactive([
+  { key: 'visit_history', label: 'Visit History', description: 'Previous visits and SOAP notes', enabled: true },
+  { key: 'conditions', label: 'Conditions & Diagnoses', description: 'Active conditions and past diagnoses', enabled: true },
+  { key: 'medications', label: 'Medications', description: 'Current prescriptions and dosages', enabled: true },
+  { key: 'lab_results', label: 'Lab Results', description: 'Recent lab work and trends', enabled: true },
+  { key: 'vitals', label: 'Vitals', description: 'Weight, sleep data, blood pressure, heart rate', enabled: false },
+  { key: 'connected', label: 'Connected Records', description: 'Apple Health, EHR integrations', enabled: false },
+]);
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);

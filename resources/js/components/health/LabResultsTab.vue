@@ -70,13 +70,9 @@
     </div>
 
     <!-- Marker cards -->
-    <div v-for="group in sortedGroups" :key="group.code" class="bg-white rounded-2xl border border-gray-200 overflow-hidden relative group/card">
-      <!-- Ask button — top-right corner, subtle, visible on hover -->
-      <div class="absolute top-2 right-2 z-10 opacity-50 group-hover/card:opacity-100 transition-all">
-        <AskAiButton @ask="openGlobalChat(group.name)" />
-      </div>
+    <div v-for="group in sortedGroups" :key="group.code" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
       <!-- Header: marker name, latest value, badge -->
-      <div class="flex items-center justify-between px-5 py-4 pr-14">
+      <div class="flex items-center justify-between px-5 py-4">
         <div>
           <h3 class="font-semibold text-gray-900 text-sm">{{ group.name }}</h3>
           <p class="text-xs text-gray-400 mt-0.5">{{ formatDate(group.latest.effective_date) }}</p>
@@ -98,11 +94,18 @@
         </div>
       </div>
 
-      <!-- Trend chart (only if 2+ readings) -->
+      <!-- Ask + Trend chart -->
       <div v-if="group.readings.length >= 2" class="px-5 pb-4">
+        <div class="flex justify-end mb-1">
+          <AskAiButton @ask="openGlobalChat(group.name)" />
+        </div>
         <div class="h-36">
           <Line :data="chartData(group)" :options="chartOptions(group)" />
         </div>
+      </div>
+      <!-- Ask only (no chart) -->
+      <div v-else class="flex justify-end px-5 pb-4">
+        <AskAiButton @ask="openGlobalChat(group.name)" />
       </div>
     </div>
 

@@ -3,9 +3,21 @@
     <!-- Connected Devices -->
     <div v-if="deviceData" class="bg-white rounded-2xl border border-gray-200 p-5">
       <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div class="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center relative">
+          <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none">
+            <!-- Watch band top -->
+            <path d="M9 1.5h6v3.5H9z" fill="currentColor" opacity="0.4" rx="1" />
+            <!-- Watch band bottom -->
+            <path d="M9 19h6v3.5H9z" fill="currentColor" opacity="0.4" rx="1" />
+            <!-- Watch body -->
+            <rect x="6.5" y="4.5" width="11" height="15" rx="3.5" stroke="currentColor" stroke-width="1.5" />
+            <!-- Watch crown -->
+            <rect x="17.5" y="10" width="2" height="4" rx="0.75" fill="currentColor" opacity="0.6" />
+            <!-- Watch face circle -->
+            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1" opacity="0.5" />
+            <!-- Clock hands -->
+            <line x1="12" y1="12" x2="12" y2="9.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
+            <line x1="12" y1="12" x2="14" y2="13" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
           </svg>
         </div>
         <div class="flex-1">
@@ -16,27 +28,27 @@
       </div>
       <div class="grid grid-cols-3 gap-3">
         <div class="bg-gray-50 rounded-xl p-3 text-center">
-          <p class="text-2xl font-bold text-red-600">{{ deviceData.heart_rate.resting_average_bpm }}</p>
+          <p class="text-2xl font-bold text-gray-900">{{ deviceData.heart_rate.resting_average_bpm }}</p>
           <p class="text-xs text-gray-500 mt-1">Resting HR</p>
         </div>
         <div class="bg-gray-50 rounded-xl p-3 text-center">
-          <p class="text-2xl font-bold text-amber-600">{{ deviceData.irregular_rhythm_events.length }}</p>
+          <p class="text-2xl font-bold text-gray-900">{{ deviceData.irregular_rhythm_events.length }}</p>
           <p class="text-xs text-gray-500 mt-1">PVC Events (7d)</p>
         </div>
         <div class="bg-gray-50 rounded-xl p-3 text-center">
-          <p class="text-2xl font-bold text-emerald-600">{{ todaySteps }}</p>
+          <p class="text-2xl font-bold text-gray-900">{{ todaySteps }}</p>
           <p class="text-xs text-gray-500 mt-1">Steps Today</p>
         </div>
         <div v-if="deviceHrvAvg" class="bg-gray-50 rounded-xl p-3 text-center">
-          <p class="text-2xl font-bold text-indigo-600">{{ deviceHrvAvg }}</p>
+          <p class="text-2xl font-bold text-gray-900">{{ deviceHrvAvg }}</p>
           <p class="text-xs text-gray-500 mt-1">Avg HRV (ms)</p>
         </div>
         <div v-if="deviceSleepAvg" class="bg-gray-50 rounded-xl p-3 text-center">
-          <p class="text-2xl font-bold text-violet-600">{{ deviceSleepAvg }}</p>
+          <p class="text-2xl font-bold text-gray-900">{{ deviceSleepAvg }}</p>
           <p class="text-xs text-gray-500 mt-1">Avg Sleep (h)</p>
         </div>
         <div v-if="deviceData?.blood_oxygen" class="bg-gray-50 rounded-xl p-3 text-center">
-          <p class="text-2xl font-bold text-cyan-600">{{ deviceData.blood_oxygen.average_spo2 }}%</p>
+          <p class="text-2xl font-bold text-gray-900">{{ deviceData.blood_oxygen.average_spo2 }}%</p>
           <p class="text-xs text-gray-500 mt-1">Avg SpO2</p>
         </div>
       </div>
@@ -64,7 +76,7 @@
         </div>
       </div>
       <div class="h-64">
-        <Bar :data="weightChartData" :options="weightChartOptions" />
+        <Bar :data="weightChartData" :options="weightChartOptions" :plugins="[weightDeltaPlugin]" />
       </div>
     </div>
 
@@ -82,7 +94,7 @@
     <!-- HR Trend Chart -->
     <div v-if="hrData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="font-semibold text-gray-900">Heart Rate Trend</h2>
+        <h2 class="font-semibold text-gray-900">Resting Heart Rate Trend</h2>
         <AskAiButton @ask="openGlobalChat('heart rate')" />
       </div>
       <div class="h-64">
@@ -346,27 +358,108 @@ const weightAvg = computed(() => {
     return (sum / weightData.value.length).toFixed(1);
 });
 
-const weightChartData = computed(() => ({
-    labels: weightData.value.map(o => formatShortDate(o.effective_date)),
-    datasets: [{
-        label: 'Weight',
-        data: weightData.value.map(o => parseFloat(o.value_quantity)),
-        backgroundColor: 'rgba(139,92,246,0.6)',
-        borderColor: '#8b5cf6',
-        borderWidth: 1,
-        borderRadius: 4,
-        barPercentage: 0.55,
-    }],
-}));
+const weightValues = computed(() =>
+    weightData.value.map(o => parseFloat(o.value_quantity))
+);
 
-const weightChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-        y: { title: { display: true, text: 'kg' } },
+const weightMovingAvg = computed(() => {
+    const vals = weightValues.value;
+    if (vals.length < 2) return vals;
+    const window = Math.min(3, vals.length);
+    return vals.map((_, i) => {
+        const start = Math.max(0, i - window + 1);
+        const slice = vals.slice(start, i + 1);
+        return +(slice.reduce((a, b) => a + b, 0) / slice.length).toFixed(1);
+    });
+});
+
+const weightDeltas = computed(() => {
+    const vals = weightValues.value;
+    return vals.map((v, i) => {
+        if (i === 0) return null;
+        const diff = v - vals[i - 1];
+        return diff;
+    });
+});
+
+const weightDeltaPlugin = {
+    id: 'weightDeltaLabels',
+    afterDatasetsDraw(chart: any) {
+        const meta = chart.getDatasetMeta(0);
+        if (!meta || meta.hidden) return;
+        const ctx = chart.ctx;
+        const deltas = weightDeltas.value;
+        ctx.save();
+        ctx.font = 'bold 10px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        meta.data.forEach((bar: any, i: number) => {
+            const d = deltas[i];
+            if (d === null || d === undefined) return;
+            const label = (d > 0 ? '+' : '') + d.toFixed(1);
+            ctx.fillStyle = d > 0 ? '#dc2626' : '#059669';
+            ctx.fillText(label, bar.x, bar.y - 6);
+        });
+        ctx.restore();
     },
 };
+
+const weightChartData = computed(() => ({
+    labels: weightData.value.map(o => formatShortDate(o.effective_date)),
+    datasets: [
+        {
+            label: 'Weight',
+            data: weightValues.value,
+            backgroundColor: 'rgba(139,92,246,0.6)',
+            borderColor: '#8b5cf6',
+            borderWidth: 1,
+            borderRadius: 4,
+            barPercentage: 0.55,
+            order: 2,
+        },
+        {
+            label: 'Trend',
+            type: 'line' as const,
+            data: weightMovingAvg.value,
+            borderColor: '#f59e0b',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderDash: [4, 3],
+            pointRadius: 0,
+            tension: 0.4,
+            order: 1,
+        },
+    ],
+}));
+
+const weightYRange = computed(() => {
+    const vals = weightValues.value;
+    if (vals.length === 0) return { min: 70, max: 100 };
+    const min = Math.min(...vals);
+    const max = Math.max(...vals);
+    const pad = Math.max((max - min) * 0.3, 1);
+    return { min: +(min - pad).toFixed(0), max: +(max + pad).toFixed(0) };
+});
+
+const weightChartOptions = computed(() => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { top: 20 } },
+    plugins: {
+        legend: {
+            display: true,
+            position: 'top' as const,
+            labels: { boxWidth: 12, font: { size: 11 } },
+        },
+        tooltip: { mode: 'index' as const, intersect: false },
+    },
+    scales: {
+        y: {
+            min: weightYRange.value.min,
+            max: weightYRange.value.max,
+            title: { display: true, text: 'kg' },
+        },
+    },
+}));
 
 // --- Sleep Chart (Stacked Bar) ---
 

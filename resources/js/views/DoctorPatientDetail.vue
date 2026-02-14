@@ -24,11 +24,6 @@
             {{ activeConditions.join(', ') }}
           </p>
         </div>
-        <div v-if="engagement" class="ml-auto text-right">
-          <p class="text-sm text-gray-500">AI Sessions</p>
-          <p class="text-2xl font-bold text-emerald-600">{{ engagement.total_sessions }}</p>
-          <p class="text-xs text-gray-400">{{ engagement.total_messages }} messages</p>
-        </div>
       </div>
 
       <!-- Tabs -->
