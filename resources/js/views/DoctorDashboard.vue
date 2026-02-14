@@ -82,10 +82,14 @@
           <p class="text-sm text-gray-500">Patients</p>
           <p class="text-3xl font-bold text-gray-900">{{ doctorStore.dashboard?.stats?.total_patients || 0 }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+        <router-link
+          to="/doctor/patients"
+          class="bg-white rounded-2xl border border-gray-200 p-6 hover:border-emerald-300 hover:shadow-sm transition-all block"
+        >
           <p class="text-sm text-gray-500">Unread Messages</p>
           <p class="text-3xl font-bold text-emerald-600">{{ doctorStore.dashboard?.stats?.unread_notifications || 0 }}</p>
-        </div>
+          <p class="text-xs text-emerald-500 mt-1">View patients &rarr;</p>
+        </router-link>
         <div class="bg-white rounded-2xl border border-gray-200 p-6">
           <p class="text-sm text-gray-500">Total Visits</p>
           <p class="text-3xl font-bold text-emerald-700">{{ doctorStore.dashboard?.stats?.total_visits || 0 }}</p>

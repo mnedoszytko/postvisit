@@ -261,13 +261,24 @@
                   <p class="text-sm text-gray-600 mt-1">{{ notif.body }}</p>
                   <p class="text-xs text-gray-400 mt-1">{{ formatDateTime(notif.created_at) }}</p>
 
-                  <button
-                    v-if="notif.type !== 'doctor_reply'"
-                    class="mt-2 text-xs text-emerald-600 hover:text-emerald-700 font-medium"
-                    @click="startReply(notif)"
-                  >
-                    Reply
-                  </button>
+                  <div class="flex items-center gap-3 mt-2">
+                    <button
+                      v-if="notif.type !== 'doctor_reply'"
+                      class="text-xs text-emerald-600 hover:text-emerald-700 font-medium"
+                      @click="startReply(notif)"
+                    >
+                      Reply
+                    </button>
+                    <button
+                      v-if="notif.type === 'patient_feedback'"
+                      class="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+                      :disabled="inquiringId === notif.id && inquiryStreaming"
+                      @click="startInquiry(notif)"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                      {{ inquiringId === notif.id && inquiryStreaming ? 'Analyzing...' : 'AI Inquire' }}
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -294,6 +305,28 @@
                   </button>
                 </div>
               </div>
+
+              <!-- AI Inquiry panel -->
+              <div
+                v-if="inquiryResults[notif.id] || (inquiringId === notif.id && inquiryStreaming)"
+                class="mt-3 ml-11 bg-violet-50 border border-violet-200 rounded-xl p-4"
+              >
+                <div class="flex items-center gap-2 mb-2">
+                  <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                  <span class="text-xs font-semibold text-violet-700">AI Clinical Analysis</span>
+                  <span v-if="inquiringId === notif.id && inquiryStreaming" class="ml-auto">
+                    <svg class="w-4 h-4 text-violet-500 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  </span>
+                  <button
+                    v-else
+                    class="ml-auto text-violet-400 hover:text-violet-600 transition-colors"
+                    @click="dismissInquiry(notif.id)"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                </div>
+                <div class="text-sm text-violet-900 prose prose-sm max-w-none prose-headings:text-violet-800 prose-headings:text-sm prose-headings:font-semibold prose-li:text-violet-900 prose-strong:text-violet-800" v-html="renderMarkdown(inquiryResults[notif.id] || '')"></div>
+              </div>
             </div>
           </div>
         </section>
@@ -311,6 +344,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import axios from 'axios';
 import { useApi } from '@/composables/useApi';
 import { Line, Bar } from 'vue-chartjs';
 import {
@@ -445,6 +479,9 @@ const replyText = ref('');
 const replyingTo = ref(null);
 const sendingReply = ref(false);
 const expandedSessions = ref(new Set());
+const inquiringId = ref(null);
+const inquiryStreaming = ref(false);
+const inquiryResults = ref({});
 
 const patientAge = computed(() => {
     if (!patient.value?.dob) return null;
@@ -537,6 +574,88 @@ async function sendReply(notif) {
     } finally {
         sendingReply.value = false;
     }
+}
+
+async function startInquiry(notif) {
+    if (inquiringId.value === notif.id && inquiryStreaming.value) return;
+
+    inquiringId.value = notif.id;
+    inquiryStreaming.value = true;
+    inquiryResults.value[notif.id] = '';
+
+    try {
+        // Need CSRF cookie for POST
+        await axios.get('/sanctum/csrf-cookie', { withCredentials: true });
+
+        const response = await fetch(`/api/v1/doctor/messages/${notif.id}/inquire`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Accept': 'text/event-stream',
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-XSRF-TOKEN': decodeURIComponent(
+                    document.cookie.split('; ').find(c => c.startsWith('XSRF-TOKEN='))?.split('=')[1] || ''
+                ),
+            },
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                const payload = line.slice(6);
+                if (payload === '[DONE]') continue;
+
+                try {
+                    const parsed = JSON.parse(payload);
+                    if (parsed.text) {
+                        inquiryResults.value[notif.id] = (inquiryResults.value[notif.id] || '') + parsed.text;
+                    }
+                } catch {
+                    // Skip unparseable chunks
+                }
+            }
+        }
+    } catch (e) {
+        inquiryResults.value[notif.id] = 'Failed to analyze message. Please try again.';
+    } finally {
+        inquiryStreaming.value = false;
+    }
+}
+
+function dismissInquiry(notifId) {
+    delete inquiryResults.value[notifId];
+    if (inquiringId.value === notifId) {
+        inquiringId.value = null;
+    }
+}
+
+function renderMarkdown(text) {
+    if (!text) return '';
+    return text
+        .replace(/### (.*)/g, '<h3>$1</h3>')
+        .replace(/## (.*)/g, '<h2>$1</h2>')
+        .replace(/# (.*)/g, '<h1>$1</h1>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/^- (.*)/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+        .replace(/<\/ul>\s*<ul>/g, '')
+        .replace(/\n{2,}/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+        .replace(/^/, '<p>')
+        .replace(/$/, '</p>');
 }
 
 function formatVisitType(type) {

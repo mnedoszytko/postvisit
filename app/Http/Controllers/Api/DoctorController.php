@@ -9,9 +9,12 @@ use App\Models\Observation;
 use App\Models\Patient;
 use App\Models\User;
 use App\Models\Visit;
+use App\Services\AI\AnthropicClient;
+use App\Services\AI\ContextAssembler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DoctorController extends Controller
 {
@@ -225,8 +228,11 @@ class DoctorController extends Controller
         // Resolve photo URLs: Patient → User (patient_id) → demo_scenario_key → photo
         $photoUrls = $this->resolvePatientPhotoUrls($patients->pluck('id'));
 
+        // Fetch unread message counts per patient (patient_feedback messages)
+        $unreadCounts = $this->getUnreadCountsPerPatient($request->user()->id, $patientIds);
+
         // Append computed fields for the dashboard
-        $patients->each(function ($patient) use ($alertStatuses, $latestVitals, $photoUrls) {
+        $patients->each(function ($patient) use ($alertStatuses, $latestVitals, $photoUrls, $unreadCounts) {
             $patient->primary_condition = $patient->conditions->first()?->code_display;
             $patient->last_visit_date = $patient->visits->first()?->started_at?->toDateString();
             $patient->last_visit_status = $patient->visits->first()?->visit_status;
@@ -243,6 +249,7 @@ class DoctorController extends Controller
                 'frequency' => $rx->frequency_text ?? $rx->frequency,
             ])->values();
             $patient->photo_url = $photoUrls[$patient->id] ?? null;
+            $patient->unread_count = $unreadCounts[$patient->id] ?? 0;
             unset($patient->conditions, $patient->visits, $patient->prescriptions);
         });
 
@@ -389,6 +396,75 @@ class DoctorController extends Controller
         ]);
 
         return response()->json(['data' => $reply], 201);
+    }
+
+    public function inquire(Request $request, Notification $message, AnthropicClient $ai, ContextAssembler $contextAssembler): StreamedResponse
+    {
+        if (! $message->visit_id) {
+            abort(422, 'Message has no linked visit.');
+        }
+
+        $visit = Visit::with(['patient', 'practitioner', 'visitNote', 'observations', 'conditions', 'prescriptions.medication', 'transcript'])
+            ->findOrFail($message->visit_id);
+
+        $context = $contextAssembler->assembleForVisit($visit, 'doctor-inquiry');
+
+        $messages = $context['context_messages'];
+        $messages[] = [
+            'role' => 'user',
+            'content' => "The patient sent this message to the doctor:\n\nCategory: {$message->title}\nMessage: {$message->body}\n\nPlease analyze this message in the context of the visit and provide your clinical assessment.",
+        ];
+
+        set_time_limit(0);
+        session()->save();
+
+        return response()->stream(function () use ($ai, $context, $messages) {
+            ignore_user_abort(true);
+
+            if (! headers_sent()) {
+                while (ob_get_level() > 0) {
+                    ob_end_flush();
+                }
+                @ini_set('zlib.output_compression', '0');
+                @ini_set('implicit_flush', '1');
+            }
+
+            try {
+                foreach ($ai->stream($context['system_prompt'], $messages, [
+                    'model' => config('anthropic.default_model', 'claude-opus-4-6'),
+                    'max_tokens' => 4096,
+                ]) as $chunk) {
+                    echo 'data: '.json_encode(['text' => $chunk])."\n\n";
+                    if (ob_get_level()) {
+                        ob_flush();
+                    }
+                    flush();
+                }
+            } catch (\Throwable $e) {
+                echo 'data: '.json_encode(['text' => 'Error analyzing message. Please try again.', 'error' => true])."\n\n";
+                if (ob_get_level()) {
+                    ob_flush();
+                }
+                flush();
+
+                \Illuminate\Support\Facades\Log::error('Doctor inquiry AI error', [
+                    'message_id' => $messages[0] ?? null,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            echo "data: [DONE]\n\n";
+            if (ob_get_level()) {
+                ob_flush();
+            }
+            flush();
+        }, 200, [
+            'Content-Type' => 'text/event-stream',
+            'Cache-Control' => 'no-cache',
+            'Connection' => 'keep-alive',
+            'X-Accel-Buffering' => 'no',
+            'Content-Encoding' => 'none',
+        ]);
     }
 
     public function quickAction(Request $request, Patient $patient): JsonResponse
@@ -654,5 +730,37 @@ class DoctorController extends Controller
         }
 
         return $vitals;
+    }
+
+    /**
+     * Get unread patient_feedback notification counts grouped by patient.
+     *
+     * @param  \Illuminate\Support\Collection  $patientIds
+     * @return array<string, int> patient_id => count
+     */
+    private function getUnreadCountsPerPatient(string $doctorUserId, $patientIds): array
+    {
+        $visitPatientMap = Visit::whereIn('patient_id', $patientIds)
+            ->pluck('patient_id', 'id');
+
+        if ($visitPatientMap->isEmpty()) {
+            return [];
+        }
+
+        $notifications = Notification::where('user_id', $doctorUserId)
+            ->whereNull('read_at')
+            ->where('type', 'patient_feedback')
+            ->whereIn('visit_id', $visitPatientMap->keys())
+            ->get(['visit_id']);
+
+        $counts = [];
+        foreach ($notifications as $notif) {
+            $patientId = $visitPatientMap[$notif->visit_id] ?? null;
+            if ($patientId) {
+                $counts[$patientId] = ($counts[$patientId] ?? 0) + 1;
+            }
+        }
+
+        return $counts;
     }
 }

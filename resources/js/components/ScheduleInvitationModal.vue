@@ -1,0 +1,328 @@
+<template>
+  <Teleport to="body">
+    <Transition name="modal">
+      <div
+        v-if="modelValue"
+        class="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
+        @click.self="close"
+      >
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="close" />
+
+        <!-- Modal panel -->
+        <div class="relative w-full max-w-lg bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden">
+          <!-- Gradient header -->
+          <div class="bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 px-6 py-5 text-white relative overflow-hidden">
+            <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-white/10"></div>
+            <div class="absolute -right-2 bottom-0 w-16 h-16 rounded-full bg-white/5"></div>
+            <div class="flex items-center justify-between relative">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="text-lg font-bold">Appointment Invitation</h2>
+                  <p class="text-sm text-blue-100">Follow-up visit requested</p>
+                </div>
+              </div>
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
+                @click="close"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Scheduled confirmation -->
+          <div v-if="scheduled" class="p-8 text-center">
+            <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            </div>
+            <p class="text-lg font-bold text-gray-900 mb-1">Appointment Scheduled</p>
+            <p class="text-sm text-gray-500 mb-4">
+              {{ formatDate(selectedDate) }} at {{ selectedTime }}
+            </p>
+            <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-left">
+              <p class="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-1">Sent to PreVisit.ai</p>
+              <p class="text-sm text-gray-700">
+                Your visit context, health record, and appointment details have been synced with PreVisit.ai for optimal preparation.
+              </p>
+            </div>
+          </div>
+
+          <!-- Main content -->
+          <div v-else class="flex flex-col min-h-0 flex-1 overflow-y-auto">
+            <!-- Doctor message -->
+            <div class="px-6 pt-5 pb-4">
+              <div class="flex items-start gap-3">
+                <img
+                  v-if="doctorPhoto"
+                  :src="doctorPhoto"
+                  :alt="doctorName"
+                  class="w-10 h-10 rounded-full object-cover shrink-0"
+                />
+                <div v-else class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </div>
+                <div class="bg-blue-50 border border-blue-100 rounded-2xl rounded-tl-md px-4 py-3 flex-1">
+                  <p class="text-sm font-semibold text-blue-900 mb-0.5">{{ doctorName }}</p>
+                  <p class="text-sm text-gray-700 leading-relaxed">{{ invitationMessage }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="px-6">
+              <div class="border-t border-gray-100"></div>
+            </div>
+
+            <!-- Date picker section -->
+            <div class="px-6 pt-4 pb-3">
+              <label class="block text-sm font-semibold text-gray-800 mb-3">
+                <svg class="w-4 h-4 inline-block mr-1 -mt-0.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                </svg>
+                Choose a date
+              </label>
+
+              <!-- Mini calendar -->
+              <div class="bg-gray-50 rounded-xl border border-gray-200 p-4">
+                <!-- Month nav -->
+                <div class="flex items-center justify-between mb-3">
+                  <button
+                    class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-200 transition-colors"
+                    @click="prevMonth"
+                  >
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                  </button>
+                  <span class="text-sm font-semibold text-gray-800">{{ monthLabel }}</span>
+                  <button
+                    class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-200 transition-colors"
+                    @click="nextMonth"
+                  >
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                  </button>
+                </div>
+
+                <!-- Day headers -->
+                <div class="grid grid-cols-7 gap-1 mb-1">
+                  <div
+                    v-for="d in weekDays"
+                    :key="d"
+                    class="text-center text-[10px] font-semibold text-gray-400 uppercase"
+                  >{{ d }}</div>
+                </div>
+
+                <!-- Day grid -->
+                <div class="grid grid-cols-7 gap-1">
+                  <div
+                    v-for="(day, i) in calendarDays"
+                    :key="i"
+                    class="aspect-square flex items-center justify-center text-sm rounded-lg cursor-pointer transition-all"
+                    :class="dayClasses(day)"
+                    @click="day.date && !day.disabled && selectDate(day.date)"
+                  >
+                    <span v-if="day.date">{{ day.date.getDate() }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Time slot picker -->
+            <div class="px-6 pb-3">
+              <label class="block text-sm font-semibold text-gray-800 mb-2">
+                <svg class="w-4 h-4 inline-block mr-1 -mt-0.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Preferred time
+              </label>
+              <div class="grid grid-cols-4 gap-2">
+                <button
+                  v-for="slot in timeSlots"
+                  :key="slot"
+                  class="px-3 py-2 text-sm font-medium rounded-lg border transition-all"
+                  :class="selectedTime === slot
+                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
+                    : 'bg-white text-gray-700 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50'"
+                  @click="selectedTime = slot"
+                >{{ slot }}</button>
+              </div>
+            </div>
+
+            <!-- Visit context info -->
+            <div class="px-6 pb-4">
+              <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-3">
+                <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                  <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-amber-800 mb-0.5">PreVisit.ai will prepare</p>
+                  <p class="text-xs text-amber-700 leading-relaxed">
+                    Your complete visit history, health record, medications, and AI-generated pre-visit summary will be ready for your doctor.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- CTA button -->
+            <div class="px-6 pb-6 pt-1">
+              <button
+                :disabled="!selectedDate || !selectedTime"
+                class="w-full py-3.5 rounded-xl font-semibold text-white transition-all flex items-center justify-center gap-2"
+                :class="selectedDate && selectedTime
+                  ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:via-indigo-700 hover:to-violet-700 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300'
+                  : 'bg-gray-300 cursor-not-allowed'"
+                @click="scheduleAppointment"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                </svg>
+                Send to PreVisit.ai & Schedule
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+
+const props = defineProps<{
+  modelValue: boolean;
+  doctorName?: string;
+  doctorPhoto?: string;
+  doctorSpecialty?: string;
+  visitType?: string;
+  invitationMessage?: string;
+}>();
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', v: boolean): void;
+  (e: 'scheduled', payload: { date: string; time: string }): void;
+}>();
+
+const weekDays = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+const timeSlots = ['9:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+
+const selectedDate = ref<Date | null>(null);
+const selectedTime = ref<string>('');
+const scheduled = ref(false);
+
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+const currentMonth = ref(today.getMonth());
+const currentYear = ref(today.getFullYear());
+
+const monthLabel = computed(() => {
+  const d = new Date(currentYear.value, currentMonth.value, 1);
+  return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+});
+
+const calendarDays = computed(() => {
+  const first = new Date(currentYear.value, currentMonth.value, 1);
+  const lastDay = new Date(currentYear.value, currentMonth.value + 1, 0).getDate();
+  let startDay = first.getDay() - 1;
+  if (startDay < 0) startDay = 6;
+
+  const days: { date: Date | null; disabled: boolean }[] = [];
+  for (let i = 0; i < startDay; i++) {
+    days.push({ date: null, disabled: true });
+  }
+  for (let d = 1; d <= lastDay; d++) {
+    const date = new Date(currentYear.value, currentMonth.value, d);
+    const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+    days.push({ date, disabled: date < today || isWeekend });
+  }
+  return days;
+});
+
+function dayClasses(day: { date: Date | null; disabled: boolean }): string {
+  if (!day.date) return '';
+  if (day.disabled) return 'text-gray-300 cursor-not-allowed';
+
+  const isSelected = selectedDate.value &&
+    day.date.getDate() === selectedDate.value.getDate() &&
+    day.date.getMonth() === selectedDate.value.getMonth() &&
+    day.date.getFullYear() === selectedDate.value.getFullYear();
+
+  const isToday =
+    day.date.getDate() === today.getDate() &&
+    day.date.getMonth() === today.getMonth() &&
+    day.date.getFullYear() === today.getFullYear();
+
+  if (isSelected) return 'bg-indigo-600 text-white font-bold shadow-md';
+  if (isToday) return 'bg-indigo-100 text-indigo-700 font-semibold hover:bg-indigo-200';
+  return 'text-gray-700 hover:bg-indigo-50';
+}
+
+function selectDate(date: Date): void {
+  selectedDate.value = date;
+}
+
+function prevMonth(): void {
+  if (currentMonth.value === 0) {
+    currentMonth.value = 11;
+    currentYear.value--;
+  } else {
+    currentMonth.value--;
+  }
+}
+
+function nextMonth(): void {
+  if (currentMonth.value === 11) {
+    currentMonth.value = 0;
+    currentYear.value++;
+  } else {
+    currentMonth.value++;
+  }
+}
+
+function formatDate(date: Date | null): string {
+  if (!date) return '';
+  return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function scheduleAppointment(): void {
+  if (!selectedDate.value || !selectedTime.value) return;
+  scheduled.value = true;
+  emit('scheduled', {
+    date: selectedDate.value.toISOString().split('T')[0],
+    time: selectedTime.value,
+  });
+}
+
+function close(): void {
+  emit('update:modelValue', false);
+  setTimeout(() => {
+    scheduled.value = false;
+    selectedDate.value = null;
+    selectedTime.value = '';
+  }, 300);
+}
+</script>
+
+<style scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+.modal-enter-active .relative,
+.modal-leave-active .relative {
+  transition: transform 0.2s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+.modal-enter-from .relative {
+  transform: translateY(1rem);
+}
+</style>

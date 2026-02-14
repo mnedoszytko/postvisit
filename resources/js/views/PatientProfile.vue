@@ -20,6 +20,52 @@
         <svg class="w-5 h-5 ml-auto text-gray-300 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
       </router-link>
 
+      <!-- Appointment Invitation Banner (mockup) -->
+      <div
+        v-if="invitationDoctor && !invitationDismissed"
+        class="bg-gradient-to-r from-blue-50 via-indigo-50 to-violet-50 border border-indigo-200 rounded-2xl p-5 relative overflow-hidden"
+      >
+        <div class="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-indigo-100/50"></div>
+        <div class="flex items-start gap-4 relative">
+          <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-bold text-indigo-900">Follow-up Appointment Requested</p>
+            <p class="text-sm text-gray-600 mt-0.5">
+              Dr. {{ invitationDoctor.first_name }} {{ invitationDoctor.last_name }} has requested a follow-up visit. Please choose a date.
+            </p>
+            <button
+              class="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
+              @click="showScheduleModal = true"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+              </svg>
+              Schedule Appointment
+            </button>
+          </div>
+          <button
+            class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors shrink-0"
+            @click="invitationDismissed = true"
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Schedule Invitation Modal -->
+      <ScheduleInvitationModal
+        v-model="showScheduleModal"
+        :doctor-name="invitationDoctor ? `Dr. ${invitationDoctor.first_name} ${invitationDoctor.last_name}` : 'Your Doctor'"
+        :doctor-photo="invitationDoctor?.photo_url"
+        :doctor-specialty="invitationDoctor?.primary_specialty"
+        :invitation-message="invitationMessage"
+        @scheduled="onAppointmentScheduled"
+      />
+
       <!-- Visit history -->
       <section>
         <div class="flex items-center justify-between mb-3">
@@ -44,7 +90,7 @@
 
               <div class="flex-1 min-w-0">
                 <!-- Visit type badge -->
-                <div class="mb-2">
+                <div class="flex items-center justify-between mb-2">
                   <span v-if="visit.visit_type" class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
                     {{ formatVisitType(visit.visit_type) }}
                   </span>
@@ -77,15 +123,7 @@
                 </p>
               </div>
 
-              <div class="flex flex-col items-end justify-between shrink-0 self-stretch">
-                <button
-                  class="text-xs font-medium text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
-                  @click.prevent.stop="openContactModal(visit)"
-                >
-                  Contact
-                </button>
-                <svg class="w-5 h-5 text-indigo-300 group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-              </div>
+              <svg class="w-5 h-5 text-indigo-300 group-hover:text-indigo-500 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
             </router-link>
             <button
               v-if="visitStore.visits.length > visibleCount && !showAll"
@@ -152,12 +190,6 @@
         </div>
       </section>
     </div>
-
-    <!-- Contact Doctor Modal -->
-    <ContactDoctorModal
-      v-model="contactModalOpen"
-      :visit="contactVisit"
-    />
   </PatientLayout>
 </template>
 
@@ -170,7 +202,7 @@ import { useChatBus } from '@/composables/useChatBus';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import VisitDateBadge from '@/components/VisitDateBadge.vue';
 import AskAiButton from '@/components/AskAiButton.vue';
-import ContactDoctorModal from '@/components/ContactDoctorModal.vue';
+import ScheduleInvitationModal from '@/components/ScheduleInvitationModal.vue';
 
 const { openGlobalChat } = useChatBus();
 
@@ -180,16 +212,29 @@ const api = useApi();
 
 const healthRecordCount = ref(0);
 const libraryCount = ref(0);
+const showScheduleModal = ref(false);
+const invitationDismissed = ref(false);
+
+const invitationDoctor = computed(() => {
+    const firstVisit = visitStore.visits[0];
+    return firstVisit?.practitioner || null;
+});
+
+const invitationMessage = computed(() => {
+    const doc = invitationDoctor.value;
+    if (!doc) return '';
+    const specialty = doc.primary_specialty
+      ? ` for your ${doc.primary_specialty} follow-up`
+      : ' for a follow-up';
+    return `I'd like to schedule a follow-up appointment${specialty}. Please select a convenient date and time, and PreVisit.ai will prepare your visit summary automatically.`;
+});
+
+function onAppointmentScheduled({ date, time }) {
+    invitationDismissed.value = true;
+}
 
 const visibleCount = 5;
 const showAll = ref(false);
-const contactModalOpen = ref(false);
-const contactVisit = ref(null);
-
-function openContactModal(visit) {
-    contactVisit.value = visit;
-    contactModalOpen.value = true;
-}
 
 const displayedVisits = computed(() => {
     if (showAll.value) return visitStore.visits;
