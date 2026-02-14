@@ -42,20 +42,28 @@
               <!-- Name + avatar -->
               <td class="px-5 py-4">
                 <router-link :to="`/doctor/patients/${patient.id}`" class="flex items-center gap-3">
-                  <img
-                    v-if="patient.photo_url"
-                    :src="patient.photo_url"
-                    :alt="`${patient.first_name} ${patient.last_name}`"
-                    class="w-10 h-10 rounded-full object-cover shrink-0"
-                  />
-                  <div
-                    v-else
-                    :class="[
-                      'w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0',
-                      avatarClasses(patient)
-                    ]"
-                  >
-                    {{ initials(patient) }}
+                  <div class="relative shrink-0">
+                    <img
+                      v-if="patient.photo_url"
+                      :src="patient.photo_url"
+                      :alt="`${patient.first_name} ${patient.last_name}`"
+                      class="w-10 h-10 rounded-full object-cover"
+                    />
+                    <div
+                      v-else
+                      :class="[
+                        'w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold',
+                        avatarClasses(patient)
+                      ]"
+                    >
+                      {{ initials(patient) }}
+                    </div>
+                    <span
+                      v-if="patient.unread_count > 0"
+                      class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-white"
+                    >
+                      {{ patient.unread_count > 9 ? '9+' : patient.unread_count }}
+                    </span>
                   </div>
                   <div class="min-w-0">
                     <p class="font-semibold text-gray-900 truncate">
