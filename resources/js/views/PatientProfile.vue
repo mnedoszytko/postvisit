@@ -77,6 +77,15 @@
                 </p>
               </div>
 
+              <!-- Contact doctor button -->
+              <button
+                class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors shrink-0"
+                title="Contact doctor"
+                @click.prevent.stop="openContactModal(visit)"
+              >
+                <svg class="w-5 h-5 text-indigo-400 hover:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+              </button>
+
               <svg class="w-5 h-5 text-indigo-300 group-hover:text-indigo-500 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
             </router-link>
             <button
@@ -144,6 +153,12 @@
         </div>
       </section>
     </div>
+
+    <!-- Contact Doctor Modal -->
+    <ContactDoctorModal
+      v-model="contactModalOpen"
+      :visit="contactVisit"
+    />
   </PatientLayout>
 </template>
 
@@ -156,6 +171,7 @@ import { useChatBus } from '@/composables/useChatBus';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import VisitDateBadge from '@/components/VisitDateBadge.vue';
 import AskAiButton from '@/components/AskAiButton.vue';
+import ContactDoctorModal from '@/components/ContactDoctorModal.vue';
 
 const { openGlobalChat } = useChatBus();
 
@@ -168,6 +184,13 @@ const libraryCount = ref(0);
 
 const visibleCount = 5;
 const showAll = ref(false);
+const contactModalOpen = ref(false);
+const contactVisit = ref(null);
+
+function openContactModal(visit) {
+    contactVisit.value = visit;
+    contactModalOpen.value = true;
+}
 
 const displayedVisits = computed(() => {
     if (showAll.value) return visitStore.visits;
