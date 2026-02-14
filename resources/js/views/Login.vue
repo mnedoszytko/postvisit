@@ -7,6 +7,7 @@
 
       <!-- Demo Access — prominent, above login form -->
       <div
+        v-if="demoLoginEnabled"
         :class="[
           'login-demo-section mb-6 space-y-3 rounded-2xl border-2 border-emerald-400 bg-emerald-50/50 p-5 shadow-lg transition-all duration-700 ease-out',
           demoVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
@@ -32,7 +33,7 @@
         </div>
       </div>
 
-      <div class="relative flex items-center mb-6">
+      <div v-if="demoLoginEnabled" class="relative flex items-center mb-6">
         <div class="flex-1 border-t border-gray-300" />
         <span class="mx-3 text-xs text-gray-400 uppercase">or sign in</span>
         <div class="flex-1 border-t border-gray-300" />
@@ -111,6 +112,7 @@ async function handleLogin() {
     }
 }
 
+const demoLoginEnabled = window.__APP_CONFIG__?.demoLoginEnabled ?? true;
 const demoVisible = ref(false);
 onMounted(() => {
     // Trigger entrance animation after mount

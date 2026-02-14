@@ -11,5 +11,6 @@
 </head>
 <body class="antialiased bg-white text-gray-900">
     <div id="app"></div>
+    <script>window.__APP_CONFIG__={demoLoginEnabled:@json(config('app.demo_login_enabled'))};</script>
 </body>
 </html>
