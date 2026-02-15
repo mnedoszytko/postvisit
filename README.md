@@ -270,6 +270,10 @@ demo/                         # Demo data, scenarios, patient photos, animations
 - [`docs/KEEP-THINKING.md`](docs/KEEP-THINKING.md) -- Clinical depth iteration log
 - [`docs/lessons.md`](docs/lessons.md) -- Development lessons learned
 
+## Team
+
+**Solo developer**: Michal Nedoszytko. "PostVisit Agent" in the git history is Claude Code (Anthropic's CLI agent) used as an AI development tool -- not a team member. All architectural decisions, clinical domain design, and product direction are human-driven.
+
 ## Hackathon Tracks
 
 PostVisit.ai addresses all three hackathon tracks:
