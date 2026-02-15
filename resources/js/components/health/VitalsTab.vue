@@ -47,8 +47,8 @@
           <p class="text-2xl font-bold text-gray-900">{{ deviceSleepAvg }}</p>
           <p class="text-xs text-gray-500 mt-1">Avg Sleep (h)</p>
         </div>
-        <div v-if="deviceData?.blood_oxygen" class="bg-gray-50 rounded-xl p-3 text-center">
-          <p class="text-2xl font-bold text-gray-900">{{ deviceData.blood_oxygen.average_spo2 }}%</p>
+        <div v-if="avgSpO2" class="bg-gray-50 rounded-xl p-3 text-center">
+          <p class="text-2xl font-bold text-gray-900">{{ avgSpO2 }}%</p>
           <p class="text-xs text-gray-500 mt-1">Avg SpO2</p>
         </div>
       </div>
@@ -255,6 +255,13 @@ const deviceHrvAvg = computed(() => {
 const deviceSleepAvg = computed(() => {
     if (!props.deviceData?.sleep?.average_hours) return null;
     return props.deviceData.sleep.average_hours;
+});
+
+const avgSpO2 = computed(() => {
+    const readings = props.deviceData?.blood_oxygen?.readings;
+    if (!readings?.length) return null;
+    const sum = readings.reduce((acc, r) => acc + (r.spo2_percent || 0), 0);
+    return Math.round(sum / readings.length);
 });
 
 // --- BP Chart ---

@@ -645,6 +645,16 @@ const contextSuggestions = {
         'Can I take this medication with food?',
         'What happens if I stop taking this medication suddenly?',
     ],
+    // Prefix-matched: lab result specific
+    'lab:': [
+        'Is my result normal?',
+        'What could cause an abnormal result?',
+        'How does this compare to my previous results?',
+        'What lifestyle changes can improve this value?',
+        'When should this test be repeated?',
+        'What does this lab test measure?',
+        'Should I be concerned about my result?',
+    ],
 };
 
 const defaultSuggestions = [
@@ -691,7 +701,7 @@ function findSuggestionsForContext(context) {
     }
 
     // Prefix match for 'condition:', 'medication:', 'document:' keys
-    for (const key of ['condition:', 'medication:', 'document:']) {
+    for (const key of ['condition:', 'medication:', 'document:', 'lab:']) {
         if (lower.startsWith(key)) {
             return { pool: contextSuggestions[key] || defaultSuggestions, isDefault: false };
         }

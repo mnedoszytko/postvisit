@@ -121,7 +121,7 @@
             </div>
           </div>
           <div class="h-64">
-            <Bar :data="weightChartData" :options="weightChartOptions" />
+            <Bar :data="weightChartData" :options="weightChartOptions" :plugins="[weightDeltaPlugin]" />
           </div>
         </div>
 
@@ -390,6 +390,10 @@ const bpData = computed(() =>
         .sort((a, b) => new Date(a.effective_date).getTime() - new Date(b.effective_date).getTime())
 );
 
+const weightValues = computed(() =>
+    weightData.value.map(o => parseFloat(o.value_quantity))
+);
+
 const weightDelta = computed(() => {
     if (weightData.value.length < 2) return null;
     const first = parseFloat(weightData.value[0].value_quantity);
@@ -403,27 +407,100 @@ const weightAvg = computed(() => {
     return (sum / weightData.value.length).toFixed(1);
 });
 
-const weightChartData = computed(() => ({
-    labels: weightData.value.map(o => formatShortDate(o.effective_date)),
-    datasets: [{
-        label: 'Weight',
-        data: weightData.value.map(o => parseFloat(o.value_quantity)),
-        backgroundColor: 'rgba(139,92,246,0.6)',
-        borderColor: '#8b5cf6',
-        borderWidth: 1,
-        borderRadius: 4,
-        barPercentage: 0.55,
-    }],
-}));
+const weightMovingAvg = computed(() => {
+    const vals = weightValues.value;
+    if (vals.length < 2) return vals;
+    const w = Math.min(3, vals.length);
+    return vals.map((_, i) => {
+        const start = Math.max(0, i - w + 1);
+        const slice = vals.slice(start, i + 1);
+        return +(slice.reduce((a, b) => a + b, 0) / slice.length).toFixed(1);
+    });
+});
 
-const weightChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-        y: { title: { display: true, text: 'kg' } },
+const weightDeltas = computed(() => {
+    const vals = weightValues.value;
+    return vals.map((v, i) => (i === 0 ? null : v - vals[i - 1]));
+});
+
+const weightDeltaPlugin = {
+    id: 'weightDeltaLabels',
+    afterDatasetsDraw(chart) {
+        const meta = chart.getDatasetMeta(0);
+        if (!meta || meta.hidden) return;
+        const ctx = chart.ctx;
+        const deltas = weightDeltas.value;
+        ctx.save();
+        ctx.font = 'bold 10px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        meta.data.forEach((bar, i) => {
+            const d = deltas[i];
+            if (d === null || d === undefined) return;
+            const label = (d > 0 ? '+' : '') + d.toFixed(1);
+            ctx.fillStyle = d > 0 ? '#dc2626' : '#059669';
+            ctx.fillText(label, bar.x, bar.y - 6);
+        });
+        ctx.restore();
     },
 };
+
+const weightChartData = computed(() => ({
+    labels: weightData.value.map(o => formatShortDate(o.effective_date)),
+    datasets: [
+        {
+            label: 'Weight',
+            data: weightValues.value,
+            backgroundColor: 'rgba(139,92,246,0.6)',
+            borderColor: '#8b5cf6',
+            borderWidth: 1,
+            borderRadius: 4,
+            barPercentage: 0.55,
+            order: 2,
+        },
+        {
+            label: 'Trend',
+            type: 'line',
+            data: weightMovingAvg.value,
+            borderColor: '#f59e0b',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderDash: [4, 3],
+            pointRadius: 0,
+            tension: 0.4,
+            order: 1,
+        },
+    ],
+}));
+
+const weightYRange = computed(() => {
+    const vals = weightValues.value;
+    if (vals.length === 0) return { min: 70, max: 100 };
+    const min = Math.min(...vals);
+    const max = Math.max(...vals);
+    const pad = Math.max((max - min) * 0.3, 1);
+    return { min: +(min - pad).toFixed(0), max: +(max + pad).toFixed(0) };
+});
+
+const weightChartOptions = computed(() => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { top: 20 } },
+    plugins: {
+        legend: {
+            display: true,
+            position: 'top',
+            labels: { boxWidth: 12, font: { size: 11 } },
+        },
+        tooltip: { mode: 'index', intersect: false },
+    },
+    scales: {
+        y: {
+            min: weightYRange.value.min,
+            max: weightYRange.value.max,
+            title: { display: true, text: 'kg' },
+        },
+    },
+}));
 
 const bpChartData = computed(() => ({
     labels: bpData.value.map(o => formatShortDate(o.effective_date)),

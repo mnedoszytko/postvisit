@@ -66,7 +66,7 @@
     <!-- Global Ask button -->
     <div v-if="sortedGroups.length > 0" class="flex items-center justify-between">
       <h3 class="text-sm font-semibold text-gray-700">Lab Results</h3>
-      <AskAiButton @ask="openGlobalChat('all my lab results')" />
+      <AskAiButton @ask="openGlobalChat('lab: all my lab results')" />
     </div>
 
     <!-- Marker cards -->
@@ -97,7 +97,7 @@
       <!-- Ask + Trend chart -->
       <div v-if="group.readings.length >= 2" class="px-5 pb-4">
         <div class="flex justify-end mb-1">
-          <AskAiButton @ask="openGlobalChat(group.name)" />
+          <AskAiButton @ask="openGlobalChat('lab: ' + group.name)" />
         </div>
         <div class="h-36">
           <Line :data="chartData(group)" :options="chartOptions(group)" />
@@ -105,7 +105,7 @@
       </div>
       <!-- Ask only (no chart) -->
       <div v-else class="flex justify-end px-5 pb-4">
-        <AskAiButton @ask="openGlobalChat(group.name)" />
+        <AskAiButton @ask="openGlobalChat('lab: ' + group.name)" />
       </div>
     </div>
 

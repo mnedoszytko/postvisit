@@ -98,41 +98,6 @@
         </div>
       </section>
 
-      <!-- Appointment Invitation Banner (mockup) -->
-      <div
-        v-if="invitationDoctor && !invitationDismissed"
-        class="bg-gradient-to-r from-blue-50 via-indigo-50 to-violet-50 border border-indigo-200 rounded-2xl p-5"
-      >
-        <div class="flex items-start gap-4">
-          <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
-            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-bold text-indigo-900">Follow-up Appointment Requested</p>
-            <p class="text-sm text-gray-600 mt-0.5">
-              Dr. {{ invitationDoctor.first_name }} {{ invitationDoctor.last_name }} has requested a follow-up visit. Please choose a date.
-            </p>
-            <button
-              class="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
-              @click="showScheduleModal = true"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-              </svg>
-              Schedule Appointment
-            </button>
-          </div>
-          <button
-            class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors shrink-0"
-            @click="invitationDismissed = true"
-          >
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-        </div>
-      </div>
-
       <!-- Schedule Invitation Modal -->
       <ScheduleInvitationModal
         v-model="showScheduleModal"
@@ -196,6 +161,36 @@
           </router-link>
         </div>
       </section>
+
+      <!-- Appointment Invitation Banner -->
+      <div
+        v-if="invitationDoctor && !invitationDismissed"
+        class="bg-gradient-to-r from-blue-50 via-indigo-50 to-violet-50 border border-indigo-200 rounded-xl px-4 py-2.5"
+      >
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-indigo-900">Follow-up Appointment Requested</p>
+            <p class="text-xs text-gray-500">Dr. {{ invitationDoctor.first_name }} {{ invitationDoctor.last_name }} &mdash; please choose a date.</p>
+          </div>
+          <button
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 transition-colors shrink-0"
+            @click="showScheduleModal = true"
+          >
+            Schedule
+          </button>
+          <button
+            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors shrink-0"
+            @click="invitationDismissed = true"
+          >
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Contact Doctor Modal -->
