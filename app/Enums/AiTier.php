@@ -75,6 +75,34 @@ enum AiTier: string
         };
     }
 
+    /**
+     * Thinking budget tokens scaled by effort level for adaptive reasoning.
+     *
+     * Opus 4.6 supports variable budget_tokens per request, allowing
+     * simple questions to get fast 1K-token thinking while safety-critical
+     * questions get deep 16K-token reasoning.
+     *
+     * @return array{budget_tokens: int, max_tokens: int}
+     */
+    public function thinkingBudgetForEffort(string $effort): array
+    {
+        return match ($this) {
+            self::Good => ['budget_tokens' => 0, 'max_tokens' => 4096],
+            self::Better => match ($effort) {
+                'low' => ['budget_tokens' => 512, 'max_tokens' => 2048],
+                'high' => ['budget_tokens' => 4000, 'max_tokens' => 8000],
+                'max' => ['budget_tokens' => 8000, 'max_tokens' => 16000],
+                default => ['budget_tokens' => 2000, 'max_tokens' => 4000], // medium
+            },
+            self::Opus46 => match ($effort) {
+                'low' => ['budget_tokens' => 1024, 'max_tokens' => 4096],
+                'high' => ['budget_tokens' => 8000, 'max_tokens' => 16000],
+                'max' => ['budget_tokens' => 16000, 'max_tokens' => 32000],
+                default => ['budget_tokens' => 4000, 'max_tokens' => 8000], // medium
+            },
+        };
+    }
+
     public function escalationThinkingEnabled(): bool
     {
         return $this === self::Opus46;
