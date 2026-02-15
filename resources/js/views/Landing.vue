@@ -52,12 +52,12 @@
           class="fixed inset-0 z-50 flex items-center justify-center p-4"
         >
           <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="showVideo = false" />
-          <div class="relative w-full max-w-4xl">
+          <div class="group/modal relative w-full max-w-4xl">
             <button
               @click="showVideo = false"
-              class="absolute -right-2 -top-12 text-white/80 hover:text-white transition-colors z-10 p-2"
+              class="absolute right-2 top-2 z-10 p-1.5 rounded-full bg-black/40 text-white/60 hover:text-white hover:bg-black/60 opacity-0 group-hover/modal:opacity-100 transition-all duration-200"
             >
-              <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
