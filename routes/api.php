@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\DemoController;
 use App\Http\Controllers\Api\DemoScenarioController;
 use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\DocumentController;
+use App\Http\Controllers\Api\EducationController;
 use App\Http\Controllers\Api\ExplainController;
 use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\LibraryController;
@@ -104,6 +105,9 @@ Route::prefix('v1')->group(function () {
             // Explain
             Route::post('explain', [ExplainController::class, 'explain']);
 
+            // Education (patient education document with tool use)
+            Route::post('education', [EducationController::class, 'generate']);
+
             // Observations (visit-scoped)
             Route::get('observations', [ObservationController::class, 'index']);
             Route::get('observations/{observation}', [ObservationController::class, 'show']);
@@ -178,6 +182,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('settings')->group(function () {
             Route::get('ai-tier', [SettingsController::class, 'getAiTier']);
             Route::put('ai-tier', [SettingsController::class, 'setAiTier']);
+            Route::get('features', [SettingsController::class, 'getFeatureFlags']);
         });
 
         // ----- Module 10: Personal Medical Library -----

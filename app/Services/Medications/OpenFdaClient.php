@@ -71,6 +71,40 @@ class OpenFdaClient
         });
     }
 
+    /**
+     * Get adverse events co-reported for two drugs together.
+     *
+     * @return array{events: array, total: int}
+     */
+    public function getCoReportedAdverseEvents(string $drug1, string $drug2, int $limit = 10): array
+    {
+        $cacheKey = 'openfda_coreported_'.md5($drug1.$drug2.$limit);
+
+        return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($drug1, $drug2, $limit) {
+            $search = 'patient.drug.openfda.generic_name:"'.$drug1.'"'
+                .'+AND+patient.drug.openfda.generic_name:"'.$drug2.'"';
+
+            $response = Http::timeout((int) config('services.openfda.timeout', 5))
+                ->get(self::BASE_URL.'/event.json', [
+                    'search' => $search,
+                    'count' => 'patient.reaction.reactionmeddrapt.exact',
+                    'limit' => $limit,
+                ]);
+
+            if (! $response->successful()) {
+                Log::warning('OpenFDA co-reported adverse events failed', [
+                    'drug1' => $drug1,
+                    'drug2' => $drug2,
+                    'status' => $response->status(),
+                ]);
+
+                return ['events' => [], 'total' => 0];
+            }
+
+            return $this->parseAdverseEvents($response->json());
+        });
+    }
+
     private function parseAdverseEvents(array $data): array
     {
         $results = $data['results'] ?? [];

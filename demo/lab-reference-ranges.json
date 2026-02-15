@@ -1,0 +1,23 @@
+{
+  "glucose_fasting": {"name": "Fasting Blood Glucose", "unit": "mg/dL", "normal_range": "70-100", "prediabetes": "100-125", "diabetes": ">126", "notes": "Fasting for 8+ hours"},
+  "hba1c": {"name": "Hemoglobin A1C", "unit": "%", "normal_range": "<5.7", "prediabetes": "5.7-6.4", "diabetes": ">6.5"},
+  "cholesterol_total": {"name": "Total Cholesterol", "unit": "mg/dL", "desirable": "<200", "borderline": "200-239", "high": ">240"},
+  "ldl": {"name": "LDL Cholesterol", "unit": "mg/dL", "optimal": "<100", "near_optimal": "100-129", "borderline": "130-159", "high": "160-189", "very_high": ">190"},
+  "hdl": {"name": "HDL Cholesterol", "unit": "mg/dL", "low": "<40 (men) / <50 (women)", "normal": "40-60", "high_protective": ">60"},
+  "triglycerides": {"name": "Triglycerides", "unit": "mg/dL", "normal": "<150", "borderline": "150-199", "high": "200-499", "very_high": ">500"},
+  "tsh": {"name": "Thyroid Stimulating Hormone", "unit": "mIU/L", "normal_range": "0.4-4.0", "low": "<0.4 (hyperthyroid)", "high": ">4.0 (hypothyroid)"},
+  "creatinine": {"name": "Creatinine", "unit": "mg/dL", "normal_male": "0.7-1.3", "normal_female": "0.6-1.1", "notes": "Higher values may indicate kidney issues"},
+  "egfr": {"name": "Estimated GFR", "unit": "mL/min/1.73m2", "normal": ">90", "mild_decrease": "60-89", "moderate": "30-59", "severe": "15-29", "kidney_failure": "<15"},
+  "hemoglobin": {"name": "Hemoglobin", "unit": "g/dL", "normal_male": "13.5-17.5", "normal_female": "12.0-16.0"},
+  "wbc": {"name": "White Blood Cell Count", "unit": "cells/mcL", "normal_range": "4,500-11,000", "low": "<4,500 (leukopenia)", "high": ">11,000 (leukocytosis)"},
+  "platelets": {"name": "Platelet Count", "unit": "cells/mcL", "normal_range": "150,000-400,000"},
+  "blood_pressure_systolic": {"name": "Systolic Blood Pressure", "unit": "mmHg", "normal": "<120", "elevated": "120-129", "stage1_hypertension": "130-139", "stage2_hypertension": ">140"},
+  "blood_pressure_diastolic": {"name": "Diastolic Blood Pressure", "unit": "mmHg", "normal": "<80", "stage1_hypertension": "80-89", "stage2_hypertension": ">90"},
+  "potassium": {"name": "Potassium", "unit": "mEq/L", "normal_range": "3.5-5.0", "low": "<3.5 (hypokalemia)", "high": ">5.0 (hyperkalemia)"},
+  "sodium": {"name": "Sodium", "unit": "mEq/L", "normal_range": "136-145", "low": "<136 (hyponatremia)", "high": ">145 (hypernatremia)"},
+  "alt": {"name": "ALT (Liver Enzyme)", "unit": "U/L", "normal_range": "7-56", "notes": "Elevated in liver disease"},
+  "ast": {"name": "AST (Liver Enzyme)", "unit": "U/L", "normal_range": "10-40", "notes": "Elevated in liver or muscle damage"},
+  "bnp": {"name": "BNP (Brain Natriuretic Peptide)", "unit": "pg/mL", "normal": "<100", "possible_heart_failure": "100-400", "likely_heart_failure": ">400", "notes": "Used to diagnose heart failure"},
+  "troponin": {"name": "Troponin", "unit": "ng/mL", "normal": "<0.04", "elevated": ">0.04", "notes": "Elevated in heart muscle damage/MI"},
+  "inr": {"name": "INR (International Normalized Ratio)", "unit": "ratio", "normal": "0.8-1.1", "therapeutic_warfarin": "2.0-3.0", "notes": "Used to monitor blood thinners"}
+}

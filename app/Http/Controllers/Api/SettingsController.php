@@ -28,6 +28,18 @@ class SettingsController extends Controller
     }
 
     /**
+     * Get feature flags for the application.
+     */
+    public function getFeatureFlags(): JsonResponse
+    {
+        return response()->json([
+            'data' => [
+                'context_compaction' => config('postvisit.context_compaction_enabled', false),
+            ],
+        ]);
+    }
+
+    /**
      * Set the AI tier.
      */
     public function setAiTier(Request $request): JsonResponse

@@ -4,6 +4,7 @@ namespace App\Services\AI;
 
 use Anthropic\Messages\CacheControlEphemeral;
 use Anthropic\Messages\TextBlockParam;
+use App\Models\PatientContextSummary;
 use App\Models\Visit;
 use App\Services\Guidelines\GuidelinesRepository;
 use App\Services\Medications\OpenFdaClient;
@@ -143,6 +144,15 @@ class ContextAssembler
             $contextMessages[] = [
                 'role' => 'user',
                 'content' => $libraryContext,
+            ];
+        }
+
+        // Layer 6: Historical context summaries (opt-in)
+        $compactionContext = $this->formatContextCompactionLayer($visit);
+        if ($compactionContext) {
+            $contextMessages[] = [
+                'role' => 'user',
+                'content' => $compactionContext,
             ];
         }
 
@@ -730,6 +740,63 @@ class ContextAssembler
         }
 
         $parts[] = '--- END WEARABLE DEVICE DATA ---';
+
+        return implode("\n", $parts);
+    }
+
+    /**
+     * Load historical context summaries for a patient.
+     * Only loads when context compaction is enabled via config.
+     *
+     * @return string|null Formatted context string, or null if disabled/empty
+     */
+    private function formatContextCompactionLayer(Visit $visit): ?string
+    {
+        if (! config('postvisit.context_compaction_enabled', false)) {
+            return null;
+        }
+
+        $patient = $visit->patient;
+        if (! $patient) {
+            return null;
+        }
+
+        $summaries = PatientContextSummary::where('patient_id', $patient->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        if ($summaries->isEmpty()) {
+            return null;
+        }
+
+        $parts = ['--- PREVIOUS SESSION CONTEXT ---'];
+        $parts[] = 'The following summaries are from previous chat sessions with this patient:';
+
+        foreach ($summaries as $summary) {
+            $date = $summary->created_at?->format('M j, Y') ?? 'Unknown date';
+            $parts[] = '';
+            $parts[] = "Session ({$date}):";
+            $parts[] = $summary->summary_text;
+
+            if (! empty($summary->key_questions)) {
+                $parts[] = 'Key questions asked: '.implode('; ', $summary->key_questions);
+            }
+
+            if (! empty($summary->concerns_raised)) {
+                $parts[] = 'Concerns raised: '.implode('; ', $summary->concerns_raised);
+            }
+
+            if (! empty($summary->followup_items)) {
+                $parts[] = 'Follow-up items: '.implode('; ', $summary->followup_items);
+            }
+
+            if ($summary->emotional_context) {
+                $parts[] = "Emotional context: {$summary->emotional_context}";
+            }
+        }
+
+        $parts[] = '--- END PREVIOUS SESSION CONTEXT ---';
 
         return implode("\n", $parts);
     }

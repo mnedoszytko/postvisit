@@ -506,6 +506,7 @@ curl -s "$BASE/tasks?scope=active" | python3 -m json.tool
 - [ ] **CHANGELOG.md** — uzupełnić brakujące wpisy, upewnić się że pokrywa wszystkie features od początku projektu
 - [ ] **Pint** — `./vendor/bin/pint` finalne formatowanie
 - [ ] **Build clean** — `bun run build` bez errorów i warnings (oprócz chunk size)
+- [ ] **CLAUDE.md reduction** — plik jest za duży (500+ linii), skondensować: usunąć duplikaty, skrócić sekcje, przenieść szczegóły do osobnych plików w `docs/`
 
 ===
 

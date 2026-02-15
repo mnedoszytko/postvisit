@@ -270,6 +270,209 @@ class AnthropicClient
     }
 
     /**
+     * Chat with tool use support. Handles the agentic loop:
+     * AI responds -> may call tools -> we execute -> send results back -> AI continues.
+     *
+     * @param  string|array  $systemPrompt  String or array of TextBlockParam
+     * @param  array  $messages  Conversation messages
+     * @param  array  $tools  Tool definitions (Anthropic format)
+     * @param  callable(string, array): array  $toolExecutor  Executes a tool call
+     * @param  (callable(string, array): void)|null  $onToolUse  Callback for UI updates when a tool is called
+     * @param  array  $options  Model options (model, max_tokens, budget_tokens)
+     * @return array{text: string, thinking: string, tools_used: array}
+     */
+    public function chatWithTools(
+        string|array $systemPrompt,
+        array $messages,
+        array $tools,
+        callable $toolExecutor,
+        ?callable $onToolUse = null,
+        array $options = [],
+    ): array {
+        $model = $options['model'] ?? $this->defaultModel;
+        $maxTokens = $options['max_tokens'] ?? 16000;
+        $budgetTokens = $options['budget_tokens'] ?? 8000;
+        $maxIterations = 5;
+        $toolsUsed = [];
+        $thinking = '';
+
+        for ($i = 0; $i < $maxIterations; $i++) {
+            $body = [
+                'model' => $model,
+                'max_tokens' => $maxTokens,
+                'system' => $this->serializeSystemPrompt($systemPrompt),
+                'messages' => $messages,
+                'tools' => $tools,
+            ];
+
+            if ($budgetTokens > 0) {
+                $body['thinking'] = ['type' => 'enabled', 'budget_tokens' => $budgetTokens];
+            }
+
+            $response = $this->rawCurlRequest($body);
+
+            $stopReason = $response['stop_reason'] ?? 'end_turn';
+
+            if ($stopReason === 'tool_use') {
+                $assistantContent = $response['content'] ?? [];
+                $messages[] = ['role' => 'assistant', 'content' => $assistantContent];
+
+                // Collect thinking from this iteration
+                foreach ($assistantContent as $block) {
+                    if (($block['type'] ?? '') === 'thinking') {
+                        $thinking .= $block['thinking'] ?? '';
+                    }
+                }
+
+                $toolResultBlocks = [];
+                foreach ($assistantContent as $block) {
+                    if (($block['type'] ?? '') !== 'tool_use') {
+                        continue;
+                    }
+
+                    $name = $block['name'];
+                    $input = $block['input'] ?? [];
+                    $toolUseId = $block['id'];
+
+                    if ($onToolUse) {
+                        $onToolUse($name, $input);
+                    }
+
+                    $result = $toolExecutor($name, $input);
+                    $toolsUsed[] = ['name' => $name, 'input' => $input];
+
+                    $toolResultBlocks[] = [
+                        'type' => 'tool_result',
+                        'tool_use_id' => $toolUseId,
+                        'content' => json_encode($result),
+                    ];
+                }
+
+                $messages[] = ['role' => 'user', 'content' => $toolResultBlocks];
+
+                continue;
+            }
+
+            // stop_reason === 'end_turn' — extract final text
+            $text = '';
+            foreach ($response['content'] ?? [] as $block) {
+                if (($block['type'] ?? '') === 'thinking') {
+                    $thinking .= $block['thinking'] ?? '';
+                }
+                if (($block['type'] ?? '') === 'text') {
+                    $text .= $block['text'] ?? '';
+                }
+            }
+
+            $this->logToolUseUsage($model, $response['usage'] ?? null, $toolsUsed);
+
+            return ['text' => $text, 'thinking' => $thinking, 'tools_used' => $toolsUsed];
+        }
+
+        throw new \RuntimeException('Tool use loop exceeded max iterations ('.$maxIterations.')');
+    }
+
+    /**
+     * Non-streaming API call via raw curl with retry on 429/5xx.
+     * Used for tool use loop.
+     *
+     * @return array<string, mixed>
+     */
+    private function rawCurlRequest(array $body): array
+    {
+        $apiKey = config('anthropic.api_key');
+        $maxAttempts = self::MAX_RETRIES + 1;
+
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            $ch = curl_init('https://api.anthropic.com/v1/messages');
+            curl_setopt_array($ch, [
+                CURLOPT_POST => true,
+                CURLOPT_HTTPHEADER => [
+                    'Content-Type: application/json',
+                    'x-api-key: '.$apiKey,
+                    'anthropic-version: 2023-06-01',
+                ],
+                CURLOPT_POSTFIELDS => json_encode($body),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 120,
+                CURLOPT_CONNECTTIMEOUT => 10,
+            ]);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
+            curl_close($ch);
+
+            if ($curlError) {
+                if ($attempt < $maxAttempts) {
+                    $delay = self::BACKOFF_SECONDS[$attempt - 1] ?? 2;
+                    Log::warning("Anthropic tool use curl error, attempt {$attempt}/{$maxAttempts}, retrying in {$delay}s", ['error' => $curlError]);
+                    $this->retrySleep($delay);
+
+                    continue;
+                }
+
+                Log::error('Anthropic tool use curl error, all attempts exhausted', ['error' => $curlError]);
+
+                throw new \RuntimeException("Anthropic API connection error: {$curlError}");
+            }
+
+            // Retry on 429 (rate limit) or 5xx (server error)
+            if ($httpCode === 429 || $httpCode >= 500) {
+                if ($attempt < $maxAttempts) {
+                    $delay = self::BACKOFF_SECONDS[$attempt - 1] ?? 2;
+                    Log::warning("Anthropic tool use HTTP {$httpCode}, attempt {$attempt}/{$maxAttempts}, retrying in {$delay}s");
+                    $this->retrySleep($delay);
+
+                    continue;
+                }
+            }
+
+            if ($httpCode >= 400) {
+                Log::error('Anthropic tool use API error', [
+                    'code' => $httpCode,
+                    'body' => substr($response, 0, 500),
+                ]);
+
+                throw new \RuntimeException("Anthropic API returned HTTP {$httpCode}");
+            }
+
+            $decoded = json_decode($response, true);
+
+            if (! is_array($decoded)) {
+                throw new \RuntimeException('Anthropic API returned invalid JSON');
+            }
+
+            return $decoded;
+        }
+
+        throw new \RuntimeException('Anthropic API: all retry attempts exhausted');
+    }
+
+    /**
+     * Log usage for tool use calls.
+     */
+    private function logToolUseUsage(string $model, ?array $usage, array $toolsUsed): void
+    {
+        $data = [
+            'model' => $model,
+            'input_tokens' => $usage['input_tokens'] ?? null,
+            'output_tokens' => $usage['output_tokens'] ?? null,
+            'tools_used' => count($toolsUsed),
+            'tool_names' => array_column($toolsUsed, 'name'),
+        ];
+
+        if (isset($usage['cache_creation_input_tokens'])) {
+            $data['cache_creation_input_tokens'] = $usage['cache_creation_input_tokens'];
+        }
+        if (isset($usage['cache_read_input_tokens'])) {
+            $data['cache_read_input_tokens'] = $usage['cache_read_input_tokens'];
+        }
+
+        Log::channel('ai')->info('Anthropic chatWithTools request', $data);
+    }
+
+    /**
      * Convert system prompt to API-compatible format.
      *
      * Handles both plain strings and TextBlockParam arrays (for cache control).
