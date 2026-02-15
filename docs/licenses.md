@@ -1,7 +1,7 @@
 # Licenses & Hackathon Compliance Tracker
 
 > Living document -- updated with every stack change.
-> Last updated: 2026-02-11
+> Last updated: 2026-02-15
 
 ## Hackathon Rules (Reminder)
 
@@ -30,7 +30,13 @@
 | Vite | MIT | Build tool | OK |
 | Tailwind CSS v4 | MIT | CSS framework | OK |
 | Axios | MIT | HTTP client | OK |
+| Chart.js | MIT | Data visualization for vital signs and lab trends | OK |
+| vue-chartjs | MIT | Vue 3 wrapper for Chart.js | OK |
+| marked | MIT | Markdown rendering in chat responses | OK |
 | qrcode.vue | MIT | QR code generation (Vue 3) | OK |
+| Three.js | MIT | 3D visualization in Companion Scribe | OK |
+| @tailwindcss/typography | MIT | Prose styling for rendered content | OK |
+| TypeScript | Apache-2.0 | Type checking for frontend | OK |
 | Laravel Sanctum | MIT | SPA authentication | OK |
 | Anthropic PHP SDK (`anthropic-ai/laravel`) | MIT | AI API client | OK |
 | Bun | MIT | Package manager / runtime | OK |

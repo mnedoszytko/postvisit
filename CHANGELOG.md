@@ -2,6 +2,66 @@
 
 All notable changes to PostVisit.ai are documented here in reverse chronological order.
 
+## 2026-02-15
+
+### Added
+- **HR drop alert on doctor dashboard** — real-time heart rate anomaly detection with scroll-to-patient navigation on the doctor dashboard
+- **Deep Context for Opus 4.6** — expanded data layers (visit transcript, SOAP notes, patient history, vitals, labs, medications, guidelines, PMC articles) assembled into a single prompt utilizing the 1M context window. Token counter tracks total context size
+- **Context Compaction (opt-in)** — reduces context token usage by summarizing older conversation turns while preserving clinical accuracy
+- **Adaptive thinking with effort-based budget routing** — AI thinking budget dynamically adjusts based on question complexity (simple lookup vs. multi-step clinical reasoning)
+- **Tool Use in Education Generator** — AI can invoke structured tools (drug lookup, guideline search) during patient education content generation
+- **Audio playback and colored transcript for Alex Jones demo** — second demo scenario with playable audio and speaker-colored transcript segments
+- Showcase slides for demo video
+
+### Changed
+- **UI polish** — lab context suggestions, SpO2 display fix, weight chart sync with vitals data, appointment banner styling
+
+### Fixed
+- SpO2 vital sign display in health dashboard
+
+### Removed
+- **Dead code cleanup** — removed 11 unused files (orphaned components, unused services), fixed stale imports
+- Removed `laravel/sail` dependency, cleaned up `.env.example`, fixed hardcoded paths
+
+## 2026-02-14
+
+### Added
+- **Patient-doctor messaging thread** — bidirectional messaging between patients and doctors with unread badges, expandable message threads, and AI-powered "Inquire" feature for doctors to ask contextual follow-up questions
+- **Schedule Appointment invitation** — mockup appointment scheduling from patient profile with invitation flow
+- **Contact Doctor modal** — patients can contact their doctor directly from visit cards on their profile page
+- **Demo login toggle** — quick-switch between patient and doctor demo accounts on login page
+- Flight checklist for pre-submission tracking
+
+### Changed
+- **UI polish pass** — login page gradient background, weight chart prioritized in vitals, contact button placement, chat FAB with PostVisit logo
+- **Vitals display** — neutral color palette for normal-range vitals, weight trend chart improvements
+- **Lab results layout** — improved card spacing and context suggestions
+- Ask button layout: inline positioning with overflow clip, ICD codes hidden from patient view
+
+## 2026-02-13
+
+### Added
+- **Doctor panel redesign** — full patient browser with search, patient photos, visit detail view, and vitals/labs tabs for clinical overview
+- **Async transcription pipeline with S3 storage** — audio files uploaded to S3, transcription runs asynchronously via queue. Decouples upload from processing for reliability
+- **Screen Wake Lock API** — prevents iPhone/mobile from sleeping during active voice recording sessions
+- **Custom AudioPlayer component** — HTML5 audio player with HTTP Range request support for streaming large audio files
+- **Brand identity** — PostVisit logo added to all key pages, navigation bars, Ask AI buttons, and ChatPanel header
+- **Chat UI redesign** — emerald background for AI responses, smaller prose, context pill badges above message bubbles, tag icons for context indicators
+- **Dr. Sarah Chen** added as cardiologist for Marie Dupont coronarography demo scenario
+- Progress bar with time estimate on Processing page
+- 10 Remotion showcase videos for demo reel
+- Chat UX improvements: medical term highlighting in responses, resizable panel, instant suggestion chips
+
+### Changed
+- **Documents tab rebuilt** — lab upload support, emerald-themed clinical icons replacing emoji
+- **Chat overhaul** — auto-context detection from current SOAP section, share buttons for responses, streaming cursor animation, prompt improvements
+
+### Fixed
+- **Auth exception handling** — API now returns JSON 401 response instead of redirecting to a missing login route (broke mobile/SPA flows)
+- **DemoSeeder cleanup order** — delete notifications before visits to avoid foreign key constraint errors
+- Ask button logo aspect ratio corrected
+- Dr. Sarah Chen photo: added email-to-photo mapping for cardiologist avatar
+
 ## 2026-02-12
 
 ### Added

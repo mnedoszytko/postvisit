@@ -1,6 +1,6 @@
 # PostVisit.ai
 
-[![Tests](https://img.shields.io/badge/tests-89%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-262%20passed-brightgreen)]()
 [![PHP](https://img.shields.io/badge/PHP-8.4-8892BF)]()
 [![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20)]()
 [![Vue](https://img.shields.io/badge/Vue-3-4FC08D)]()
@@ -23,12 +23,19 @@ PostVisit.ai solves this by maintaining the full context of a clinical visit and
 
 - **Companion Scribe** -- Patient-initiated visit recording with doctor selection, date picker, and hardened 3-phase upload pipeline (save audio, transcribe, combine). Supports long recordings via automatic 10-minute chunking.
 - **AI Visit Summary** -- Transcription processed into structured SOAP notes, observations, diagnoses, and prescriptions
-- **Contextual Q&A** -- Patient asks questions in natural language; gets answers grounded in their visit data, clinical guidelines, and FDA safety data
+- **Contextual Q&A** -- Patient asks questions in natural language; gets answers grounded in their visit data, clinical guidelines, and FDA safety data. Clinical reasoning pipeline with tool use for real-time medication lookups, guideline retrieval, and evidence-based citations.
+- **AI Tier Selection** -- Patient controls AI depth: Quick (fast answers), Balanced (default), or Deep Analysis (extended thinking with clinical reasoning tools)
 - **Medication Intelligence** -- Drug interaction checks, dosage explanations, side effect data from OpenFDA FAERS, and official drug labels from DailyMed
 - **Medical Term Explain** -- Click any medical term to get a plain-language explanation tailored to the patient's specific visit context
+- **Patient Education Generator** -- AI-generated personalized education documents using tool use to pull real medication data and clinical guidelines
+- **Document AI Analysis** -- Upload medical documents (lab results, prescriptions, imaging reports) for AI-powered analysis with structured extraction
+- **QR Code Mobile Upload** -- Generate QR codes to upload documents from phone camera directly to a visit
+- **Medical Library** -- Personal medical library: save articles, URLs, and documents; AI analyzes and summarizes content
 - **Escalation Detection** -- AI monitors for urgent symptoms (chest pain, breathing difficulty, suicidal ideation) and redirects to emergency services
 - **Doctor Feedback Loop** -- Patients send follow-up questions; doctors receive alerts for concerning patterns
-- **Doctor Dashboard** -- Practitioners monitor patient engagement, review AI chat transcripts, and respond to escalations
+- **Doctor Dashboard** -- Practitioners monitor patient engagement, review AI chat transcripts, respond to escalations, and trigger quick actions (follow-up reminders, education materials)
+- **Multi-Scenario Demo Engine** -- Multiple realistic clinical scenarios (cardiology, orthopedics, neurology, dermatology) with pre-seeded patient data, AI-generated animations, and one-click switching between patient and doctor views
+- **Showcase Presentations** -- Dedicated presentation views for hackathon demo: tech architecture, EHR integration, evidence-based medicine pipeline
 
 ## Architecture
 
@@ -50,6 +57,8 @@ PostVisit.ai
 - Server-Sent Events (SSE) for real-time AI streaming
 - AI prompts versioned as files in `prompts/` directory
 - 5-layer AI context assembly: visit data, patient record, clinical guidelines, medications, FDA safety data
+- Clinical reasoning pipeline with tool use: AI can call medication lookup, interaction checks, guideline retrieval, and adverse event queries in real time
+- Three AI tiers (Quick/Balanced/Deep) with adaptive thinking budget
 - All patient data is patient-owned (consent model, right to erasure)
 
 ## Tech Stack
@@ -117,7 +126,7 @@ After seeding, two accounts are available:
 | Patient | patient@demo.postvisit.ai | password |
 | Doctor | doctor@demo.postvisit.ai | password |
 
-Demo scenario: Cardiology visit for PVCs (premature ventricular contractions), prescribed Propranolol 40mg BID.
+Demo includes multiple clinical scenarios: cardiology (PVCs), orthopedics (ACL tear), neurology (migraines), and dermatology (psoriasis). The scenario picker lets you switch between them.
 
 ### API Quick Test
 
@@ -133,22 +142,31 @@ curl -X POST http://postvisit.test/api/v1/auth/login \
 
 ## API
 
-51 REST endpoints under `/api/v1/`. Key modules:
+96 REST endpoints under `/api/v1/`. Key modules:
 
 | Module | Endpoints | Description |
 |--------|-----------|-------------|
 | Auth | 4 | Register, login, logout, profile |
-| Patients | 8 | Profile, visits, conditions, documents, prescriptions |
-| Practitioners | 1 | List practitioners for visit form |
+| Patients | 11 | Profile, update, visits, conditions, health record, observations, documents, prescriptions |
+| Documents | 6 | Show, download, thumbnail, AI analysis, reanalyze, delete |
+| Practitioners | 2 | List and create practitioners |
 | Visits | 3 | Create, view, summary |
-| Transcripts | 7 | Upload text, upload audio, save chunk, transcribe chunk, view, process, status |
+| Transcripts | 9 | Upload text, upload audio, save chunk, transcribe chunk, start processing, view, process, status, audio playback |
 | Chat (SSE) | 2 | AI Q&A with streaming, history |
 | Explain (SSE) | 1 | Medical term explanation with streaming |
+| Education | 1 | AI-generated patient education with tool use |
+| Observations | 2 | List and detail (visit-scoped) |
+| Prescriptions | 1 | Visit prescriptions |
 | Medications | 5 | Search, detail, interactions, adverse events, labels |
-| Feedback | 3 | Patient messages, doctor replies |
-| Doctor | 9 | Dashboard, patients, engagement, audit, notifications |
-| Audit | 1 | HIPAA-compliant audit logs |
-| Demo | 4 | Quick-start, status, reset, simulate alerts |
+| Medical Lookup | 4 | NIH conditions, drugs, procedures, DailyMed labels |
+| References | 4 | Medical references index, detail, verify, PubMed verify |
+| Feedback | 3 | Patient messages, doctor replies, mark read |
+| Doctor | 13 | Dashboard, alerts, patients, visits, engagement, chat audit, observations, notifications, reply, inquire, quick actions |
+| Audit | 2 | HIPAA-compliant audit logs, export |
+| Settings | 3 | AI tier selection, feature flags |
+| Library | 6 | Personal medical library: list, upload, URL import, detail, status, delete |
+| Upload Tokens | 2 | QR code mobile upload tokens, status polling |
+| Demo | 10 | Quick-start, status, reset, simulate alerts, scenario list, photos, animations, start scenario, switch role |
 
 ## AI Architecture
 
@@ -160,12 +178,22 @@ PostVisit.ai uses a 5-layer context assembly pattern to give Claude full visit c
 4. **Medications** -- Drug details, dosing, interactions from RxNorm
 5. **FDA Safety Data** -- Adverse event reports (FAERS) and official drug labels from OpenFDA
 
-AI services include:
+15 AI services in `app/Services/AI/`:
 - **QaAssistant** -- Streaming Q&A with escalation detection
+- **ClinicalReasoningPipeline** -- Tool use orchestration: medication lookup, guideline retrieval, evidence synthesis
+- **ToolExecutor** -- Executes AI tool calls (drug info, interactions, adverse events, guidelines)
 - **MedicalExplainer** -- Term-level explanations in patient context
-- **MedsAnalyzer** -- Drug analysis with interaction checks
+- **PatientEducationGenerator** -- Generates personalized education documents with tool use
+- **DocumentAnalyzer** -- AI-powered analysis of uploaded medical documents
+- **LibraryItemAnalyzer** -- Analyzes saved articles and URLs for the medical library
+- **ScribeProcessor** -- Processes visit transcripts into structured SOAP notes
+- **TermExtractor** -- Extracts and classifies medical terms from visit notes
 - **EscalationDetector** -- Keyword + AI urgency evaluation
-- **ContextAssembler** -- Layered context builder
+- **SessionSummarizer** -- Summarizes chat sessions for doctor review
+- **AiTierManager** -- Routes requests to Quick/Balanced/Deep analysis tiers
+- **ContextAssembler** -- Layered context builder (5-layer assembly)
+- **PromptLoader** -- Loads versioned prompts from `prompts/` directory
+- **AnthropicClient** -- Low-level Anthropic API client with streaming support
 
 ## Testing
 
@@ -173,39 +201,50 @@ AI services include:
 php artisan test
 ```
 
-89 feature tests covering all API modules with 264 assertions. Tests use SQLite in-memory for speed, with mocked AI services.
+262 feature tests covering all API modules with 797 assertions. Tests use SQLite in-memory for speed, with mocked AI services.
 
 ## Project Structure
 
 ```
 app/
-+-- Http/Controllers/Api/     # 13 API controllers
++-- Http/Controllers/Api/     # 21 API controllers
 +-- Http/Middleware/           # RoleMiddleware (doctor/admin guards)
-+-- Models/                   # 18 Eloquent models (UUID, FHIR-aligned)
-+-- Services/AI/              # AI service layer (prompts, context, streaming)
-+-- Services/Medications/     # RxNorm, OpenFDA, DailyMed, NIH clients
++-- Models/                   # 22 Eloquent models (UUID, FHIR-aligned)
++-- Services/AI/              # 15 AI services (prompts, context, streaming, tool use)
++-- Services/Medications/     # RxNorm, OpenFDA, DailyMed, NIH, PubMed clients
++-- Services/Stt/             # Speech-to-text (Whisper)
 database/
-+-- factories/                # 18 model factories for testing
-+-- migrations/               # 22 migrations (PostgreSQL-optimized)
-+-- seeders/                  # DemoSeeder (cardiology scenario)
++-- factories/                # 19 model factories for testing
++-- migrations/               # 35 migrations (PostgreSQL-optimized)
++-- seeders/                  # DemoSeeder + DemoScenarioSeeder (multi-scenario)
 resources/js/
-+-- views/                    # 11 Vue views (patient + doctor)
-+-- components/               # ChatPanel, VisitSection, ToastContainer
-+-- stores/                   # Pinia stores (auth, visit, chat, doctor, toast)
-+-- composables/              # useApi (Axios + CSRF)
++-- views/                    # 26 Vue views (patient + doctor + showcase)
++-- components/               # 31 Vue components (ChatPanel, VisitSection, health/*, etc.)
++-- stores/                   # 6 Pinia stores (auth, visit, chat, doctor, toast, settings)
++-- composables/              # useApi.ts, useChatBus.js
++-- layouts/                  # PatientLayout, DoctorLayout
 +-- router/                   # Vue Router with role-based guards
-docs/                         # Project documentation
-prompts/                      # AI system prompts (versioned)
-demo/                         # Demo data and scenarios
+docs/                         # 35 documentation files
+prompts/                      # 14 AI system prompts (versioned)
+demo/                         # Demo data, scenarios, patient photos, animations
 ```
 
 ## Documentation
 
+- [`docs/api.md`](docs/api.md) -- Full API documentation (96 endpoints)
+- [`docs/architecture.md`](docs/architecture.md) -- System architecture and data flow
 - [`docs/prd.md`](docs/prd.md) -- Product Requirements Document
 - [`docs/data-model.md`](docs/data-model.md) -- Database schema and relationships
 - [`docs/decisions.md`](docs/decisions.md) -- Architecture decision log
+- [`docs/ai-prompts.md`](docs/ai-prompts.md) -- AI prompt documentation and versioning
 - [`docs/licenses.md`](docs/licenses.md) -- Dependency license tracker
 - [`docs/security-audit.md`](docs/security-audit.md) -- OWASP Top 10 security audit
+- [`docs/demo-guide.md`](docs/demo-guide.md) -- Step-by-step demo walkthrough
+- [`docs/demo-scenarios.md`](docs/demo-scenarios.md) -- Demo scenario definitions
+- [`docs/deployment.md`](docs/deployment.md) -- Production deployment guide
+- [`docs/clinical-sources.md`](docs/clinical-sources.md) -- Clinical data sources and guidelines
+- [`docs/opus-4.6-usage.md`](docs/opus-4.6-usage.md) -- Opus 4.6 feature usage documentation
+- [`docs/KEEP-THINKING.md`](docs/KEEP-THINKING.md) -- Clinical depth iteration log
 - [`docs/lessons.md`](docs/lessons.md) -- Development lessons learned
 
 ## Hackathon Tracks
