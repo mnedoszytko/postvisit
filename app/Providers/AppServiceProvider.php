@@ -18,8 +18,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(SpeechToTextProvider::class, function () {
             return match (config('services.stt.provider')) {
-                'whisper' => new WhisperProvider(),
-                default => new WhisperProvider(),
+                'whisper' => new WhisperProvider,
+                default => new WhisperProvider,
             };
         });
     }
@@ -35,6 +35,26 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('auth', function (Request $request) {
             return Limit::perMinute(5)->by($request->ip());
+        });
+
+        // AI endpoints: 5 requests/minute per user, 30/hour per user
+        RateLimiter::for('ai', function (Request $request) {
+            $key = $request->user()?->id ?: $request->ip();
+
+            return [
+                Limit::perMinute(10)->by('ai-min:'.$key),
+                Limit::perHour(30)->by('ai-hour:'.$key),
+            ];
+        });
+
+        // AI expensive endpoints (education, inquire): 2 requests/minute
+        RateLimiter::for('ai-expensive', function (Request $request) {
+            $key = $request->user()?->id ?: $request->ip();
+
+            return [
+                Limit::perMinute(2)->by('ai-exp-min:'.$key),
+                Limit::perHour(10)->by('ai-exp-hour:'.$key),
+            ];
         });
     }
 }

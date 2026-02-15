@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AiBudgetMiddleware;
 use App\Http\Middleware\AuditMiddleware;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Auth\AuthenticationException;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'audit' => AuditMiddleware::class,
+            'ai.budget' => AiBudgetMiddleware::class,
         ]);
 
         $middleware->trustProxies(at: '*');

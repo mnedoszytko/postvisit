@@ -15,6 +15,7 @@ All notable changes to PostVisit.ai are documented here in reverse chronological
 
 ### Changed
 - **UI polish** — lab context suggestions, SpO2 display fix, weight chart sync with vitals data, appointment banner styling
+- **Rate limiting for AI endpoints** — 3-layer protection for public demo: route-level throttle (10 req/min, 30/hour for chat/explain; 2 req/min, 10/hour for education/inquire/transcript), global daily budget (500 calls/day), per-user daily limit (50 calls/day). Budget headers (`X-AI-Budget-Remaining`, `X-AI-User-Remaining`) exposed for frontend awareness
 
 ### Fixed
 - SpO2 vital sign display in health dashboard

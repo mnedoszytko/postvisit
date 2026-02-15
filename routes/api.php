@@ -92,21 +92,21 @@ Route::prefix('v1')->group(function () {
             Route::post('transcript/upload-audio', [TranscriptController::class, 'uploadAudio']);
             Route::post('transcript/transcribe-chunk', [TranscriptController::class, 'transcribeChunk']);
             Route::post('transcript/save-chunk', [TranscriptController::class, 'saveChunk']);
-            Route::post('transcript/start-processing', [TranscriptController::class, 'startProcessing']);
+            Route::post('transcript/start-processing', [TranscriptController::class, 'startProcessing'])->middleware(['ai.budget', 'throttle:ai-expensive']);
             Route::get('transcript', [TranscriptController::class, 'show']);
             Route::post('transcript/process', [TranscriptController::class, 'process']);
             Route::get('transcript/status', [TranscriptController::class, 'status']);
             Route::get('transcript/audio', [TranscriptController::class, 'audio']);
 
             // Chat
-            Route::post('chat', [ChatController::class, 'sendMessage']);
+            Route::post('chat', [ChatController::class, 'sendMessage'])->middleware(['ai.budget', 'throttle:ai']);
             Route::get('chat/history', [ChatController::class, 'history']);
 
             // Explain
-            Route::post('explain', [ExplainController::class, 'explain']);
+            Route::post('explain', [ExplainController::class, 'explain'])->middleware(['ai.budget', 'throttle:ai']);
 
             // Education (patient education document with tool use)
-            Route::post('education', [EducationController::class, 'generate']);
+            Route::post('education', [EducationController::class, 'generate'])->middleware(['ai.budget', 'throttle:ai-expensive']);
 
             // Observations (visit-scoped)
             Route::get('observations', [ObservationController::class, 'index']);
@@ -168,7 +168,7 @@ Route::prefix('v1')->group(function () {
             Route::get('patients/{patient}/observations', [DoctorController::class, 'patientObservations']);
             Route::get('notifications', [DoctorController::class, 'notifications']);
             Route::post('messages/{message}/reply', [DoctorController::class, 'reply']);
-            Route::post('messages/{message}/inquire', [DoctorController::class, 'inquire']);
+            Route::post('messages/{message}/inquire', [DoctorController::class, 'inquire'])->middleware(['ai.budget', 'throttle:ai-expensive']);
             Route::post('patients/{patient}/quick-action', [DoctorController::class, 'quickAction']);
         });
 
