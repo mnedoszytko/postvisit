@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Demo mode banner -->
     <div v-if="isDemoUser" class="bg-amber-400 text-amber-900 text-sm font-medium sticky top-0 z-50">
-      <div class="max-w-4xl mx-auto px-4 h-10 flex items-center justify-between">
+      <div class="max-w-6xl mx-auto px-4 h-10 flex items-center justify-between">
         <div class="flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -29,8 +29,8 @@
     </div>
 
     <!-- Header -->
-    <header :class="['bg-white border-b border-emerald-200 sticky z-40', isDemoUser ? 'top-10' : 'top-0']">
-      <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+    <header :class="['bg-white border-b border-emerald-200 sticky z-40', isDemoUser ? 'top-10' : 'top-0']" :style="chatMarginStyle">
+      <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <router-link to="/profile" class="flex items-center">
             <img src="/images/logo-full.png" alt="PostVisit.ai" class="h-7" />
@@ -191,25 +191,27 @@
       </div>
     </header>
 
-    <!-- Main content — add right margin on desktop when chat is open -->
-    <main
-      :class="[wide ? 'max-w-7xl' : 'max-w-4xl', 'mx-auto px-4 py-6']"
-      :style="chatMarginStyle"
-    >
-      <slot />
-    </main>
+    <!-- Main content — wrapper reserves space for chat, content centers inside -->
+    <div :style="chatMarginStyle">
+      <main
+        :class="[wide ? '' : 'max-w-6xl', 'mx-auto px-4 py-6']"
+      >
+        <slot />
+      </main>
+    </div>
 
     <!-- Disclaimer footer -->
-    <footer
-      :class="[wide ? 'max-w-7xl' : 'max-w-4xl', 'mx-auto px-4 py-4 text-center']"
-      :style="chatMarginStyle"
-    >
+    <div :style="chatMarginStyle">
+      <footer
+        :class="[wide ? '' : 'max-w-6xl', 'mx-auto px-4 py-4 text-center']"
+      >
       <p class="text-xs text-gray-400 leading-relaxed">
         All clinical scenarios, patient data, and medical records displayed in this application are entirely fictional,
         created for demonstration purposes only, and do not depict any real person or actual medical encounter.
       </p>
       <p class="text-[10px] text-gray-300 mt-2">build {{ gitHash }}</p>
-    </footer>
+      </footer>
+    </div>
 
     <!-- Desktop: fixed chat panel (right side, below headers) -->
     <div
