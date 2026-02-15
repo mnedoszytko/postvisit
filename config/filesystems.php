@@ -61,7 +61,7 @@ return [
 
         'audio_backup' => [
             'driver' => 'local',
-            'root' => env('AUDIO_BACKUP_PATH', '/Users/nedo/Documents/postvisit-audio-backups'),
+            'root' => env('AUDIO_BACKUP_PATH', storage_path('app/audio-backups')),
             'throw' => false,
             'report' => false,
         ],
