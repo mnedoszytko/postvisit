@@ -36,6 +36,7 @@ export const useChatStore = defineStore('chat', {
                 thinking: '',
                 thinkingPhase: true,
                 streaming: true,
+                effort: null,
             });
 
             try {
@@ -78,7 +79,9 @@ export const useChatStore = defineStore('chat', {
                             if (payload === '[DONE]') continue;
                             try {
                                 const parsed = JSON.parse(payload);
-                                if (parsed.quick) {
+                                if (parsed.effort) {
+                                    this.messages[aiIndex].effort = parsed.effort;
+                                } else if (parsed.quick) {
                                     this.messages[aiIndex].quickContent += parsed.quick;
                                     if (this.messages[aiIndex].thinkingPhase) {
                                         this.messages[aiIndex].thinkingPhase = false;
