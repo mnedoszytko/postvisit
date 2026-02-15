@@ -168,19 +168,41 @@ curl -X POST http://postvisit.test/api/v1/auth/login \
 | Upload Tokens | 2 | QR code mobile upload tokens, status polling |
 | Demo | 10 | Quick-start, status, reset, simulate alerts, scenario list, photos, animations, start scenario, switch role |
 
+## Claude Opus 4.6 — Deep Integration
+
+PostVisit.ai is built to demonstrate the full capabilities of Claude Opus 4.6. Every AI feature leverages a specific Opus 4.6 capability:
+
+| Opus 4.6 Feature | How PostVisit.ai Uses It |
+|-------------------|--------------------------|
+| **Extended Thinking** | Per-subsystem thinking budgets (1K-16K tokens). Chat, escalation detection, clinical reasoning, and transcript processing each get calibrated budgets. Adaptive effort routing adjusts thinking depth per question complexity. |
+| **1M Context Window** | 8-layer context assembly loads the full clinical picture: SOAP note + transcript + patient history + vitals + medications + FDA safety data + clinical guidelines (full-text PMC articles) + personal medical library. Typical: 60K-180K tokens per request. |
+| **Tool Use** | Agentic loop with 5 medical tools: drug interaction checks (RxNorm), drug safety info (OpenFDA/DailyMed), lab reference ranges, guideline search, adverse event queries. AI decides which tools to call during patient education generation and clinical reasoning. |
+| **Prompt Caching** | System prompts and clinical guidelines cached with 5-minute TTL using `CacheControlEphemeral`. 78% reduction in input token costs for multi-message conversations. |
+| **Streaming (SSE)** | Raw cURL streaming bypasses PSR-18 buffering for true token-by-token delivery. Separate channels for thinking and response text give patients transparency into AI reasoning. |
+| **Safety (ASL-4)** | Thinking-backed escalation detection: Opus reasons through patient context before classifying urgency. Plan-Execute-Verify pipeline validates clinical responses against evidence. |
+
+### 3-Tier Comparison Architecture
+
+The system implements three AI tiers to demonstrate progressive value:
+
+```
+                    Good (Sonnet)    Better (Opus)    Opus 4.6 (Full)
+Extended Thinking:       No           Chat+Scribe      All subsystems
+Clinical Guidelines:     None         None             Full-text PMC
+Escalation Detection:    Keywords     Keywords+AI      Keywords+AI+Thinking
+Clinical Reasoning:      No           No               Plan-Execute-Verify
+Thinking Budget:         0            16K tokens       34K tokens
+```
+
+Switching tiers in real-time during the demo shows the progressive improvement in reasoning depth, response quality, and safety detection.
+
+> **Full technical deep-dive with code examples: [`docs/opus-4.6-deep-dive.md`](docs/opus-4.6-deep-dive.md)**
+
 ## AI Architecture
 
-PostVisit.ai uses a 5-layer context assembly pattern to give Claude full visit context:
-
-1. **Visit Data** -- SOAP note, observations, test results, transcript
-2. **Patient Record** -- Demographics, conditions, active prescriptions
-3. **Clinical Guidelines** -- Specialty-specific guidelines for the visit type
-4. **Medications** -- Drug details, dosing, interactions from RxNorm
-5. **FDA Safety Data** -- Adverse event reports (FAERS) and official drug labels from OpenFDA
-
 15 AI services in `app/Services/AI/`:
-- **QaAssistant** -- Streaming Q&A with escalation detection
-- **ClinicalReasoningPipeline** -- Tool use orchestration: medication lookup, guideline retrieval, evidence synthesis
+- **QaAssistant** -- Streaming Q&A with escalation detection and adaptive thinking
+- **ClinicalReasoningPipeline** -- Plan-Execute-Verify with tool use orchestration
 - **ToolExecutor** -- Executes AI tool calls (drug info, interactions, adverse events, guidelines)
 - **MedicalExplainer** -- Term-level explanations in patient context
 - **PatientEducationGenerator** -- Generates personalized education documents with tool use
@@ -188,12 +210,12 @@ PostVisit.ai uses a 5-layer context assembly pattern to give Claude full visit c
 - **LibraryItemAnalyzer** -- Analyzes saved articles and URLs for the medical library
 - **ScribeProcessor** -- Processes visit transcripts into structured SOAP notes
 - **TermExtractor** -- Extracts and classifies medical terms from visit notes
-- **EscalationDetector** -- Keyword + AI urgency evaluation
+- **EscalationDetector** -- Keyword + AI urgency evaluation with thinking-backed safety
 - **SessionSummarizer** -- Summarizes chat sessions for doctor review
-- **AiTierManager** -- Routes requests to Quick/Balanced/Deep analysis tiers
-- **ContextAssembler** -- Layered context builder (5-layer assembly)
+- **AiTierManager** -- Routes requests to Good/Better/Opus 4.6 tiers
+- **ContextAssembler** -- 8-layer context builder for the 1M context window
 - **PromptLoader** -- Loads versioned prompts from `prompts/` directory
-- **AnthropicClient** -- Low-level Anthropic API client with streaming support
+- **AnthropicClient** -- Low-level Anthropic API client with streaming + thinking support
 
 ## Testing
 
@@ -243,7 +265,8 @@ demo/                         # Demo data, scenarios, patient photos, animations
 - [`docs/demo-scenarios.md`](docs/demo-scenarios.md) -- Demo scenario definitions
 - [`docs/deployment.md`](docs/deployment.md) -- Production deployment guide
 - [`docs/clinical-sources.md`](docs/clinical-sources.md) -- Clinical data sources and guidelines
-- [`docs/opus-4.6-usage.md`](docs/opus-4.6-usage.md) -- Opus 4.6 feature usage documentation
+- [`docs/opus-4.6-deep-dive.md`](docs/opus-4.6-deep-dive.md) -- **Opus 4.6 deep dive with code examples**
+- [`docs/opus-4.6-usage.md`](docs/opus-4.6-usage.md) -- Opus 4.6 feature usage and rationale
 - [`docs/KEEP-THINKING.md`](docs/KEEP-THINKING.md) -- Clinical depth iteration log
 - [`docs/lessons.md`](docs/lessons.md) -- Development lessons learned
 
