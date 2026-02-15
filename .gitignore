@@ -32,6 +32,10 @@ Thumbs.db
 /showcase/package-lock.json
 /showcase/bun.lock
 
+# Office documents and temp files (planning assets, not source code)
+*.docx
+~$*
+
 # Confidential patient recordings and transcripts — NEVER commit
 /demo/recordings/
 /demo/transcripts/

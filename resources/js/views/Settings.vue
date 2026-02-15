@@ -93,6 +93,18 @@
               Export
             </button>
           </div>
+          <Transition
+            enter-active-class="transition ease-out duration-200"
+            enter-from-class="opacity-0 translate-y-1"
+            enter-to-class="opacity-100 translate-y-0"
+            leave-active-class="transition ease-in duration-150"
+            leave-from-class="opacity-100 translate-y-0"
+            leave-to-class="opacity-0 translate-y-1"
+          >
+            <div v-if="exportToast" class="mx-5 mb-4 rounded-lg bg-indigo-50 border border-indigo-200 px-4 py-3 text-sm text-indigo-700">
+              FHIR R4 export will be available in a future release.
+            </div>
+          </Transition>
         </div>
       </section>
 
@@ -165,7 +177,7 @@
 </template>
 
 <script setup>
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import PatientLayout from '@/layouts/PatientLayout.vue';
 import DoctorLayout from '@/layouts/DoctorLayout.vue';
@@ -173,6 +185,7 @@ import AiTierSelector from '@/components/AiTierSelector.vue';
 
 const auth = useAuthStore();
 const layout = computed(() => auth.isDoctor ? DoctorLayout : PatientLayout);
+const exportToast = ref(false);
 
 // --- Document Permissions (mock state) ---
 const permissions = reactive([
@@ -197,7 +210,8 @@ const permissions = reactive([
 ]);
 
 function exportData() {
-  alert('FHIR R4 export will be available in a future release.');
+  exportToast.value = true;
+  setTimeout(() => exportToast.value = false, 3000);
 }
 
 const legalLinks = [
