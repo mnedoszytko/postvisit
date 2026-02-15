@@ -50,18 +50,18 @@
         <div
           v-if="showVideo"
           class="fixed inset-0 z-50 flex items-center justify-center p-4"
-          @click.self="showVideo = false"
         >
-          <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-          <div class="relative w-full max-w-4xl aspect-video rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+          <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="showVideo = false" />
+          <div class="relative w-full max-w-4xl">
             <button
               @click="showVideo = false"
-              class="absolute -top-10 right-0 text-white/80 hover:text-white transition-colors z-10"
+              class="absolute -right-2 -top-12 text-white/80 hover:text-white transition-colors z-10 p-2"
             >
               <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
+            <div class="aspect-video rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
             <iframe
               v-if="showVideo"
               src="https://www.youtube.com/embed/eX4_K-DrgvM?autoplay=1&rel=0"
@@ -70,6 +70,7 @@
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
             />
+            </div>
           </div>
         </div>
       </Transition>
