@@ -15,12 +15,42 @@ import DoctorDashboard from '@/views/DoctorDashboard.vue';
 import DoctorPatientDetail from '@/views/DoctorPatientDetail.vue';
 import DemoMode from '@/views/DemoMode.vue';
 const ScenarioPicker = () => import('@/views/ScenarioPicker.vue');
+const Showcase = () => import('@/views/Showcase.vue');
+const ShowcaseEhr = () => import('@/views/ShowcaseEhr.vue');
+const ShowcaseEbm = () => import('@/views/ShowcaseEbm.vue');
+const ShowcaseTeaser = () => import('@/views/ShowcaseTeaser.vue');
+const ShowcaseTech = () => import('@/views/ShowcaseTech.vue');
 
 const routes = [
     {
         path: '/',
         name: 'landing',
         component: Landing,
+    },
+    {
+        path: '/showcase',
+        name: 'showcase',
+        component: Showcase,
+    },
+    {
+        path: '/showcase/ehr',
+        name: 'showcase-ehr',
+        component: ShowcaseEhr,
+    },
+    {
+        path: '/showcase/ebm',
+        name: 'showcase-ebm',
+        component: ShowcaseEbm,
+    },
+    {
+        path: '/showcase/teaser',
+        name: 'showcase-teaser',
+        component: ShowcaseTeaser,
+    },
+    {
+        path: '/showcase/tech',
+        name: 'showcase-tech',
+        component: ShowcaseTech,
     },
     {
         path: '/login',
