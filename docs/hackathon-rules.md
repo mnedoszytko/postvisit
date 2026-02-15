@@ -90,14 +90,14 @@ Boris Cherny, Cat Wu, Thariq Shihipar, Lydia Hallie, Ado Kukic, Jason Bigman —
 
 ## PostVisit.ai — Strategy Notes
 
-### Gdzie jesteśmy mocni
-- **Impact (25%)** — Healthcare, real problem, real doctor building it. Trudno o lepszy "who benefits and how much does it matter".
-- **Demo (30%)** — Scenariusz z prawdziwym lekarzem, prawdziwe nagranie wizyty, Golden Gate Bridge. Storytelling > slides.
+### Where we are strong
+- **Impact (25%)** — Healthcare, real problem, real doctor building it. Hard to beat on "who benefits and how much does it matter".
+- **Demo (30%)** — Scenario with a real physician, real visit recording, Golden Gate Bridge. Storytelling > slides.
 
-### Gdzie musimy docisnąć
-- **Opus 4.6 Use (25%)** — Musimy jasno pokazać: 1M context window (cały kontekst wizyty + guidelines + patient history w jednym prompcie), extended thinking, prompt caching, 128K output. Nie wystarczy "używamy Opusa do chatu".
-- **Depth & Execution (20%)** — Iteracja, craft, nie "quick hack". Git history, docs, architecture decisions, test coverage.
+### Where we need to push harder
+- **Opus 4.6 Use (25%)** — We need to clearly demonstrate: 1M context window (entire visit context + guidelines + patient history in a single prompt), extended thinking, prompt caching, 128K output. Just "we use Opus for chat" is not enough.
+- **Depth & Execution (20%)** — Iteration, craft, not a "quick hack". Git history, docs, architecture decisions, test coverage.
 
-### Special prizes — nasze szanse
-- **"Most Creative Opus 4.6 Exploration"** — "Reverse scribe" (patient-initiated transcription) + 1M context window z guidelines + patient health record to unikalne combo. Warto podkreślić.
-- **"Keep Thinking"** — Iteracja jest naszą siłą: decisions.md z 26 decyzjami, lessons learned, architecture evolution. Warto pokazać w README/video.
+### Special prizes — our chances
+- **"Most Creative Opus 4.6 Exploration"** — "Reverse scribe" (patient-initiated transcription) + 1M context window with guidelines + patient health record is a unique combo. Worth highlighting.
+- **"Keep Thinking"** — Iteration is our strength: decisions.md with 26 decisions, lessons learned, architecture evolution. Worth showcasing in the README/video.

@@ -1,49 +1,49 @@
 # STT & Ambient Scribing — research
 
-> Research z 2026-02-10. Kontekst: provider-agnostic speech-to-text dla PostVisit.ai (iOS mobile app).
+> Research from 2026-02-10. Context: provider-agnostic speech-to-text for PostVisit.ai (iOS mobile app).
 
-## Kluczowy wniosek: prosto, wymiennie, nie zamykamy się
+## Key takeaway: keep it simple, swappable, no vendor lock-in
 
-Aplikacja jest mobilna (iOS). Budujemy abstraction layer (Adapter pattern) — provider wymienialny z `.env`. Nie komplikujemy.
+The app is mobile (iOS). We build an abstraction layer (Adapter pattern) — the provider is swappable via `.env`. No overcomplication.
 
-## Providerzy — trzy opcje + fallback
+## Providers — three options + fallback
 
 ### 1. Whisper (primary — open source)
-- **OpenAI Whisper** — darmowy, offline, self-hosted
-- Accuracy: 90-95% (ogólna), medical terms wymagają custom vocabulary
-- Brak diaryzacji (trzeba oddzielnie: Pyannote)
-- **whisper.cpp** — 70x szybszy, C++, działa na urządzeniu
-- **faster-whisper** — CTranslate2, szybszy inference na serwerze
-- **WhisperX** — Whisper + Pyannote + word timestamps w jednym (najlepsza opcja self-hosted)
-- HIPAA: ✅ dane nie opuszczają infry
+- **OpenAI Whisper** — free, offline, self-hosted
+- Accuracy: 90-95% (general), medical terms require custom vocabulary
+- No diarization (requires a separate tool: Pyannote)
+- **whisper.cpp** — 70x faster, C++, runs on-device
+- **faster-whisper** — CTranslate2, faster inference on the server
+- **WhisperX** — Whisper + Pyannote + word timestamps in one (best self-hosted option)
+- HIPAA: ✅ data never leaves our infrastructure
 
 ### 2. Google Cloud STT (cloud option)
 - Model `medical_conversation` + `medical_dictation`
-- 120 języków
-- Medical term accuracy: ~50% (słabsza niż dedykowane)
-- Cena: $0.006-0.009/s
-- HIPAA: ✅ z BAA
+- 120 languages
+- Medical term accuracy: ~50% (weaker than dedicated solutions)
+- Price: $0.006-0.009/s
+- HIPAA: ✅ with BAA
 
 ### 3. iOS native Speech Recognition (on-device)
-- Apple Speech Framework — działa offline na iOS 17+
-- Zero kosztów, zero latencji
-- Accuracy: dobra dla ogólnej mowy, słabsza na terminologii medycznej
-- Brak diaryzacji
-- Najlepsza opcja na "quick capture" z telefonu pacjenta
-- Dane nie opuszczają urządzenia
+- Apple Speech Framework — works offline on iOS 17+
+- Zero cost, zero latency
+- Accuracy: good for general speech, weaker on medical terminology
+- No diarization
+- Best option for "quick capture" from the patient's phone
+- Data never leaves the device
 
-### Fallback: dedykowane medyczne STT
-Gdyby accuracy ogólnych modeli nie wystarczała:
+### Fallback: dedicated medical STT
+If accuracy of general models proves insufficient:
 
-| Provider | WER (medical) | Cena | Diaryzacja | HIPAA |
-|----------|--------------|------|------------|-------|
+| Provider | WER (medical) | Price | Diarization | HIPAA |
+|----------|--------------|-------|------------|-------|
 | Deepgram Nova-3 Medical | 3.45% | $0.0077/min | ✅ built-in | ✅ BAA |
-| AssemblyAI Slam-1 | 66% mniej missed entities | Enterprise | ✅ built-in | ✅ BAA |
+| AssemblyAI Slam-1 | 66% fewer missed entities | Enterprise | ✅ built-in | ✅ BAA |
 | AWS Transcribe Medical | 57.9% term recognition | $1.44/h | ✅ | ✅ |
 
-To jest backup — nie primary. Nie komplikujemy stacku na start.
+This is a backup — not primary. We don't complicate the stack at launch.
 
-## Architektura abstraction layer
+## Abstraction layer architecture
 
 ```
 ┌─────────────────────────────────────────┐
@@ -67,7 +67,7 @@ To jest backup — nie primary. Nie komplikujemy stacku na start.
 └────────┘ └────────┘ └─────────┘ └──────────┘
 ```
 
-W `.env`:
+In `.env`:
 ```
 STT_PROVIDER=whisper
 STT_FALLBACK=google
@@ -84,7 +84,7 @@ $this->app->bind(SpeechToTextProvider::class, function () {
 });
 ```
 
-**iOS native** jest osobnym case'em — transkrypcja dzieje się na urządzeniu, backend dostaje gotowy tekst. Nie przechodzi przez abstraction layer na serwerze.
+**iOS native** is a separate case — transcription happens on-device, the backend receives the finished text. It does not go through the server-side abstraction layer.
 
 ## Audio flow (iOS app)
 
@@ -113,33 +113,33 @@ $this->app->bind(SpeechToTextProvider::class, function () {
 
 ## Medical scribing features
 
-### Speaker diarization (kto mówi?)
+### Speaker diarization (who is speaking?)
 - WhisperX + Pyannote: doctor vs patient labeling (self-hosted)
 - Google Cloud STT: built-in speaker diarization
-- iOS native: brak — trzeba heurystyki lub osobny model
+- iOS native: none — requires heuristics or a separate model
 
-### Medical entity extraction (po transkrypcji)
-- Claude Opus 4.6 wyciąga: objawy, diagnozy, leki, dawki, badania
-- Structured output (JSON) → zapisane w Visit context
+### Medical entity extraction (post-transcription)
+- Claude Opus 4.6 extracts: symptoms, diagnoses, medications, dosages, lab orders
+- Structured output (JSON) → stored in Visit context
 
 ### SOAP note generation
-- Transkrypt → Claude z system promptem → Subjective / Objective / Assessment / Plan
-- Lekarz review'uje i zatwierdza (doctor-in-the-loop)
+- Transcript → Claude with system prompt → Subjective / Objective / Assessment / Plan
+- Physician reviews and approves (doctor-in-the-loop)
 
 ## Ambient scribing — best practices
 
-1. **Zgoda pacjenta** — explicite, przed nagrywaniem
-2. **Audio nie opuszcza infry** (ideał) — lub szyfrowane in transit
-3. **Kasowanie surowego audio** po transkrypcji (retention policy)
-4. **Audit log** — kto nagrywał, kiedy, co transkrybowano
-5. **Minimalizacja** — transkrypt bez identyfikatorów jeśli nie potrzebne
+1. **Patient consent** — explicit, obtained before recording
+2. **Audio never leaves our infrastructure** (ideal) — or encrypted in transit
+3. **Delete raw audio** after transcription (retention policy)
+4. **Audit log** — who recorded, when, what was transcribed
+5. **Minimization** — transcript without identifiers when not needed
 
-## Na demo (hackathon)
+## For the demo (hackathon)
 
-Najprostsza ścieżka:
-1. Nagrany audio clip (scenariusz kardiologiczny) — pre-recorded
-2. Whisper (self-hosted) transkrybuje
-3. Claude wyciąga entities + generuje summary
-4. Wynik widoczny na ekranie pacjenta
+Simplest path:
+1. Pre-recorded audio clip (cardiology scenario) — pre-recorded
+2. Whisper (self-hosted) transcribes
+3. Claude extracts entities + generates summary
+4. Result displayed on the patient's screen
 
-Nie potrzebujemy real-time streaming na demo. Batch wystarczy.
+We don't need real-time streaming for the demo. Batch is sufficient.

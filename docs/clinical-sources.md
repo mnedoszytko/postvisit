@@ -1,169 +1,169 @@
 # Clinical Data Sources — research
 
-> Research z 2026-02-10. Kontekst: skąd wziąć wytyczne kliniczne i dane medyczne do kontekstu AI w PostVisit.ai.
+> Research from 2026-02-10. Context: where to source clinical guidelines and medical data for AI context in PostVisit.ai.
 
-## Kluczowy wniosek: większość jest open access
+## Key takeaway: most sources are open access
 
-Dobre wiadomości — najważniejsze wytyczne kliniczne i bazy wiedzy medycznej są dostępne za darmo z licencjami pozwalającymi na użycie. Największym wyzwaniem jest nie licencja, ale format i objętość danych.
+Good news — the most important clinical guidelines and medical knowledge bases are available for free with licenses that permit use. The biggest challenge is not licensing, but data format and volume.
 
-## 1. Wytyczne kliniczne — open access
+## 1. Clinical guidelines — open access
 
 ### ESC (European Society of Cardiology)
-- **Status:** Open access (CC-BY przez Oxford Academic / European Heart Journal)
-- **Dostępne:** escardio.org/Guidelines — PDF do pobrania
+- **Status:** Open access (CC-BY via Oxford Academic / European Heart Journal)
+- **Available:** escardio.org/Guidelines — PDF download
 - **2025 guidelines:** Valvular Heart Disease, CVD & Pregnancy, Mental Health & CVD
-- **Dla demo (kardiologia):** ✅ idealne — ESC cardiology guidelines są bezpośrednio relevantne
+- **For demo (cardiology):** ideal — ESC cardiology guidelines are directly relevant
 
 ### AHA (American Heart Association)
 - **Status:** Open access (Circulation, JACC journals)
 - **2025 guidelines:** Acute Coronary Syndromes, CPR, High Blood Pressure Management
-- **Format:** PDF + web summaries na professional.heart.org
+- **Format:** PDF + web summaries at professional.heart.org
 
 ### NICE (UK)
-- **Status:** Open access, **CC-BY-NC-ND 4.0** lub CC-BY 4.0
-- **Uwaga:** CC-BY-NC = non-commercial use only — ważne dla przyszłego modelu biznesowego
-- **Dostęp:** nice.org.uk/guidance/published
+- **Status:** Open access, **CC-BY-NC-ND 4.0** or CC-BY 4.0
+- **Note:** CC-BY-NC = non-commercial use only — important for future business model
+- **Access:** nice.org.uk/guidance/published
 - **2025-2026 updates:** breast cancer, heart failure, bipolar, pneumonia
 
 ### WHO
-- **Status:** Fully open, **CC-BY 3.0 IGO** — najbardziej permissive
-- **Commercial use:** ✅ dozwolony
-- **Dostęp:** who.int — PDF download
+- **Status:** Fully open, **CC-BY 3.0 IGO** — most permissive
+- **Commercial use:** allowed
+- **Access:** who.int — PDF download
 
-### Podsumowanie licencji
+### License summary
 
-| Źródło | Licencja | Commercial use? | Redistribution? |
+| Source | License | Commercial use? | Redistribution? |
 |--------|----------|-----------------|-----------------|
-| ESC | CC-BY (journal) | ✅ | ✅ z atrybucją |
-| AHA | CC-BY (journal) | ✅ | ✅ z atrybucją |
-| NICE | CC-BY-NC lub CC-BY-ND | ❌ (BY-NC) | ✅ z atrybucją |
-| WHO | CC-BY 3.0 IGO | ✅ | ✅ z atrybucją |
+| ESC | CC-BY (journal) | yes | yes, with attribution |
+| AHA | CC-BY (journal) | yes | yes, with attribution |
+| NICE | CC-BY-NC or CC-BY-ND | no (BY-NC) | yes, with attribution |
+| WHO | CC-BY 3.0 IGO | yes | yes, with attribution |
 
-## 2. Bazy wiedzy medycznej i ontologie
+## 2. Medical knowledge bases and ontologies
 
-### Otwarte (free, production-ready)
+### Open (free, production-ready)
 
-| Baza | Co zawiera | Licencja | Format | API? |
+| Database | Contents | License | Format | API? |
 |------|-----------|----------|--------|------|
-| **ICD-11** | Kody diagnostyczne (następca ICD-10) | CC-BY-ND 3.0 IGO (free) | XML, JSON | ✅ ICD API |
-| **RxNorm** | Leki: nazwy, dawki, formy | Public domain (NLM) | REST API + download | ✅ RxNav API |
-| **LOINC** | Kody badań laboratoryjnych | CC-BY (free) | API + tabele | ✅ |
-| **MeSH** | Medical Subject Headings (indeksowanie PubMed) | Public domain | XML, RDF | ✅ |
-| **DailyMed** | Oficjalne etykiety leków FDA | Public domain | XML, JSON, PDF | ✅ |
-| **OpenFDA** | Leki, adverse events, recalls | Public domain | REST API (JSON) | ✅ |
-| **SNOMED CT** | Terminologia kliniczna | Free w USA + krajach IHTSDO | Download z NLM | ✅ |
+| **ICD-11** | Diagnostic codes (successor to ICD-10) | CC-BY-ND 3.0 IGO (free) | XML, JSON | ICD API |
+| **RxNorm** | Drugs: names, dosages, forms | Public domain (NLM) | REST API + download | RxNav API |
+| **LOINC** | Lab test codes | CC-BY (free) | API + tables | yes |
+| **MeSH** | Medical Subject Headings (PubMed indexing) | Public domain | XML, RDF | yes |
+| **DailyMed** | Official FDA drug labels | Public domain | XML, JSON, PDF | yes |
+| **OpenFDA** | Drugs, adverse events, recalls | Public domain | REST API (JSON) | yes |
+| **SNOMED CT** | Clinical terminology | Free in USA + IHTSDO member countries | Download from NLM | yes |
 
 ### UMLS Metathesaurus
-- Integruje SNOMED CT + RxNorm + LOINC + MeSH + więcej
-- Free license z NLM (bez opłat)
-- **Dla PostVisit.ai:** jedno źródło do mapowania terminologii medycznej
+- Integrates SNOMED CT + RxNorm + LOINC + MeSH + more
+- Free license from NLM (no fees)
+- **For PostVisit.ai:** single source for mapping medical terminology
 
-## 3. PubMed i literatura medyczna
+## 3. PubMed and medical literature
 
-| Zasób | Dostęp | Format | Dla PostVisit.ai |
+| Resource | Access | Format | For PostVisit.ai |
 |-------|--------|--------|-----------------|
-| **PubMed API** (E-utilities) | Free REST API | XML/JSON | Wyszukiwanie artykułów i guidelines |
-| **PubMed Central** | 2M+ artykułów full-text | FTP, API | Open-access subset z CC-BY |
-| **ClinicalTrials.gov API** | Free REST API v2.0 (OpenAPI 3.0) | JSON | Najnowsze badania kliniczne |
-| **Cochrane** | Subskrypcja (darmowe summaries) | Web | Systematic reviews — gold standard |
+| **PubMed API** (E-utilities) | Free REST API | XML/JSON | Searching articles and guidelines |
+| **PubMed Central** | 2M+ full-text articles | FTP, API | Open-access subset with CC-BY |
+| **ClinicalTrials.gov API** | Free REST API v2.0 (OpenAPI 3.0) | JSON | Latest clinical trials |
+| **Cochrane** | Subscription (free summaries) | Web | Systematic reviews — gold standard |
 
-## 4. Clinical Decision Support (otwarte standardy)
+## 4. Clinical Decision Support (open standards)
 
 ### CDS Hooks
-- Standard HL7, open source
-- EHR triggeruje event → zewnętrzny CDS service odpowiada "cards" (sugestie, linki)
-- **Dla PostVisit.ai:** możemy być CDS Hook service — EHR wysyła kontekst wizyty, my zwracamy wyjaśnienia
+- HL7 standard, open source
+- EHR triggers event -> external CDS service responds with "cards" (suggestions, links)
+- **For PostVisit.ai:** we could act as a CDS Hook service — EHR sends visit context, we return explanations
 
 ### OpenCDS
 - Apache 2.0 license
-- Framework do budowania standards-based CDS
-- Implementuje CDS Hooks interface
+- Framework for building standards-based CDS
+- Implements CDS Hooks interface
 
-## 5. Context window — ile zmieścimy?
+## 5. Context window — how much can we fit?
 
-### Rozmiar typowych guidelines
+### Typical guideline sizes
 
-| Wytyczna | Strony | Szacunek tokenów |
+| Guideline | Pages | Estimated tokens |
 |----------|--------|-----------------|
-| ESC Cardiology guideline (pełna) | 100-150 stron | ~65,000-100,000 tokens |
-| NICE Blood Pressure guideline | ~60 stron | ~40,000 tokens |
-| AHA CPR guideline | ~80 stron | ~50,000 tokens |
-| Kilka guidelines razem | | ~200,000-300,000 tokens |
+| ESC Cardiology guideline (full) | 100-150 pages | ~65,000-100,000 tokens |
+| NICE Blood Pressure guideline | ~60 pages | ~40,000 tokens |
+| AHA CPR guideline | ~80 pages | ~50,000 tokens |
+| Multiple guidelines combined | | ~200,000-300,000 tokens |
 
-### 1M context window pomieści:
-- **4-8 pełnych guidelines** jednocześnie
-- Plus dane pacjenta (~5-10K tokens)
-- Plus historia konwersacji (~5-20K tokens)
-- Plus system prompt i guardrails (~5K tokens)
-- **Zostaje ~600-700K tokens zapasu**
+### 1M context window can hold:
+- **4-8 full guidelines** simultaneously
+- Plus patient data (~5-10K tokens)
+- Plus conversation history (~5-20K tokens)
+- Plus system prompt and guardrails (~5K tokens)
+- **Leaves ~600-700K tokens of headroom**
 
 ### Anthropic Prompt Caching — game changer
-- Guidelines ładowane raz → cache'owane na serwerze Anthropic
-- Kolejne requesty: **90% zniżka na tokeny** (cache hit)
-- Cache read tokens nie liczą się do limitu ITPM
-- **Latencja:** do 85% redukcji dla długich promptów
+- Guidelines loaded once -> cached on Anthropic's servers
+- Subsequent requests: **90% token cost reduction** (cache hit)
+- Cache read tokens don't count toward ITPM limit
+- **Latency:** up to 85% reduction for long prompts
 
-**Przykład ekonomii:**
-- Pierwszy request (guidelines + system prompt): 160K tokens = ~$2.40
+**Cost economics example:**
+- First request (guidelines + system prompt): 160K tokens = ~$2.40
 - Cached follow-up (patient query): 10K tokens = ~$0.15
-- W clinical setting: cache hit rate bardzo wysoki (ten sam pacjent, te same wytyczne)
+- In a clinical setting: cache hit rate is very high (same patient, same guidelines)
 
-## 6. Kwestia licencji: czy PDFy mogą być w open source repo?
+## 6. Licensing question: can PDFs be included in an open source repo?
 
-### Można wrzucić do repo:
-- **WHO guidelines** (CC-BY 3.0 IGO) — ✅ z atrybucją
-- **ESC guidelines** (CC-BY z journala) — ✅ z atrybucją
-- **AHA guidelines** (CC-BY z journala) — ✅ z atrybucją
-- **RxNorm, OpenFDA, DailyMed data** — ✅ public domain
+### Can be included in repo:
+- **WHO guidelines** (CC-BY 3.0 IGO) — yes, with attribution
+- **ESC guidelines** (CC-BY from journal) — yes, with attribution
+- **AHA guidelines** (CC-BY from journal) — yes, with attribution
+- **RxNorm, OpenFDA, DailyMed data** — yes, public domain
 
-### NIE wrzucać do repo:
-- **NICE** (CC-BY-NC) — nie do commercial repo
+### Should NOT be included in repo:
+- **NICE** (CC-BY-NC) — not for commercial repo
 - **UpToDate, DynaMed, BMJ Best Practice** — subscription, copyright
 - **Institutional guidelines** — proprietary
 
-### Rekomendacja:
-Na demo: wrzuć 1 ESC guideline (CC-BY) jako text file w `demo/guidelines/`. Bezpieczne licencyjnie.
+### Recommendation:
+For demo: include 1 ESC guideline (CC-BY) as a text file in `demo/guidelines/`. License-safe.
 
-Na produkcję: guidelines pobierane dynamicznie (API/agent), nie bundlowane w repo.
+For production: guidelines fetched dynamically (API/agent), not bundled in repo.
 
-## 7. Alternatywa: AI agent szuka evidence online
+## 7. Alternative: AI agent searches for evidence online
 
-Jeśli nie chcemy/nie możemy bundlować PDFów — budujemy agenta, który szuka evidence na żywo.
+If we don't want to or can't bundle PDFs — we build an agent that searches for evidence in real time.
 
-### Dostępne API do live search
+### Available APIs for live search
 
-#### Tier 1 — darmowe, bez rejestracji
-| API | Co daje | Rate limit | Full text? |
+#### Tier 1 — free, no registration required
+| API | What it provides | Rate limit | Full text? |
 |-----|---------|-----------|------------|
-| **PubMed E-utilities** | 38M+ artykułów, abstracts | 10 req/s (z API key) | Abstracts; full text przez PMC |
-| **Europe PMC** | 50M+ artykułów, w tym NHS guidelines | Reasonable use | ✅ open access articles |
+| **PubMed E-utilities** | 38M+ articles, abstracts | 10 req/s (with API key) | Abstracts; full text via PMC |
+| **Europe PMC** | 50M+ articles, including NHS guidelines | Reasonable use | open access articles |
 | **ClinicalTrials.gov v2.0** | 500K+ trials | ~50 req/min | Structured data |
-| **OpenAlex** | 474M+ publikacji | 100K credits/day | Abstracts + DOI links |
-| **NIH Clinical Table Search** | ICD-10, RxTerms, NPI kody | Nieograniczony | Structured lookup |
+| **OpenAlex** | 474M+ publications | 100K credits/day | Abstracts + DOI links |
+| **NIH Clinical Table Search** | ICD-10, RxTerms, NPI codes | Unlimited | Structured lookup |
 
-#### Tier 2 — darmowe, rejestracja wymagana
-| API | Co daje | Uwagi |
+#### Tier 2 — free, registration required
+| API | What it provides | Notes |
 |-----|---------|-------|
-| **Semantic Scholar** | Semantic search, citation graphs | 100 req/s z API key |
-| **OpenEvidence** | Evidence-based answers (AI-powered) | NPI verification wymagane |
+| **Semantic Scholar** | Semantic search, citation graphs | 100 req/s with API key |
+| **OpenEvidence** | Evidence-based answers (AI-powered) | NPI verification required |
 | **DrugBank** | 500K+ drugs, 1.4M drug-drug interactions | Free discovery tier |
 
-#### Tier 3 — wymagają umowy/subskrypcji
-| API | Co daje | Uwagi |
+#### Tier 3 — require agreement/subscription
+| API | What it provides | Notes |
 |-----|---------|-------|
 | **NICE Syndication API** | UK guidelines structured | License agreement |
 | **TRIP Database** | Clinical evidence search | Institutional request |
 | **Cochrane** | Systematic reviews | Contact Wiley |
 
-### Agent flow: szukanie evidence w kontekście wizyty
+### Agent flow: searching for evidence in visit context
 
 ```
 [Patient question] + [Visit context]
            │
            ▼
 [Claude Opus 4.6 — query planning]
-  "Pacjent pyta o interakcje propranololu z kofeiną"
-  → generuje search queries:
+  "Patient asks about propranolol-caffeine interaction"
+  → generates search queries:
     1. PubMed: "propranolol caffeine interaction"
     2. OpenFDA: drug interactions for propranolol
     3. DrugBank: propranolol interactions
@@ -184,38 +184,38 @@ Jeśli nie chcemy/nie możemy bundlować PDFów — budujemy agenta, który szuk
 [Response to patient with sources]
 ```
 
-### Kluczowe API na start
+### Key APIs to start with
 
-**PubMed E-utilities** — najpotężniejsze darmowe API medyczne:
-- `esearch.fcgi` — szukaj artykułów
-- `efetch.fcgi` — pobieraj abstracts/metadata
-- `elink.fcgi` — powiązane artykuły
-- Free API key: rejestracja na NCBI
+**PubMed E-utilities** — the most powerful free medical API:
+- `esearch.fcgi` — search articles
+- `efetch.fcgi` — fetch abstracts/metadata
+- `elink.fcgi` — related articles
+- Free API key: register at NCBI
 
-**Europe PMC** — lepsze niż PubMed dla full-text:
-- Zawiera wszystko z PubMed PLUS preprints, NHS guidelines, patenty
-- REST API bez rejestracji
-- Full text dla open access articles
+**Europe PMC** — better than PubMed for full-text:
+- Includes everything from PubMed PLUS preprints, NHS guidelines, patents
+- REST API without registration
+- Full text for open access articles
 
-**OpenFDA** — leki i bezpieczeństwo:
-- `/drug/label.json` — etykiety leków
+**OpenFDA** — drugs and safety:
+- `/drug/label.json` — drug labels
 - `/drug/event.json` — adverse events
 - Zero auth, public domain
 
-## 8. Jeśli guidelines NIE są dostępne — upload functionality
+## 8. If guidelines are NOT available — upload functionality
 
-Wiele instytucji ma **własne wytyczne** (Mayo Clinic, Cleveland Clinic, lokalne szpitale). Na produkcję potrzebna jest funkcja uploadu.
+Many institutions have **their own guidelines** (Mayo Clinic, Cleveland Clinic, local hospitals). For production, an upload feature is needed.
 
-### Pipeline przetwarzania
+### Processing pipeline
 
 ```
 Upload (PDF/DOCX)
   ↓
-Extraction (text, struktura, tabele)
+Extraction (text, structure, tables)
   ↓
-Chunking (5-10K token sekcje z metadanymi)
+Chunking (5-10K token sections with metadata)
   ↓
-Vectorization (embedding klinicznym modelem)
+Vectorization (embedding with clinical model)
   ↓
 Indexing (vector DB: Qdrant/Weaviate/Pinecone)
   ↓
@@ -223,17 +223,17 @@ Cache management (Anthropic prompt caching)
   ↓
 Retrieval (semantic search + reranking)
   ↓
-Injection do kontekstu Claude
+Injection into Claude context
 ```
 
-### Wymogi bezpieczeństwa dla uploadów
+### Security requirements for uploads
 - Encryption at rest (AES-256)
-- Role-based access (lekarz widzi guidelines swojej instytucji)
-- Audit log (kto uploadował, kto czytał)
+- Role-based access (doctor sees their institution's guidelines only)
+- Audit log (who uploaded, who accessed)
 - Secure purge policy
-- BAA z instytucją
+- BAA with institution
 
-## 9. Architektura źródeł wiedzy (zaktualizowana)
+## 9. Knowledge sources architecture (updated)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -262,21 +262,21 @@ Injection do kontekstu Claude
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 10. Co użyć na demo (hackathon)
+## 10. What to use for demo (hackathon)
 
 **Minimum:**
-- 1 ESC cardiology guideline (CC-BY, text w `demo/guidelines/`)
-- RxNorm API do weryfikacji leków (propranolol w scenariuszu demo)
-- Mock patient data z seed.md
+- 1 ESC cardiology guideline (CC-BY, text in `demo/guidelines/`)
+- RxNorm API for drug verification (propranolol in the demo scenario)
+- Mock patient data from seed.md
 
-**Rozszerzenie (jeśli czas pozwoli):**
-- Evidence Search Agent (PubMed + OpenFDA) — live search na pytanie pacjenta
-- ICD-11 API — kody diagnostyczne
-- Prompt caching dla guidelines
+**Extension (if time permits):**
+- Evidence Search Agent (PubMed + OpenFDA) — live search for patient questions
+- ICD-11 API — diagnostic codes
+- Prompt caching for guidelines
 - DrugBank — drug-drug interactions
 
-**Nie na demo:**
-- Upload functionality (zbyt dużo pracy)
-- Vector DB / RAG (overkill na hackathon — 1M context window wystarczy)
+**Not for demo:**
+- Upload functionality (too much work)
+- Vector DB / RAG (overkill for hackathon — 1M context window is sufficient)
 - Cochrane systematic reviews
-- NICE API (wymaga license agreement)
+- NICE API (requires license agreement)

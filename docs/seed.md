@@ -1,125 +1,125 @@
-# PostVisit.ai — dokumentacja robocza (hackathon / demo)
+# PostVisit.ai — Working Documentation (hackathon / demo)
 
-## 0. Kontekst hackathonu i kryteria oceny
-Ten projekt powstaje **w ramach hackathonu Built with Opus 4.6** i musi spełnić jego warunki. Najważniejsze punkty do podkreślenia w repo i demo:
-- **Open Source**: wszystko pokazane w demo musi być open source (backend, frontend, modele, pozostałe komponenty).
-- **New Work Only**: projekt musi być zbudowany od zera w trakcie hackathonu.
-- **Team size**: do 2 osób.
-- **Banned Projects**: dyskwalifikacja, jeśli projekt narusza prawo/etykę/polityki platform, lub używa kodu/danych/assetów bez praw do ich wykorzystania.
+## 0. Hackathon Context and Evaluation Criteria
+This project is being built **as part of the Built with Opus 4.6 hackathon** and must meet its requirements. Key points to highlight in the repo and demo:
+- **Open Source**: everything shown in the demo must be open source (backend, frontend, models, other components).
+- **New Work Only**: the project must be built from scratch during the hackathon.
+- **Team size**: up to 2 people.
+- **Banned Projects**: disqualification if the project violates law/ethics/platform policies, or uses code/data/assets without rights to use them.
 
-Kryteria oceny (na które świadomie projektujemy demo i narrację):
-- **Impact (25%)** — realny potencjał i wartość rozwiązania.
-- **Opus 4.6 Use (25%)** — kreatywne użycie możliwości Opus 4.6.
-- **Depth & Execution (20%)** — inżynieria, dbałość o detale, gotowość do rozwoju.
-- **Demo (30%)** — jakość i atrakcyjność pokazu na filmie.
+Evaluation criteria (which we consciously design the demo and narrative around):
+- **Impact (25%)** — real-world potential and value of the solution.
+- **Opus 4.6 Use (25%)** — creative use of Opus 4.6 capabilities.
+- **Depth & Execution (20%)** — engineering, attention to detail, readiness for growth.
+- **Demo (30%)** — quality and appeal of the video presentation.
 
-## 0.1. Problem statements (dopasowanie projektu)
-Hackathon wyróżnia 3 główne kierunki projektów:
-- **Build a Tool That Should Exist** — AI‑native narzędzie, które eliminuje żmudną pracę.
-- **Break the Barriers** — dostęp do ekspertowej wiedzy i narzędzi dla wszystkich.
-- **Amplify Human Judgment** — AI wzmacnia profesjonalny osąd bez zastępowania człowieka.
+## 0.1. Problem statements (project alignment)
+The hackathon highlights 3 main project directions:
+- **Build a Tool That Should Exist** — an AI-native tool that eliminates tedious work.
+- **Break the Barriers** — access to expert knowledge and tools for everyone.
+- **Amplify Human Judgment** — AI enhances professional judgment without replacing the human.
 
-PostVisit.ai mapuje się na **wszystkie trzy**:
-- **Build a Tool That Should Exist**: eliminuje żmudne „przebijanie się" przez rekordy i kontekst po wizycie; porządkuje to, co już jest w dokumentacji.
-- **Break the Barriers**: daje pacjentowi dostęp do eksperckiej wiedzy z wizyty w prostym języku, bez bariery specjalistycznego żargonu.
-- **Amplify Human Judgment**: feedback i kontekst wracają do lekarza (doctor‑in‑the‑loop), a system nie zastępuje decyzji klinicznej.
+PostVisit.ai maps to **all three**:
+- **Build a Tool That Should Exist**: eliminates the tedious process of sifting through records and context after a visit; organizes what is already in the documentation.
+- **Break the Barriers**: gives the patient access to expert knowledge from the visit in plain language, without the barrier of specialized jargon.
+- **Amplify Human Judgment**: feedback and context flow back to the doctor (doctor-in-the-loop), and the system does not replace clinical decisions.
 
-## 1. Cel i kontekst
-PostVisit.ai to system, który utrzymuje kontekst **konkretnej wizyty klinicznej** i pomaga pacjentowi po wyjściu z gabinetu. Jego zadaniem jest wyjaśnianie i porządkowanie informacji z wizyty, a nie zastępowanie lekarza.
+## 1. Purpose and Context
+PostVisit.ai is a system that maintains the context of a **specific clinical visit** and helps the patient after leaving the office. Its role is to explain and organize information from the visit, not to replace the doctor.
 
-Główne założenie: **pacjent po wizycie potrzebuje jasnych, prostych wyjaśnień tego, co już zostało powiedziane i zapisane przez lekarza**. System nie jest ogólnym chatbotem zdrowotnym i nie działa poza kontekstem tej wizyty.
+Core assumption: **after a visit, the patient needs clear, simple explanations of what the doctor has already said and documented**. The system is not a general health chatbot and does not operate outside the context of that visit.
 
 ## 2. Problem
-- Pacjent po wizycie często nie pamięta zaleceń.
-- Nie rozumie terminów medycznych.
-- W okresie rekonwalescencji nie ma wsparcia i dopytuje telefonicznie o rzeczy związane z tą samą wizytą.
+- After a visit, the patient often does not remember the recommendations.
+- The patient does not understand medical terminology.
+- During the recovery period, there is no support, and the patient ends up calling back to ask about things related to the same visit.
 
-## 3. Kluczowa różnica
-PostVisit.ai nie odpowiada „ogólnie" o zdrowiu. Jest **zakotwiczony w jednej, konkretnej wizycie**, a wszystkie odpowiedzi i wyjaśnienia wynikają tylko z tego kontekstu.
+## 3. Key Differentiator
+PostVisit.ai does not give "general" health answers. It is **anchored in one specific visit**, and all answers and explanations derive only from that context.
 
 ## 4. Primary user
-- **Pacjent**
+- **Patient**
 
-## 5. Źródła kontekstu
-- wypis / zalecenia
-- dokumenty medyczne
-- rekord medyczny pacjenta (healthcare record)
-- transkrypcja rozmowy (ambient scribing po stronie pacjenta)
-- opcjonalnie: oddzielny skryba lekarza (temat otwarty)
+## 5. Context Sources
+- Discharge summary / recommendations
+- Medical documents
+- Patient healthcare record
+- Conversation transcript (ambient scribing on the patient side)
+- Optionally: separate physician scribe (open topic)
 
-## 6. Zakres funkcjonalny (demo)
-### 6.1. Ekran pacjenta (ostatnia wizyta)
-Ekran pacjenta pokazuje **ostatnią wizytę** (nie tylko kardiologiczną — docelowo wiele specjalizacji). W demo używamy scenariusza kardiologicznego, ale struktura jest wspólna dla wszystkich specjalizacji.
+## 6. Functional Scope (demo)
+### 6.1. Patient Screen (last visit)
+The patient screen shows the **last visit** (not only cardiology — eventually multiple specialties). In the demo we use a cardiology scenario, but the structure is shared across all specialties.
 
-Widoczne sekcje:
-- Protokół / opis wizyty
-- Dodatkowe badania (np. ECHO, EKG, inne badania — zależnie od specjalizacji)
-- Zalecenia lekarza
-- Leki (nowe / zmienione / kontynuowane)
-- Kolejne kroki
+Visible sections:
+- Visit protocol / description
+- Additional tests (e.g. ECHO, ECG, other tests — depending on specialty)
+- Doctor's recommendations
+- Medications (new / changed / continued)
+- Next steps
 
-Każdy element jest klikalny i może zostać wyjaśniony w prostym języku.
+Every element is clickable and can be explained in plain language.
 
-### 6.2. Q&A po wizycie (w kontekście)
-Pacjent może zadawać pytania dotyczące treści z wizyty:
-- wyjaśnienie pojęć i diagnozy
-- informacje o lekach i interakcjach
-- wyjaśnienie zaleceń
+### 6.2. Post-Visit Q&A (in context)
+The patient can ask questions about the visit content:
+- Explanation of terms and diagnosis
+- Information about medications and interactions
+- Clarification of recommendations
 
-System nie generuje nowych zaleceń. W przypadku ryzykownych objawów ma eskalować i odsyłać do lekarza.
+The system does not generate new recommendations. In cases of risky symptoms, it should escalate and refer the patient to their doctor.
 
-## 7. Scenariusz demo
-- Młody lekarz i młody pacjent
-- Pacjent: dodatkowe pobudzenia komorowe
-- Zalecenia: propranolol, więcej snu, mniej stresu
+## 7. Demo Scenario
+- Young doctor and young patient
+- Patient: premature ventricular complexes (PVCs)
+- Recommendations: propranolol, more sleep, less stress
 - System:
-  - pokazuje zalecenia i leki
-  - tłumaczy terminologię
-  - utrzymuje kontekst jednej wizyty
+  - displays recommendations and medications
+  - explains terminology
+  - maintains the context of a single visit
 
-## 8. Język produktu
-- Dokumentacja robocza: **język polski**
-- Produkt / UI: **język angielski** z opcją „International"
-- Inne języki: opcjonalnie później
+## 8. Product Language
+- Working documentation: **Polish**
+- Product / UI: **English** with an "International" option
+- Other languages: optionally later
 
 ## 9. Stack
 - Backend: **Laravel**
 - Frontend: **Vue**
-- Model docelowy: **Claude Opus 4.6**
-- Testy: możliwe na tańszych modelach (dla kosztów)
+- Target model: **Claude Opus 4.6**
+- Tests: possible on cheaper models (for cost reasons)
 
-## 10. Compliance i bezpieczeństwo (dla demo)
-Ta sekcja opisuje **sposób myślenia o zgodności** i to, co pokażemy w demo. To nie jest porada prawna ani pełna analiza.
+## 10. Compliance and Security (for demo)
+This section describes the **approach to compliance** and what we will show in the demo. This is not legal advice or a full analysis.
 
-### 10.1. HIPAA — plan minimum (USA)
-Założenia:
-- Przetwarzamy dane medyczne z wizyty (PHI) → HIPAA ma zastosowanie, jeśli działamy z podmiotem medycznym w USA.
-- W takim przypadku system działa jako **Business Associate** i wymaga **BAA** z placówką.
+### 10.1. HIPAA — Minimum Plan (USA)
+Assumptions:
+- We process medical data from the visit (PHI) — HIPAA applies if we operate with a medical entity in the USA.
+- In that case, the system acts as a **Business Associate** and requires a **BAA** with the healthcare facility.
 
-Co musimy pokazać w demo (symulacyjnie):
-- **Minimum necessary**: system używa tylko danych niezbędnych do obsługi wizyty.
-- **Access control**: oddzielny dostęp pacjenta i lekarza.
-- **Audit trail**: logowanie dostępu do danych (choćby w podstawowej formie).
-- **Encryption**: dane szyfrowane w ruchu i w spoczynku (deklaracja i widoczny kierunek w architekturze).
-- **Incident response**: informacja, że system ma procedury raportowania incydentów.
+What we need to show in the demo (simulated):
+- **Minimum necessary**: the system uses only the data needed to handle the visit.
+- **Access control**: separate access for the patient and the doctor.
+- **Audit trail**: logging data access (at least in a basic form).
+- **Encryption**: data encrypted in transit and at rest (declaration and visible direction in the architecture).
+- **Incident response**: indication that the system has incident reporting procedures.
 
-### 10.2. GDPR — plan minimum (UE)
-Założenia:
-- Dane osobowe i medyczne są szczególnie wrażliwe.
+### 10.2. GDPR — Minimum Plan (EU)
+Assumptions:
+- Personal and medical data are particularly sensitive.
 
-Co musimy pokazać w demo (symulacyjnie):
-- **Podstawa przetwarzania** (zgoda / umowa).
-- **Prawo do wglądu i usunięcia** (możliwość w UI lub deklaracja w dokumentacji).
-- **Minimalizacja danych** i ograniczenie celu do jednej wizyty.
+What we need to show in the demo (simulated):
+- **Legal basis for processing** (consent / contract).
+- **Right to access and deletion** (capability in the UI or declaration in documentation).
+- **Data minimization** and purpose limitation to a single visit.
 
-### 10.3. Inne certyfikacje (docelowo)
-- **SOC 2** (często wymagane przez klientów w USA)
-- **ISO 27001** (system zarządzania bezpieczeństwem informacji)
-- **HITRUST** (często spotykane w healthcare)
+### 10.3. Other Certifications (long-term)
+- **SOC 2** (often required by clients in the USA)
+- **ISO 27001** (information security management system)
+- **HITRUST** (commonly seen in healthcare)
 
-W demo nie wdrażamy certyfikacji, ale pokazujemy, że architektura jest gotowa do ich wymagań.
+In the demo we do not implement certifications, but we show that the architecture is ready for their requirements.
 
-### 10.4. Guardrails w produkcie
-- System nie wydaje zaleceń poza tym, co wynika z wizyty.
-- W przypadku ryzykownych objawów: komunikat o konieczności kontaktu z lekarzem.
-- Informacje są tłumaczone, nie „diagnozowane".
+### 10.4. Product Guardrails
+- The system does not issue recommendations beyond what comes from the visit.
+- In cases of risky symptoms: a message urging the patient to contact their doctor.
+- Information is translated, not "diagnosed".

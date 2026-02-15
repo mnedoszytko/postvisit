@@ -1,51 +1,51 @@
 # Data Model — PostVisit.ai
 
-> Research + design z 2026-02-10. FHIR R4 aligned, HIPAA/GDPR-aware.
-> Database TBD: PostgreSQL (rekomendacja — jsonb, tsvector) lub MySQL.
+> Research + design from 2026-02-10. FHIR R4 aligned, HIPAA/GDPR-aware.
+> Database TBD: PostgreSQL (recommended — jsonb, tsvector) or MySQL.
 
-## Zasada naczelna
+## Guiding Principle
 
-Każda encja mapuje się na zasób FHIR R4. Nazewnictwo kolumn i statusy są zgodne z FHIR. Dzięki temu system jest gotowy na interoperacyjność z EHR od dnia zero.
+Every entity maps to an FHIR R4 resource. Column naming and statuses are FHIR-compliant. This makes the system interoperability-ready with EHR from day zero.
 
 ## Entity Map → FHIR
 
-| Tabela | FHIR Resource | Cel |
+| Table | FHIR Resource | Purpose |
 |--------|---------------|-----|
-| `patients` | Patient | Demografia, kontakt, consent |
-| `practitioners` | Practitioner | Lekarz: dane, specjalizacja, NPI |
-| `organizations` | Organization | Placówka/klinika |
-| `visits` | Encounter | Wizyta — centralny agregat |
-| `observations` | Observation | Wyniki badań, vitals, specialty findings |
-| `conditions` | Condition | Diagnozy (ICD-10, SNOMED) |
+| `patients` | Patient | Demographics, contact, consent |
+| `practitioners` | Practitioner | Physician: details, specialty, NPI |
+| `organizations` | Organization | Facility/clinic |
+| `visits` | Encounter | Visit — central aggregate |
+| `observations` | Observation | Lab results, vitals, specialty findings |
+| `conditions` | Condition | Diagnoses (ICD-10, SNOMED) |
 | `medications` | Medication | Drug master data |
-| `prescriptions` | MedicationRequest | Recepty z dawkowaniem |
+| `prescriptions` | MedicationRequest | Prescriptions with dosage |
 | `medication_interactions` | DetectedIssue | Drug-drug interactions |
-| `documents` | DocumentReference | Pliki: lab reports, imaging, notes |
-| `diagnostic_reports` | DiagnosticReport | Raporty laboratoryjne/obrazowe |
-| `visit_notes` | Composition | Notatka kliniczna (SOAP) |
-| `transcripts` | Media / DocumentReference | Transkrypcja rozmowy (ambient scribing) |
-| `chat_sessions` | Communication | Q&A pacjenta po wizycie |
-| `chat_messages` | — (child of Communication) | Pojedyncze wiadomości w chacie |
+| `documents` | DocumentReference | Files: lab reports, imaging, notes |
+| `diagnostic_reports` | DiagnosticReport | Laboratory/imaging reports |
+| `visit_notes` | Composition | Clinical note (SOAP) |
+| `transcripts` | Media / DocumentReference | Conversation transcript (ambient scribing) |
+| `chat_sessions` | Communication | Patient Q&A after visit |
+| `chat_messages` | — (child of Communication) | Individual chat messages |
 | `audit_logs` | AuditEvent | HIPAA audit trail |
 | `consents` | Consent | GDPR consent tracking |
 | `users` | — | Auth, roles (Laravel Sanctum) |
 
 ## Coding Systems
 
-| Domena | Standard | Przykład kodu | Gdzie używany |
+| Domain | Standard | Example code | Where used |
 |--------|----------|--------------|---------------|
-| Diagnozy | ICD-10-CM / ICD-11 | I10 (hypertension) | `conditions.code` |
-| Kliniczne | SNOMED CT | 38341003 (hypertension) | `conditions.code`, `observations` |
-| Badania lab | LOINC | 2345-7 (glucose serum) | `observations.code` |
+| Diagnoses | ICD-10-CM / ICD-11 | I10 (hypertension) | `conditions.code` |
+| Clinical | SNOMED CT | 38341003 (hypertension) | `conditions.code`, `observations` |
+| Lab tests | LOINC | 2345-7 (glucose serum) | `observations.code` |
 | Vitals | LOINC | 8480-6 (systolic BP) | `observations.code` |
-| Leki | RxNorm | 1110711 (metformin) | `medications.rxnorm_code` |
-| Leki (global) | ATC | A10BA02 | `medications.atc_code` |
-| Procedury | SNOMED / CPT | 29303005 (EKG) | `observations.code` |
-| Specjalizacje | SNOMED | 394577000 (cardiology) | `practitioners.primary_specialty` |
+| Medications | RxNorm | 1110711 (metformin) | `medications.rxnorm_code` |
+| Medications (global) | ATC | A10BA02 | `medications.atc_code` |
+| Procedures | SNOMED / CPT | 29303005 (EKG) | `observations.code` |
+| Specialties | SNOMED | 394577000 (cardiology) | `practitioners.primary_specialty` |
 
-Wszystkie powyższe systemy kodowania są **open source / free** (patrz licenses.md).
+All coding systems listed above are **open source / free** (see licenses.md).
 
-## Encje — definicje
+## Entities — Definitions
 
 ### patients
 
@@ -94,7 +94,7 @@ created_at                  timestamp
 updated_at                  timestamp
 ```
 
-### visits (centralny agregat)
+### visits (central aggregate)
 
 ```
 id                          uuid PK
@@ -162,7 +162,7 @@ created_at                  timestamp
 updated_at                  timestamp
 ```
 
-**`specialty_data` — tak się robi extensibility:**
+**`specialty_data` — this is how extensibility is achieved:**
 
 Cardiology (ECHO):
 ```json
@@ -207,7 +207,7 @@ Endocrinology:
 }
 ```
 
-### conditions (diagnozy)
+### conditions (diagnoses)
 
 ```
 id                          uuid PK
@@ -364,7 +364,7 @@ created_at                  timestamp
 updated_at                  timestamp
 ```
 
-### chat_sessions + chat_messages (Q&A po wizycie)
+### chat_sessions + chat_messages (post-visit Q&A)
 
 ```
 # chat_sessions
@@ -507,7 +507,7 @@ users ──1:n──► audit_logs
 
 ## Open source data sources
 
-| Źródło | Licencja | Co daje | Sync |
+| Source | License | What it provides | Sync |
 |--------|----------|---------|------|
 | RxNorm (NLM) | Public domain | Drug names, codes, forms | RxNav REST API, monthly |
 | DrugBank Open | CC0 | Drug interactions, targets | XML download, quarterly |
@@ -517,29 +517,29 @@ users ──1:n──► audit_logs
 | OpenFDA | Public domain | Drug labels, adverse events | REST API, daily |
 | DailyMed | Public domain | FDA drug labels | XML/JSON API |
 
-## Rekomendacja: PostgreSQL
+## Recommendation: PostgreSQL
 
-Dlaczego PostgreSQL zamiast MySQL:
-- **jsonb** — natywne indeksowanie i query na `specialty_data`, `extracted_entities`
-- **tsvector** — full-text search na transkryptach i notatkach klinicznych
-- **UUID** — natywny typ (nie varchar)
+Why PostgreSQL over MySQL:
+- **jsonb** — native indexing and querying on `specialty_data`, `extracted_entities`
+- **tsvector** — full-text search on transcripts and clinical notes
+- **UUID** — native type (not varchar)
 - **Partitioning** — audit_logs partitioned by month
-- HIPAA/SOC2: PostgreSQL jest standardem w healthcare
+- HIPAA/SOC2: PostgreSQL is the standard in healthcare
 
-## Na demo (hackathon)
+## For demo (hackathon)
 
 **Minimum tables:**
 1. patients, practitioners, users, roles
 2. visits
 3. transcripts
-4. observations (kilka lab results)
+4. observations (a few lab results)
 5. conditions (PVCs)
 6. medications + prescriptions (propranolol)
 7. chat_sessions + chat_messages
 8. audit_logs
 
-**Nie na demo:**
-- medication_interactions (seed z DrugBank — za dużo pracy)
+**Not for demo:**
+- medication_interactions (seeding from DrugBank — too much work)
 - diagnostic_reports (overkill)
-- consents (pokażemy w SECURITY.md, nie w UI)
-- documents (pliki — za dużo infry)
+- consents (will be shown in SECURITY.md, not in UI)
+- documents (files — too much infrastructure)

@@ -1,95 +1,95 @@
-# Connectors & Health Data Integration — research
+# Connectors & Health Data Integration — Research
 
-> Research z 2026-02-10. Kontekst: jak PostVisit.ai może się integrować z istniejącymi rejestrami zdrowotnymi.
+> Research from 2026-02-10. Context: how PostVisit.ai can integrate with existing health records systems.
 
-## Kluczowy wniosek: FHIR to wspólny język
+## Key Takeaway: FHIR Is the Common Language
 
-Niezależnie od platformy (Apple, Google, szpitalne EHR) — standard który łączy wszystko to **FHIR R4** (Fast Healthcare Interoperability Resources). REST API + JSON, naturalnie pasuje do Laravel. Jeśli PostVisit.ai mówi po FHIR, może rozmawiać z praktycznie każdym systemem medycznym.
+Regardless of the platform (Apple, Google, hospital EHR) — the standard that connects everything is **FHIR R4** (Fast Healthcare Interoperability Resources). REST API + JSON, a natural fit for Laravel. If PostVisit.ai speaks FHIR, it can communicate with virtually any medical system.
 
 ## Apple Health
 
-### HealthKit (fitness: kroki, puls, sen)
-- Dostępny **TYLKO** z natywnej aplikacji iOS (Swift)
-- Zero szans na dostęp z web app
-- Alternatywy: bridging services (Terra API, OneTwentyOne) — REST API do HealthKit przez natywną pośredniczkę
+### HealthKit (fitness: steps, heart rate, sleep)
+- Available **ONLY** from a native iOS app (Swift)
+- Zero chance of access from a web app
+- Alternatives: bridging services (Terra API, OneTwentyOne) — REST API to HealthKit via a native intermediary
 
-### Health Records (dane kliniczne)
-- Używa **FHIR R4** — dostępny przez **SMART on FHIR OAuth**
-- Web app MOŻE uzyskać dostęp do danych klinicznych przez FHIR
-- 7 kategorii danych: medications (RxNorm), lab results (LOINC), immunizations (CVX), conditions (SNOMED), allergies, procedures (CPT/SNOMED), vitals (LOINC)
+### Health Records (clinical data)
+- Uses **FHIR R4** — accessible via **SMART on FHIR OAuth**
+- A web app CAN access clinical data through FHIR
+- 7 data categories: medications (RxNorm), lab results (LOINC), immunizations (CVX), conditions (SNOMED), allergies, procedures (CPT/SNOMED), vitals (LOINC)
 - Plus: clinical notes, COVID results
 
-### Wymagania do integracji
-- Implementacja SMART on FHIR OAuth (patient username/password + access tokens ≥10min + refresh tokens ≥3msc)
+### Integration Requirements
+- Implement SMART on FHIR OAuth (patient username/password + access tokens >=10min + refresh tokens >=3 months)
 - FHIR R4 API endpoint
-- Dla demo: **mock FHIR data wystarczy** — podłączenie do prawdziwego szpitala wymaga tygodni
+- For demo: **mock FHIR data is sufficient** — connecting to a real hospital takes weeks
 
 ## Google Health
 
 ### Health Connect (Android)
-- Lokalna baza na urządzeniu, bez web API
-- Odpowiednik HealthKit na Androidzie — wymaga natywnej apki
+- Local on-device database, no web API
+- Android equivalent of HealthKit — requires a native app
 
 ### Google Cloud Healthcare API
-- Pełny **FHIR store** z HIPAA compliance
-- Enterprise-level, drogi, ale production-ready
-- Obsługuje FHIR R4, HL7v2, DICOM (obrazowanie)
+- Full **FHIR store** with HIPAA compliance
+- Enterprise-level, expensive, but production-ready
+- Supports FHIR R4, HL7v2, DICOM (imaging)
 
 ### Google Fit API
-- **Deprecated** — znika w 2026, nie budować na tym
+- **Deprecated** — sunsetting in 2026, do not build on this
 
-## Anthropic — Claude for Healthcare (styczeń 2026)
+## Anthropic — Claude for Healthcare (January 2026)
 
-### Co uruchomili
-- **Claude for Healthcare** — dedykowany zestaw narzędzi dla healthcare
-- **BAA dostępne** na Enterprise i first-party API → oficjalne wsparcie HIPAA compliance
-- **Zero-training policy** na danych medycznych — dane pacjentów nie trenują modeli
-- **HealthEx** — pierwsza integracja z consumer health records
-- **Apple Health + Android Health Connect** — planowana integracja z aplikacjami Claude na iOS/Android
+### What They Launched
+- **Claude for Healthcare** — a dedicated healthcare toolkit
+- **BAA available** on Enterprise and first-party API — official HIPAA compliance support
+- **Zero-training policy** on medical data — patient data does not train models
+- **HealthEx** — first integration with consumer health records
+- **Apple Health + Android Health Connect** — planned integration with Claude apps on iOS/Android
 
-### Connectors do źródeł medycznych
+### Connectors to Medical Sources
 - CMS (Centers for Medicare & Medicaid Services)
-- ICD-10 (kody diagnostyczne)
-- NPI Registry (rejestr lekarzy)
+- ICD-10 (diagnostic codes)
+- NPI Registry (physician registry)
 - PubMed (evidence-based medicine)
 
-### Agentic workflows — human-in-the-loop
-Trzy poziomy autonomii:
-1. **Read-Only** — AI czyta, nie działa
-2. **Drafting** — AI przygotowuje, człowiek zatwierdza
-3. **Action with Approval** — AI działa po zatwierdzeniu
+### Agentic Workflows — Human-in-the-Loop
+Three levels of autonomy:
+1. **Read-Only** — AI reads, does not act
+2. **Drafting** — AI prepares, human approves
+3. **Action with Approval** — AI acts after approval
 
-Pełny audit trail na każdym poziomie. **To jest dokładnie model doctor-in-the-loop z PostVisit.ai.**
+Full audit trail at every level. **This is exactly the doctor-in-the-loop model from PostVisit.ai.**
 
-### Kto już używa Claude w healthcare
-- Banner Health (55K pracowników)
+### Who Is Already Using Claude in Healthcare
+- Banner Health (55K employees)
 - Elation Health (EHR)
-- Carta Healthcare (99% accuracy w clinical data)
+- Carta Healthcare (99% accuracy in clinical data)
 
-## Co to oznacza dla PostVisit.ai
+## What This Means for PostVisit.ai
 
-### Na demo (hackathon)
-- Mock FHIR data — realistyczny scenariusz kardiologiczny
-- Architektura pokazuje gotowość na prawdziwe integracje
-- Diagram: FHIR jako standard wymiany danych
+### For Demo (Hackathon)
+- Mock FHIR data — realistic cardiology scenario
+- Architecture demonstrates readiness for real integrations
+- Diagram: FHIR as the data exchange standard
 
-### Na produkcję
-- FHIR R4 jako natywny format danych wizyty
-- SMART on FHIR OAuth do Apple Health Records
-- Google Cloud Healthcare API jako opcjonalny FHIR store
-- BAA z Anthropic (dostępne na Enterprise)
+### For Production
+- FHIR R4 as the native visit data format
+- SMART on FHIR OAuth for Apple Health Records
+- Google Cloud Healthcare API as an optional FHIR store
+- BAA with Anthropic (available on Enterprise)
 
-### Argument na hackathon
-PostVisit.ai wpisuje się w ekosystem, który Anthropic **aktywnie buduje**. Projekt nie jest fantasy — jest dokładnie w kierunku, który Anthropic obrał miesiąc temu. Wytyczne kliniczne + 1M context window + doctor-in-the-loop = to co Anthropic promuje jako przyszłość healthcare AI.
+### Hackathon Argument
+PostVisit.ai fits into an ecosystem that Anthropic is **actively building**. This project is not a fantasy — it is exactly aligned with the direction Anthropic took a month ago. Clinical guidelines + 1M context window + doctor-in-the-loop = what Anthropic promotes as the future of healthcare AI.
 
-## Biblioteki FHIR (open source)
+## FHIR Libraries (Open Source)
 
-| Język | Biblioteka | Uwagi |
-|-------|-----------|-------|
-| PHP | php-fhir (dcarbone/php-fhir) | Generuje klasy PHP z FHIR definitions |
+| Language | Library | Notes |
+|----------|---------|-------|
+| PHP | php-fhir (dcarbone/php-fhir) | Generates PHP classes from FHIR definitions |
 | JavaScript | fhir-client.js | Browser/Node.js, SMART on FHIR support |
-| Java | HAPI FHIR | Pełny serwer/klient, gold standard |
-| Python | SMART on FHIR client | Klient z OAuth |
+| Java | HAPI FHIR | Full server/client, gold standard |
+| Python | SMART on FHIR client | Client with OAuth |
 | Cloud | Google Cloud Healthcare API | Managed FHIR store |
 
-Dla Laravel: **php-fhir** + własny FHIR service layer w `app/Services/Fhir/`.
+For Laravel: **php-fhir** + custom FHIR service layer in `app/Services/Fhir/`.
