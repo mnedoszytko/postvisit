@@ -102,4 +102,9 @@ class Patient extends Model
     {
         return $this->hasMany(VisitNote::class);
     }
+
+    public function contextSummaries(): HasMany
+    {
+        return $this->hasMany(PatientContextSummary::class);
+    }
 }
