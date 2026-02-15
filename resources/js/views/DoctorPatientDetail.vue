@@ -103,6 +103,16 @@
           </div>
         </section>
 
+        <!-- Heart Rate Chart -->
+        <div v-if="hrData.length >= 2" class="bg-white rounded-2xl border border-gray-200 p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-gray-900">Resting Heart Rate Trend</h2>
+          </div>
+          <div class="h-64">
+            <Line :data="hrChartData" :options="hrChartOptions" />
+          </div>
+        </div>
+
         <!-- Weight Chart -->
         <div v-if="weightData.length >= 2" class="bg-white rounded-2xl border border-gray-200 p-5">
           <div class="flex items-center justify-between mb-4">
@@ -270,8 +280,16 @@
                       :disabled="inquiringId === notif.id && inquiryStreaming"
                       @click="startInquiry(notif)"
                     >
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                      {{ inquiringId === notif.id && inquiryStreaming ? 'Analyzing...' : 'AI Inquire' }}
+                      <img src="/images/logo-icon.png" alt="" class="h-3.5 w-auto" />
+                      {{ inquiringId === notif.id && inquiryStreaming ? 'Analyzing...' : 'Investigate' }}
+                    </button>
+                    <button
+                      v-if="notif.type !== 'doctor_reply'"
+                      class="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
+                      @click="showScheduleModal = true"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                      Schedule Appointment
                     </button>
                   </div>
                 </div>
@@ -307,7 +325,7 @@
                 class="mt-3 ml-11 bg-violet-50 border border-violet-200 rounded-xl p-4"
               >
                 <div class="flex items-center gap-2 mb-2">
-                  <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                  <img src="/images/logo-icon.png" alt="" class="h-4 w-auto" />
                   <span class="text-xs font-semibold text-violet-700">AI Clinical Analysis</span>
                   <span v-if="inquiringId === notif.id && inquiryStreaming" class="ml-auto">
                     <svg class="w-4 h-4 text-violet-500 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
@@ -333,6 +351,12 @@
       <!-- Labs Tab -->
       <LabResultsTab v-if="activeTab === 'labs'" :observations="allObservations" />
     </div>
+
+    <ScheduleInvitationModal
+      v-model="showScheduleModal"
+      :doctor-name="doctorDisplayName"
+      :invitation-message="`Dr. ${doctorDisplayName} would like to schedule a follow-up appointment with you.`"
+    />
   </DoctorLayout>
 </template>
 
@@ -341,6 +365,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { useApi } from '@/composables/useApi';
+import { useAuthStore } from '@/stores/auth';
 import { Line, Bar } from 'vue-chartjs';
 import {
     Chart as ChartJS,
@@ -359,12 +384,19 @@ import VitalsTab from '@/components/health/VitalsTab.vue';
 import LabResultsTab from '@/components/health/LabResultsTab.vue';
 import { useDoctorStore } from '@/stores/doctor';
 import VisitDateBadge from '@/components/VisitDateBadge.vue';
+import ScheduleInvitationModal from '@/components/ScheduleInvitationModal.vue';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler);
 
 const route = useRoute();
 const api = useApi();
+const auth = useAuthStore();
 const doctorStore = useDoctorStore();
+
+const doctorDisplayName = computed(() => {
+    if (!auth.user?.name) return 'Your Doctor';
+    return auth.user.name.replace(/^Dr\.?\s*/i, '');
+});
 
 const activeTab = ref('overview');
 const tabs = [
@@ -389,6 +421,34 @@ const bpData = computed(() =>
         .filter(o => o.code === '85354-9' && o.specialty_data?.systolic)
         .sort((a, b) => new Date(a.effective_date).getTime() - new Date(b.effective_date).getTime())
 );
+
+const hrData = computed(() =>
+    allObservations.value
+        .filter(o => o.code === '8867-4')
+        .sort((a, b) => new Date(a.effective_date).getTime() - new Date(b.effective_date).getTime())
+);
+
+const hrChartData = computed(() => ({
+    labels: hrData.value.map(o => formatShortDate(o.effective_date)),
+    datasets: [{
+        label: 'Heart Rate',
+        data: hrData.value.map(o => parseFloat(o.value_quantity)),
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239,68,68,0.08)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 3,
+    }],
+}));
+
+const hrChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+        y: { min: 50, max: 110, title: { display: true, text: 'bpm' } },
+    },
+};
 
 const weightValues = computed(() =>
     weightData.value.map(o => parseFloat(o.value_quantity))
@@ -554,6 +614,7 @@ const expandedSessions = ref(new Set());
 const inquiringId = ref(null);
 const inquiryStreaming = ref(false);
 const inquiryResults = ref({});
+const showScheduleModal = ref(false);
 
 const patientAge = computed(() => {
     if (!patient.value?.dob) return null;

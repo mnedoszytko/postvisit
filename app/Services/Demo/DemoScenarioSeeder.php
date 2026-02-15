@@ -66,6 +66,7 @@ class DemoScenarioSeeder
         $this->createObservations($scenario['observations'] ?? [], $patient, $visit, $practitioner, $doctorUser);
         $this->createLabHistory($patient, $visit, $practitioner, $doctorUser);
         $this->createWeightSeries($scenario['weight_series'] ?? [], $patient, $practitioner, $doctorUser);
+        $this->createHeartRateSeries($scenario['heart_rate_series'] ?? [], $patient, $practitioner, $doctorUser);
         $this->createVisitNote($scenario['visit_note'] ?? [], $visit, $patient, $practitioner);
         $this->createTranscript($scenario['transcript_file'] ?? null, $visit, $patient);
         $this->createChatSession($scenario['chat_session'] ?? [], $patient, $visit);
@@ -715,6 +716,36 @@ class DemoScenarioSeeder
                 'effective_date' => $date->toDateString(),
                 'issued_at' => $date,
                 'specialty_data' => ['source' => 'home_scale', 'dry_weight_target' => 73.0],
+                'created_by' => $doctor->id,
+            ]);
+        }
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $heartRateSeries
+     */
+    private function createHeartRateSeries(array $heartRateSeries, Patient $patient, Practitioner $practitioner, User $doctor): void
+    {
+        foreach ($heartRateSeries as $hr) {
+            $date = now()->addDays($hr['day']);
+            Observation::create([
+                'fhir_observation_id' => 'obs-hr-'.Str::uuid(),
+                'patient_id' => $patient->id,
+                'practitioner_id' => $practitioner->id,
+                'code_system' => 'LOINC',
+                'code' => '8867-4',
+                'code_display' => 'Heart rate',
+                'category' => 'vital-signs',
+                'status' => 'final',
+                'value_type' => 'quantity',
+                'value_quantity' => $hr['bpm'],
+                'value_unit' => 'bpm',
+                'reference_range_low' => 60,
+                'reference_range_high' => 100,
+                'interpretation' => $hr['bpm'] < 60 ? 'L' : ($hr['bpm'] > 100 ? 'H' : 'N'),
+                'effective_date' => $date->toDateString(),
+                'issued_at' => $date,
+                'specialty_data' => ['source' => 'apple_watch', 'measurement_type' => 'resting'],
                 'created_by' => $doctor->id,
             ]);
         }

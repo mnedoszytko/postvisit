@@ -65,11 +65,17 @@
           </router-link>
           <router-link
             to="/doctor/patients"
-            class="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+            class="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
             active-class="bg-indigo-50 text-indigo-700 font-medium"
             @click="mobileOpen = false"
           >
             Patients
+            <span
+              v-if="totalUnread > 0"
+              class="min-w-5 h-5 px-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
+            >
+              {{ totalUnread > 99 ? '99+' : totalUnread }}
+            </span>
           </router-link>
           <router-link
             to="/settings"
@@ -114,10 +120,16 @@
           </router-link>
           <router-link
             to="/doctor/patients"
-            class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+            class="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
             active-class="bg-indigo-50 text-indigo-700 font-medium"
           >
-            Patients
+            <span class="flex items-center gap-3">Patients</span>
+            <span
+              v-if="totalUnread > 0"
+              class="min-w-5 h-5 px-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
+            >
+              {{ totalUnread > 99 ? '99+' : totalUnread }}
+            </span>
           </router-link>
           <router-link
             to="/settings"
@@ -163,13 +175,19 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useDoctorStore } from '@/stores/doctor';
 import { useRouter } from 'vue-router';
 
 const gitHash = __GIT_HASH__;
 
 const auth = useAuthStore();
+const doctorStore = useDoctorStore();
 const router = useRouter();
 const mobileOpen = ref(false);
+
+const totalUnread = computed(() => {
+    return doctorStore.patients.reduce((sum, p) => sum + (p.unread_count || 0), 0);
+});
 
 const isDemoUser = computed(() => {
     return auth.user?.email?.endsWith('@demo.postvisit.ai') ?? false;

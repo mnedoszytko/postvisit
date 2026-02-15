@@ -28,7 +28,7 @@
           @click="askMore"
         >
           <img src="/images/logo-icon.png" alt="" class="h-3.5 w-auto" />
-          Ask more in chat
+          Ask
         </button>
       </div>
     </div>

@@ -39,7 +39,7 @@
                         : 'bg-amber-100 text-amber-700'
                     ]"
                   >
-                    {{ alert.type === 'weight_gain' ? 'Weight Alert' : 'BP Trend' }}
+                    {{ alertLabel(alert.type) }}
                   </span>
                 </div>
                 <p class="font-semibold text-gray-900">{{ alert.patient_name }}</p>
@@ -48,6 +48,13 @@
                 <div v-if="alert.type === 'weight_gain'" class="mt-2 text-xs text-gray-500">
                   {{ alert.data.from }} kg &rarr; {{ alert.data.to }} kg
                   <span class="text-red-600 font-medium">(+{{ alert.data.delta_kg }} kg)</span>
+                </div>
+
+                <div v-if="alert.type === 'hr_drop'" class="mt-2 flex items-center gap-3 text-xs text-gray-600">
+                  <span class="font-mono">{{ alert.data.prior_avg_bpm }} bpm</span>
+                  <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17l5-5-5-5M6 17l5-5-5-5" /></svg>
+                  <span class="font-mono font-bold text-red-600">{{ alert.data.current_bpm }} bpm</span>
+                  <span class="text-red-500 font-medium">(&darr;{{ alert.data.drop_bpm }} bpm)</span>
                 </div>
 
                 <div v-if="alert.type === 'elevated_bp' && alert.data.readings" class="mt-2 flex gap-2 flex-wrap">
@@ -61,12 +68,12 @@
                 </div>
               </div>
 
-              <router-link
-                :to="`/doctor/patients/${alert.patient_id}`"
+              <button
                 class="shrink-0 inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                @click="scrollToPatient(alert.patient_id)"
               >
                 View
-              </router-link>
+              </button>
             </div>
           </div>
         </div>
@@ -116,23 +123,32 @@
           <router-link
             v-for="patient in recentPatients"
             :key="patient.id"
+            :id="`patient-${patient.id}`"
             :to="`/doctor/patients/${patient.id}`"
             class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors"
           >
-            <img
-              v-if="patient.photo_url"
-              :src="patient.photo_url"
-              :alt="`${patient.first_name} ${patient.last_name}`"
-              class="w-10 h-10 rounded-full object-cover shrink-0"
-            />
-            <div
-              v-else
-              :class="[
-                'w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0',
-                avatarClasses(patient)
-              ]"
-            >
-              {{ initials(patient) }}
+            <div class="relative shrink-0">
+              <img
+                v-if="patient.photo_url"
+                :src="patient.photo_url"
+                :alt="`${patient.first_name} ${patient.last_name}`"
+                class="w-10 h-10 rounded-full object-cover"
+              />
+              <div
+                v-else
+                :class="[
+                  'w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold',
+                  avatarClasses(patient)
+                ]"
+              >
+                {{ initials(patient) }}
+              </div>
+              <span
+                v-if="patient.unread_count > 0"
+                class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-white"
+              >
+                {{ patient.unread_count > 9 ? '9+' : patient.unread_count }}
+              </span>
             </div>
             <div class="flex-1 min-w-0">
               <p class="font-semibold text-gray-900 truncate">
@@ -181,6 +197,21 @@ function initials(patient) {
     const f = patient.first_name?.[0] || '';
     const l = patient.last_name?.[0] || '';
     return (f + l).toUpperCase() || '?';
+}
+
+function alertLabel(type) {
+    if (type === 'weight_gain') return 'Weight Alert';
+    if (type === 'hr_drop') return 'Heart Rate';
+    return 'BP Trend';
+}
+
+function scrollToPatient(patientId) {
+    const el = document.getElementById(`patient-${patientId}`);
+    if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('ring-2', 'ring-red-400', 'bg-red-50/40');
+        setTimeout(() => el.classList.remove('ring-2', 'ring-red-400', 'bg-red-50/40'), 2000);
+    }
 }
 
 function avatarClasses(patient) {

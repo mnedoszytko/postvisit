@@ -140,27 +140,7 @@ class DemoSeeder extends Seeder
         // 6. Observations
         $yesterday = now()->subDay()->toDateString();
 
-        // 6a. Heart Rate
-        Observation::create([
-            'fhir_observation_id' => 'obs-hr-'.Str::uuid(),
-            'patient_id' => $patient->id,
-            'visit_id' => $visit->id,
-            'practitioner_id' => $practitioner->id,
-            'code_system' => 'LOINC',
-            'code' => '8867-4',
-            'code_display' => 'Heart rate',
-            'category' => 'vital-signs',
-            'status' => 'final',
-            'value_type' => 'quantity',
-            'value_quantity' => 78,
-            'value_unit' => 'bpm',
-            'reference_range_low' => 60,
-            'reference_range_high' => 100,
-            'interpretation' => 'N',
-            'effective_date' => $yesterday,
-            'issued_at' => now()->subDay(),
-            'created_by' => $doctorUser->id,
-        ]);
+        // 6a. Heart Rate — omitted here; covered by seedAlexLongitudinalVitals()
 
         // 6b. Blood Pressure (systolic/diastolic as string with components in specialty_data)
         Observation::create([
@@ -956,22 +936,26 @@ class DemoSeeder extends Seeder
     }
 
     /**
-     * Alex Johnson: home BP and HR readings over 14 days (post-propranolol start).
+     * Alex Johnson: home HR and BP readings over 14 days.
+     *
+     * HR stable ~80 bpm before propranolol (prescribed yesterday),
+     * then drops to 61 bpm today showing the beta-blocker effect.
      */
     private function seedAlexLongitudinalVitals(Patient $patient, Practitioner $practitioner, User $doctor): void
     {
         $baseDate = now()->subDays(14);
 
         $readings = [
-            ['day' => 0, 'hr' => 82, 'sys' => 130, 'dia' => 84],
-            ['day' => 1, 'hr' => 80, 'sys' => 128, 'dia' => 82],
-            ['day' => 2, 'hr' => 78, 'sys' => 126, 'dia' => 80],
-            ['day' => 3, 'hr' => 76, 'sys' => 125, 'dia' => 79],
-            ['day' => 5, 'hr' => 74, 'sys' => 124, 'dia' => 78],
-            ['day' => 7, 'hr' => 72, 'sys' => 122, 'dia' => 76],
-            ['day' => 9, 'hr' => 70, 'sys' => 120, 'dia' => 75],
-            ['day' => 11, 'hr' => 68, 'sys' => 118, 'dia' => 74],
-            ['day' => 13, 'hr' => 66, 'sys' => 116, 'dia' => 72],
+            ['day' => 0,  'hr' => 82, 'sys' => 130, 'dia' => 84],
+            ['day' => 1,  'hr' => 80, 'sys' => 128, 'dia' => 82],
+            ['day' => 2,  'hr' => 79, 'sys' => 129, 'dia' => 83],
+            ['day' => 3,  'hr' => 81, 'sys' => 127, 'dia' => 81],
+            ['day' => 5,  'hr' => 80, 'sys' => 128, 'dia' => 82],
+            ['day' => 7,  'hr' => 83, 'sys' => 130, 'dia' => 84],
+            ['day' => 9,  'hr' => 79, 'sys' => 126, 'dia' => 80],
+            ['day' => 11, 'hr' => 80, 'sys' => 128, 'dia' => 82],
+            ['day' => 13, 'hr' => 78, 'sys' => 126, 'dia' => 80],  // visit day — propranolol prescribed
+            ['day' => 14, 'hr' => 61, 'sys' => 118, 'dia' => 74],  // today — beta-blocker effect
         ];
 
         foreach ($readings as $r) {

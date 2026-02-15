@@ -57,6 +57,17 @@
     <!-- Time Range Filter -->
     <TimeRangeFilter v-model="selectedRange" />
 
+    <!-- HR Trend Chart -->
+    <div v-if="hrData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-gray-900">Resting Heart Rate Trend</h2>
+        <AskAiButton @ask="openGlobalChat('heart rate')" />
+      </div>
+      <div class="h-64">
+        <Line :data="hrChartData" :options="hrChartOptions" />
+      </div>
+    </div>
+
     <!-- Weight Trend Chart (Bar) -->
     <div ref="weightRef" v-if="weightData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
       <div class="flex items-center justify-between mb-4">
@@ -88,17 +99,6 @@
       </div>
       <div class="h-64">
         <Line :data="bpChartData" :options="bpChartOptions" />
-      </div>
-    </div>
-
-    <!-- HR Trend Chart -->
-    <div v-if="hrData.length > 0" class="bg-white rounded-2xl border border-gray-200 p-5">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="font-semibold text-gray-900">Resting Heart Rate Trend</h2>
-        <AskAiButton @ask="openGlobalChat('heart rate')" />
-      </div>
-      <div class="h-64">
-        <Line :data="hrChartData" :options="hrChartOptions" />
       </div>
     </div>
 

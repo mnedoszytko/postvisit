@@ -127,13 +127,7 @@ return [
             ],
 
             'observations' => [
-                [
-                    'code_system' => 'LOINC', 'code' => '8867-4', 'code_display' => 'Heart rate',
-                    'category' => 'vital-signs', 'value_type' => 'quantity',
-                    'value_quantity' => 78, 'value_unit' => 'bpm',
-                    'reference_range_low' => 60, 'reference_range_high' => 100,
-                    'interpretation' => 'N',
-                ],
+                // Heart rate: omitted here — covered by heart_rate_series below
                 [
                     'code_system' => 'LOINC', 'code' => '85354-9', 'code_display' => 'Blood pressure panel',
                     'category' => 'vital-signs', 'value_type' => 'string',
@@ -284,6 +278,18 @@ return [
                 ['day' => -3, 'kg' => 82.5],
                 ['day' => -2, 'kg' => 83.8],
                 ['day' => -1, 'kg' => 85.3],
+            ],
+
+            // Heart rate trend: drops after propranolol started at visit (day -1)
+            'heart_rate_series' => [
+                ['day' => -7, 'bpm' => 82],
+                ['day' => -6, 'bpm' => 79],
+                ['day' => -5, 'bpm' => 84],
+                ['day' => -4, 'bpm' => 80],
+                ['day' => -3, 'bpm' => 81],
+                ['day' => -2, 'bpm' => 78],
+                ['day' => -1, 'bpm' => 80],  // visit day — propranolol started
+                ['day' => 0, 'bpm' => 61],   // today — propranolol effect
             ],
         ],
 

@@ -171,6 +171,47 @@ class DoctorController extends Controller
             }
         }
 
+        // Heart rate drop alerts: latest HR reading >= 15 bpm below prior average (code 8867-4)
+        $hrObservations = Observation::whereIn('patient_id', $patientIds)
+            ->where('code', '8867-4')
+            ->with('patient:id,first_name,last_name')
+            ->orderBy('effective_date')
+            ->get()
+            ->groupBy('patient_id');
+
+        foreach ($hrObservations as $patientId => $observations) {
+            if ($observations->count() < 3) {
+                continue;
+            }
+
+            $latest = $observations->last();
+            $priorReadings = $observations->slice(0, -1);
+            $priorAvg = $priorReadings->avg('value_quantity');
+            $currentHr = (float) $latest->value_quantity;
+            $drop = round($priorAvg - $currentHr, 0);
+
+            if ($drop >= 15) {
+                $patient = $latest->patient;
+                $alerts[] = [
+                    'type' => 'hr_drop',
+                    'severity' => 'high',
+                    'patient_id' => $patientId,
+                    'patient_name' => $patient->first_name.' '.$patient->last_name,
+                    'message' => sprintf(
+                        'Average resting HR dropped by %d bpm (avg %d → %d bpm)',
+                        (int) $drop,
+                        (int) round($priorAvg),
+                        (int) $currentHr,
+                    ),
+                    'data' => [
+                        'prior_avg_bpm' => (int) round($priorAvg),
+                        'current_bpm' => (int) $currentHr,
+                        'drop_bpm' => (int) $drop,
+                    ],
+                ];
+            }
+        }
+
         // Sort alerts: high severity first
         usort($alerts, fn ($a, $b) => $a['severity'] === 'high' ? -1 : 1);
 
@@ -625,6 +666,24 @@ class DoctorController extends Controller
             if ($obs->count() >= 2) {
                 $delta = (float) $obs->last()->value_quantity - (float) $obs->first()->value_quantity;
                 if ($delta >= 2.0) {
+                    $statuses[$pid] = 'alert';
+                }
+            }
+        }
+
+        // HR drop alerts => "alert" (high severity)
+        $hrObs = Observation::whereIn('patient_id', $patientIds)
+            ->where('code', '8867-4')
+            ->orderBy('effective_date')
+            ->get()
+            ->groupBy('patient_id');
+
+        foreach ($hrObs as $pid => $obs) {
+            if ($obs->count() >= 3) {
+                $latest = $obs->last();
+                $priorAvg = $obs->slice(0, -1)->avg('value_quantity');
+                $drop = $priorAvg - (float) $latest->value_quantity;
+                if ($drop >= 15) {
                     $statuses[$pid] = 'alert';
                 }
             }
