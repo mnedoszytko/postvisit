@@ -401,7 +401,28 @@
                     <p v-else-if="line.trim()" class="text-gray-600">{{ line }}</p>
                   </template>
                 </div>
-                <p v-else class="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">{{ visit.transcript.raw_transcript }}</p>
+                <div v-else class="text-sm leading-relaxed space-y-2">
+                  <template v-for="(line, i) in parseTranscriptLines(visit.transcript.raw_transcript)" :key="i">
+                    <div v-if="line.type === 'header'" class="text-xs text-gray-400 pb-1 border-b border-gray-100 mb-2 whitespace-pre-wrap">{{ line.text }}</div>
+                    <div v-else-if="line.type === 'doctor'" class="flex gap-2">
+                      <div class="w-1 rounded-full bg-emerald-400 shrink-0"></div>
+                      <p class="text-gray-700">
+                        <span class="text-xs text-gray-400 mr-1">{{ line.time }}</span>
+                        <span class="font-semibold text-emerald-700">{{ line.speaker }}</span>
+                        <span>{{ line.text }}</span>
+                      </p>
+                    </div>
+                    <div v-else-if="line.type === 'patient'" class="flex gap-2">
+                      <div class="w-1 rounded-full bg-blue-400 shrink-0"></div>
+                      <p class="text-gray-700">
+                        <span class="text-xs text-gray-400 mr-1">{{ line.time }}</span>
+                        <span class="font-semibold text-blue-600">{{ line.speaker }}</span>
+                        <span>{{ line.text }}</span>
+                      </p>
+                    </div>
+                    <p v-else-if="line.type === 'text'" class="text-gray-600 whitespace-pre-wrap">{{ line.text }}</p>
+                  </template>
+                </div>
               </div>
             </div>
           </div>
@@ -541,6 +562,40 @@ const condExpanded = ref(false);
 const rxExpanded = ref(false);
 const entitiesExpanded = ref(false);
 const transcriptExpanded = ref(false);
+
+function parseTranscriptLines(raw) {
+  if (!raw) return [];
+  const parts = raw.split(/^---$/m);
+  const headerText = parts.length > 1 ? parts[0].trim() : '';
+  const body = (parts.length > 1 ? parts.slice(1).join('---') : raw).trim();
+
+  const lines = [];
+  if (headerText) {
+    lines.push({ type: 'header', text: headerText });
+  }
+
+  const lineRegex = /^\[(\d{1,2}:\d{2})\]\s+([A-Z][A-Z\s.]+?):\s*(.*)$/;
+  for (const raw_line of body.split('\n')) {
+    const trimmed = raw_line.trim();
+    if (!trimmed) continue;
+
+    const match = trimmed.match(lineRegex);
+    if (match) {
+      const [, time, speaker, text] = match;
+      const isDoctor = /^(DR\.|DOCTOR)/i.test(speaker.trim());
+      lines.push({
+        type: isDoctor ? 'doctor' : 'patient',
+        time,
+        speaker: speaker.trim() + ': ',
+        text,
+      });
+    } else {
+      lines.push({ type: 'text', text: trimmed });
+    }
+  }
+  return lines;
+}
+
 const checkedActions = reactive({});
 
 // Term popover state

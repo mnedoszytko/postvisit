@@ -28,6 +28,7 @@ use App\Services\Medications\OpenFdaClient;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class DemoSeeder extends Seeder
@@ -771,13 +772,25 @@ class DemoSeeder extends Seeder
             'signed_at' => now()->subDay(),
         ]);
 
-        // 11. Transcript
+        // 11. Transcript (with audio file for demo playback)
+        $audioRelativePath = "transcripts/{$visit->id}/dialogue-tts.mp3";
+        $audioSourcePath = database_path('../demo/visits/visit-01-coronarography-stenosis/dialogue-tts.mp3');
+        $uploadDisk = config('filesystems.upload');
+
+        if (file_exists($audioSourcePath)) {
+            Storage::disk($uploadDisk)->put(
+                $audioRelativePath,
+                file_get_contents($audioSourcePath)
+            );
+        }
+
         Transcript::create([
             'visit_id' => $visit->id,
             'patient_id' => $patient->id,
             'source_type' => 'ambient_device',
             'stt_provider' => 'whisper',
-            'audio_duration_seconds' => 1590,
+            'audio_file_path' => file_exists($audioSourcePath) ? $audioRelativePath : null,
+            'audio_duration_seconds' => 422,
             'raw_transcript' => file_get_contents(database_path('../demo/transcript.txt')),
             'processing_status' => 'completed',
             'patient_consent_given' => true,
