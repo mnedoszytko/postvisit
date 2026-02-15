@@ -4,509 +4,97 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**PostVisit.ai** — system AI utrzymujący kontekst konkretnej wizyty klinicznej, pomagający pacjentowi po wyjściu z gabinetu. Hackathon project: Built with Opus 4.6 (10-16 luty 2026).
+**PostVisit.ai** — AI system maintaining clinical visit context, helping patients after leaving the doctor's office. Hackathon project: Built with Opus 4.6 (10-16 Feb 2026).
 
-Pełna dokumentacja projektu: `docs/seed.md`
-Log decyzji: `docs/decisions.md`
-Log błędów i poprawek (dev/tooling): `docs/lessons.md`
-Log iteracji i głębi klinicznej: `docs/KEEP-THINKING.md`
-Tracker licencji i compliance: `docs/licenses.md`
-
-## Incremental Documentation (CRITICAL — hackathon judging criterion)
-
-Documentation is a **core evaluation criterion** of this hackathon. Build it incrementally as you code — NOT at the end.
-
-### Rules
-1. **After completing any feature, endpoint, or significant change** — immediately update the relevant doc file(s).
-2. **README.md** — keep it current: project overview, setup instructions, architecture summary, demo instructions. Update after every major milestone.
-3. **docs/api.md** — document every API endpoint as it's implemented: method, path, auth, request/response examples.
-4. **docs/architecture.md** — update when architecture changes: diagrams, data flow, service layer, AI pipeline.
-5. **docs/ai-prompts.md** — document each AI prompt: purpose, input context, expected output, versioning.
-6. **docs/demo-guide.md** — step-by-step demo walkthrough, keep in sync with the actual working demo.
-7. **Code comments** — add JSDoc/PHPDoc for non-obvious public methods. Don't over-comment, but document "why" not "what".
-8. **CHANGELOG.md** — maintain a human-readable changelog of features added, in reverse chronological order.
-
-### Documentation Quality Standards
-- All docs in English (final submission language)
-- Include code examples and screenshots where helpful
-- Keep docs concise but complete — judges have limited time
-- Every doc should be understandable by someone new to the project
-
-## Continuous Improvement Process
-
-### Two logs — different purposes
-
-1. **`docs/lessons.md`** — dev/tooling lessons only. Bugs in code, SDK quirks, migration gotchas, test failures, CLI pitfalls. These are engineering corrections.
-
-2. **`docs/KEEP-THINKING.md`** — project-level iterations and clinical depth. Log here when:
-   - You discover a deeper understanding of the clinical process or patient experience
-   - An AI prompt is revised because the previous version misunderstood medical nuance
-   - A context assembly approach is changed (e.g. "we added transcript as highest-priority context because discharge notes miss conversational nuance")
-   - A design decision is reconsidered after learning more about how real clinical workflows operate
-   - A guardrail is refined (e.g. "the escalation detector was too aggressive — normal post-visit descriptions were flagged")
-   - You iterate on demo data quality (e.g. "AI-generated SOAP note felt artificial, physician rewrote it")
-   - A compliance or safety consideration leads to an architectural change
-   - You research a new clinical data source, drug database, or guideline set
-
-   **Format for new entries:**
-   ```
-   ### Iteration N: [Short title] (date)
-   **What changed:** [1-2 sentences]
-   **Why:** [The clinical/product insight that drove the change]
-   **Before → After:** [What was the old approach vs the new one]
-   ```
-
-### Routing rule
-- If the lesson is about **how to use a tool, fix a bug, or avoid a dev mistake** → `docs/lessons.md`
-- If the lesson is about **understanding the problem deeper, improving clinical accuracy, or iterating on product design** → `docs/KEEP-THINKING.md`
-- When in doubt: if a hackathon judge would find it interesting, it goes in KEEP-THINKING.
-
-### Promotion
-Every 3-5 iterations, review `docs/lessons.md` and promote recurring dev patterns into this CLAUDE.md file. The KEEP-THINKING log is never "promoted" — it grows as a living narrative of the project's depth.
+Key docs: `docs/seed.md` (full spec) · `docs/decisions.md` (decision log) · `docs/lessons.md` (dev lessons) · `docs/KEEP-THINKING.md` (clinical depth) · `docs/licenses.md` (compliance) · `docs/integrations.md` (Linear, Craft APIs)
 
 ## Stack
 
-- **Backend**: Laravel 12, PHP 8.4
-- **Frontend**: Vue 3 (integrated in `resources/js/`), Vite
-- **CSS**: Tailwind CSS v4
-- **Package manager**: Bun
-- **AI**: Claude Opus 4.6 (Anthropic PHP SDK — `anthropic-ai/laravel`)
-- **Auth**: Laravel Sanctum (cookie-based SPA)
-- **Hosting**: Laravel Forge + Hetzner
-- **Development**: Laravel Herd (local, PHP 8.4 isolated)
-- **Database**: PostgreSQL 17 (Herd) — jsonb, tsvector, native UUID
-- **Cache**: Database driver (PostgreSQL)
-- **Queue**: Database driver (PostgreSQL)
+- **Backend**: Laravel 12, PHP 8.4 · **Frontend**: Vue 3, Vite · **CSS**: Tailwind v4 · **Package manager**: Bun
+- **AI**: Claude Opus 4.6 (`anthropic-ai/laravel`) · **Auth**: Laravel Sanctum (cookie SPA) · **DB**: PostgreSQL 17
+- **Dev**: Laravel Herd (local, PHP 8.4 isolated) · **Hosting**: Laravel Forge + Hetzner
 
 ## Essential Commands
 
-### Development
-- Never run `bun run dev` or `npm run dev` — dev server already runs in background via Herd
-- Never run `php artisan serve` — Herd handles this automatically
-- Local URL: `postvisit.test` (Herd convention based on directory name)
-- Use `herd php artisan` for all artisan commands (ensures PHP 8.4 isolated version)
-
-### Backend
-- `herd php artisan test` — run all tests
-- `herd php artisan test --filter=ClassName` — run single test class
+- **Never** run `bun run dev`, `npm run dev`, or `php artisan serve` — Herd handles all of this
+- Use `herd php artisan` for all artisan commands (ensures PHP 8.4)
+- `herd php artisan test` / `herd php artisan test --filter=ClassName` — run tests
 - `herd php artisan migrate` — run migrations
-- `./vendor/bin/pint` — fix PHP code style (Laravel Pint)
+- `./vendor/bin/pint` — fix code style
+- `bun run build` — build frontend · `bun add <package>` — add dependency (NOT npm)
+- Local URL: `postvisit.test`
 
-### Frontend
-- `bun run build` — build for production
-- `bun add <package>` — add dependency (NOT npm)
+## Key Architecture Patterns
 
-## Architecture
-
-```
-postvisit/
-├── app/
-│   ├── Http/Controllers/Api/   # API controllers
-│   ├── Http/Middleware/         # RoleMiddleware, AuditMiddleware
-│   ├── Http/Requests/          # Form Request validation
-│   ├── Http/Resources/         # API Resources (JSON transformers)
-│   ├── Models/                 # Eloquent models (18, all HasUuids)
-│   └── Services/
-│       ├── AI/                 # AI service layer (10 classes)
-│       ├── Medications/        # RxNorm client
-│       └── Stt/                # STT adapter (Whisper)
-├── resources/
-│   ├── js/
-│   │   ├── views/              # Vue views (11 screens)
-│   │   ├── components/         # Reusable Vue components
-│   │   ├── stores/             # Pinia stores (auth, visit, chat, doctor)
-│   │   ├── router/             # Vue Router
-│   │   ├── composables/        # useApi, useSse, useAuth
-│   │   └── layouts/            # PatientLayout, DoctorLayout
-│   └── css/                    # Tailwind CSS
-├── prompts/                    # AI system prompts — versioned like code
-├── demo/                       # Demo data, mocks, guidelines
-├── docs/                       # Working documentation
-├── routes/
-│   ├── api.php                 # /api/v1/ endpoints (~40)
-│   └── web.php                 # SPA catch-all
-└── database/
-    ├── migrations/             # 22 migration files
-    └── seeders/                # DemoSeeder
-```
-
-### Prompts as Code
-System prompts in `prompts/` are versioned and reviewable. Never hardcode prompts in controllers — import from files via `PromptLoader` service.
-
-### Key Architecture Patterns
-- **Integrated SPA**: Vue runs inside Laravel (resources/js/), not a separate repo. Zero CORS issues.
-- **Sanctum cookie auth**: Same-origin, stateful sessions. No tokens in localStorage.
-- **SSE streaming**: AI responses stream via Server-Sent Events (`/chat`, `/explain` endpoints).
-- **Service layer**: All AI logic in `app/Services/AI/`, business logic never in controllers.
-- **UUID everywhere**: All models use `HasUuids` trait, PostgreSQL native uuid type.
+- **Integrated SPA**: Vue inside Laravel (`resources/js/`), zero CORS. Sanctum cookie auth.
+- **SSE streaming**: AI responses via Server-Sent Events (`/chat`, `/explain` endpoints)
+- **Service layer**: All AI logic in `app/Services/AI/`, never in controllers
+- **Prompts as code**: System prompts in `prompts/`, loaded via `PromptLoader`. Never hardcode prompts.
+- **UUID everywhere**: All models use `HasUuids` trait, PostgreSQL native uuid type
 
 ## Git Strategy
 
-### Hackathon Mode — Direct to Main (no PRs)
-PRs are disabled for hackathon speed. All work goes directly to `main` with discipline.
-
-### Worktree Setup
-- `/postvisit` — primary worktree (human + main agent), on `main`
-- `/postvisit-agent2` through `/postvisit-agent5` — agent worktrees, each on own branch
-
-Each agent worktree gets its own branch (`agentN-workspace`). **Never delete another agent's worktree** — other Claude Code sessions may be using it.
-
-**Worktree .env (CRITICAL):** Each worktree needs its own `.env` with domain matching the Herd directory name. If these don't match, Sanctum cookie auth silently fails (cookies not sent).
-```
-APP_URL=http://postvisit-agentN.test
-SANCTUM_STATEFUL_DOMAINS=postvisit-agentN.test
-DB_DATABASE=postvisit_agentN
-```
-
-### Commit Rules
-- **Every commit must**: pass `herd php artisan test` AND `bun run build`
-- **Never push to `main` if tests fail**
-- Never Co-Author commits with Claude Code as author
-- Check `storage/logs/laravel.log` for errors after making changes
-
-### Agent Workflow (CRITICAL — prevents merge overwrites)
-Agents work on short-lived branches. **Always rebase before merging to main.**
-
-```bash
-# 1. Start work — fresh branch from latest main
-git fetch origin main
-git checkout -b fix/my-task FETCH_HEAD
-
-# 2. Do the work, commit
-
-# 3. Before merging — ALWAYS rebase onto latest main
-git fetch origin main
-git rebase FETCH_HEAD
-
-# 4. Merge to main (use worktree or merge FETCH_HEAD)
-git checkout main       # if main is available
-git merge fix/my-task --no-edit
-git push origin main
-
-# 5. If main is locked by another worktree:
-git fetch origin main
-git rebase FETCH_HEAD   # rebase your branch
-git push origin fix/my-task
-# then merge from the main worktree
-```
-
-**Why rebase is mandatory:** Without rebase, merging a branch created from old main can silently overwrite newer changes. Git sees old file versions on the branch and keeps them. Rebase replays your changes on top of current main, making conflicts visible.
-
-### Tags (checkpoints)
-Before risky merges, tag current main:
-```
-git tag pre-<feature>
-```
-Use for instant rollback if merge breaks something.
-
-### Branch Hygiene
-- **Short-lived branches only** — branch, work, merge within minutes/hours, not days
-- Delete branches after merge: `git branch -d fix/my-task`
-- Never let a branch diverge more than a few hours from main
-- If a branch is old, **rebase it** before doing anything: `git fetch origin main && git rebase FETCH_HEAD`
-
-### Multi-Agent Safety
-- Max 2 agents working in parallel
-- Agents MUST work on separate files when possible (e.g. agent1: backend, agent2: frontend)
-- **Always rebase before merge** — this is the single most important rule
-- If merge conflict: resolve on feature branch, never force-push main
-- Only one agent merges to `main` at a time
-
-### VPS Deployment (when Forge is ready)
-- Forge will auto-deploy from `main`
-- Before enabling: add `dev` branch as buffer between work and deploy
-- Flow becomes: `feature/* → dev → main (deploy)`
-
-## Changelog Policy
-
-Every significant change must be recorded in `CHANGELOG.md`. This is our primary tool for tracing what changed and when.
-
-### Rules
-1. **Every meaningful change gets an entry** — new features, bug fixes, refactors, dependency updates, architecture changes. Skip trivial formatting or typo fixes.
-2. **Format**: reverse chronological order, grouped by date (YYYY-MM-DD), with sections: Added, Fixed, Changed, Removed as needed.
-3. **Keep descriptions short** — one line per change, enough context to understand what and why.
-4. **No versioning yet** — we don't tag releases or bump versions until MVP is reached. CHANGELOG.md is purely for tracing changes over time.
-5. **Update in the same commit** — when you implement a feature or fix, update CHANGELOG.md in the same commit (or PR). Don't batch changelog updates separately.
-
-### Example entry
-```markdown
-## 2026-02-11
-
-### Added
-- Medical term highlighting with tap-to-explain in SOAP notes
-
-### Fixed
-- URL redirect handling during Chrome testing
-```
+- **Direct to main** (hackathon mode, no PRs). Every commit must pass `herd php artisan test` AND `bun run build`.
+- **Always rebase before merge**: `git fetch origin main && git rebase FETCH_HEAD`. Without this, merges silently overwrite newer changes.
+- Multi-agent: max 2 parallel, work on separate files, only one merges to main at a time.
+- Worktrees: each needs own `.env` with matching `APP_URL`/`SANCTUM_STATEFUL_DOMAINS`/`DB_DATABASE`.
+- Never Co-Author commits with Claude Code as author.
 
 ## Coding Guidelines
 
-### Language Policy
-- **Official project language: English.** All code, variable names, comments, commit messages, UI text, and repository documentation (README, SECURITY, etc.) MUST be in English.
-- **Working docs in `docs/`** may be in Polish during development — they will be translated before final submission.
-- **User prompts in chat** come in Polish and English — both are normal, always respond in the same language the user used.
-- **Never translate or "correct" user's prompts** — the bilingual workflow is intentional and more effective.
-
 ### Pre-Implementation Verification (CRITICAL)
-Before writing ANY new code — component, service, endpoint, helper, or utility — you MUST:
+Before writing ANY new code, search for existing implementations (`app/Services/`, `app/Http/Controllers/`, `resources/js/`). **Extend, don't duplicate.** If you find overlapping code — STOP and refactor.
 
-1. **Search for existing implementations.** Use Grep/Glob to check if similar functionality already exists in the codebase. Check:
-   - `app/Services/` — is there already a service that does this or something close?
-   - `app/Http/Controllers/` — is there an endpoint that already handles this?
-   - `resources/js/components/` — is there a Vue component that does the same thing?
-   - `resources/js/composables/` — is there a composable with this logic?
-   - `resources/js/stores/` — is this state already managed somewhere?
-
-2. **Extend, don't duplicate.** If similar code exists:
-   - Add a parameter or method to the existing class — don't create a parallel one
-   - Extract shared logic into a common function — don't copy-paste
-   - If two components do 80% the same thing, refactor to one configurable component
-
-3. **Check for unused code.** Before adding a new approach, verify the old one is removed. Do not leave dead code, orphaned components, or unused imports behind.
-
-4. **Name consistently.** Before naming a new file/class/function, check how siblings are named. Follow the same pattern. If visit-related services are `VisitSummarizer`, `VisitStructurer`, don't name yours `SummarizeVisitService`.
-
-**If you find existing code that overlaps with what you're about to write — STOP and refactor instead of creating a duplicate.** Duplication is a bug.
-
-### Field Audit Rule (CRITICAL — most common bug pattern)
-Before referencing ANY model field in a controller, service, or Vue template:
-1. **Check the migration** — it's the source of truth for column names, types, enums, and nullability.
-2. **Check the model's `$fillable`/`$casts`** — verify the field is accessible and properly cast.
-3. **Check the API Resource / controller response** — frontend must use the exact field paths returned by the API, not guessed ones.
-4. **For enum columns** — controller validation values MUST match migration enum values exactly.
-5. **For NOT NULL columns** — ensure every column has a value set in the controller (auto-generate or default).
-
-Common traps: `patient.name` (doesn't exist — it's `first_name`/`last_name`), `visit.visit_date` (doesn't exist — it's `started_at`), `$transcript->raw_text` (it's `raw_transcript`).
-
-### Ephemeral Data Protection
-When handling irreplaceable user data that exists only in browser memory (recordings, file uploads, unsaved forms):
-1. **Save to server FIRST, process SECOND** — never combine save+process in one atomic step. If processing fails, the data must already be on disk.
-2. **Async API safety** — browser media APIs (MediaRecorder) are event-driven. After `.stop()`, data is NOT ready until `onstop` fires. Always await the completion event.
-3. **Closure isolation** — when rotating/replacing async producers (e.g. chunk rotation), each producer must own its data via closures. Never share mutable arrays between async callbacks.
-4. **`beforeunload` protection** — any page holding ephemeral data MUST register a `beforeunload` handler during active recording/upload. Remove on unmount.
-5. **Idempotent retries** — persist intermediate resource IDs (visit ID, chunk IDs) so retries reuse existing resources instead of creating orphans.
+### Field Audit Rule (CRITICAL)
+Before referencing ANY model field: check the migration (source of truth), model's `$fillable`/`$casts`, and API response. Common traps: `patient.name` (it's `first_name`/`last_name`), `visit.visit_date` (it's `started_at`), `$transcript->raw_text` (it's `raw_transcript`).
 
 ### AI Output Validation
-Never trust AI-generated structured data (character offsets, positions, counts, classifications) without programmatic validation:
-- Backend: validate every AI output field before storing (e.g. extract substring at claimed offset, compare to claimed term)
-- Frontend: validate again client-side, with fallback behavior (e.g. text search if offset is wrong)
-- Drop invalid entries with debug logging rather than crashing
+Never trust AI-generated structured data without programmatic validation. Validate backend + frontend, drop invalid entries with logging rather than crashing.
 
-### Demo Seeder Completeness
-The DemoSeeder must produce **complete, feature-ready data for ALL demo scenarios**, not just the first one:
-- Every visit must have all dependent data (visit notes, medical_terms, observations, conditions, prescriptions)
-- If a feature depends on AI-generated data (e.g. term extraction), the seeder must invoke that service for all scenarios
-- Critical demo data should be hardcoded for reliability; AI services supplement but don't replace deterministic seeding
+### Demo Seeder & AI Cost Guard
+- DemoSeeder must produce complete data for ALL scenarios. Hardcode critical demo data.
+- Check for existing AI output before regenerating. Ask before batch operations.
 
-### AI Generation Cost Guard
-Before running ANY AI generation (SOAP notes, term extraction, transcript processing, image/video generation):
-1. **Check for existing output** — if `soap-note.json`, `medical-terms.json`, or `patient-animation.mp4` already exists, skip. Never use `--force` unless explicitly asked.
-2. **Ask before batch operations** — "This will call Claude Opus for N scenarios, ~X minutes. Proceed?" Hackathon time is the scarcest resource.
-3. **Never regenerate existing AI content** — each scenario costs ~2-3 min of Opus time. Unnecessary regeneration wastes tokens and money.
+### Testing
+- Never call real AI services in tests — mock or use fixtures. PHPUnit limits: 10s/20s/30s.
+- Use `DemoScenarioSeeder` (hardcoded) instead of `DemoSeeder` (calls TermExtractor) in tests.
 
-### No Real AI Services in Automated Tests
-Automated tests (PHPUnit) must NEVER call real AI services (Anthropic API, FAL, Whisper). A single real API call can block the test suite indefinitely.
-- Mock AI services in tests, or use hardcoded fixtures
-- PHPUnit time limits are enforced: 10s small, 20s medium, 30s large
-- Any test taking >30s must be rewritten — slow tests block all development
-- Use `DemoScenarioSeeder` (hardcoded config) instead of `DemoSeeder` (calls TermExtractor) in tests
+### Ephemeral Data
+Save to server FIRST, process SECOND. Await async completion events. Register `beforeunload` handlers for active recordings.
 
-### Axios Interceptor Safety
-Global axios interceptors that perform side effects (navigation, toasts) must have:
-1. **Opt-out flags** — e.g. `skipAuthRedirect: true` for requests that expect 401s (session checks on public pages)
-2. **Deduplication** — parallel requests triggering the same error (e.g. 3 concurrent 401s) must show ONE toast, not N. Use timestamp-based cooldown (5s)
-3. **Scope awareness** — don't redirect to login from pages that don't require auth
+### Frontend
+- **TypeScript**: All new files must be TS. Opportunistic migration on significant rewrites. No forced mass migrations.
+- **Axios interceptors**: Must have opt-out flags, deduplication (5s cooldown), scope awareness.
 
-### TypeScript Policy (Frontend)
-- **All new frontend files MUST be TypeScript.** New Vue components use `<script setup lang="ts">`, new composables/stores/utilities use `.ts` extension.
-- **Opportunistic migration:** When making significant changes to an existing JS file (e.g. rewriting a component, adding major functionality), consider converting to TypeScript — but only if it's safe and won't break anything. A small bug fix is NOT a reason to convert the whole file.
-- **No forced migrations:** Do NOT do mass renames, bulk TS migrations, or convert files "just because". TypeScript adoption happens naturally when it makes sense.
-- **Framework compatibility first:** If adding types would require complex workarounds or risk breaking existing functionality, skip the conversion. Pragmatism over purity — working code beats typed code.
-- **Type strictness:** Use explicit types for component props (`defineProps<{ ... }>()`), store state, API responses, and service return values. Avoid `any` — prefer `unknown` with narrowing when the type is unclear.
-- **Shared types:** Place reusable types/interfaces in `resources/js/types/`. Keep type definitions close to where they're used when they're not shared.
+### General
+- Language: English for all code/docs/UI. Polish OK in `docs/` working files and user chat prompts.
+- Never hardcode data to resolve a problem. Escalate architecture decisions with options A/B.
+- For medical data, AI prompts, or patient flow — ask requirements BEFORE implementing.
+- License check: update `docs/licenses.md` for any new dependency. Bundled data: only CC-BY/public domain.
 
-### General Rules
-- NEVER hardcode data to resolve a problem — only if explicitly instructed by user
-- Never Co-Author commits with Claude Code as author
+## Documentation
 
-### Hackathon Compliance (CRITICAL)
-When adding ANY new dependency, data source, or external service:
-1. Check its license — must be open source or public domain for bundled components
-2. Update `docs/licenses.md` with: name, license, role, status
-3. If proprietary API (not bundled): mark as "external service" — OK if our integration code is open source
-4. If data bundled in repo: ONLY CC-BY, CC-BY-SA, or public domain. NO CC-BY-NC, NO proprietary.
-5. Demo video must show ONLY open source components
-6. When in doubt — ASK before adding
+Update docs incrementally as you code — documentation is a hackathon judging criterion.
+- `README.md` — overview, setup, features, architecture
+- `docs/api.md` — every API endpoint with request/response examples
+- `docs/architecture.md` — diagrams, data flow, AI pipeline
+- `docs/ai-prompts.md` — all 14 prompts documented
+- `CHANGELOG.md` — reverse chronological, update in same commit as feature
 
-### Architecture Decision Escalation
-Gdy napotkasz fork in the road — ZATRZYMAJ SIĘ i eskaluj:
+### Continuous Improvement
+- `docs/lessons.md` — dev/tooling bugs and fixes
+- `docs/KEEP-THINKING.md` — clinical depth iterations (format: What changed / Why / Before → After)
 
-```
-DECYZJA ARCHITEKTONICZNA WYMAGANA
-Zadanie: [opis]
-Opcja A: [nazwa] — Zalety / Wady
-Opcja B: [nazwa] — Zalety / Wady
-Rekomendacja: [A/B] — [powód]
-```
+## Model & Agent Policy
 
-### Requirements Clarification
-Dla feature'ów dotyczących danych medycznych, promptów AI, lub flow pacjenta — zawsze pytaj o wymagania PRZED implementacją.
+- **Production/demo**: Opus 4.6 · **Tests**: Sonnet OK · **Subagents/Teams**: always `model: 'opus'`
+- Use agent teams for medium+ tasks (3+ files, parallel sub-tasks). Simple tasks: work directly.
+- Hackathon deadline: **16 Feb 2026, 15:00 EST**
 
-## Model Policy
+## Production Deployment
 
-- **Production / demo**: Claude Opus 4.6
-- **Tests / development**: Sonnet is OK (cost optimization)
-- **Subagents (Task tool)**: always use `model: 'opus'`
-- **Agent Teams**: always use `model: 'opus'` — NEVER haiku or sonnet for teammates
-
-- Hackathon deadline: **16 lutego 2026, 15:00 EST** — priorytet to działający prototyp, nie perfekcyjna dokumentacja
-
-## Agent Teams Policy
-
-For **medium or large complexity tasks**, always use agent teams (Task tool with `TeamCreate` + multiple teammates). This includes:
-- Multi-file features (3+ files)
-- Tasks with independent sub-tasks that can run in parallel
-- Complex merges, large refactors, multi-endpoint implementations
-
-For **small/simple tasks** (single file edit, quick fix, one endpoint), work directly without spawning a team.
-
-## Linear (Project Management)
-
-Team **POST** in the `medduties` workspace. API key is available as `$LINEAR_API_KEY` env var.
-
-### Querying issues via GraphQL
-
-```bash
-curl -s -X POST 'https://api.linear.app/graphql' \
-  -H 'Content-Type: application/json' \
-  -H "Authorization: $LINEAR_API_KEY" \
-  -d '{"query":"{ team(id: \"506cce46-72bf-4ee9-80d6-754659668b7b\") { issues(first: 50) { nodes { identifier title state { name } priority priorityLabel assignee { name } } } } }"}'
-```
-
-### Creating / updating issues
-
-```bash
-# Create an issue
-curl -s -X POST 'https://api.linear.app/graphql' \
-  -H 'Content-Type: application/json' \
-  -H "Authorization: $LINEAR_API_KEY" \
-  -d '{"query":"mutation { issueCreate(input: { teamId: \"506cce46-72bf-4ee9-80d6-754659668b7b\", title: \"Issue title\", description: \"Details\" }) { success issue { identifier url } } }"}'
-
-# Update issue state (use stateId from workflow states query)
-curl -s -X POST 'https://api.linear.app/graphql' \
-  -H 'Content-Type: application/json' \
-  -H "Authorization: $LINEAR_API_KEY" \
-  -d '{"query":"mutation { issueUpdate(id: \"<issue-uuid>\", input: { stateId: \"<state-uuid>\" }) { success } }"}'
-```
-
-### Key IDs
-- **Team POST**: `506cce46-72bf-4ee9-80d6-754659668b7b`
-- Use `$LINEAR_API_KEY` env var — never hardcode the token
-
-### Tips
-- Always use GraphQL API (`https://api.linear.app/graphql`) — do not rely on browser automation for Linear
-- Pipe output through `python3 -m json.tool` for readable formatting
-- Linear API docs: https://developers.linear.app/docs/graphql/working-with-the-graphql-api
-
-## Craft (Documentation / Knowledge Base)
-
-Craft is used for project documentation, planning, and knowledge sharing. Access via REST API.
-
-### Connection
-- **Base URL**: `https://connect.craft.do/links/3SxffBwjsYS/api/v1`
-- **Space ID**: `22c77e8f-27ff-3921-2f71-1d1f300aad2f`
-- **Auth**: No API key needed — authenticated via the connection link
-- **Timezone**: `Europe/Brussels`
-
-### Key Concepts
-- **Document ID = root block ID** — use document ID with `GET /blocks?id={docId}` to fetch content
-- **Locations**: Documents live in folders or built-in locations: `unsorted`, `templates`, `trash`
-- Use `Accept: application/json` for structured data, `Accept: text/markdown` for rendered content
-
-### Common Operations
-
-```bash
-BASE="https://connect.craft.do/links/3SxffBwjsYS/api/v1"
-
-# Discover folder structure
-curl -s "$BASE/folders" | python3 -m json.tool
-
-# List documents in a folder
-curl -s "$BASE/documents?folderIds=FOLDER_ID" | python3 -m json.tool
-
-# Read document content (as markdown)
-curl -s -H "Accept: text/markdown" "$BASE/blocks?id=DOCUMENT_ID"
-
-# Read document content (as JSON)
-curl -s "$BASE/blocks?id=DOCUMENT_ID" | python3 -m json.tool
-
-# Search documents
-curl -s "$BASE/documents/search?query=SEARCH_TERM" | python3 -m json.tool
-
-# Create document
-curl -s -X POST "$BASE/documents" \
-  -H "Content-Type: application/json" \
-  -d '{"documents":[{"title":"Doc Title"}],"destination":{"folderId":"FOLDER_ID"}}'
-
-# Add content to document (markdown)
-curl -s -X POST "$BASE/blocks" \
-  -H "Content-Type: application/json" \
-  -d '{"documentId":"DOC_ID","blocks":[{"type":"text","markdown":"Content here"}]}'
-
-# Get active tasks
-curl -s "$BASE/tasks?scope=active" | python3 -m json.tool
-```
-
-### Safety Rules
-- **Production data** — this connects to real user documents. Only safe operations.
-- Safe: `GET` requests, creating test content that you delete immediately
-- Unsafe: permanent deletions, modifications without backup
-
-### Tips
-- Always start with `GET /folders` to discover the space structure
-- Use `GET /documents` with location filter before creating new docs
-- MCP tools (`mcp__claude_ai_Craft__*`) are also available as an alternative interface
-
-## TODO
-
-### Production deployment checklist
-- [ ] **UPLOAD_DISK=s3** — on production set `UPLOAD_DISK=s3` in `.env`
-- [ ] **ANTHROPIC_API_KEY** — required for AI chat, analysis, term extraction
-- [ ] **OPENAI_API_KEY** — required for Whisper STT (voice recording)
-- [ ] **APP_URL** — set to `https://postvisit.ai`
-- [ ] **SANCTUM_STATEFUL_DOMAINS** — must match production domain
-- [ ] **SESSION_DOMAIN** — set to `.postvisit.ai`
-
-### Nice-to-have
-- [ ] **Voice readout of chat responses** — TTS to read AI answers aloud to the patient
-- [ ] **Voice input for chat** — dictate questions to the chat instead of typing
-- [ ] **Link WAV files to seeded visits** — WAV recordings exported, but not yet linked to demo scenario visits in seeder
-- [ ] **Expose agents.md via HTTP** — serve `agents.md` at `/.well-known/agents.md` or `/agents.md` so AI agents (Claude Code, bots) reviewing the project can discover project context, API docs, and architecture. Similar to `robots.txt` convention but for LLM agents. Judges may use AI tools to verify projects.
-
-### Dokumentacja (hackathon criterion)
-- [x] README.md — DONE
-- [x] docs/api.md — DONE
-- [x] docs/decisions.md — DONE
-- [x] docs/licenses.md — DONE
-- [ ] docs/architecture.md — system architecture, data flow, AI pipeline
-- [ ] docs/demo-guide.md — step-by-step demo walkthrough
-- [ ] CHANGELOG.md — feature changelog
-
-### Pre-landing checklist (przed submission)
-- [ ] **Dead code audit** — przejrzeć repo pod kątem: nieużywanych komponentów Vue, osieroconých kontrolerów/metod, zakomentowanego kodu, plików testowych/debug wrzuconych przypadkiem, nieużywanych importów, pustych plików
-- [ ] **Console.log / dd() cleanup** — usunąć wszystkie debug logi z frontendu i backendu
-- [ ] **Unused dependencies** — sprawdzić `composer.json` i `package.json` pod kątem paczek, które nie są już używane
-- [ ] **Unused routes** — porównać `routes/api.php` z rzeczywistymi kontrolerami, usunąć martwe endpointy
-- [ ] **Orphaned migrations** — sprawdzić czy nie ma migracji tworzących tabele, które nie mają modeli
-- [ ] **Test fixtures / temp files** — usunąć pliki testowe, tymczasowe dane, stare mocki z repo
-- [ ] **TODO/FIXME/HACK comments** — przejrzeć i rozwiązać lub udokumentować
-- [ ] **.env.example** — upewnić się, że zawiera wszystkie wymagane zmienne
-- [ ] **README.md audit** — kompletna weryfikacja: czy opis projektu odpowiada aktualnemu stanowi, czy setup instructions działają od zera, czy lista features jest kompletna i aktualna, czy architektura/stack się zgadzają, czy screenshoty/demo instructions odzwierciedlają obecny UI
-- [ ] **Dokumentacja docs/** — przejrzeć wszystkie pliki w `docs/`: `api.md` (czy pokrywa wszystkie endpointy), `architecture.md` (czy diagram jest aktualny), `decisions.md` (czy ostatnie decyzje są udokumentowane), `ai-prompts.md` (czy prompty się zgadzają z kodem), `demo-guide.md` (czy krok po kroku działa), `licenses.md` (czy nowe zależności są dodane)
-- [ ] **CHANGELOG.md** — uzupełnić brakujące wpisy, upewnić się że pokrywa wszystkie features od początku projektu
-- [ ] **Pint** — `./vendor/bin/pint` finalne formatowanie
-- [ ] **Build clean** — `bun run build` bez errorów i warnings (oprócz chunk size)
-- [ ] **CLAUDE.md reduction** — plik jest za duży (500+ linii), skondensować: usunąć duplikaty, skrócić sekcje, przenieść szczegóły do osobnych plików w `docs/`
+See `.env.example` for all required variables. Key items:
+`UPLOAD_DISK=s3` · `ANTHROPIC_API_KEY` · `OPENAI_API_KEY` · `APP_URL=https://postvisit.ai` · `SANCTUM_STATEFUL_DOMAINS` · `SESSION_DOMAIN=.postvisit.ai`
 
 ===
 
