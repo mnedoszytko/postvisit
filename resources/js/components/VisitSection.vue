@@ -33,15 +33,13 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { marked } from 'marked';
+import { safeMarkdown } from '@/utils/sanitize';
 import HighlightedText from '@/components/HighlightedText.vue';
 import AskAiButton from '@/components/AskAiButton.vue';
 
-marked.setOptions({ breaks: true, gfm: true });
-
 function renderContent(text) {
     if (!text) return '';
-    return marked.parse(text);
+    return safeMarkdown(text);
 }
 
 const props = defineProps({

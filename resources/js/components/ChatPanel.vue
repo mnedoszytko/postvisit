@@ -319,14 +319,13 @@ import { ref, computed, onMounted, nextTick, watch, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useChatStore } from '@/stores/chat';
 import { useVisitStore } from '@/stores/visit';
-import { marked } from 'marked';
+import { safeMarkdown } from '@/utils/sanitize';
 import StreamingMessage from '@/components/StreamingMessage.vue';
 import ThinkingIndicator from '@/components/ThinkingIndicator.vue';
 import SourceChips from '@/components/SourceChips.vue';
 
-marked.setOptions({ breaks: true, gfm: true });
 function renderMarkdown(text) {
-    return marked.parse(text || '');
+    return safeMarkdown(text || '');
 }
 
 function stripSources(text) {
@@ -831,9 +830,9 @@ function scrollToBottom() {
     });
 }
 
-watch(() => chatStore.messages, () => {
+watch(() => chatStore.messages.length, () => {
     scrollToBottom();
-}, { deep: true });
+});
 
 function triggerSendGlow() {
     sendGlow.value = false;

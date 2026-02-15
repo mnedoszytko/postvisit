@@ -774,21 +774,10 @@ function dismissInquiry(notifId) {
     }
 }
 
+import { safeMarkdown } from '@/utils/sanitize';
+
 function renderMarkdown(text) {
-    if (!text) return '';
-    return text
-        .replace(/### (.*)/g, '<h3>$1</h3>')
-        .replace(/## (.*)/g, '<h2>$1</h2>')
-        .replace(/# (.*)/g, '<h1>$1</h1>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/^- (.*)/gm, '<li>$1</li>')
-        .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
-        .replace(/<\/ul>\s*<ul>/g, '')
-        .replace(/\n{2,}/g, '</p><p>')
-        .replace(/\n/g, '<br>')
-        .replace(/^/, '<p>')
-        .replace(/$/, '</p>');
+    return safeMarkdown(text || '');
 }
 
 function formatVisitType(type) {

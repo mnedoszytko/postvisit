@@ -298,12 +298,6 @@ function formatVisitType(type) {
     return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
-function shortTitle(visit) {
-    const raw = visit.reason_for_visit || visit.visit_type || 'Visit';
-    if (raw.length <= 60) return raw;
-    return raw.slice(0, 57) + '...';
-}
-
 onMounted(async () => {
     const patientId = auth.user?.patient_id || auth.user?.patient?.id;
     if (patientId) {

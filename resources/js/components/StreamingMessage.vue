@@ -5,17 +5,12 @@
 
 <script setup>
 import { computed } from 'vue';
-import { marked } from 'marked';
+import { safeMarkdown } from '@/utils/sanitize';
 
 const props = defineProps({
     text: { type: String, default: '' },
     showCursor: { type: Boolean, default: true },
 });
 
-marked.setOptions({
-    breaks: true,
-    gfm: true,
-});
-
-const renderedHtml = computed(() => marked.parse(props.text || ''));
+const renderedHtml = computed(() => safeMarkdown(props.text || ''));
 </script>

@@ -507,9 +507,10 @@ import VisitDateBadge from '@/components/VisitDateBadge.vue';
 import AudioPlayer from '@/components/AudioPlayer.vue';
 import HighlightedText from '@/components/HighlightedText.vue';
 
+import { safeInlineMd } from '@/utils/sanitize';
+
 function inlineMd(text) {
-    if (!text) return '';
-    return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    return safeInlineMd(text || '');
 }
 
 const route = useRoute();
