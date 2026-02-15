@@ -76,6 +76,8 @@ class ChatController extends Controller
 
                         if ($type === 'effort') {
                             echo 'data: '.json_encode(['effort' => $content])."\n\n";
+                        } elseif ($type === 'context_tokens') {
+                            echo 'data: '.json_encode(['context_tokens' => json_decode($content, true)])."\n\n";
                         } elseif ($type === 'status') {
                             echo 'data: '.json_encode(['status' => $content])."\n\n";
                         } elseif ($type === 'thinking') {

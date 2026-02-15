@@ -4,6 +4,7 @@ namespace App\Services\AI;
 
 use Anthropic\Messages\CacheControlEphemeral;
 use Anthropic\Messages\TextBlockParam;
+use App\Enums\AiTier;
 use App\Models\PatientContextSummary;
 use App\Models\Visit;
 use App\Services\Guidelines\GuidelinesRepository;
@@ -15,12 +16,37 @@ use Illuminate\Support\Facades\Log;
 
 class ContextAssembler
 {
+    /**
+     * Per-layer token breakdown from the last assembleForVisit() call.
+     *
+     * @var array<string, int>
+     */
+    private array $tokenBreakdown = [];
+
     public function __construct(
         private PromptLoader $promptLoader,
         private OpenFdaClient $openFda,
         private AiTierManager $tierManager,
         private GuidelinesRepository $guidelines,
     ) {}
+
+    /**
+     * Get the token breakdown from the last assembleForVisit() call.
+     *
+     * @return array<string, int>
+     */
+    public function getTokenBreakdown(): array
+    {
+        return $this->tokenBreakdown;
+    }
+
+    /**
+     * Estimate token count for a string (~4 chars per token).
+     */
+    public function estimateTokens(string $text): int
+    {
+        return (int) ceil(mb_strlen($text) / 4);
+    }
 
     /**
      * Assemble minimal context for a quick first response.
@@ -59,19 +85,25 @@ class ContextAssembler
      * Assemble the full context for an AI call about a specific visit.
      *
      * Returns a system prompt (as cacheable TextBlockParam array) and
-     * context messages with visit-specific data.
+     * context messages with visit-specific data. Tracks per-layer token
+     * counts accessible via getTokenBreakdown().
      *
      * @return array{system_prompt: array|string, context_messages: array}
      */
     public function assembleForVisit(Visit $visit, string $promptName = 'qa-assistant'): array
     {
+        // Reset token breakdown for this assembly
+        $this->tokenBreakdown = [];
+
         // Eager load all relationships upfront to prevent N+1 queries
         $visit->loadMissing(['patient', 'practitioner', 'visitNote', 'observations', 'transcript', 'conditions', 'prescriptions.medication']);
 
         $tier = $this->tierManager->current();
+        $isOpus = $tier === AiTier::Opus46;
         $cacheTtl = config('anthropic.cache.ttl', '5m');
 
         $systemPrompt = $this->promptLoader->load($promptName);
+        $this->tokenBreakdown['system_prompt'] = $this->estimateTokens($systemPrompt);
 
         if ($tier->cachingEnabled()) {
             $systemBlocks = $this->buildCacheableSystemBlocks($systemPrompt, $visit, $cacheTtl, $tier->guidelinesEnabled());
@@ -82,29 +114,36 @@ class ContextAssembler
         $contextMessages = [];
 
         // Layer 1: Visit data (per-request, not cacheable)
+        $visitContext = $this->formatVisitContext($visit);
+        $this->tokenBreakdown['visit_data'] = $this->estimateTokens($visitContext);
         $contextMessages[] = [
             'role' => 'user',
-            'content' => $this->formatVisitContext($visit),
+            'content' => $visitContext,
         ];
 
         // Layer 2: Patient record
+        $patientContext = $this->formatPatientContext($visit);
+        $this->tokenBreakdown['patient_record'] = $this->estimateTokens($patientContext);
         $contextMessages[] = [
             'role' => 'user',
-            'content' => $this->formatPatientContext($visit),
+            'content' => $patientContext,
         ];
 
         // Layer 2b: Full health history (observations across all visits, last 3 months)
         $healthHistoryContext = $this->formatHealthHistoryContext($visit);
         if ($healthHistoryContext) {
+            $this->tokenBreakdown['health_history'] = $this->estimateTokens($healthHistoryContext);
             $contextMessages[] = [
                 'role' => 'user',
                 'content' => $healthHistoryContext,
             ];
         }
 
-        // Layer 2c: Recent visit summaries (last 3 visits excluding current)
-        $recentVisitsContext = $this->formatRecentVisitsContext($visit);
+        // Layer 2c: Recent visit summaries
+        // Opus 4.6: all visits (null = no limit), standard: last 3
+        $recentVisitsContext = $this->formatRecentVisitsContext($visit, $isOpus ? null : 3);
         if ($recentVisitsContext) {
+            $this->tokenBreakdown['recent_visits'] = $this->estimateTokens($recentVisitsContext);
             $contextMessages[] = [
                 'role' => 'user',
                 'content' => $recentVisitsContext,
@@ -112,8 +151,10 @@ class ContextAssembler
         }
 
         // Layer 2d: Device/wearable data (Apple Watch)
-        $deviceContext = $this->formatDeviceDataContext($visit);
+        // Opus 4.6: expanded (all readings), standard: limited
+        $deviceContext = $this->formatDeviceDataContext($visit, $isOpus);
         if ($deviceContext) {
+            $this->tokenBreakdown['device_data'] = $this->estimateTokens($deviceContext);
             $contextMessages[] = [
                 'role' => 'user',
                 'content' => $deviceContext,
@@ -123,6 +164,7 @@ class ContextAssembler
         // Layer 3: Medications data
         $medsContext = $this->formatMedicationsContext($visit);
         if ($medsContext) {
+            $this->tokenBreakdown['medications'] = $this->estimateTokens($medsContext);
             $contextMessages[] = [
                 'role' => 'user',
                 'content' => $medsContext,
@@ -130,8 +172,10 @@ class ContextAssembler
         }
 
         // Layer 4: FDA safety data (adverse events, labels)
-        $fdaContext = $this->formatFdaSafetyContext($visit);
+        // Opus 4.6: full labels (5000 char limit, extra sections), standard: truncated (500 chars)
+        $fdaContext = $this->formatFdaSafetyContext($visit, $isOpus);
         if ($fdaContext) {
+            $this->tokenBreakdown['fda_safety'] = $this->estimateTokens($fdaContext);
             $contextMessages[] = [
                 'role' => 'user',
                 'content' => $fdaContext,
@@ -141,6 +185,7 @@ class ContextAssembler
         // Layer 5: User's personal library (analyzed documents)
         $libraryContext = $this->formatLibraryContext($visit);
         if ($libraryContext) {
+            $this->tokenBreakdown['personal_library'] = $this->estimateTokens($libraryContext);
             $contextMessages[] = [
                 'role' => 'user',
                 'content' => $libraryContext,
@@ -150,11 +195,15 @@ class ContextAssembler
         // Layer 6: Historical context summaries (opt-in)
         $compactionContext = $this->formatContextCompactionLayer($visit);
         if ($compactionContext) {
+            $this->tokenBreakdown['context_compaction'] = $this->estimateTokens($compactionContext);
             $contextMessages[] = [
                 'role' => 'user',
                 'content' => $compactionContext,
             ];
         }
+
+        // Calculate total
+        $this->tokenBreakdown['total'] = array_sum($this->tokenBreakdown);
 
         // Acknowledge context load
         $contextMessages[] = [
@@ -189,6 +238,7 @@ class ContextAssembler
         // Block 2: Clinical guidelines (cacheable — stable reference material, Opus 4.6 tier only)
         $guidelines = $includeGuidelines ? $this->loadGuidelinesContent($visit) : null;
         if ($guidelines) {
+            $this->tokenBreakdown['guidelines'] = $this->estimateTokens($guidelines);
             $blocks[] = TextBlockParam::with(
                 text: $guidelines,
                 cacheControl: CacheControlEphemeral::with(ttl: $ttl),
@@ -398,7 +448,12 @@ class ContextAssembler
         return implode("\n", $parts);
     }
 
-    private function formatFdaSafetyContext(Visit $visit): ?string
+    /**
+     * Format FDA safety context.
+     *
+     * @param  bool  $fullLabels  When true (Opus 4.6), loads full drug labels with 5000 char limit and extra sections
+     */
+    private function formatFdaSafetyContext(Visit $visit, bool $fullLabels = false): ?string
     {
         $prescriptions = $visit->prescriptions;
         if (! $prescriptions || $prescriptions->isEmpty()) {
@@ -414,7 +469,7 @@ class ContextAssembler
                 continue;
             }
 
-            $medSafetyContext = $this->getFdaSafetyForMedication($med->generic_name);
+            $medSafetyContext = $this->getFdaSafetyForMedication($med->generic_name, $fullLabels);
             if ($medSafetyContext) {
                 $hasData = true;
                 $parts[] = $medSafetyContext;
@@ -435,12 +490,15 @@ class ContextAssembler
      *
      * Caches the formatted safety string for 24 hours to avoid repeated
      * FDA API calls across chat sessions for the same medication.
+     *
+     * @param  bool  $fullLabels  When true (Opus 4.6), uses 5000 char limit and includes extra label sections
      */
-    private function getFdaSafetyForMedication(string $genericName): ?string
+    private function getFdaSafetyForMedication(string $genericName, bool $fullLabels = false): ?string
     {
-        $cacheKey = 'fda_safety:'.mb_strtolower($genericName);
+        $cacheKey = 'fda_safety:'.($fullLabels ? 'full:' : '').mb_strtolower($genericName);
+        $charLimit = $fullLabels ? 5000 : 500;
 
-        return Cache::remember($cacheKey, 86400, function () use ($genericName): ?string {
+        return Cache::remember($cacheKey, 86400, function () use ($genericName, $fullLabels, $charLimit): ?string {
             $parts = [];
 
             try {
@@ -462,10 +520,23 @@ class ContextAssembler
                 $label = $this->openFda->getDrugLabel($genericName);
                 if (! empty($label)) {
                     if (! empty($label['boxed_warning'])) {
-                        $parts[] = "\nBOXED WARNING for {$genericName}: ".mb_substr($label['boxed_warning'], 0, 500);
+                        $parts[] = "\nBOXED WARNING for {$genericName}: ".mb_substr($label['boxed_warning'], 0, $charLimit);
                     }
                     if (! empty($label['information_for_patients'])) {
-                        $parts[] = "\nPatient Information for {$genericName}: ".mb_substr($label['information_for_patients'], 0, 500);
+                        $parts[] = "\nPatient Information for {$genericName}: ".mb_substr($label['information_for_patients'], 0, $charLimit);
+                    }
+
+                    // Opus 4.6: include extra label sections for comprehensive drug context
+                    if ($fullLabels) {
+                        if (! empty($label['warnings_and_cautions'])) {
+                            $parts[] = "\nWarnings & Cautions for {$genericName}: ".mb_substr($label['warnings_and_cautions'], 0, $charLimit);
+                        }
+                        if (! empty($label['drug_interactions'])) {
+                            $parts[] = "\nDrug Interactions for {$genericName}: ".mb_substr($label['drug_interactions'], 0, $charLimit);
+                        }
+                        if (! empty($label['adverse_reactions'])) {
+                            $parts[] = "\nAdverse Reactions for {$genericName}: ".mb_substr($label['adverse_reactions'], 0, $charLimit);
+                        }
                     }
                 }
             } catch (\Throwable $e) {
@@ -580,23 +651,27 @@ class ContextAssembler
     }
 
     /**
-     * Format recent visit summaries (last 3 visits excluding current).
+     * Format recent visit summaries (excluding current).
      *
-     * Gives the AI context about the patient's recent clinical encounters.
+     * @param  int|null  $limit  Number of recent visits to include (null = all visits)
      */
-    private function formatRecentVisitsContext(Visit $visit): ?string
+    private function formatRecentVisitsContext(Visit $visit, ?int $limit = 3): ?string
     {
         $patient = $visit->patient;
         if (! $patient) {
             return null;
         }
 
-        $recentVisits = $patient->visits()
+        $query = $patient->visits()
             ->where('id', '!=', $visit->id)
             ->with(['practitioner', 'visitNote'])
-            ->latest('started_at')
-            ->limit(3)
-            ->get();
+            ->latest('started_at');
+
+        if ($limit !== null) {
+            $query->limit($limit);
+        }
+
+        $recentVisits = $query->get();
 
         if ($recentVisits->isEmpty()) {
             return null;
@@ -621,9 +696,12 @@ class ContextAssembler
             $parts[] = "{$date} — {$type}{$practitioner}";
             $parts[] = "  Reason: {$reason}";
 
-            // Include brief assessment from visit note if available
+            // Include assessment from visit note if available
+            // Opus 4.6 (no limit): full assessment; standard (limit=3): truncated to 300 chars
             if ($rv->visitNote && $rv->visitNote->assessment) {
-                $assessment = mb_substr($rv->visitNote->assessment, 0, 300);
+                $assessment = $limit === null
+                    ? $rv->visitNote->assessment
+                    : mb_substr($rv->visitNote->assessment, 0, 300);
                 $parts[] = "  Assessment: {$assessment}";
             }
         }
@@ -638,8 +716,10 @@ class ContextAssembler
      *
      * For the demo, device data is loaded from public/data/apple-watch-{patient}.json.
      * In production, this would come from HealthKit API integration.
+     *
+     * @param  bool  $expanded  When true (Opus 4.6), loads all available readings instead of limiting to 5-7
      */
-    private function formatDeviceDataContext(Visit $visit): ?string
+    private function formatDeviceDataContext(Visit $visit, bool $expanded = false): ?string
     {
         $patient = $visit->patient;
         if (! $patient) {
@@ -665,6 +745,10 @@ class ContextAssembler
             return null;
         }
 
+        // Opus 4.6: all readings; standard: limited to 5-7
+        $readingLimit = $expanded ? 999 : 5;
+        $dailyLimit = $expanded ? 999 : 7;
+
         $parts = ['--- WEARABLE DEVICE DATA ---'];
         $parts[] = 'Source: '.($data['device']['type'] ?? 'Unknown device');
         $parts[] = 'Last Sync: '.($data['device']['last_sync'] ?? 'Unknown');
@@ -675,7 +759,7 @@ class ContextAssembler
             $parts[] = 'HEART RATE:';
             $parts[] = "  Resting Average: {$data['heart_rate']['resting_average_bpm']} bpm";
             if (! empty($data['heart_rate']['readings'])) {
-                $recent = array_slice($data['heart_rate']['readings'], 0, 5);
+                $recent = array_slice($data['heart_rate']['readings'], 0, $readingLimit);
                 foreach ($recent as $r) {
                     $time = date('M j H:i', strtotime($r['timestamp']));
                     $parts[] = "  {$time}: {$r['bpm']} bpm ({$r['context']})";
@@ -702,7 +786,7 @@ class ContextAssembler
             $parts[] = 'HEART RATE VARIABILITY (HRV):';
             $parts[] = "  Average SDNN: {$data['hrv']['average_sdnn_ms']} ms";
             if (! empty($data['hrv']['daily_readings'])) {
-                foreach (array_slice($data['hrv']['daily_readings'], 0, 7) as $r) {
+                foreach (array_slice($data['hrv']['daily_readings'], 0, $dailyLimit) as $r) {
                     $parts[] = "  {$r['date']}: SDNN {$r['sdnn_ms']} ms, RMSSD {$r['rmssd_ms']} ms";
                 }
             }
@@ -712,7 +796,7 @@ class ContextAssembler
         if (! empty($data['activity']['daily_steps'])) {
             $parts[] = '';
             $parts[] = 'DAILY ACTIVITY:';
-            foreach (array_slice($data['activity']['daily_steps'], 0, 7) as $day) {
+            foreach (array_slice($data['activity']['daily_steps'], 0, $dailyLimit) as $day) {
                 $parts[] = "  {$day['date']}: {$day['steps']} steps, {$day['distance_km']} km, {$day['active_minutes']} active min";
             }
         }
@@ -723,7 +807,7 @@ class ContextAssembler
             $parts[] = 'SLEEP:';
             $parts[] = "  Average: {$data['sleep']['average_hours']} hours/night";
             if (! empty($data['sleep']['daily_readings'])) {
-                foreach (array_slice($data['sleep']['daily_readings'], 0, 7) as $day) {
+                foreach (array_slice($data['sleep']['daily_readings'], 0, $dailyLimit) as $day) {
                     $parts[] = "  {$day['date']}: {$day['total_hours']}h total (deep: {$day['deep_hours']}h, REM: {$day['rem_hours']}h, light: {$day['light_hours']}h)";
                 }
             }
@@ -733,7 +817,7 @@ class ContextAssembler
         if (! empty($data['blood_oxygen']['readings'])) {
             $parts[] = '';
             $parts[] = 'BLOOD OXYGEN (SpO2):';
-            foreach ($data['blood_oxygen']['readings'] as $r) {
+            foreach (array_slice($data['blood_oxygen']['readings'], 0, $dailyLimit) as $r) {
                 $date = date('M j', strtotime($r['timestamp']));
                 $parts[] = "  {$date}: {$r['spo2_percent']}%";
             }

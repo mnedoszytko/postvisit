@@ -9,6 +9,7 @@ export const useChatStore = defineStore('chat', {
         sessions: [],
         loading: false,
         error: null,
+        contextTokens: null,
     }),
 
     actions: {
@@ -81,6 +82,8 @@ export const useChatStore = defineStore('chat', {
                                 const parsed = JSON.parse(payload);
                                 if (parsed.effort) {
                                     this.messages[aiIndex].effort = parsed.effort;
+                                } else if (parsed.context_tokens) {
+                                    this.contextTokens = parsed.context_tokens;
                                 } else if (parsed.quick) {
                                     this.messages[aiIndex].quickContent += parsed.quick;
                                     if (this.messages[aiIndex].thinkingPhase) {
@@ -147,6 +150,7 @@ export const useChatStore = defineStore('chat', {
 
         clearMessages() {
             this.messages = [];
+            this.contextTokens = null;
         },
     },
 });

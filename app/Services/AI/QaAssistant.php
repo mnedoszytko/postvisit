@@ -185,6 +185,12 @@ class QaAssistant
             yield ['type' => 'status', 'content' => 'Loading clinical guidelines...'];
             $context = $this->contextAssembler->assembleForVisit($visit, 'qa-assistant');
 
+            // Emit token breakdown so frontend can display context size
+            $tokenBreakdown = $this->contextAssembler->getTokenBreakdown();
+            if (! empty($tokenBreakdown)) {
+                yield ['type' => 'context_tokens', 'content' => json_encode($tokenBreakdown)];
+            }
+
             yield ['type' => 'status', 'content' => 'Deep clinical reasoning...'];
 
             // Build conversation history for the pipeline
@@ -209,6 +215,12 @@ class QaAssistant
         yield ['type' => 'status', 'content' => 'Preparing detailed analysis...'];
 
         $context = $this->contextAssembler->assembleForVisit($visit, 'qa-assistant');
+
+        // Emit token breakdown so frontend can display context size
+        $tokenBreakdown = $this->contextAssembler->getTokenBreakdown();
+        if (! empty($tokenBreakdown)) {
+            yield ['type' => 'context_tokens', 'content' => json_encode($tokenBreakdown)];
+        }
 
         // Build message array: static context + conversation history + new question
         $messages = $context['context_messages'];
