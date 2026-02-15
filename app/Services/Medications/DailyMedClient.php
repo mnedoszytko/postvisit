@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 class DailyMedClient
 {
     private const BASE_URL = 'https://dailymed.nlm.nih.gov/dailymed/services/v2';
+
     private const CACHE_TTL = 86400; // 24 hours
 
     /**
@@ -18,11 +19,11 @@ class DailyMedClient
      */
     public function searchDrugNames(string $query): array
     {
-        $cacheKey = 'dailymed_search_' . md5($query);
+        $cacheKey = 'dailymed_search_'.md5($query);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($query) {
             $response = Http::timeout(15)
-                ->get(self::BASE_URL . '/drugnames.json', [
+                ->get(self::BASE_URL.'/drugnames.json', [
                     'drug_name' => $query,
                 ]);
 
@@ -50,7 +51,7 @@ class DailyMedClient
 
         return Cache::remember($cacheKey, self::CACHE_TTL * 7, function () use ($setId) {
             $response = Http::timeout(15)
-                ->get(self::BASE_URL . "/spls/{$setId}.json");
+                ->get(self::BASE_URL."/spls/{$setId}.json");
 
             if (! $response->successful()) {
                 Log::warning('DailyMed SPL fetch failed', [
@@ -72,11 +73,11 @@ class DailyMedClient
      */
     public function searchSpls(string $drugName): array
     {
-        $cacheKey = 'dailymed_spls_' . md5($drugName);
+        $cacheKey = 'dailymed_spls_'.md5($drugName);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($drugName) {
             $response = Http::timeout(15)
-                ->get(self::BASE_URL . '/spls.json', [
+                ->get(self::BASE_URL.'/spls.json', [
                     'drug_name' => $drugName,
                     'pagesize' => 1,
                 ]);
@@ -110,11 +111,11 @@ class DailyMedClient
      */
     public function getRxcuiMapping(string $drugName): array
     {
-        $cacheKey = 'dailymed_rxcui_' . md5($drugName);
+        $cacheKey = 'dailymed_rxcui_'.md5($drugName);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($drugName) {
             $response = Http::timeout(10)
-                ->get(self::BASE_URL . '/rxcuis.json', [
+                ->get(self::BASE_URL.'/rxcuis.json', [
                     'drug_name' => $drugName,
                 ]);
 

@@ -17,7 +17,7 @@ class PrescriptionFactory extends Factory
     public function definition(): array
     {
         return [
-            'fhir_medication_request_id' => 'MedicationRequest/' . Str::uuid(),
+            'fhir_medication_request_id' => 'MedicationRequest/'.Str::uuid(),
             'patient_id' => Patient::factory(),
             'practitioner_id' => Practitioner::factory(),
             'visit_id' => Visit::factory(),

@@ -15,7 +15,7 @@ class ObservationFactory extends Factory
     public function definition(): array
     {
         return [
-            'fhir_observation_id' => 'Observation/' . Str::uuid(),
+            'fhir_observation_id' => 'Observation/'.Str::uuid(),
             'patient_id' => Patient::factory(),
             'visit_id' => Visit::factory(),
             'code_system' => 'LOINC',

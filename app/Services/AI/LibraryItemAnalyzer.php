@@ -144,7 +144,7 @@ class LibraryItemAnalyzer
             ]);
 
             return "Source URL: {$item->source_url}\nDomain: {$host}\n\nThe full content could not be retrieved (HTTP {$response->status()} — likely bot protection). "
-                . "Please analyze based on the URL and domain context. The user added this to their medical library for reference.";
+                .'Please analyze based on the URL and domain context. The user added this to their medical library for reference.';
         }
 
         $html = $response->body();

@@ -7,7 +7,6 @@ use App\Models\Document;
 use App\Models\Organization;
 use App\Models\Patient;
 use App\Models\Practitioner;
-use App\Models\Prescription;
 use App\Models\User;
 use App\Models\Visit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,6 +17,7 @@ class PatientTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private Patient $patient;
 
     protected function setUp(): void

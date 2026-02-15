@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 class RxNormClient
 {
     private const BASE_URL = 'https://rxnav.nlm.nih.gov/REST';
+
     private const CACHE_TTL = 86400; // 24 hours
 
     /**
@@ -18,11 +19,11 @@ class RxNormClient
      */
     public function search(string $query): array
     {
-        $cacheKey = 'rxnorm_search_' . md5($query);
+        $cacheKey = 'rxnorm_search_'.md5($query);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($query) {
             $response = Http::timeout(10)
-                ->get(self::BASE_URL . '/drugs.json', [
+                ->get(self::BASE_URL.'/drugs.json', [
                     'name' => $query,
                 ]);
 
@@ -50,7 +51,7 @@ class RxNormClient
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($rxcui) {
             $response = Http::timeout(10)
-                ->get(self::BASE_URL . "/rxcui/{$rxcui}/allProperties.json", [
+                ->get(self::BASE_URL."/rxcui/{$rxcui}/allProperties.json", [
                     'prop' => 'all',
                 ]);
 
@@ -78,7 +79,7 @@ class RxNormClient
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($rxcui) {
             $response = Http::timeout(10)
-                ->get(self::BASE_URL . "/interaction/interaction.json", [
+                ->get(self::BASE_URL.'/interaction/interaction.json', [
                     'rxcui' => $rxcui,
                 ]);
 
@@ -98,7 +99,7 @@ class RxNormClient
     /**
      * Check interactions between multiple drugs.
      *
-     * @param array $rxcuis Array of RxCUI codes
+     * @param  array  $rxcuis  Array of RxCUI codes
      * @return array Interaction pairs
      */
     public function getMultiInteractions(array $rxcuis): array
@@ -107,11 +108,11 @@ class RxNormClient
             return [];
         }
 
-        $cacheKey = 'rxnorm_multi_' . md5(implode(',', $rxcuis));
+        $cacheKey = 'rxnorm_multi_'.md5(implode(',', $rxcuis));
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($rxcuis) {
             $response = Http::timeout(15)
-                ->get(self::BASE_URL . "/interaction/list.json", [
+                ->get(self::BASE_URL.'/interaction/list.json', [
                     'rxcuis' => implode('+', $rxcuis),
                 ]);
 

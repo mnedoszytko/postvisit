@@ -14,20 +14,20 @@ class PubMedClient
     {
         return Cache::remember("pubmed:pmid:{$pmid}", 86400, function () use ($pmid) {
             try {
-                $response = Http::timeout(10)->get(self::BASE_URL . '/esummary.fcgi', [
+                $response = Http::timeout(10)->get(self::BASE_URL.'/esummary.fcgi', [
                     'db' => 'pubmed',
                     'id' => $pmid,
                     'retmode' => 'json',
                 ]);
 
-                if (!$response->ok()) {
+                if (! $response->ok()) {
                     return null;
                 }
 
                 $data = $response->json();
                 $result = $data['result'][$pmid] ?? null;
 
-                if (!$result || isset($result['error'])) {
+                if (! $result || isset($result['error'])) {
                     return null;
                 }
 
@@ -43,6 +43,7 @@ class PubMedClient
                 ];
             } catch (\Exception $e) {
                 Log::warning('PubMed verification failed', ['pmid' => $pmid, 'error' => $e->getMessage()]);
+
                 return null;
             }
         });
@@ -52,13 +53,13 @@ class PubMedClient
     {
         return Cache::remember("pubmed:doi:{$doi}", 86400, function () use ($doi) {
             try {
-                $response = Http::timeout(10)->get(self::BASE_URL . '/esearch.fcgi', [
+                $response = Http::timeout(10)->get(self::BASE_URL.'/esearch.fcgi', [
                     'db' => 'pubmed',
                     'term' => "{$doi}[doi]",
                     'retmode' => 'json',
                 ]);
 
-                if (!$response->ok()) {
+                if (! $response->ok()) {
                     return null;
                 }
 
@@ -72,6 +73,7 @@ class PubMedClient
                 return $this->verifyPmid($ids[0]);
             } catch (\Exception $e) {
                 Log::warning('PubMed DOI search failed', ['doi' => $doi, 'error' => $e->getMessage()]);
+
                 return null;
             }
         });

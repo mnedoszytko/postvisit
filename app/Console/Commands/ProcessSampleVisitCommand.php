@@ -21,6 +21,7 @@ class ProcessSampleVisitCommand extends Command
 
         if (! file_exists($transcriptPath)) {
             $this->error("Sample transcript not found: {$transcriptPath}");
+
             return self::FAILURE;
         }
 
@@ -38,6 +39,7 @@ class ProcessSampleVisitCommand extends Command
             $this->error($visitId
                 ? "Visit not found with ID: {$visitId}"
                 : 'No visits found in the database. Run seeders first.');
+
             return self::FAILURE;
         }
 
@@ -73,6 +75,7 @@ class ProcessSampleVisitCommand extends Command
             $this->newLine();
             $this->error('Stack trace:');
             $this->line($e->getTraceAsString());
+
             return self::FAILURE;
         }
 
@@ -145,9 +148,9 @@ class ProcessSampleVisitCommand extends Command
             $this->components->info('VisitNote Created');
             $this->components->twoColumnDetail('ID', $visitNote->id);
             $this->components->twoColumnDetail('Status', $visitNote->status);
-            $this->components->twoColumnDetail('Chief Complaint', mb_substr((string) $visitNote->chief_complaint, 0, 80) . '...');
-            $this->components->twoColumnDetail('Assessment', mb_substr((string) $visitNote->assessment, 0, 80) . '...');
-            $this->components->twoColumnDetail('Plan', mb_substr((string) $visitNote->plan, 0, 80) . '...');
+            $this->components->twoColumnDetail('Chief Complaint', mb_substr((string) $visitNote->chief_complaint, 0, 80).'...');
+            $this->components->twoColumnDetail('Assessment', mb_substr((string) $visitNote->assessment, 0, 80).'...');
+            $this->components->twoColumnDetail('Plan', mb_substr((string) $visitNote->plan, 0, 80).'...');
         } else {
             $this->warn('No VisitNote was created.');
         }

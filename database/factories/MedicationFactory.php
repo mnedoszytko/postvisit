@@ -13,8 +13,8 @@ class MedicationFactory extends Factory
     {
         return [
             'rxnorm_code' => fake()->unique()->numerify('######'),
-            'generic_name' => fake()->word() . 'ol',
-            'display_name' => fake()->word() . 'ol ' . fake()->randomElement(['10mg', '20mg', '40mg']),
+            'generic_name' => fake()->word().'ol',
+            'display_name' => fake()->word().'ol '.fake()->randomElement(['10mg', '20mg', '40mg']),
             'form' => fake()->randomElement(['tablet', 'capsule', 'solution']),
             'strength_value' => fake()->randomElement([10, 20, 40, 100]),
             'strength_unit' => 'mg',

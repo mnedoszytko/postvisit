@@ -18,9 +18,13 @@ class PrescriptionTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private Patient $patient;
+
     private Visit $visit;
+
     private Practitioner $practitioner;
+
     private Organization $organization;
 
     protected function setUp(): void

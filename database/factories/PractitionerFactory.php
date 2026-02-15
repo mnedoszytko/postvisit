@@ -14,12 +14,12 @@ class PractitionerFactory extends Factory
     public function definition(): array
     {
         return [
-            'fhir_practitioner_id' => 'Practitioner/' . Str::uuid(),
+            'fhir_practitioner_id' => 'Practitioner/'.Str::uuid(),
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'npi' => fake()->unique()->numerify('##########'),
-            'license_number' => 'LIC-' . fake()->numerify('######'),
+            'license_number' => 'LIC-'.fake()->numerify('######'),
             'medical_degree' => fake()->randomElement(['MD', 'DO']),
             'primary_specialty' => fake()->randomElement(['cardiology', 'internal_medicine', 'family_medicine']),
             'organization_id' => Organization::factory(),

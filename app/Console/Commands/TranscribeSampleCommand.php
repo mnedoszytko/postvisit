@@ -17,6 +17,7 @@ class TranscribeSampleCommand extends Command
 
         if (! file_exists($audioPath)) {
             $this->error("Audio file not found: {$audioPath}");
+
             return self::FAILURE;
         }
 
@@ -25,15 +26,17 @@ class TranscribeSampleCommand extends Command
         $this->info('This may take a few minutes for large files.');
 
         try {
-            $whisper = new WhisperProvider();
+            $whisper = new WhisperProvider;
             $transcript = $whisper->transcribe($audioPath);
         } catch (\Throwable $e) {
             $this->error("Transcription failed: {$e->getMessage()}");
+
             return self::FAILURE;
         }
 
         if (empty($transcript)) {
             $this->error('Transcription returned empty result.');
+
             return self::FAILURE;
         }
 
@@ -41,7 +44,7 @@ class TranscribeSampleCommand extends Command
         file_put_contents($outputPath, $transcript);
 
         $wordCount = str_word_count($transcript);
-        $this->info("Transcription successful!");
+        $this->info('Transcription successful!');
         $this->info("Word count: {$wordCount}");
         $this->info("Saved to: {$outputPath}");
 

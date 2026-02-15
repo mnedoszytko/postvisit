@@ -13,7 +13,7 @@ class PatientFactory extends Factory
     public function definition(): array
     {
         return [
-            'fhir_patient_id' => 'Patient/' . Str::uuid(),
+            'fhir_patient_id' => 'Patient/'.Str::uuid(),
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'dob' => fake()->date('Y-m-d', '-18 years'),
@@ -22,7 +22,7 @@ class PatientFactory extends Factory
             'phone' => fake()->phoneNumber(),
             'preferred_language' => 'en',
             'timezone' => 'UTC',
-            'mrn' => 'MRN-' . fake()->unique()->numerify('######'),
+            'mrn' => 'MRN-'.fake()->unique()->numerify('######'),
             'consent_given' => true,
             'consent_date' => now(),
             'data_sharing_consent' => true,

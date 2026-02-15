@@ -15,7 +15,7 @@ class ConditionFactory extends Factory
     public function definition(): array
     {
         return [
-            'fhir_condition_id' => 'Condition/' . Str::uuid(),
+            'fhir_condition_id' => 'Condition/'.Str::uuid(),
             'patient_id' => Patient::factory(),
             'visit_id' => Visit::factory(),
             'code_system' => 'ICD-10-CM',

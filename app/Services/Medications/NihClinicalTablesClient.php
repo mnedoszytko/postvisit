@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 class NihClinicalTablesClient
 {
     private const BASE_URL = 'https://clinicaltables.nlm.nih.gov/api';
+
     private const CACHE_TTL = 86400; // 24 hours
 
     /**
@@ -18,11 +19,11 @@ class NihClinicalTablesClient
      */
     public function searchDrugs(string $query, int $maxResults = 10): array
     {
-        $cacheKey = 'nih_drugs_' . md5($query . $maxResults);
+        $cacheKey = 'nih_drugs_'.md5($query.$maxResults);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($query, $maxResults) {
             $response = Http::timeout(10)
-                ->get(self::BASE_URL . '/rxterms/v3/search', [
+                ->get(self::BASE_URL.'/rxterms/v3/search', [
                     'terms' => $query,
                     'maxList' => $maxResults,
                 ]);
@@ -47,11 +48,11 @@ class NihClinicalTablesClient
      */
     public function searchConditions(string $query, int $maxResults = 10): array
     {
-        $cacheKey = 'nih_conditions_' . md5($query . $maxResults);
+        $cacheKey = 'nih_conditions_'.md5($query.$maxResults);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($query, $maxResults) {
             $response = Http::timeout(10)
-                ->get(self::BASE_URL . '/icd10cm/v3/search', [
+                ->get(self::BASE_URL.'/icd10cm/v3/search', [
                     'sf' => 'code,name',
                     'terms' => $query,
                     'maxList' => $maxResults,
@@ -77,11 +78,11 @@ class NihClinicalTablesClient
      */
     public function searchProcedures(string $query, int $maxResults = 10): array
     {
-        $cacheKey = 'nih_procedures_' . md5($query . $maxResults);
+        $cacheKey = 'nih_procedures_'.md5($query.$maxResults);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($query, $maxResults) {
             $response = Http::timeout(10)
-                ->get(self::BASE_URL . '/hcpcs/v3/search', [
+                ->get(self::BASE_URL.'/hcpcs/v3/search', [
                     'terms' => $query,
                     'maxList' => $maxResults,
                 ]);

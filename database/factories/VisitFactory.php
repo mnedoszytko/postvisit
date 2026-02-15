@@ -18,7 +18,7 @@ class VisitFactory extends Factory
         $started = fake()->dateTimeBetween('-30 days', 'now');
 
         return [
-            'fhir_encounter_id' => 'Encounter/' . Str::uuid(),
+            'fhir_encounter_id' => 'Encounter/'.Str::uuid(),
             'patient_id' => Patient::factory(),
             'practitioner_id' => Practitioner::factory(),
             'organization_id' => Organization::factory(),

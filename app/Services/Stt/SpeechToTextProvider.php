@@ -7,7 +7,7 @@ interface SpeechToTextProvider
     /**
      * Transcribe an audio file to text.
      *
-     * @param string $audioPath Absolute path to the audio file
+     * @param  string  $audioPath  Absolute path to the audio file
      * @return string The transcribed text
      */
     public function transcribe(string $audioPath): string;

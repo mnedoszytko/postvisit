@@ -16,6 +16,7 @@ class FeedbackTest extends TestCase
     use RefreshDatabase;
 
     private User $patientUser;
+
     private Visit $visit;
 
     protected function setUp(): void

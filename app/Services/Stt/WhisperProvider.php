@@ -9,7 +9,9 @@ use RuntimeException;
 class WhisperProvider implements SpeechToTextProvider
 {
     private string $apiKey;
+
     private string $apiUrl;
+
     private string $model;
 
     public function __construct()
@@ -42,7 +44,7 @@ class WhisperProvider implements SpeechToTextProvider
                 'body' => $response->body(),
             ]);
 
-            throw new RuntimeException('Whisper transcription failed: ' . $response->body());
+            throw new RuntimeException('Whisper transcription failed: '.$response->body());
         }
 
         return trim($response->body());
