@@ -7,9 +7,22 @@
       <p class="text-xl text-gray-600 mb-2">
         The bridge between your visit and your health.
       </p>
-      <p class="text-gray-500 mb-10">
+      <p class="text-gray-500 mb-8">
         AI-powered post-visit companion that helps you understand, remember, and follow through.
       </p>
+
+      <!-- Watch Demo Video -->
+      <button
+        @click="showVideo = true"
+        class="mb-8 inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-colors group"
+      >
+        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 group-hover:bg-emerald-200 transition-colors">
+          <svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M6.3 2.84A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.891a1.5 1.5 0 000-2.538L6.3 2.841z" />
+          </svg>
+        </span>
+        <span class="font-medium">Watch Demo Video</span>
+      </button>
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <router-link
@@ -30,5 +43,53 @@
     <p class="mt-16 text-xs text-gray-400 max-w-md text-center">
       PostVisit.ai helps you understand and act on your doctor's recommendations. It is not a substitute for professional medical judgment.
     </p>
+
+    <!-- YouTube Modal -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div
+          v-if="showVideo"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4"
+          @click.self="showVideo = false"
+        >
+          <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div class="relative w-full max-w-4xl aspect-video rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+            <button
+              @click="showVideo = false"
+              class="absolute -top-10 right-0 text-white/80 hover:text-white transition-colors z-10"
+            >
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <iframe
+              v-if="showVideo"
+              src="https://www.youtube.com/embed/eX4_K-DrgvM?autoplay=1&rel=0"
+              class="w-full h-full"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            />
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const showVideo = ref(false)
+</script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
