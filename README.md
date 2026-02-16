@@ -7,7 +7,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6)]()
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**AI-powered post-visit care platform** that bridges the gap between what happens in the doctor's office and what happens after. [Built with Opus 4.6](#built-with-opus-46) for the [Claude Code hackathon](https://cerebralvalley.ai/e/claude-code-hackathon/details) (Feb 10-16, 2026).
+**AI-powered post-visit care platform** that bridges the gap between the doctor's office and everything that comes after. Built with [Opus 4.6](#built-with-opus-46) for the [Claude Code hackathon](https://cerebralvalley.ai/e/claude-code-hackathon/details) (Feb 10-16, 2026).
 
 **How it was built:** 330 commits in 7 days, **coded by a cardiologist from Brussels to a transatlantic flight to San Francisco**, tested in real hospital setting. [Read the full build log](BUILD-LOG.md).
 
