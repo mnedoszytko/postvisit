@@ -264,7 +264,7 @@ demo/                         # Demo data, scenarios, patient photos, animations
 
 ## Author
 
-Built by **[Michal Nedoszytko, MD PhD](https://nedoszytko.com)** -- practicing cardiologist, software engineer, and AI in medicine educator with 20+ years of experience building software for healthcare. Designed, architected, and developed as a solo project. See [AUTHORS.md](AUTHORS.md) for links and bio, and [BUILD-LOG.md](BUILD-LOG.md) for the full 6-day build log with clinical testing notes.
+Built by **[Michal Nedoszytko, MD PhD](https://nedoszytko.com)** -- practicing cardiologist, software engineer, and AI in medicine educator with 20+ years of experience building software for healthcare. Designed, architected, and developed as a solo project. "PostVisit Agent" in git history represents Claude Code automated sessions (CI tasks, nightly runs). See [AUTHORS.md](AUTHORS.md) for links and bio, and [BUILD-LOG.md](BUILD-LOG.md) for the full 6-day build log with clinical testing notes.
 
 ## Hackathon Tracks
 
