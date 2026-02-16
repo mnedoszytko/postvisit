@@ -86,7 +86,7 @@ class VisitController extends Controller
             'conditions:id,visit_id,code_display,clinical_status,severity',
             'prescriptions:id,visit_id,medication_id,dose_quantity,dose_unit,frequency',
             'prescriptions.medication:id,display_name,generic_name',
-            'visitNote:id,visit_id,chief_complaint,assessment,plan,follow_up',
+            'visitNote:id,visit_id,chief_complaint,assessment,plan,follow_up,medical_terms',
         ]);
 
         return response()->json(['data' => $visit]);
