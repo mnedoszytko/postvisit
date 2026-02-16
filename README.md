@@ -9,7 +9,7 @@
 
 **AI-powered post-visit care platform** that bridges the gap between the doctor's office and everything that comes after. Built with [Opus 4.6](#built-with-opus-46) for the [Claude Code hackathon](https://cerebralvalley.ai/e/claude-code-hackathon/details) (Feb 10-16, 2026).
 
-**How it was built:** 330 commits in 7 days, **coded by a cardiologist from Brussels to a transatlantic flight to San Francisco**, tested in real hospital setting. [Read the full build log](BUILD-LOG.md).
+**How it was built:** 349 commits in 7 days, **coded by a cardiologist from Brussels to a transatlantic flight to San Francisco**, tested in real hospital setting. [Read the full build log](BUILD-LOG.md).
 
 **Watch Demo Video: [https://youtu.be/V29UCOii2jE](https://youtu.be/V29UCOii2jE)**
 
@@ -227,7 +227,7 @@ curl -X POST http://postvisit.test/api/v1/auth/login \
 
 ## API
 
-96 REST endpoints under `/api/v1/`. Key modules:
+111 REST endpoints under `/api/v1/`. Key modules:
 
 | Module | Endpoints | Description |
 |--------|-----------|-------------|

@@ -1,19 +1,19 @@
 # Development Journey — PostVisit.ai
 
-> How a cardiologist built a clinical AI platform in 6 days, testing it on real hospital workflows between coding sessions.
+> How a cardiologist built a clinical AI platform in 7 days, testing it on real hospital workflows between coding sessions.
 
 ## Overview
 
 | Metric | Value |
 |--------|-------|
 | **Duration** | 7 days (Feb 10-16, 2026) |
-| **Commits** | 333 |
-| **Files** | 475 |
-| **Lines of code** | ~45,000 |
+| **Commits** | 349 |
+| **Files** | 537 |
+| **Lines of code** | ~54,000 |
 | **Tests** | 262 (797 assertions) |
 | **AI services** | 15 |
-| **API endpoints** | 105 |
-| **Documentation files** | 32 |
+| **API endpoints** | 111 |
+| **Documentation files** | 33 |
 | **Developer** | 1 (physician + software engineer) |
 | **Dev tool** | Claude Code (multiple parallel instances) |
 
@@ -181,8 +181,10 @@ Another jet lag night — wide awake at 3 AM, might as well ship. Final day befo
 - Fact-checked all legal page content against actual codebase (removed false claims about analytics, data export, and account deletion that didn't exist)
 - Aligned Companion Scribe recording screen text
 - Final demo video re-recording and upload
-- README updates — commit count, video link, hospital testing wording
-- Production deploy and server hardening
+- README reorganization — Healthcare-Oriented Design section, feature hierarchy, correct specialty list
+- Inserted missing lab results on production (creatinine, LDL, HDL, triglycerides, hemoglobin, BNP)
+- Pre-landing audit: closed 13 GitHub issues, removed internal checklists, sanitized deployment docs
+- Production deploy, server health verification, log review — all green for submission
 
 ---
 
