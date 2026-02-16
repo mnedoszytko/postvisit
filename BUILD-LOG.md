@@ -201,6 +201,19 @@ Two hospital evaluation sessions (Day 2 and Day 4) with consenting patients:
 
 Every clinical test was conducted with explicit patient consent. No real patient data is stored in the application — all demo scenarios use fictional data.
 
+### AI-Generated Demo Scenarios
+
+Building convincing clinical demo scenarios required an entire AI production pipeline:
+
+- **Patient portraits** — generated with FAL.ai Flux 2 Realism, iterated per scenario to match age, gender, and ethnicity of fictional patients
+- **Animated portraits** — video animations of patient photos for the scenario picker hover effect
+- **Clinical transcripts** — partially AI-generated visit dialogues, reviewed and corrected by a physician for clinical accuracy
+- **Voice synthesis** — ElevenLabs text-to-speech for demo visit audio recordings, creating realistic doctor-patient conversations
+- **SOAP notes** — AI-generated structured clinical notes from transcripts, physician-reviewed for medical accuracy
+- **Medical terms extraction** — automated extraction and classification of clinical terminology from each scenario
+
+The clinical scenarios were designed by the author based on real clinical experience — realistic presentations, typical lab values, common medication regimens, and authentic doctor-patient dialogue patterns. No real patients were used; every case is fictional but clinically plausible. Each of the 12 scenarios went through this full production pipeline to make the demo feel like a real clinical system — not a toy prototype.
+
 ### Key Technical Challenges Solved
 
 | Challenge | Solution | Discovered |
@@ -224,5 +237,6 @@ Every clinical test was conducted with explicit patient consent. No real patient
 | **GitHub** | Version control, CI |
 | **Linear** | Project management |
 | **Craft** | Documentation and planning |
-| **FAL.ai (Flux 2 Realism)** | AI-generated patient portraits |
+| **FAL.ai (Flux 2 Realism)** | AI-generated patient portraits and animations |
+| **ElevenLabs** | Voice synthesis for demo visit audio recordings |
 
