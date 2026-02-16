@@ -53,7 +53,7 @@
           <p class="font-medium">Both parties must consent</p>
           <p>By pressing the button below, you confirm that both the healthcare provider and the patient have agreed to record this visit.</p>
           <p>
-            <a href="/privacy-policy" target="_blank" class="text-amber-700 underline hover:text-amber-900">Privacy Policy</a>
+            <router-link to="/privacy" target="_blank" class="text-amber-700 underline hover:text-amber-900">Privacy Policy</router-link>
           </p>
         </div>
         <button

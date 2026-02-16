@@ -171,6 +171,25 @@ const routes = [
         name: 'medical-lookup',
         component: () => import('@/views/MedicalLookupDemo.vue'),
     },
+    {
+        path: '/privacy',
+        name: 'privacy',
+        component: () => import('@/views/LegalPage.vue'),
+    },
+    {
+        path: '/privacy-policy',
+        redirect: '/privacy',
+    },
+    {
+        path: '/terms',
+        name: 'terms',
+        component: () => import('@/views/LegalPage.vue'),
+    },
+    {
+        path: '/legal',
+        name: 'legal',
+        component: () => import('@/views/LegalPage.vue'),
+    },
 ];
 
 const router = createRouter({
