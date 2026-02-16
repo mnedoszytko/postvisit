@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\SlackAlertService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -22,12 +23,17 @@ class AiBudgetMiddleware
     /** Maximum AI API calls per single user/session per day. */
     private const PER_USER_DAILY_LIMIT = 50;
 
+    /** Alert at these percentage thresholds. */
+    private const ALERT_THRESHOLDS = [50, 80, 95];
+
     public function handle(Request $request, Closure $next): Response
     {
         $dailyKey = 'ai_budget:'.now()->format('Y-m-d');
         $currentCount = (int) Cache::get($dailyKey, 0);
 
         if ($currentCount >= self::DAILY_LIMIT) {
+            SlackAlertService::budgetExhausted(self::DAILY_LIMIT);
+
             return response()->json([
                 'error' => [
                     'message' => 'AI demo budget reached for today. The demo resets daily — please try again tomorrow.',
@@ -37,10 +43,13 @@ class AiBudgetMiddleware
         }
 
         // Per-user daily limit
-        $userKey = 'ai_budget_user:'.($request->user()?->id ?: $request->ip()).':'.now()->format('Y-m-d');
+        $userIdentifier = $request->user()?->id ?: $request->ip();
+        $userKey = 'ai_budget_user:'.$userIdentifier.':'.now()->format('Y-m-d');
         $userCount = (int) Cache::get($userKey, 0);
 
         if ($userCount >= self::PER_USER_DAILY_LIMIT) {
+            SlackAlertService::userBudgetExhausted((string) $userIdentifier, self::PER_USER_DAILY_LIMIT);
+
             return response()->json([
                 'error' => [
                     'message' => 'You have reached the daily AI demo limit. Please try again tomorrow.',
@@ -58,6 +67,15 @@ class AiBudgetMiddleware
 
             Cache::increment($userKey);
             Cache::put($userKey, (int) Cache::get($userKey, 0), now()->endOfDay());
+
+            // Check alert thresholds after increment
+            $newCount = $currentCount + 1;
+            foreach (self::ALERT_THRESHOLDS as $threshold) {
+                $triggerAt = (int) ceil(self::DAILY_LIMIT * $threshold / 100);
+                if ($newCount === $triggerAt) {
+                    SlackAlertService::budgetWarning($newCount, self::DAILY_LIMIT, $threshold);
+                }
+            }
         }
 
         // Add budget headers so frontend can show remaining

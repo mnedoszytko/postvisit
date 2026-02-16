@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Visit;
+use App\Services\SlackAlertService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -71,8 +72,17 @@ class DemoController extends Controller
         ]);
     }
 
-    public function reset(): JsonResponse
+    public function reset(Request $request): JsonResponse
     {
+        // Block in production — this wipes the entire database
+        if (app()->environment('production')) {
+            SlackAlertService::resetAttempt($request->ip());
+
+            return response()->json([
+                'error' => ['message' => 'Demo reset is disabled in production.'],
+            ], 403);
+        }
+
         Artisan::call('migrate:fresh');
         Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\DemoSeeder']);
 

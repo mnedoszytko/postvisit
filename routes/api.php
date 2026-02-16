@@ -200,20 +200,25 @@ Route::prefix('v1')->group(function () {
     });
 
     // -------------------------------------------------------
-    // Demo Engine (no auth — easy demo access)
+    // Demo Engine (no auth — easy demo access, rate-limited)
     // -------------------------------------------------------
     Route::prefix('demo')->group(function () {
-        Route::post('start', [DemoController::class, 'start']);
-        Route::get('status', [DemoController::class, 'status']);
-        Route::post('reset', [DemoController::class, 'reset']);
-        Route::post('simulate-alert', [DemoController::class, 'simulateAlert']);
+        // Session creation — throttled to prevent token farming
+        Route::middleware('throttle:demo')->group(function () {
+            Route::post('start', [DemoController::class, 'start']);
+            Route::post('start-scenario', [DemoScenarioController::class, 'startScenario']);
+            Route::post('switch-to-doctor', [DemoScenarioController::class, 'switchToDoctor']);
+            Route::post('simulate-alert', [DemoController::class, 'simulateAlert']);
+        });
 
-        // Scenario picker
+        // Reset — disabled in production (blocked)
+        Route::post('reset', [DemoController::class, 'reset']);
+
+        // Read-only — no throttle needed
+        Route::get('status', [DemoController::class, 'status']);
         Route::get('scenarios', [DemoScenarioController::class, 'index']);
         Route::get('scenarios/{scenario}/photo', [DemoScenarioController::class, 'photo']);
         Route::get('scenarios/{scenario}/animation', [DemoScenarioController::class, 'animation']);
         Route::get('doctors/{practitionerKey}/photo', [DemoScenarioController::class, 'doctorPhoto']);
-        Route::post('start-scenario', [DemoScenarioController::class, 'startScenario']);
-        Route::post('switch-to-doctor', [DemoScenarioController::class, 'switchToDoctor']);
     });
 });

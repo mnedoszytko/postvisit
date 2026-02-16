@@ -56,5 +56,20 @@ class AppServiceProvider extends ServiceProvider
                 Limit::perHour(10)->by('ai-exp-hour:'.$key),
             ];
         });
+
+        // Demo endpoints: 5 requests per hour per IP
+        RateLimiter::for('demo', function (Request $request) {
+            return Limit::perHour(5)->by('demo:'.$request->ip())
+                ->response(function () use ($request) {
+                    \App\Services\SlackAlertService::demoAbuse(
+                        $request->ip(),
+                        $request->path()
+                    );
+
+                    return response()->json([
+                        'error' => ['message' => 'Demo rate limit reached. Please wait before trying again.'],
+                    ], 429);
+                });
+        });
     }
 }
