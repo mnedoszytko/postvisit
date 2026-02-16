@@ -23,13 +23,13 @@ PostVisit.ai closes this loop. It preserves the full context of a clinical visit
 
 ### Screenshots
 
-| Patient Profile with AI Chat | Visit Summary (SOAP Notes) | Reverse AI Scribe |
+| Landing | Demo Scenarios | Patient Profile |
 |:---:|:---:|:---:|
-| ![Patient Profile](docs/screenshots/03-patient-profile.png) | ![Visit Summary](docs/screenshots/04-visit-summary.png) | ![Scribe Recording](docs/screenshots/07-scribe-recording.png) |
+| ![Landing](docs/screenshots/01-landing.png) | ![Scenarios](docs/screenshots/02-scenarios.png) | ![Patient Profile](docs/screenshots/03-patient-profile.png) |
 
-| Clinical References (EBM) | Doctor Patient View |
+| My Health | Vitals & Trends |
 |:---:|:---:|
-| ![Reference](docs/screenshots/08-reference-library.png) | ![Doctor Dashboard](docs/screenshots/06-doctor-dashboard.png) |
+| ![My Health](docs/screenshots/04-my-health.png) | ![Vitals](docs/screenshots/05-vitals.png) |
 
 ## What It Does
 
