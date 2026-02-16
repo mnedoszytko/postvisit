@@ -202,8 +202,8 @@ Route::prefix('v1')->group(function () {
     // -------------------------------------------------------
     // Demo Engine (no auth — easy demo access, rate-limited)
     // -------------------------------------------------------
-    Route::prefix('demo')->group(function () {
-        // Session creation — throttled to prevent token farming
+    Route::prefix('demo')->withoutMiddleware(\Illuminate\Routing\Middleware\ThrottleRequests::class.':api')->group(function () {
+        // Session creation — throttled with own 'demo' limiter (not stacked with global 'api' limiter)
         Route::middleware('throttle:demo')->group(function () {
             Route::post('start', [DemoController::class, 'start']);
             Route::post('start-scenario', [DemoScenarioController::class, 'startScenario']);
