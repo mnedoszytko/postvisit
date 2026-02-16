@@ -7,37 +7,11 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6)]()
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**AI-powered post-visit care platform** that bridges the gap between what happens in the doctor's office and what happens after. Built for [Built with Opus 4.6: a Claude Code hackathon](https://cerebralvalley.ai/e/claude-code-hackathon/details) (Feb 10-16, 2026).
-
-> **Live Demo: [https://postvisit.ai](https://postvisit.ai)**
+**AI-powered post-visit care platform** that bridges the gap between what happens in the doctor's office and what happens after. [Built with Opus 4.6](#built-with-opus-46) for the [Claude Code hackathon](https://cerebralvalley.ai/e/claude-code-hackathon/details) (Feb 10-16, 2026).
 
 > **How it was built:** 295 commits in 6 days, tested in a real hospital with consenting patients, coded from Brussels to a transatlantic flight to San Francisco. [Read the full build log](BUILD-LOG.md).
 
-## Built with Opus 4.6
-
-Every AI feature in PostVisit.ai leverages a specific Opus 4.6 capability:
-
-| Opus 4.6 Feature | How PostVisit.ai Uses It |
-|-------------------|--------------------------|
-| **Extended Thinking** | Per-subsystem thinking budgets (1K-16K tokens). Chat, escalation detection, clinical reasoning, and transcript processing each get calibrated budgets. Adaptive effort routing adjusts thinking depth per question complexity. |
-| **1M Context Window** | 8-layer context assembly loads the full clinical picture: SOAP note + transcript + patient history + vitals + medications + FDA safety data + clinical guidelines (full-text PMC articles) + personal medical library. Typical: 60K-180K tokens per request. |
-| **Tool Use** | Agentic loop with 5 medical tools: drug interaction checks (RxNorm), drug safety info (OpenFDA/DailyMed), lab reference ranges, guideline search, adverse event queries. AI decides which tools to call during patient education generation and clinical reasoning. |
-| **Prompt Caching** | System prompts and clinical guidelines cached with 5-minute TTL using `CacheControlEphemeral`. 78% reduction in input token costs for multi-message conversations. |
-| **Streaming (SSE)** | Discovered a buffering bug in the Anthropic PHP SDK where PSR-18 clients buffer the entire response before returning. Built a raw cURL streaming layer for true token-by-token SSE delivery. Separate channels for thinking and response text give patients transparency into AI reasoning. |
-| **Safety** | Thinking-backed escalation detection: Opus reasons through patient context before classifying urgency. Plan-Execute-Verify pipeline validates clinical responses against evidence. |
-
-### 3-Tier Comparison Architecture
-
-```
-                    Good (Sonnet)    Better (Opus)    Opus 4.6 (Full)
-Extended Thinking:       No           Chat+Scribe      All subsystems
-Clinical Guidelines:     None         None             Full-text PMC
-Escalation Detection:    Keywords     Keywords+AI      Keywords+AI+Thinking
-Clinical Reasoning:      No           No               Plan-Execute-Verify
-Thinking Budget:         0            16K tokens       34K tokens
-```
-
-Switching tiers in real-time during the demo shows the progressive improvement in reasoning depth, response quality, and safety detection. Full technical deep-dive with code examples: [`docs/opus-4.6-deep-dive.md`](docs/opus-4.6-deep-dive.md)
+> **Live Demo: [https://postvisit.ai](https://postvisit.ai)**
 
 ## The Problem
 
@@ -104,6 +78,32 @@ PostVisit.ai
 | Guidelines | ESC Clinical Guidelines | CC-BY |
 
 Full license tracking: [`docs/licenses.md`](docs/licenses.md)
+
+## Built with Opus 4.6
+
+Every AI feature in PostVisit.ai leverages a specific Opus 4.6 capability:
+
+| Opus 4.6 Feature | How PostVisit.ai Uses It |
+|-------------------|--------------------------|
+| **Extended Thinking** | Per-subsystem thinking budgets (1K-16K tokens). Chat, escalation detection, clinical reasoning, and transcript processing each get calibrated budgets. Adaptive effort routing adjusts thinking depth per question complexity. |
+| **1M Context Window** | 8-layer context assembly loads the full clinical picture: SOAP note + transcript + patient history + vitals + medications + FDA safety data + clinical guidelines (full-text PMC articles) + personal medical library. Typical: 60K-180K tokens per request. |
+| **Tool Use** | Agentic loop with 5 medical tools: drug interaction checks (RxNorm), drug safety info (OpenFDA/DailyMed), lab reference ranges, guideline search, adverse event queries. AI decides which tools to call during patient education generation and clinical reasoning. |
+| **Prompt Caching** | System prompts and clinical guidelines cached with 5-minute TTL using `CacheControlEphemeral`. 78% reduction in input token costs for multi-message conversations. |
+| **Streaming (SSE)** | Discovered a buffering bug in the Anthropic PHP SDK where PSR-18 clients buffer the entire response before returning. Built a raw cURL streaming layer for true token-by-token SSE delivery. Separate channels for thinking and response text give patients transparency into AI reasoning. |
+| **Safety** | Thinking-backed escalation detection: Opus reasons through patient context before classifying urgency. Plan-Execute-Verify pipeline validates clinical responses against evidence. |
+
+### 3-Tier Comparison Architecture
+
+```
+                    Good (Sonnet)    Better (Opus)    Opus 4.6 (Full)
+Extended Thinking:       No           Chat+Scribe      All subsystems
+Clinical Guidelines:     None         None             Full-text PMC
+Escalation Detection:    Keywords     Keywords+AI      Keywords+AI+Thinking
+Clinical Reasoning:      No           No               Plan-Execute-Verify
+Thinking Budget:         0            16K tokens       34K tokens
+```
+
+Switching tiers in real-time during the demo shows the progressive improvement in reasoning depth, response quality, and safety detection. Full technical deep-dive with code examples: [`docs/opus-4.6-deep-dive.md`](docs/opus-4.6-deep-dive.md)
 
 ## Quick Start
 
