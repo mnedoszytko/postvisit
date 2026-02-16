@@ -13,6 +13,32 @@
 
 > **How it was built:** 295 commits in 6 days, tested in a real hospital with consenting patients, coded from Brussels to a transatlantic flight to San Francisco. [Read the full build log](BUILD-LOG.md).
 
+## Built with Opus 4.6
+
+Every AI feature in PostVisit.ai leverages a specific Opus 4.6 capability:
+
+| Opus 4.6 Feature | How PostVisit.ai Uses It |
+|-------------------|--------------------------|
+| **Extended Thinking** | Per-subsystem thinking budgets (1K-16K tokens). Chat, escalation detection, clinical reasoning, and transcript processing each get calibrated budgets. Adaptive effort routing adjusts thinking depth per question complexity. |
+| **1M Context Window** | 8-layer context assembly loads the full clinical picture: SOAP note + transcript + patient history + vitals + medications + FDA safety data + clinical guidelines (full-text PMC articles) + personal medical library. Typical: 60K-180K tokens per request. |
+| **Tool Use** | Agentic loop with 5 medical tools: drug interaction checks (RxNorm), drug safety info (OpenFDA/DailyMed), lab reference ranges, guideline search, adverse event queries. AI decides which tools to call during patient education generation and clinical reasoning. |
+| **Prompt Caching** | System prompts and clinical guidelines cached with 5-minute TTL using `CacheControlEphemeral`. 78% reduction in input token costs for multi-message conversations. |
+| **Streaming (SSE)** | Discovered a buffering bug in the Anthropic PHP SDK where PSR-18 clients buffer the entire response before returning. Built a raw cURL streaming layer for true token-by-token SSE delivery. Separate channels for thinking and response text give patients transparency into AI reasoning. |
+| **Safety** | Thinking-backed escalation detection: Opus reasons through patient context before classifying urgency. Plan-Execute-Verify pipeline validates clinical responses against evidence. |
+
+### 3-Tier Comparison Architecture
+
+```
+                    Good (Sonnet)    Better (Opus)    Opus 4.6 (Full)
+Extended Thinking:       No           Chat+Scribe      All subsystems
+Clinical Guidelines:     None         None             Full-text PMC
+Escalation Detection:    Keywords     Keywords+AI      Keywords+AI+Thinking
+Clinical Reasoning:      No           No               Plan-Execute-Verify
+Thinking Budget:         0            16K tokens       34K tokens
+```
+
+Switching tiers in real-time during the demo shows the progressive improvement in reasoning depth, response quality, and safety detection. Full technical deep-dive with code examples: [`docs/opus-4.6-deep-dive.md`](docs/opus-4.6-deep-dive.md)
+
 ## The Problem
 
 A medical visit packs dense, critical information into a short window — diagnoses, treatment plans, medication changes, follow-up instructions. Research shows that the more information provided, the lower the proportion patients retain ([Kessels, PMC 2003](https://pmc.ncbi.nlm.nih.gov/articles/PMC539473/)). Patients leave with unfamiliar terminology, no way to revisit what was discussed, and discharge papers that raise more questions than they answer. Doctors spend time repeating explanations and have no visibility into whether patients understood.
@@ -22,7 +48,7 @@ PostVisit.ai closes this loop. It preserves the full context of a clinical visit
 ## What It Does
 
 - **Companion Scribe** -- Patient-initiated visit recording with doctor selection, date picker, and hardened 3-phase upload pipeline (save audio, transcribe, combine). Supports long recordings via automatic 10-minute chunking.
-- **AI Visit Summary** -- Transcription processed into structured SOAP notes, observations, diagnoses, and prescriptions
+- **AI Visit Summary** -- Transcription processed into structured SOAP notes with full clinical context: patient health record, vitals, lab results, and references from evidence-based medicine sources
 - **Contextual Q&A** -- Patient asks questions in natural language; gets answers grounded in their visit data, clinical guidelines, and FDA safety data. Clinical reasoning pipeline with tool use for real-time medication lookups, guideline retrieval, and evidence-based citations.
 - **AI Tier Selection** -- Patient controls AI depth: Quick (fast answers), Balanced (default), or Deep Analysis (extended thinking with clinical reasoning tools)
 - **Medication Intelligence** -- Drug interaction checks, dosage explanations, side effect data from OpenFDA FAERS, and official drug labels from DailyMed
@@ -30,7 +56,7 @@ PostVisit.ai closes this loop. It preserves the full context of a clinical visit
 - **Patient Education Generator** -- AI-generated personalized education documents using tool use to pull real medication data and clinical guidelines
 - **Document AI Analysis** -- Upload medical documents (lab results, prescriptions, imaging reports) for AI-powered analysis with structured extraction
 - **QR Code Mobile Upload** -- Generate QR codes to upload documents from phone camera directly to a visit
-- **Medical Library** -- Personal medical library: save articles, URLs, and documents; AI analyzes and summarizes content
+- **Medical Library** -- Personal medical library where patients can add curated clinical guidelines, articles, and documents from suggested or external sources. AI analyzes each item and incorporates it into the conversation context for more informed answers
 - **Escalation Detection** -- AI monitors for urgent symptoms (chest pain, breathing difficulty, suicidal ideation) and redirects to emergency services
 - **Doctor Feedback Loop** -- Patients send follow-up questions; doctors receive alerts for concerning patterns
 - **Doctor Dashboard** -- Practitioners monitor patient engagement, review AI chat transcripts, respond to escalations, and trigger quick actions (follow-up reminders, education materials)
@@ -117,16 +143,11 @@ docker compose up -d
 docker compose exec app php artisan migrate --seed
 ```
 
-### Demo Accounts
+### Demo
 
-After seeding, two accounts are available:
+The live demo at [postvisit.ai](https://postvisit.ai) is publicly accessible — no login required. The demo auto-authenticates and includes multiple clinical scenarios (cardiology, orthopedics, neurology, dermatology) with a scenario picker to switch between them. AI endpoints are rate-limited (10 req/min, 500/day global budget) to prevent abuse.
 
-| Role | Email | Password |
-|------|-------|----------|
-| Patient | patient@demo.postvisit.ai | password |
-| Doctor | doctor@demo.postvisit.ai | password |
-
-Demo includes multiple clinical scenarios: cardiology (PVCs), orthopedics (ACL tear), neurology (migraines), and dermatology (psoriasis). The scenario picker lets you switch between them.
+For local development, seed demo data with `php artisan db:seed --class=DemoSeeder`. Default accounts: `patient@demo.postvisit.ai` / `doctor@demo.postvisit.ai` (password: `password`).
 
 ### API Quick Test
 
@@ -167,36 +188,6 @@ curl -X POST http://postvisit.test/api/v1/auth/login \
 | Library | 6 | Personal medical library: list, upload, URL import, detail, status, delete |
 | Upload Tokens | 2 | QR code mobile upload tokens, status polling |
 | Demo | 10 | Quick-start, status, reset, simulate alerts, scenario list, photos, animations, start scenario, switch role |
-
-## Claude Opus 4.6 — Deep Integration
-
-PostVisit.ai is built to demonstrate the full capabilities of Claude Opus 4.6. Every AI feature leverages a specific Opus 4.6 capability:
-
-| Opus 4.6 Feature | How PostVisit.ai Uses It |
-|-------------------|--------------------------|
-| **Extended Thinking** | Per-subsystem thinking budgets (1K-16K tokens). Chat, escalation detection, clinical reasoning, and transcript processing each get calibrated budgets. Adaptive effort routing adjusts thinking depth per question complexity. |
-| **1M Context Window** | 8-layer context assembly loads the full clinical picture: SOAP note + transcript + patient history + vitals + medications + FDA safety data + clinical guidelines (full-text PMC articles) + personal medical library. Typical: 60K-180K tokens per request. |
-| **Tool Use** | Agentic loop with 5 medical tools: drug interaction checks (RxNorm), drug safety info (OpenFDA/DailyMed), lab reference ranges, guideline search, adverse event queries. AI decides which tools to call during patient education generation and clinical reasoning. |
-| **Prompt Caching** | System prompts and clinical guidelines cached with 5-minute TTL using `CacheControlEphemeral`. 78% reduction in input token costs for multi-message conversations. |
-| **Streaming (SSE)** | Raw cURL streaming bypasses PSR-18 buffering for true token-by-token delivery. Separate channels for thinking and response text give patients transparency into AI reasoning. |
-| **Safety (ASL-4)** | Thinking-backed escalation detection: Opus reasons through patient context before classifying urgency. Plan-Execute-Verify pipeline validates clinical responses against evidence. |
-
-### 3-Tier Comparison Architecture
-
-The system implements three AI tiers to demonstrate progressive value:
-
-```
-                    Good (Sonnet)    Better (Opus)    Opus 4.6 (Full)
-Extended Thinking:       No           Chat+Scribe      All subsystems
-Clinical Guidelines:     None         None             Full-text PMC
-Escalation Detection:    Keywords     Keywords+AI      Keywords+AI+Thinking
-Clinical Reasoning:      No           No               Plan-Execute-Verify
-Thinking Budget:         0            16K tokens       34K tokens
-```
-
-Switching tiers in real-time during the demo shows the progressive improvement in reasoning depth, response quality, and safety detection.
-
-> **Full technical deep-dive with code examples: [`docs/opus-4.6-deep-dive.md`](docs/opus-4.6-deep-dive.md)**
 
 ## AI Architecture
 
