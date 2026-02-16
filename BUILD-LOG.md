@@ -6,8 +6,8 @@
 
 | Metric | Value |
 |--------|-------|
-| **Duration** | 6 days (Feb 10-15, 2026) |
-| **Commits** | 295 |
+| **Duration** | 7 days (Feb 10-16, 2026) |
+| **Commits** | 330+ |
 | **Files** | 522 |
 | **Lines of code** | ~84,000 |
 | **Tests** | 262 (797 assertions) |
@@ -165,6 +165,24 @@ Massive jet lag (9-hour time difference Brussels→SF) turned into a productivit
 **Sunday afternoon** — Showcase slides, HR drop alerts, dead code cleanup, rate limiting, CLAUDE.md condensation.
 
 **Sunday evening** — Final polishing pass. Pre-landing checklist: code formatting, documentation translation (Polish → English), security audit, healthcare compliance documentation, dead code cleanup, XSS hardening, authorization policies, dependency audit. Making sure everything is submission-ready.
+
+---
+
+### Day 7 — Monday, Feb 16 | Jet Lag Finishing Touches
+
+**Location:** San Francisco
+
+Another jet lag night — wide awake at 3 AM, might as well ship. Final day before submission deadline (15:00 EST).
+
+- Fixed demo rate limiting that was too aggressive (users hitting 429s within minutes)
+- Added Slack notifications for demo activity monitoring
+- Re-seeded production with latest scenario data (HR trend was missing)
+- Created Privacy Policy, Terms of Use, and Legal Notice pages — realized they were completely missing when clicking the consent link in Companion Scribe
+- Fact-checked all legal page content against actual codebase (removed false claims about analytics, data export, and account deletion that didn't exist)
+- Aligned Companion Scribe recording screen text
+- Final demo video re-recording and upload
+- README updates — commit count, video link, hospital testing wording
+- Production deploy and server hardening
 
 ---
 
