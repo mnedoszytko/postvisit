@@ -51,7 +51,7 @@ PostVisit.ai closes this loop. It preserves the full context of a clinical visit
 
 ### Additional Features
 
-Medical term explain (click any term for plain-language explanation), AI tier selection (Quick/Balanced/Deep Analysis with adaptive thinking), multi-scenario demo engine (12 clinical scenarios across cardiology, orthopedics, neurology, dermatology), and showcase presentation views.
+Medical term explain (click any term for plain-language explanation), AI tier selection (Quick/Balanced/Deep Analysis with adaptive thinking), multi-scenario demo engine (12 clinical scenarios across cardiology, endocrinology, gastroenterology, pulmonology), and showcase presentation views.
 
 ## Healthcare-Oriented Design
 
