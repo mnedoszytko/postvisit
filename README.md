@@ -23,13 +23,32 @@ PostVisit.ai closes this loop. It preserves the full context of a clinical visit
 
 ### Screenshots
 
-| Patient Profile with AI Chat | Visit Summary (SOAP Notes) | Reverse AI Scribe |
-|:---:|:---:|:---:|
-| ![Patient Profile](docs/screenshots/03-patient-profile.png) | ![Visit Summary](docs/screenshots/04-visit-summary.png) | ![Scribe Recording](docs/screenshots/07-scribe-recording.png) |
-
-| Clinical References (EBM) | Doctor Patient View |
-|:---:|:---:|
-| ![Reference](docs/screenshots/08-reference-library.png) | ![Doctor Dashboard](docs/screenshots/06-doctor-dashboard.png) |
+<table>
+  <tr>
+    <td align="center"><strong>App Overview</strong></td>
+    <td align="center"><strong>Visit Summary & AI Companion</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/demo-flow.gif" alt="App Overview" width="420" /></td>
+    <td><img src="docs/screenshots/visit-flow.gif" alt="Visit Summary & AI Companion" width="420" /></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <table>
+        <tr>
+          <td align="center"><strong>Doctor Dashboard</strong></td>
+          <td align="center"><strong>Reverse AI Scribe</strong></td>
+          <td align="center"><strong>Evidence-Based References</strong></td>
+        </tr>
+        <tr>
+          <td><img src="docs/screenshots/06-doctor-dashboard.png" alt="Doctor Dashboard" width="270" /></td>
+          <td><img src="docs/screenshots/07-scribe-recording.png" alt="Reverse AI Scribe" width="270" /></td>
+          <td><img src="docs/screenshots/08-reference-library.png" alt="Evidence-Based References" width="270" /></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
 
 ## What It Does
 
