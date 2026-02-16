@@ -19,6 +19,16 @@ A medical visit packs dense, critical information into a short window — diagno
 
 PostVisit.ai closes this loop. It preserves the full context of a clinical visit, gives patients an AI assistant to understand it on their own terms, and opens a communication channel back to the doctor -- bridging the gap between visits with grounded, visit-specific information instead of generic search results.
 
+### Screenshots
+
+| Patient Profile with AI Chat | Visit Summary (SOAP Notes) | Reverse AI Scribe |
+|:---:|:---:|:---:|
+| ![Patient Profile](docs/screenshots/03-patient-profile.png) | ![Visit Summary](docs/screenshots/04-visit-summary.png) | ![Scribe Recording](docs/screenshots/07-scribe-recording.png) |
+
+| Health Vitals (Apple Watch) | Doctor Dashboard |
+|:---:|:---:|
+| ![Vitals](docs/screenshots/05-vitals.png) | ![Doctor Dashboard](docs/screenshots/06-doctor-dashboard.png) |
+
 ## What It Does
 
 - **Reverse AI Scribe** -- Patient-initiated visit recording with doctor selection, date picker, and hardened 3-phase upload pipeline (save audio, transcribe, combine). Supports long recordings via automatic 10-minute chunking.
