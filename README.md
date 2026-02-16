@@ -7,7 +7,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6)]()
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**AI-powered post-visit care platform** that bridges the gap between what happens in the doctor's office and what happens after. Built for the [Claude AI Hackathon](https://anthropic.com) (Feb 10-16, 2026).
+**AI-powered post-visit care platform** that bridges the gap between what happens in the doctor's office and what happens after. Built for [Built with Opus 4.6: a Claude Code hackathon](https://cerebralvalley.ai/e/claude-code-hackathon/details) (Feb 10-16, 2026).
 
 > **Live Demo: [https://postvisit.ai](https://postvisit.ai)**
 >
@@ -260,6 +260,7 @@ demo/                         # Demo data, scenarios, patient photos, animations
 - [`docs/decisions.md`](docs/decisions.md) -- Architecture decision log
 - [`docs/ai-prompts.md`](docs/ai-prompts.md) -- AI prompt documentation and versioning
 - [`docs/licenses.md`](docs/licenses.md) -- Dependency license tracker
+- [`docs/healthcare-compliance.md`](docs/healthcare-compliance.md) -- **HIPAA, GDPR, and FHIR compliance**
 - [`docs/security-audit.md`](docs/security-audit.md) -- OWASP Top 10 security audit
 - [`docs/demo-guide.md`](docs/demo-guide.md) -- Step-by-step demo walkthrough
 - [`docs/demo-scenarios.md`](docs/demo-scenarios.md) -- Demo scenario definitions
@@ -270,9 +271,9 @@ demo/                         # Demo data, scenarios, patient photos, animations
 - [`docs/KEEP-THINKING.md`](docs/KEEP-THINKING.md) -- Clinical depth iteration log
 - [`docs/lessons.md`](docs/lessons.md) -- Development lessons learned
 
-## Team
+## Author
 
-**Solo developer**: Michal Nedoszytko. "PostVisit Agent" in the git history is Claude Code (Anthropic's CLI agent) used as an AI development tool -- not a team member. All architectural decisions, clinical domain design, and product direction are human-driven.
+Built by **[Michal Nedoszytko, MD PhD](https://nedoszytko.com)** -- practicing cardiologist, software engineer, and AI in medicine educator with 20+ years of experience building software for healthcare. Designed, architected, and developed as a solo project. See [AUTHORS.md](AUTHORS.md) for links and bio.
 
 ## Hackathon Tracks
 
