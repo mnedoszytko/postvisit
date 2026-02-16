@@ -209,7 +209,7 @@ The app will be available at **http://localhost:8080**. Four services run: PHP-F
 
 ### Demo
 
-The live demo at [postvisit.ai](https://postvisit.ai) is publicly accessible — no login required. The demo auto-authenticates and includes multiple clinical scenarios (cardiology, orthopedics, neurology, dermatology) with a scenario picker to switch between them. AI endpoints are rate-limited (10 req/min, 500/day global budget) to prevent abuse.
+The live demo at [postvisit.ai](https://postvisit.ai) is publicly accessible — no login required. The demo auto-authenticates and includes multiple clinical scenarios (cardiology, endocrinology, gastroenterology, pulmonology) with a scenario picker to switch between them. AI endpoints are rate-limited (10 req/min, 1000/day global budget) to prevent abuse. Watch the [demo video](https://youtu.be/V29UCOii2jE) for a full walkthrough.
 
 For local development, seed demo data with `php artisan db:seed --class=DemoSeeder`. Default accounts: `patient@demo.postvisit.ai` / `doctor@demo.postvisit.ai` (password: `password`).
 
