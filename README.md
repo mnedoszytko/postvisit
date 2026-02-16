@@ -11,7 +11,7 @@
 
 **How it was built:** 295 commits in 6 days, **coded by a cardiologist from Brussels to a transatlantic flight to San Francisco**, tested in a real hospital with consenting patients. [Read the full build log](BUILD-LOG.md).
 
-[![Watch Video](https://img.shields.io/badge/▶_Watch_Demo_Video-red?style=for-the-badge)](https://youtu.be/6hOEvGB8nik)
+**Watch Demo Video: [https://youtu.be/6hOEvGB8nik](https://youtu.be/6hOEvGB8nik)**
 
 **Live Demo: [https://postvisit.ai](https://postvisit.ai)**
 
