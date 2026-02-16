@@ -23,13 +23,9 @@ PostVisit.ai closes this loop. It preserves the full context of a clinical visit
 
 ### Screenshots
 
-| Landing | Demo Scenarios | Patient Profile |
-|:---:|:---:|:---:|
-| ![Landing](docs/screenshots/01-landing.png) | ![Scenarios](docs/screenshots/02-scenarios.png) | ![Patient Profile](docs/screenshots/03-patient-profile.png) |
-
-| My Health | Vitals & Trends |
-|:---:|:---:|
-| ![My Health](docs/screenshots/04-my-health.png) | ![Vitals](docs/screenshots/05-vitals.png) |
+<p align="center">
+  <img src="docs/screenshots/demo-flow.gif" alt="PostVisit.ai Demo Flow" width="720" />
+</p>
 
 ## What It Does
 
