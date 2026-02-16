@@ -1109,7 +1109,17 @@ class DemoSeeder extends Seeder
             ],
         ];
 
+        $existingCodes = Observation::where('patient_id', $patient->id)
+            ->where('category', 'laboratory')
+            ->pluck('code')
+            ->unique()
+            ->toArray();
+
         foreach ($markers as $marker) {
+            if (in_array($marker['code'], $existingCodes)) {
+                continue;
+            }
+
             foreach ($marker['readings'] as [$monthsAgo, $value, $interp]) {
                 $date = now()->subMonths($monthsAgo);
                 Observation::create([

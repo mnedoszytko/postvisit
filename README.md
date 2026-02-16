@@ -33,21 +33,37 @@ PostVisit.ai closes this loop. It preserves the full context of a clinical visit
 
 ## What It Does
 
-- **Reverse AI Scribe** -- Patient-initiated visit recording with doctor selection, date picker, and hardened 3-phase upload pipeline (save audio, transcribe, combine). Supports long recordings via automatic 10-minute chunking.
-- **AI Visit Summary** -- Transcription processed into structured SOAP notes with full clinical context: patient health record, vitals, lab results, and references from evidence-based medicine sources
-- **Contextual Q&A** -- Patient asks questions in natural language; gets answers grounded in their visit data, clinical guidelines, and FDA safety data. Clinical reasoning pipeline with tool use for real-time medication lookups, guideline retrieval, and evidence-based citations.
-- **AI Tier Selection** -- Patient controls AI depth: Quick (fast answers), Balanced (default), or Deep Analysis (extended thinking with clinical reasoning tools)
-- **Medication Intelligence** -- Drug interaction checks, dosage explanations, side effect data from OpenFDA FAERS, and official drug labels from DailyMed
-- **Medical Term Explain** -- Click any medical term to get a plain-language explanation tailored to the patient's specific visit context
-- **Patient Education Generator** -- AI-generated personalized education documents using tool use to pull real medication data and clinical guidelines
-- **Document AI Analysis** -- Upload medical documents (lab results, prescriptions, imaging reports) for AI-powered analysis with structured extraction
-- **QR Code Mobile Upload** -- Generate QR codes to upload documents from phone camera directly to a visit
-- **Medical Library** -- Personal medical library where patients can add curated clinical guidelines, articles, and documents from suggested or external sources. AI analyzes each item and incorporates it into the conversation context for more informed answers
-- **Escalation Detection** -- AI monitors for urgent symptoms (chest pain, breathing difficulty, suicidal ideation) and redirects to emergency services
-- **Doctor Feedback Loop** -- Patients send follow-up questions; doctors receive alerts for concerning patterns
-- **Doctor Dashboard** -- Practitioners monitor patient engagement, review AI chat transcripts, respond to escalations, and trigger quick actions (follow-up reminders, education materials)
-- **Multi-Scenario Demo Engine** -- Multiple realistic clinical scenarios (cardiology, orthopedics, neurology, dermatology) with pre-seeded patient data, AI-generated animations, and one-click switching between patient and doctor views
-- **Showcase Presentations** -- Dedicated presentation views for hackathon demo: tech architecture, EHR integration, evidence-based medicine pipeline
+### Core AI Pipeline
+
+- **Reverse AI Scribe** -- Patient records the visit (with consent). Audio is saved, transcribed, and combined into a structured clinical note. Supports long consultations via automatic chunking.
+- **AI Visit Summary** -- Transcription processed into structured SOAP notes with full clinical context: health record, vitals, lab results, and evidence-based medicine references.
+- **Contextual Q&A** -- Patient asks questions in natural language; gets answers grounded in their visit data, clinical guidelines, and FDA safety data. Clinical reasoning pipeline with tool use for real-time medication lookups and evidence-based citations.
+- **Document AI Analysis** -- Upload medical documents (lab results, prescriptions, imaging reports) for AI-powered analysis with structured extraction. QR code mobile upload from phone camera.
+- **Evidence-Based Medicine Library** -- Personal medical library with curated clinical guidelines, PubMed articles, and patient documents. AI analyzes each item and incorporates it into conversation context.
+- **Medication Intelligence** -- Drug interaction checks (RxNorm), adverse events (OpenFDA FAERS), official drug labels (DailyMed), and dosage explanations -- all called as AI tools in real time.
+- **Escalation Detection** -- AI monitors for urgent symptoms (chest pain, breathing difficulty, suicidal ideation) with thinking-backed evaluation and emergency service redirection.
+
+### Doctor & Patient Loop
+
+- **Doctor Dashboard** -- Monitor patient engagement, review AI chat transcripts, respond to escalations, trigger follow-up reminders and education materials.
+- **Patient-Doctor Messaging** -- Patients send follow-up questions; doctors receive alerts for concerning patterns.
+- **Patient Education Generator** -- AI-generated personalized education documents using tool use to pull real medication data and clinical guidelines.
+
+### Additional Features
+
+Medical term explain (click any term for plain-language explanation), AI tier selection (Quick/Balanced/Deep Analysis with adaptive thinking), multi-scenario demo engine (12 clinical scenarios across cardiology, orthopedics, neurology, dermatology), and showcase presentation views.
+
+## Healthcare-Oriented Design
+
+This is a hackathon demo running on public infrastructure. In production, PostVisit.ai is designed to run on a dedicated private cloud with no public AI endpoints. The architecture reflects this from day one:
+
+- **AI endpoints behind authentication** -- All LLM-facing routes (`/chat`, `/explain`, `/education`) require Sanctum auth, role verification, and per-user rate limiting. No anonymous AI access.
+- **External file storage** -- Patient uploads (audio recordings, documents) are stored on S3-compatible object storage, not on the application server. In production, this maps to a HIPAA-eligible storage provider.
+- **HIPAA-inspired audit trail** -- Every access to patient data is logged: user, action, resource type, IP, PHI element categories. Exportable for compliance review.
+- **FHIR-aligned data model** -- UUID primary keys, standard resource types (Patient, Encounter, Observation, Condition, MedicationRequest), designed for EHR integration.
+- **Role-based access control** -- Patient, doctor, and admin roles with middleware guards. Doctors see only their patients.
+- **Patient consent model** -- Visit recording requires explicit consent acknowledgment before audio capture begins.
+- **No real patient data** -- All demo scenarios use fictional patients with AI-generated portraits and synthetic clinical data.
 
 ## Architecture
 
