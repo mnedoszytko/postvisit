@@ -23,7 +23,7 @@
 - **Secondary**: MacBook Air (lightweight edits on the go)
 - **Server**: Hetzner VPS (EU) — multiple Claude Code instances running in parallel
 - **Deployment**: Laravel Forge — US server for hackathon demo
-- **Locations**: Home (Brussels), hospital (clinical ward), airplane (BRU→SFO), San Francisco
+- **Locations**: Home (Brussels), hospital (clinical ward), train (Brussels→Paris), airplane (CDG→SFO), San Francisco
 
 ## Day-by-Day Log
 
