@@ -1,6 +1,6 @@
 # PostVisit.ai API Reference
 
-Base URL: `/api/v1/` — 51 endpoints
+Base URL: `/api/v1/` — 96 endpoints
 
 All responses follow the format: `{ "data": ... }` for success, `{ "error": { "message": "..." } }` for errors.
 

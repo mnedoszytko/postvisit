@@ -11,7 +11,7 @@
 
 **How it was built:** 295 commits in 6 days, **coded by a cardiologist from Brussels to a transatlantic flight to San Francisco**, tested in a real hospital with consenting patients. [Read the full build log](BUILD-LOG.md).
 
-**Live Demo: [https://postvisit.ai](https://postvisit.ai)** | **[Watch Video](https://youtu.be/eX4_K-DrgvM)**
+**Live Demo: [https://postvisit.ai](https://postvisit.ai)** | **[Watch Video](https://youtu.be/6hOEvGB8nik)**
 
 ## The Problem
 
@@ -21,7 +21,7 @@ PostVisit.ai closes this loop. It preserves the full context of a clinical visit
 
 ## What It Does
 
-- **Companion Scribe** -- Patient-initiated visit recording with doctor selection, date picker, and hardened 3-phase upload pipeline (save audio, transcribe, combine). Supports long recordings via automatic 10-minute chunking.
+- **Reverse AI Scribe** -- Patient-initiated visit recording with doctor selection, date picker, and hardened 3-phase upload pipeline (save audio, transcribe, combine). Supports long recordings via automatic 10-minute chunking.
 - **AI Visit Summary** -- Transcription processed into structured SOAP notes with full clinical context: patient health record, vitals, lab results, and references from evidence-based medicine sources
 - **Contextual Q&A** -- Patient asks questions in natural language; gets answers grounded in their visit data, clinical guidelines, and FDA safety data. Clinical reasoning pipeline with tool use for real-time medication lookups, guideline retrieval, and evidence-based citations.
 - **AI Tier Selection** -- Patient controls AI depth: Quick (fast answers), Balanced (default), or Deep Analysis (extended thinking with clinical reasoning tools)
