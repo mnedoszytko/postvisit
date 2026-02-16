@@ -13,6 +13,8 @@
 >
 > Try the full demo flow: visit `/demo`, click "Skip to Visit Summary" (patient view) or "View Doctor Dashboard" (doctor view). No registration required -- demo mode auto-authenticates with realistic cardiology visit data.
 
+> **How it was built:** 295 commits in 6 days, tested in a real hospital with consenting patients, coded from Brussels to a transatlantic flight to San Francisco. [Read the full build log](BUILD-LOG.md).
+
 ## The Problem
 
 After a medical visit, patients forget up to 80% of what their doctor said. They struggle with medical terminology, have no way to reference what was discussed, and are left with confusing discharge papers. Doctors repeat the same explanations and lack feedback on patient understanding.
@@ -273,7 +275,7 @@ demo/                         # Demo data, scenarios, patient photos, animations
 
 ## Author
 
-Built by **[Michal Nedoszytko, MD PhD](https://nedoszytko.com)** -- practicing cardiologist, software engineer, and AI in medicine educator with 20+ years of experience building software for healthcare. Designed, architected, and developed as a solo project. See [AUTHORS.md](AUTHORS.md) for links and bio.
+Built by **[Michal Nedoszytko, MD PhD](https://nedoszytko.com)** -- practicing cardiologist, software engineer, and AI in medicine educator with 20+ years of experience building software for healthcare. Designed, architected, and developed as a solo project. See [AUTHORS.md](AUTHORS.md) for links and bio, and [BUILD-LOG.md](BUILD-LOG.md) for the full 6-day build log with clinical testing notes.
 
 ## Hackathon Tracks
 
