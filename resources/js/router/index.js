@@ -53,6 +53,11 @@ const routes = [
         component: ShowcaseTech,
     },
     {
+        path: '/showcase/teaser2',
+        name: 'showcase-teaser2',
+        component: () => import('@/views/ShowcaseTeaser2.vue'),
+    },
+    {
         path: '/login',
         name: 'login',
         component: Login,
