@@ -126,7 +126,6 @@
 - Multiple iterations on the Ask AI button icon (sparkle → logo → arrow → back to logo)
 
 **Night (Paris)** — Demo video production. This was a major time investment:
-- 10 Remotion showcase videos for the demo reel
 - Scripting the voiceover, screen recording every flow, editing and compositing
 - Re-recording when features changed, voiceover narration, final assembly
 - Multiple iterations as the UI evolved faster than the video could keep up
@@ -174,7 +173,7 @@ Massive jet lag (9-hour time difference Brussels→SF) turned into a productivit
 ### Development Workflow
 
 1. **Clinical observation** — identify a real problem from hospital experience
-2. **Specification** — describe the requirement (often in Polish — the most efficient language to communicate with AI when it's your native tongue)
+2. **Specification** — describe the requirement (often in Polish — thinking and dictating in your native language removes the cognitive overhead of translation, letting you express complex clinical requirements faster)
 3. **Claude Code builds** — multiple parallel instances on VPS, each working on separate modules
 4. **Browser testing** — verify in Chrome, fix issues, iterate
 5. **Clinical validation** — test with real patients (with consent) in hospital setting
@@ -226,17 +225,4 @@ Every clinical test was conducted with explicit patient consent. No real patient
 | **Linear** | Project management |
 | **Craft** | Documentation and planning |
 | **FAL.ai (Flux 2 Realism)** | AI-generated patient portraits |
-| **Remotion** | Demo video production |
 
-## What the Commit History Shows
-
-The commit timestamps tell a story of relentless iteration:
-
-- **Day 1**: 30 commits in 5 hours (18:34-23:25) — research to working prototype
-- **Day 2**: 60+ commits — clinical testing drove the hardest technical fixes
-- **Day 3**: 70+ commits — deepest feature day, running 4 parallel Claude Code agents
-- **Day 4**: 20 commits — split between hospital and demo video production
-- **Day 5**: 15 commits — coding on a transatlantic flight
-- **Day 6**: 25 commits — final polish and documentation
-
-The pattern is clear: **clinical experience shaped the code, not the other way around.** Every major technical decision — save-first recording, Wake Lock, async pipeline, escalation detection tuning — came from testing in a real hospital with real patients.

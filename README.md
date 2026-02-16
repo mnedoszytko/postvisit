@@ -10,14 +10,12 @@
 **AI-powered post-visit care platform** that bridges the gap between what happens in the doctor's office and what happens after. Built for [Built with Opus 4.6: a Claude Code hackathon](https://cerebralvalley.ai/e/claude-code-hackathon/details) (Feb 10-16, 2026).
 
 > **Live Demo: [https://postvisit.ai](https://postvisit.ai)**
->
-> Try the full demo flow: visit `/demo`, click "Skip to Visit Summary" (patient view) or "View Doctor Dashboard" (doctor view). No registration required -- demo mode auto-authenticates with realistic cardiology visit data.
 
 > **How it was built:** 295 commits in 6 days, tested in a real hospital with consenting patients, coded from Brussels to a transatlantic flight to San Francisco. [Read the full build log](BUILD-LOG.md).
 
 ## The Problem
 
-After a medical visit, patients forget up to 80% of what their doctor said. They struggle with medical terminology, have no way to reference what was discussed, and are left with confusing discharge papers. Doctors repeat the same explanations and lack feedback on patient understanding.
+A medical visit packs dense, critical information into a short window — diagnoses, treatment plans, medication changes, follow-up instructions. Research shows that the more information provided, the lower the proportion patients retain ([Kessels, PMC 2003](https://pmc.ncbi.nlm.nih.gov/articles/PMC539473/)). Patients leave with unfamiliar terminology, no way to revisit what was discussed, and discharge papers that raise more questions than they answer. Doctors spend time repeating explanations and have no visibility into whether patients understood.
 
 PostVisit.ai solves this by maintaining the full context of a clinical visit and providing an AI assistant that helps the patient afterward -- grounded in their actual visit data, not generic search results.
 
