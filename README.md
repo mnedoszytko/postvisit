@@ -11,7 +11,7 @@
 
 **How it was built:** 330 commits in 6 days, **coded by a cardiologist from Brussels to a transatlantic flight to San Francisco**, tested in real hospital setting. [Read the full build log](BUILD-LOG.md).
 
-**Watch Demo Video: [https://youtu.be/6hOEvGB8nik](https://youtu.be/6hOEvGB8nik)**
+**Watch Demo Video: [https://youtu.be/V29UCOii2jE](https://youtu.be/V29UCOii2jE)**
 
 **Live Demo: [https://postvisit.ai](https://postvisit.ai)**
 

@@ -64,7 +64,7 @@
             <div class="aspect-video rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
             <iframe
               v-if="showVideo"
-              src="https://www.youtube.com/embed/6hOEvGB8nik?autoplay=1&rel=0"
+              src="https://www.youtube.com/embed/V29UCOii2jE?autoplay=1&rel=0"
               class="w-full h-full"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
