@@ -75,39 +75,43 @@
       </div>
 
       <!-- Recording step -->
-      <div v-else-if="step === 'recording'" class="bg-white rounded-2xl border border-gray-200 p-6 text-center space-y-6">
-        <h2 class="text-lg font-semibold text-gray-800">Recording in progress...</h2>
-
-        <ThreeVisualizer />
-
-        <p class="text-2xl font-mono text-gray-700 tracking-widest">{{ formattedTime }}</p>
-
-        <div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-left space-y-1.5 text-xs text-amber-800">
-          <p class="font-semibold text-sm flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
-            Conversation is being recorded
-          </p>
-          <p>Both parties have consented to this recording.</p>
-          <p class="flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" /></svg>
-            Please keep your phone facing upward on the table for best audio quality.
-          </p>
+      <div v-else-if="step === 'recording'" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <!-- Recording status bar -->
+        <div class="bg-red-50 border-b border-red-100 px-4 py-2.5 flex items-center justify-center gap-2">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+          </span>
+          <span class="text-sm font-medium text-red-700">Recording in progress</span>
         </div>
-        <button
-          class="w-full py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors"
-          @click="stopRecording"
-        >
-          Stop Recording
-        </button>
-        <button
-          v-if="demoMode && showDemoRecordingBtn"
-          class="w-full py-2.5 border border-emerald-300 text-emerald-700 rounded-xl text-sm font-medium hover:bg-emerald-50 transition-all duration-500"
-          :class="demoRecordingBtnVisible ? 'opacity-100' : 'opacity-0'"
-          :disabled="demoLoading"
-          @click="useDemoRecordingDuringCapture"
-        >
-          {{ demoLoading ? 'Loading demo...' : 'Use Demo Recording Instead' }}
-        </button>
+
+        <div class="p-6 text-center space-y-5">
+          <ThreeVisualizer />
+
+          <p class="text-3xl font-mono text-gray-800 tracking-widest tabular-nums">{{ formattedTime }}</p>
+
+          <div class="flex items-center justify-center gap-2 text-xs text-gray-400">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" /></svg>
+            <span>Keep your phone on the table for best audio quality</span>
+          </div>
+
+          <button
+            class="w-full py-3.5 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+            @click="stopRecording"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+            Stop Recording
+          </button>
+          <button
+            v-if="demoMode && showDemoRecordingBtn"
+            class="w-full py-2.5 border border-emerald-300 text-emerald-700 rounded-xl text-sm font-medium hover:bg-emerald-50 transition-all duration-500"
+            :class="demoRecordingBtnVisible ? 'opacity-100' : 'opacity-0'"
+            :disabled="demoLoading"
+            @click="useDemoRecordingDuringCapture"
+          >
+            {{ demoLoading ? 'Loading demo...' : 'Use Demo Recording Instead' }}
+          </button>
+        </div>
       </div>
 
       <!-- Post-recording / uploading step -->
