@@ -11,9 +11,25 @@
         </p>
       </div>
 
-      <div v-if="loadingScenarios" class="text-center py-20">
-        <div class="inline-block w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
-        <p class="text-gray-500 mt-3">Loading scenarios...</p>
+      <div v-if="loadingScenarios" class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div
+          v-for="i in 4"
+          :key="i"
+          class="bg-white rounded-xl overflow-hidden shadow-sm ring-2 ring-gray-100"
+        >
+          <div class="aspect-square bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 animate-pulse">
+            <div class="w-full h-full flex items-center justify-center">
+              <svg class="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
+              </svg>
+            </div>
+          </div>
+          <div class="px-3 py-2.5 sm:px-4 sm:py-3 space-y-2">
+            <div class="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+            <div class="h-3 bg-gray-100 rounded animate-pulse w-1/2"></div>
+            <div class="h-3 bg-emerald-50 rounded animate-pulse w-full"></div>
+          </div>
+        </div>
       </div>
 
       <div v-else-if="fetchError" class="text-center py-20">
