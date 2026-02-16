@@ -9,7 +9,7 @@
 
 **AI-powered post-visit care platform** that bridges the gap between what happens in the doctor's office and what happens after. [Built with Opus 4.6](#built-with-opus-46) for the [Claude Code hackathon](https://cerebralvalley.ai/e/claude-code-hackathon/details) (Feb 10-16, 2026).
 
-**How it was built:** 295 commits in 6 days, **coded by a cardiologist from Brussels to a transatlantic flight to San Francisco**, tested in a real hospital with consenting patients. [Read the full build log](BUILD-LOG.md).
+**How it was built:** 295 commits in 6 days, **coded by a cardiologist from Brussels to a transatlantic flight to San Francisco**, tested in real hospital setting. [Read the full build log](BUILD-LOG.md).
 
 **Watch Demo Video: [https://youtu.be/6hOEvGB8nik](https://youtu.be/6hOEvGB8nik)**
 
