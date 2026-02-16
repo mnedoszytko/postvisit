@@ -71,15 +71,7 @@ echo "Both deployments triggered"
 
 ## IP Whitelist (nginx)
 
-Both servers restrict access to whitelisted IPs only:
-
-```nginx
-allow 80.201.242.171;   # Nedo home
-allow 31.4.178.242;     # Whitelist 2
-allow 127.0.0.1;
-allow ::1;
-deny all;
-```
+Both servers previously restricted access to whitelisted IPs (now removed — public access for hackathon demo).
 
 To update: edit nginx config via Forge API or directly in `/etc/nginx/sites-available/<domain>`, then reload:
 
