@@ -100,6 +100,8 @@ class DemoScenarioController extends Controller
             ], 422);
         }
 
+        \App\Services\SlackAlertService::demoStarted($scenarioKey, $request->ip());
+
         $user = $this->seeder->seed($scenarios[$scenarioKey]);
 
         Auth::login($user);

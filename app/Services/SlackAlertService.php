@@ -81,6 +81,14 @@ class SlackAlertService
         );
     }
 
+    public static function demoStarted(string $scenario, string $ip): void
+    {
+        self::send(
+            ":eyes: *Demo started* — `{$scenario}` scenario from IP `{$ip}`",
+            "demo_started_{$ip}"
+        );
+    }
+
     public static function resetAttempt(string $ip): void
     {
         self::send(
