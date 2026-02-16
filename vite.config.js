@@ -5,7 +5,12 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import { execSync } from 'child_process';
 
-const gitHash = execSync('git rev-parse --short HEAD').toString().trim();
+let gitHash = 'docker';
+try {
+    gitHash = execSync('git rev-parse --short HEAD').toString().trim();
+} catch {
+    // No git repo available (e.g. Docker build)
+}
 const buildTime = new Date().toISOString();
 
 export default defineConfig({

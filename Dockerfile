@@ -9,7 +9,8 @@ RUN apk add --no-cache \
     git \
     curl \
     nodejs \
-    npm
+    npm \
+    bash
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_pgsql zip bcmath opcache

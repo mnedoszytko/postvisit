@@ -167,9 +167,26 @@ bun run build
 ### Docker Setup
 
 ```bash
+# 1. Configure environment — copy and edit .env
+cp .env.example .env.docker
+# Edit .env.docker and set at minimum:
+#   APP_KEY=        (generate with: php artisan key:generate --show)
+#   DB_HOST=db
+#   DB_PORT=5432
+#   DB_DATABASE=postvisit
+#   DB_USERNAME=postgres
+#   DB_PASSWORD=secret
+#   ANTHROPIC_API_KEY=sk-ant-...   (required for AI chat features)
+
+# 2. Start all services (app, nginx, postgres, queue worker)
 docker compose up -d
-docker compose exec app php artisan migrate --seed
+
+# 3. Run migrations and seed demo data
+docker compose exec app php artisan migrate --force
+docker compose exec app php artisan db:seed --class=DemoSeeder
 ```
+
+The app will be available at **http://localhost:8080**. Four services run: PHP-FPM, nginx, PostgreSQL 17, and a queue worker. AI chat features require a valid `ANTHROPIC_API_KEY`.
 
 ### Demo
 
