@@ -83,9 +83,11 @@ class SlackAlertService
 
     public static function demoStarted(string $scenario, string $ip): void
     {
+        // Unique key per scenario+IP+minute — shows every switch, dedupes only rapid double-clicks
+        $key = "demo_started_{$ip}_{$scenario}_".now()->format('Y-m-d_H:i');
         self::send(
             ":eyes: *Demo started* — `{$scenario}` scenario from IP `{$ip}`",
-            "demo_started_{$ip}"
+            $key
         );
     }
 
