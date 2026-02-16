@@ -26,11 +26,11 @@ PostVisit.ai closes this loop. It preserves the full context of a clinical visit
 <table>
   <tr>
     <td align="center"><strong>App Overview</strong></td>
-    <td align="center"><strong>Visit & AI Chat</strong></td>
+    <td align="center"><strong>Visit Summary & AI Companion</strong></td>
   </tr>
   <tr>
     <td><img src="docs/screenshots/demo-flow.gif" alt="App Overview" width="420" /></td>
-    <td><img src="docs/screenshots/visit-flow.gif" alt="Visit & AI Chat" width="420" /></td>
+    <td><img src="docs/screenshots/visit-flow.gif" alt="Visit Summary & AI Companion" width="420" /></td>
   </tr>
   <tr>
     <td align="center" colspan="2">
