@@ -32,6 +32,22 @@ PostVisit.ai closes this loop. It preserves the full context of a clinical visit
     <td><img src="docs/screenshots/demo-flow.gif" alt="App Overview" width="420" /></td>
     <td><img src="docs/screenshots/visit-flow.gif" alt="Visit & AI Chat" width="420" /></td>
   </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <table>
+        <tr>
+          <td align="center"><strong>Doctor Dashboard</strong></td>
+          <td align="center"><strong>Reverse AI Scribe</strong></td>
+          <td align="center"><strong>Evidence-Based References</strong></td>
+        </tr>
+        <tr>
+          <td><img src="docs/screenshots/06-doctor-dashboard.png" alt="Doctor Dashboard" width="270" /></td>
+          <td><img src="docs/screenshots/07-scribe-recording.png" alt="Reverse AI Scribe" width="270" /></td>
+          <td><img src="docs/screenshots/08-reference-library.png" alt="Evidence-Based References" width="270" /></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
 </table>
 
 ## What It Does
