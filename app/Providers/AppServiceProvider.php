@@ -57,9 +57,9 @@ class AppServiceProvider extends ServiceProvider
             ];
         });
 
-        // Demo endpoints: 5 requests per hour per IP
+        // Demo endpoints: 30 requests per hour per IP
         RateLimiter::for('demo', function (Request $request) {
-            return Limit::perHour(5)->by('demo:'.$request->ip())
+            return Limit::perHour(30)->by('demo:'.$request->ip())
                 ->response(function () use ($request) {
                     \App\Services\SlackAlertService::demoAbuse(
                         $request->ip(),
