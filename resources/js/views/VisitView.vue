@@ -695,8 +695,29 @@ const sectionFieldMap = {
 
 const summaryTerms = computed(() => {
     const note = visit.value?.visit_note;
-    if (!note?.medical_terms?.summary) return [];
-    return note.medical_terms.summary;
+    if (!note?.medical_terms) return [];
+
+    // Use dedicated summary terms if available
+    if (note.medical_terms.summary?.length) return note.medical_terms.summary;
+
+    // Fallback: match terms from all SOAP sections against the summary text
+    const text = visitSummary.value;
+    if (!text) return [];
+
+    const matched = [];
+    const seen = new Set();
+    for (const terms of Object.values(note.medical_terms)) {
+        if (!Array.isArray(terms)) continue;
+        for (const t of terms) {
+            if (seen.has(t.term.toLowerCase())) continue;
+            const idx = text.indexOf(t.term);
+            if (idx !== -1) {
+                seen.add(t.term.toLowerCase());
+                matched.push({ ...t, start: idx, end: idx + t.term.length });
+            }
+        }
+    }
+    return matched.sort((a, b) => a.start - b.start);
 });
 
 const soapSections = computed(() => {
