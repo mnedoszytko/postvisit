@@ -146,7 +146,7 @@ Switching tiers in real-time during the demo shows the progressive improvement i
 
 ```bash
 # Clone and install
-git clone <repo-url> postvisit && cd postvisit
+git clone https://github.com/mnedoszytko/postvisit.git && cd postvisit
 composer install
 bun install
 
