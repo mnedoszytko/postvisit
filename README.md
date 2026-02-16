@@ -17,7 +17,7 @@
 
 A medical visit packs dense, critical information into a short window — diagnoses, treatment plans, medication changes, follow-up instructions. Research shows that the more information provided, the lower the proportion patients retain ([Kessels, PMC 2003](https://pmc.ncbi.nlm.nih.gov/articles/PMC539473/)). Patients leave with unfamiliar terminology, no way to revisit what was discussed, and discharge papers that raise more questions than they answer. Doctors spend time repeating explanations and have no visibility into whether patients understood.
 
-PostVisit.ai solves this by maintaining the full context of a clinical visit and providing an AI assistant that helps the patient afterward -- grounded in their actual visit data, not generic search results.
+PostVisit.ai closes this loop. It preserves the full context of a clinical visit, gives patients an AI assistant to understand it on their own terms, and opens a communication channel back to the doctor -- bridging the gap between visits with grounded, visit-specific information instead of generic search results.
 
 ## What It Does
 
