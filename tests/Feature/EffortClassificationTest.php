@@ -99,17 +99,17 @@ class EffortClassificationTest extends TestCase
         $high = $tier->thinkingBudgetForEffort('high');
         $max = $tier->thinkingBudgetForEffort('max');
 
-        $this->assertEquals(1024, $low['budget_tokens']);
-        $this->assertEquals(4096, $low['max_tokens']);
+        $this->assertEquals(512, $low['budget_tokens']);
+        $this->assertEquals(2048, $low['max_tokens']);
 
-        $this->assertEquals(4000, $medium['budget_tokens']);
-        $this->assertEquals(8000, $medium['max_tokens']);
+        $this->assertEquals(1024, $medium['budget_tokens']);
+        $this->assertEquals(2048, $medium['max_tokens']);
 
-        $this->assertEquals(8000, $high['budget_tokens']);
-        $this->assertEquals(16000, $high['max_tokens']);
+        $this->assertEquals(2000, $high['budget_tokens']);
+        $this->assertEquals(4096, $high['max_tokens']);
 
-        $this->assertEquals(16000, $max['budget_tokens']);
-        $this->assertEquals(32000, $max['max_tokens']);
+        $this->assertEquals(4000, $max['budget_tokens']);
+        $this->assertEquals(8000, $max['max_tokens']);
     }
 
     public function test_ai_tier_budget_for_effort_better(): void
@@ -120,7 +120,7 @@ class EffortClassificationTest extends TestCase
         $max = $tier->thinkingBudgetForEffort('max');
 
         $this->assertEquals(512, $low['budget_tokens']);
-        $this->assertEquals(8000, $max['budget_tokens']);
+        $this->assertEquals(2000, $max['budget_tokens']);
     }
 
     public function test_ai_tier_budget_for_effort_good_returns_zero(): void

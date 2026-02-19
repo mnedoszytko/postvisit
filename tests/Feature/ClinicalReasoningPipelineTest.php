@@ -49,8 +49,8 @@ class ClinicalReasoningPipelineTest extends TestCase
 
     public function test_reasoning_budget_is_available_in_tier(): void
     {
-        $this->assertEquals(10000, AiTier::Opus46->thinkingBudget('reasoning'));
-        $this->assertEquals(6000, AiTier::Better->thinkingBudget('reasoning'));
+        $this->assertEquals(3000, AiTier::Opus46->thinkingBudget('reasoning'));
+        $this->assertEquals(2000, AiTier::Better->thinkingBudget('reasoning'));
         $this->assertEquals(0, AiTier::Good->thinkingBudget('reasoning'));
     }
 

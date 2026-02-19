@@ -57,20 +57,20 @@ enum AiTier: string
         return match ($this) {
             self::Good => 0,
             self::Better => match ($subsystem) {
-                'chat' => 4000,
-                'scribe' => 6000,
+                'chat' => 1024,
+                'scribe' => 2000,
                 'escalation' => 0,
-                'reasoning' => 6000,
-                'library' => 6000,
-                default => 4000,
+                'reasoning' => 2000,
+                'library' => 2000,
+                default => 1024,
             },
             self::Opus46 => match ($subsystem) {
-                'chat' => 8000,
-                'scribe' => 10000,
-                'escalation' => 6000,
-                'reasoning' => 10000,
-                'library' => 10000,
-                default => 8000,
+                'chat' => 2000,
+                'scribe' => 3000,
+                'escalation' => 1024,
+                'reasoning' => 3000,
+                'library' => 3000,
+                default => 2000,
             },
         };
     }
@@ -89,16 +89,16 @@ enum AiTier: string
         return match ($this) {
             self::Good => ['budget_tokens' => 0, 'max_tokens' => 4096],
             self::Better => match ($effort) {
-                'low' => ['budget_tokens' => 512, 'max_tokens' => 2048],
-                'high' => ['budget_tokens' => 4000, 'max_tokens' => 8000],
-                'max' => ['budget_tokens' => 8000, 'max_tokens' => 16000],
-                default => ['budget_tokens' => 2000, 'max_tokens' => 4000], // medium
+                'low' => ['budget_tokens' => 512, 'max_tokens' => 1024],
+                'high' => ['budget_tokens' => 1024, 'max_tokens' => 2048],
+                'max' => ['budget_tokens' => 2000, 'max_tokens' => 4096],
+                default => ['budget_tokens' => 512, 'max_tokens' => 1024], // medium
             },
             self::Opus46 => match ($effort) {
-                'low' => ['budget_tokens' => 1024, 'max_tokens' => 4096],
-                'high' => ['budget_tokens' => 8000, 'max_tokens' => 16000],
-                'max' => ['budget_tokens' => 16000, 'max_tokens' => 32000],
-                default => ['budget_tokens' => 4000, 'max_tokens' => 8000], // medium
+                'low' => ['budget_tokens' => 512, 'max_tokens' => 2048],
+                'high' => ['budget_tokens' => 2000, 'max_tokens' => 4096],
+                'max' => ['budget_tokens' => 4000, 'max_tokens' => 8000],
+                default => ['budget_tokens' => 1024, 'max_tokens' => 2048], // medium
             },
         };
     }

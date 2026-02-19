@@ -103,7 +103,7 @@ class ScribeProcessor
         if ($tier->thinkingEnabled()) {
             $result = $this->client->chatWithThinking($systemPrompt, $messages, [
                 'model' => $tier->model(),
-                'max_tokens' => 16000,
+                'max_tokens' => 8000,
                 'budget_tokens' => $tier->thinkingBudget('scribe'),
             ]);
 
@@ -115,7 +115,7 @@ class ScribeProcessor
 
         $response = $this->client->chat($systemPrompt, $messages, [
             'model' => $tier->model(),
-            'max_tokens' => 8192,
+            'max_tokens' => 4096,
         ]);
 
         return $this->parseJsonResponse($response);

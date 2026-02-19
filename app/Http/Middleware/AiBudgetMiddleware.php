@@ -17,11 +17,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AiBudgetMiddleware
 {
-    /** Maximum AI API calls per calendar day (UTC). */
-    private const DAILY_LIMIT = 1000;
+    /** Maximum AI API calls per calendar day (UTC). Post-judging public access mode. */
+    private const DAILY_LIMIT = 200;
 
-    /** Maximum AI API calls per single user/session per day. */
-    private const PER_USER_DAILY_LIMIT = 100;
+    /** Maximum AI API calls per single user/session per day. Post-judging public access mode. */
+    private const PER_USER_DAILY_LIMIT = 15;
 
     /** Alert at these percentage thresholds. */
     private const ALERT_THRESHOLDS = [50, 80, 95];

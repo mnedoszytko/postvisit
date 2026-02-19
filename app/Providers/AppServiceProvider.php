@@ -37,29 +37,29 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->ip());
         });
 
-        // AI endpoints: 5 requests/minute per user, 30/hour per user
+        // AI endpoints: post-judging public access — tight limits
         RateLimiter::for('ai', function (Request $request) {
             $key = $request->user()?->id ?: $request->ip();
 
             return [
-                Limit::perMinute(10)->by('ai-min:'.$key),
-                Limit::perHour(30)->by('ai-hour:'.$key),
+                Limit::perMinute(5)->by('ai-min:'.$key),
+                Limit::perHour(15)->by('ai-hour:'.$key),
             ];
         });
 
-        // AI expensive endpoints (education, inquire): 2 requests/minute
+        // AI expensive endpoints (education, inquire): post-judging limits
         RateLimiter::for('ai-expensive', function (Request $request) {
             $key = $request->user()?->id ?: $request->ip();
 
             return [
-                Limit::perMinute(2)->by('ai-exp-min:'.$key),
-                Limit::perHour(10)->by('ai-exp-hour:'.$key),
+                Limit::perMinute(1)->by('ai-exp-min:'.$key),
+                Limit::perHour(5)->by('ai-exp-hour:'.$key),
             ];
         });
 
-        // Demo endpoints: 30 requests per hour per IP
+        // Demo endpoints: 10 requests per hour per IP
         RateLimiter::for('demo', function (Request $request) {
-            return Limit::perHour(30)->by('demo:'.$request->ip())
+            return Limit::perHour(10)->by('demo:'.$request->ip())
                 ->response(function () use ($request) {
                     \App\Services\SlackAlertService::demoAbuse(
                         $request->ip(),

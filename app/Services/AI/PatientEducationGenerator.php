@@ -66,7 +66,7 @@ class PatientEducationGenerator
 
         // Stream the final document
         $options = [
-            'max_tokens' => 65536,
+            'max_tokens' => 16000,
         ];
 
         if ($tier->thinkingEnabled()) {
@@ -74,7 +74,7 @@ class PatientEducationGenerator
             $options['model'] = $tier->model();
         } else {
             $options['model'] = $tier->model();
-            $options['max_tokens'] = 16000;
+            $options['max_tokens'] = 8000;
         }
 
         if ($tier->thinkingEnabled()) {
