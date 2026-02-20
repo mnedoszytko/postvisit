@@ -36,7 +36,7 @@ class AiBudgetMiddleware
 
             return response()->json([
                 'error' => [
-                    'message' => 'AI demo budget reached for today. The demo resets daily — please try again tomorrow.',
+                    'message' => 'AI responses are temporarily limited due to heavy traffic. The limit resets every hour — please try again soon.',
                     'type' => 'budget_exceeded',
                 ],
             ], 429);
@@ -52,7 +52,7 @@ class AiBudgetMiddleware
 
             return response()->json([
                 'error' => [
-                    'message' => 'You have reached the daily AI demo limit. Please try again tomorrow.',
+                    'message' => 'You have reached the AI demo limit. The limit resets every hour — please try again soon.',
                     'type' => 'user_budget_exceeded',
                 ],
             ], 429);

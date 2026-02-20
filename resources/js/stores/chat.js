@@ -65,7 +65,9 @@ export const useChatStore = defineStore('chat', {
                             const body = await response.json();
                             detail = body?.error?.message || '';
                         } catch { /* ignore */ }
-                        throw new Error(detail || 'AI responses are temporarily throttled due to heavy traffic. Please try again later.');
+                        const err = new Error(detail || 'AI responses are temporarily limited due to heavy traffic. Please try again soon.');
+                        err.isThrottled = true;
+                        throw err;
                     }
                     throw new Error(`HTTP ${response.status}`);
                 }
@@ -129,8 +131,7 @@ export const useChatStore = defineStore('chat', {
                 this.messages[aiIndex].streaming = false;
                 this.messages[aiIndex].thinkingPhase = false;
             } catch (err) {
-                const throttled = err.message?.includes('throttled') || err.message?.includes('budget') || err.message?.includes('rate limit');
-                const fallback = throttled
+                const fallback = err.isThrottled
                     ? err.message
                     : 'Failed to get a response. Please try again.';
                 this.messages[aiIndex].content = this.messages[aiIndex].content || fallback;
