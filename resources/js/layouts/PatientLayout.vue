@@ -203,13 +203,17 @@
     <!-- Disclaimer footer -->
     <div :style="chatMarginStyle">
       <footer
-        :class="[wide ? '' : 'max-w-6xl', 'mx-auto px-4 py-4 text-center']"
+        :class="[wide ? '' : 'max-w-6xl', 'mx-auto px-4 py-6 text-center']"
       >
       <p class="text-xs text-gray-400 leading-relaxed">
         All clinical scenarios, patient data, and medical records displayed in this application are entirely fictional,
         created for demonstration purposes only, and do not depict any real person or actual medical encounter.
       </p>
-      <p class="text-[10px] text-gray-300 mt-2">build {{ gitHash }}</p>
+      <div class="mt-3 text-[11px] text-gray-400">
+        Built by <a href="https://nedoszytko.com" target="_blank" rel="noopener" class="underline hover:text-gray-600 transition-colors">Michal Nedoszytko</a>
+        for the <a href="https://github.com/mnedoszytko/postvisit" target="_blank" rel="noopener" class="font-medium underline hover:text-gray-600 transition-colors">Built with Opus 4.6</a> hackathon by <a href="https://www.anthropic.com" target="_blank" rel="noopener" class="underline hover:text-gray-600 transition-colors">Anthropic</a>
+      </div>
+      <p class="text-[10px] text-gray-300 mt-1">build {{ gitHash }}</p>
       </footer>
     </div>
 

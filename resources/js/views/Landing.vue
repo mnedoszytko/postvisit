@@ -40,9 +40,15 @@
       </div>
     </div>
 
-    <p class="mt-16 text-xs text-gray-400 max-w-md text-center">
-      PostVisit.ai helps you understand and act on your doctor's recommendations. It is not a substitute for professional medical judgment.
-    </p>
+    <footer class="mt-16 text-center max-w-md">
+      <p class="text-xs text-gray-400">
+        PostVisit.ai helps you understand and act on your doctor's recommendations. It is not a substitute for professional medical judgment.
+      </p>
+      <p class="mt-3 text-[11px] text-gray-400">
+        Built by <a href="https://nedoszytko.com" target="_blank" rel="noopener" class="underline hover:text-gray-600 transition-colors">Michal Nedoszytko</a>
+        for the <a href="https://github.com/mnedoszytko/postvisit" target="_blank" rel="noopener" class="font-medium underline hover:text-gray-600 transition-colors">Built with Opus 4.6</a> hackathon by <a href="https://www.anthropic.com" target="_blank" rel="noopener" class="underline hover:text-gray-600 transition-colors">Anthropic</a>
+      </p>
+    </footer>
 
     <!-- YouTube Modal -->
     <Teleport to="body">
