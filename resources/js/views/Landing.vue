@@ -46,7 +46,7 @@
       </p>
       <p class="mt-3 text-[11px] text-gray-400">
         Built by <a href="https://nedoszytko.com" target="_blank" rel="noopener" class="underline hover:text-gray-600 transition-colors">Michal Nedoszytko</a>
-        for the <a href="https://github.com/mnedoszytko/postvisit" target="_blank" rel="noopener" class="font-medium underline hover:text-gray-600 transition-colors">Built with Opus 4.6</a> hackathon by <a href="https://www.anthropic.com" target="_blank" rel="noopener" class="underline hover:text-gray-600 transition-colors">Anthropic</a>
+        for the <span class="font-medium">Built with Opus 4.6</span> hackathon by <a href="https://www.anthropic.com" target="_blank" rel="noopener" class="underline hover:text-gray-600 transition-colors">Anthropic</a>
       </p>
     </footer>
 
