@@ -17,33 +17,20 @@ class ClinicalReasoningPipelineTest extends TestCase
         $this->pipeline = $this->app->make(ClinicalReasoningPipeline::class);
     }
 
-    public function test_triggers_deep_reasoning_for_drug_safety_questions(): void
+    public function test_deep_reasoning_disabled_for_drug_safety_questions(): void
     {
-        $this->assertTrue($this->pipeline->shouldUseDeepReasoning('What are the side effects of propranolol?'));
-        $this->assertTrue($this->pipeline->shouldUseDeepReasoning('Can I take ibuprofen with my medication?'));
-        $this->assertTrue($this->pipeline->shouldUseDeepReasoning('Is it safe to drink alcohol?'));
-        $this->assertTrue($this->pipeline->shouldUseDeepReasoning('What if I miss a dose?'));
+        // Deep reasoning disabled for post-judging public access — all return false
+        $this->assertFalse($this->pipeline->shouldUseDeepReasoning('What are the side effects of propranolol?'));
+        $this->assertFalse($this->pipeline->shouldUseDeepReasoning('Can I take ibuprofen with my medication?'));
+        $this->assertFalse($this->pipeline->shouldUseDeepReasoning('Is it safe to drink alcohol?'));
+        $this->assertFalse($this->pipeline->shouldUseDeepReasoning('What if I miss a dose?'));
     }
 
-    public function test_triggers_deep_reasoning_for_dosage_questions(): void
+    public function test_deep_reasoning_disabled_for_all_questions(): void
     {
-        $this->assertTrue($this->pipeline->shouldUseDeepReasoning('What is the correct dosage?'));
-        $this->assertTrue($this->pipeline->shouldUseDeepReasoning('Should I take it with food?'));
-        $this->assertTrue($this->pipeline->shouldUseDeepReasoning('When to take my medication?'));
-    }
-
-    public function test_triggers_deep_reasoning_for_symptom_combination_questions(): void
-    {
-        $this->assertTrue($this->pipeline->shouldUseDeepReasoning('I have a new symptom since starting the medication'));
-        $this->assertTrue($this->pipeline->shouldUseDeepReasoning('My condition is getting worse'));
-        $this->assertTrue($this->pipeline->shouldUseDeepReasoning('Should I stop taking propranolol?'));
-    }
-
-    public function test_does_not_trigger_for_simple_questions(): void
-    {
+        $this->assertFalse($this->pipeline->shouldUseDeepReasoning('What is the correct dosage?'));
+        $this->assertFalse($this->pipeline->shouldUseDeepReasoning('I have a new symptom since starting the medication'));
         $this->assertFalse($this->pipeline->shouldUseDeepReasoning('What time is my next appointment?'));
-        $this->assertFalse($this->pipeline->shouldUseDeepReasoning('Who was my doctor?'));
-        $this->assertFalse($this->pipeline->shouldUseDeepReasoning('Thank you for the help'));
         $this->assertFalse($this->pipeline->shouldUseDeepReasoning('Hello'));
     }
 

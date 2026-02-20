@@ -141,7 +141,8 @@ class ContextAssembler
 
         // Layer 2c: Recent visit summaries
         // Opus 4.6: all visits (null = no limit), standard: last 3
-        $recentVisitsContext = $this->formatRecentVisitsContext($visit, $isOpus ? null : 3);
+        // Post-judging: cap at 5 visits even for Opus to reduce context size and latency
+        $recentVisitsContext = $this->formatRecentVisitsContext($visit, $isOpus ? 5 : 3);
         if ($recentVisitsContext) {
             $this->tokenBreakdown['recent_visits'] = $this->estimateTokens($recentVisitsContext);
             $contextMessages[] = [
@@ -563,17 +564,19 @@ class ContextAssembler
             return null;
         }
 
-        $threeMonthsAgo = now()->subMonths(3);
+        // Post-judging: 1 month lookback, max 50 observations for speed
+        $lookback = now()->subMonth();
 
-        // Get all patient observations from the last 3 months, excluding current visit
+        // Get patient observations from the last month, excluding current visit
         // (current visit observations are already in formatVisitContext)
         $observations = $patient->observations()
-            ->where('effective_date', '>=', $threeMonthsAgo)
+            ->where('effective_date', '>=', $lookback)
             ->where(function ($query) use ($visit) {
                 $query->where('visit_id', '!=', $visit->id)
                     ->orWhereNull('visit_id');
             })
-            ->orderBy('effective_date')
+            ->orderBy('effective_date', 'desc')
+            ->limit(50)
             ->get();
 
         if ($observations->isEmpty()) {

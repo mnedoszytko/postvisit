@@ -46,14 +46,8 @@ class ClinicalReasoningPipeline
      */
     public function shouldUseDeepReasoning(string $question): bool
     {
-        $lower = strtolower($question);
-
-        foreach (self::DEEP_REASONING_TRIGGERS as $trigger) {
-            if (str_contains($lower, $trigger)) {
-                return true;
-            }
-        }
-
+        // Disabled for post-judging public access: saves 3-8s per complex question.
+        // Single-pass reasoning with adaptive thinking budgets is sufficient.
         return false;
     }
 
