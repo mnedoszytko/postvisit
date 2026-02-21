@@ -119,11 +119,12 @@
                   <div
                     v-for="(day, i) in calendarDays"
                     :key="i"
-                    class="aspect-square flex items-center justify-center text-sm rounded-lg cursor-pointer transition-all"
+                    class="aspect-square flex flex-col items-center justify-center text-sm rounded-lg cursor-pointer transition-all relative"
                     :class="dayClasses(day)"
                     @click="day.date && !day.disabled && selectDate(day.date)"
                   >
                     <span v-if="day.date">{{ day.date.getDate() }}</span>
+                    <span v-if="day.date && isToday(day.date)" class="absolute bottom-0.5 w-1 h-1 rounded-full bg-indigo-500" />
                   </div>
                 </div>
               </div>
@@ -261,6 +262,12 @@ const calendarDays = computed(() => {
   return days;
 });
 
+function isToday(date: Date): boolean {
+  return date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear();
+}
+
 function dayClasses(day: { date: Date | null; disabled: boolean }): string {
   if (!day.date) return '';
   if (day.disabled) return 'text-gray-300 cursor-not-allowed';
@@ -270,13 +277,8 @@ function dayClasses(day: { date: Date | null; disabled: boolean }): string {
     day.date.getMonth() === selectedDate.value.getMonth() &&
     day.date.getFullYear() === selectedDate.value.getFullYear();
 
-  const isToday =
-    day.date.getDate() === today.getDate() &&
-    day.date.getMonth() === today.getMonth() &&
-    day.date.getFullYear() === today.getFullYear();
-
   if (isSelected) return 'bg-indigo-600 text-white font-bold shadow-md';
-  if (isToday) return 'bg-indigo-100 text-indigo-700 font-semibold hover:bg-indigo-200';
+  if (isToday(day.date)) return 'bg-indigo-50 text-indigo-700 font-semibold hover:bg-indigo-100';
   return 'text-gray-700 hover:bg-indigo-50';
 }
 

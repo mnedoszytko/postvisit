@@ -217,7 +217,7 @@
     <!-- Input -->
     <form class="border-t border-gray-200 p-3 flex items-end gap-2 shrink-0" @submit.prevent="send">
       <!-- Context selector (+) button -->
-      <div class="relative">
+      <div ref="contextMenuWrapper" class="relative">
         <button
           type="button"
           class="w-9 h-9 rounded-full flex items-center justify-center transition-all shrink-0"
@@ -261,7 +261,26 @@
                   v-model="src.selected"
                   class="w-3.5 h-3.5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
                 />
-                <span class="text-base leading-none">{{ src.icon }}</span>
+                <!-- Visit Notes icon -->
+                <svg v-if="src.id === 'visit'" class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
+                </svg>
+                <!-- Health Data icon -->
+                <svg v-else-if="src.id === 'health'" class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                </svg>
+                <!-- Medications icon -->
+                <svg v-else-if="src.id === 'medications'" class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232 1.232 3.23 0 4.462l-.037.037c-1.232 1.232-3.23 1.232-4.462 0L15.3 19.8" />
+                </svg>
+                <!-- Medical References icon -->
+                <svg v-else-if="src.id === 'references'" class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                </svg>
+                <!-- Documents icon -->
+                <svg v-else class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                </svg>
                 <div class="flex-1 min-w-0">
                   <div class="text-sm font-medium text-gray-800">{{ src.label }}</div>
                   <div class="text-[10px] text-gray-400">{{ src.description }}</div>
@@ -315,7 +334,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick, watch, reactive } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick, watch, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useChatStore } from '@/stores/chat';
 import { useVisitStore } from '@/stores/visit';
@@ -381,6 +400,7 @@ const visitStore = useVisitStore();
 const message = ref('');
 const messagesContainer = ref(null);
 const showContextMenu = ref(false);
+const contextMenuWrapper = ref(null);
 const sendButton = ref(null);
 const sendGlow = ref(false);
 const inlineSuggestions = ref([]);
@@ -902,12 +922,23 @@ async function shareResponse(msg) {
     }
 }
 
+function onClickOutside(e) {
+    if (showContextMenu.value && contextMenuWrapper.value && !contextMenuWrapper.value.contains(e.target)) {
+        showContextMenu.value = false;
+    }
+}
+
 onMounted(() => {
+    document.addEventListener('pointerdown', onClickOutside);
     chatStore.clearMessages();
     if (props.initialContext) {
         pendingContext.value = props.initialContext;
     }
     applySourcePreset(props.initialContext);
     refreshSuggestions();
+});
+
+onUnmounted(() => {
+    document.removeEventListener('pointerdown', onClickOutside);
 });
 </script>
