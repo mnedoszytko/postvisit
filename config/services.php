@@ -53,4 +53,8 @@ return [
         'timeout' => env('OPENFDA_TIMEOUT', 5),
     ],
 
+    'google' => [
+        'analytics_id' => env('GA_MEASUREMENT_ID'),
+    ],
+
 ];
