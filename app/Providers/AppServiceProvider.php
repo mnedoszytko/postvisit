@@ -37,8 +37,12 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->ip());
         });
 
-        // AI endpoints: post-judging public access — tight limits
+        // AI endpoints: post-judging public access — tight limits (skipped on local/whitelisted)
         RateLimiter::for('ai', function (Request $request) {
+            if (app()->environment('local') || in_array($request->ip(), config('anthropic.whitelist_ips', []), true)) {
+                return Limit::none();
+            }
+
             $key = $request->user()?->id ?: $request->ip();
 
             return [
@@ -47,8 +51,12 @@ class AppServiceProvider extends ServiceProvider
             ];
         });
 
-        // AI expensive endpoints (education, inquire): post-judging limits
+        // AI expensive endpoints (education, inquire): post-judging limits (skipped on local/whitelisted)
         RateLimiter::for('ai-expensive', function (Request $request) {
+            if (app()->environment('local') || in_array($request->ip(), config('anthropic.whitelist_ips', []), true)) {
+                return Limit::none();
+            }
+
             $key = $request->user()?->id ?: $request->ip();
 
             return [

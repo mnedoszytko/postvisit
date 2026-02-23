@@ -130,77 +130,88 @@ class ContextAssembler
         ];
 
         // Layer 2b: Full health history (observations across all visits, last 3 months)
-        $healthHistoryContext = $this->formatHealthHistoryContext($visit);
-        if ($healthHistoryContext) {
-            $this->tokenBreakdown['health_history'] = $this->estimateTokens($healthHistoryContext);
-            $contextMessages[] = [
-                'role' => 'user',
-                'content' => $healthHistoryContext,
-            ];
+        if (config('anthropic.context_layers.health_history', true)) {
+            $healthHistoryContext = $this->formatHealthHistoryContext($visit);
+            if ($healthHistoryContext) {
+                $this->tokenBreakdown['health_history'] = $this->estimateTokens($healthHistoryContext);
+                $contextMessages[] = [
+                    'role' => 'user',
+                    'content' => $healthHistoryContext,
+                ];
+            }
         }
 
         // Layer 2c: Recent visit summaries
-        // Opus 4.6: all visits (null = no limit), standard: last 3
-        // Post-judging: cap at 5 visits even for Opus to reduce context size and latency
-        $recentVisitsContext = $this->formatRecentVisitsContext($visit, $isOpus ? 5 : 3);
-        if ($recentVisitsContext) {
-            $this->tokenBreakdown['recent_visits'] = $this->estimateTokens($recentVisitsContext);
-            $contextMessages[] = [
-                'role' => 'user',
-                'content' => $recentVisitsContext,
-            ];
+        if (config('anthropic.context_layers.recent_visits', true)) {
+            // Opus 4.6: cap at 5 visits, standard: last 3
+            $recentVisitsContext = $this->formatRecentVisitsContext($visit, $isOpus ? 5 : 3);
+            if ($recentVisitsContext) {
+                $this->tokenBreakdown['recent_visits'] = $this->estimateTokens($recentVisitsContext);
+                $contextMessages[] = [
+                    'role' => 'user',
+                    'content' => $recentVisitsContext,
+                ];
+            }
         }
 
         // Layer 2d: Device/wearable data (Apple Watch)
-        // Opus 4.6: expanded (all readings), standard: limited
-        $deviceContext = $this->formatDeviceDataContext($visit, $isOpus);
-        if ($deviceContext) {
-            $this->tokenBreakdown['device_data'] = $this->estimateTokens($deviceContext);
-            $contextMessages[] = [
-                'role' => 'user',
-                'content' => $deviceContext,
-            ];
+        if (config('anthropic.context_layers.device_data', true)) {
+            $deviceContext = $this->formatDeviceDataContext($visit, $isOpus);
+            if ($deviceContext) {
+                $this->tokenBreakdown['device_data'] = $this->estimateTokens($deviceContext);
+                $contextMessages[] = [
+                    'role' => 'user',
+                    'content' => $deviceContext,
+                ];
+            }
         }
 
         // Layer 3: Medications data
-        $medsContext = $this->formatMedicationsContext($visit);
-        if ($medsContext) {
-            $this->tokenBreakdown['medications'] = $this->estimateTokens($medsContext);
-            $contextMessages[] = [
-                'role' => 'user',
-                'content' => $medsContext,
-            ];
+        if (config('anthropic.context_layers.medications', true)) {
+            $medsContext = $this->formatMedicationsContext($visit);
+            if ($medsContext) {
+                $this->tokenBreakdown['medications'] = $this->estimateTokens($medsContext);
+                $contextMessages[] = [
+                    'role' => 'user',
+                    'content' => $medsContext,
+                ];
+            }
         }
 
         // Layer 4: FDA safety data (adverse events, labels)
-        // Opus 4.6: full labels (5000 char limit, extra sections), standard: truncated (500 chars)
-        $fdaContext = $this->formatFdaSafetyContext($visit, $isOpus);
-        if ($fdaContext) {
-            $this->tokenBreakdown['fda_safety'] = $this->estimateTokens($fdaContext);
-            $contextMessages[] = [
-                'role' => 'user',
-                'content' => $fdaContext,
-            ];
+        if (config('anthropic.context_layers.fda_safety', true)) {
+            $fdaContext = $this->formatFdaSafetyContext($visit, $isOpus);
+            if ($fdaContext) {
+                $this->tokenBreakdown['fda_safety'] = $this->estimateTokens($fdaContext);
+                $contextMessages[] = [
+                    'role' => 'user',
+                    'content' => $fdaContext,
+                ];
+            }
         }
 
         // Layer 5: User's personal library (analyzed documents)
-        $libraryContext = $this->formatLibraryContext($visit);
-        if ($libraryContext) {
-            $this->tokenBreakdown['personal_library'] = $this->estimateTokens($libraryContext);
-            $contextMessages[] = [
-                'role' => 'user',
-                'content' => $libraryContext,
-            ];
+        if (config('anthropic.context_layers.library', true)) {
+            $libraryContext = $this->formatLibraryContext($visit);
+            if ($libraryContext) {
+                $this->tokenBreakdown['personal_library'] = $this->estimateTokens($libraryContext);
+                $contextMessages[] = [
+                    'role' => 'user',
+                    'content' => $libraryContext,
+                ];
+            }
         }
 
         // Layer 6: Historical context summaries (opt-in)
-        $compactionContext = $this->formatContextCompactionLayer($visit);
-        if ($compactionContext) {
-            $this->tokenBreakdown['context_compaction'] = $this->estimateTokens($compactionContext);
-            $contextMessages[] = [
-                'role' => 'user',
-                'content' => $compactionContext,
-            ];
+        if (config('anthropic.context_layers.compaction', true)) {
+            $compactionContext = $this->formatContextCompactionLayer($visit);
+            if ($compactionContext) {
+                $this->tokenBreakdown['context_compaction'] = $this->estimateTokens($compactionContext);
+                $contextMessages[] = [
+                    'role' => 'user',
+                    'content' => $compactionContext,
+                ];
+            }
         }
 
         // Calculate total

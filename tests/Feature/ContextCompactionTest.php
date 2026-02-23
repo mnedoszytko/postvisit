@@ -67,6 +67,7 @@ class ContextCompactionTest extends TestCase
     public function test_context_compaction_layer_loads_summaries_when_enabled(): void
     {
         config(['postvisit.context_compaction_enabled' => true]);
+        config(['anthropic.context_layers.compaction' => true]);
 
         PatientContextSummary::factory()->create([
             'patient_id' => $this->patient->id,
@@ -182,6 +183,7 @@ class ContextCompactionTest extends TestCase
     public function test_context_compaction_limits_to_five_summaries(): void
     {
         config(['postvisit.context_compaction_enabled' => true]);
+        config(['anthropic.context_layers.compaction' => true]);
 
         // Create 7 summaries
         for ($i = 0; $i < 7; $i++) {

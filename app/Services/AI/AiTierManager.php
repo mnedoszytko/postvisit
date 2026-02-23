@@ -11,6 +11,11 @@ class AiTierManager
 
     public function current(): AiTier
     {
+        $envTier = config('anthropic.tier');
+        if ($envTier) {
+            return AiTier::tryFrom($envTier) ?? AiTier::Opus46;
+        }
+
         $value = Cache::get(self::CACHE_KEY, 'opus46');
 
         return AiTier::tryFrom($value) ?? AiTier::Opus46;

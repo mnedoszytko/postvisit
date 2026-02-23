@@ -89,13 +89,13 @@ enum AiTier: string
         return match ($this) {
             self::Good => ['budget_tokens' => 0, 'max_tokens' => 4096],
             self::Better => match ($effort) {
-                'low' => ['budget_tokens' => 512, 'max_tokens' => 1024],
+                'low' => ['budget_tokens' => 1024, 'max_tokens' => 1024],
                 'high' => ['budget_tokens' => 1024, 'max_tokens' => 2048],
                 'max' => ['budget_tokens' => 2000, 'max_tokens' => 4096],
-                default => ['budget_tokens' => 512, 'max_tokens' => 1024], // medium
+                default => ['budget_tokens' => 1024, 'max_tokens' => 1024], // medium
             },
             self::Opus46 => match ($effort) {
-                'low' => ['budget_tokens' => 512, 'max_tokens' => 2048],
+                'low' => ['budget_tokens' => 1024, 'max_tokens' => 2048],
                 'high' => ['budget_tokens' => 2000, 'max_tokens' => 4096],
                 'max' => ['budget_tokens' => 4000, 'max_tokens' => 8000],
                 default => ['budget_tokens' => 1024, 'max_tokens' => 2048], // medium

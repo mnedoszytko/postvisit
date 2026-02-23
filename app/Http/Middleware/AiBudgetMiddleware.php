@@ -28,6 +28,11 @@ class AiBudgetMiddleware
 
     public function handle(Request $request, Closure $next): Response
     {
+        // Skip budget limits on local development or whitelisted IPs
+        if (app()->environment('local') || in_array($request->ip(), config('anthropic.whitelist_ips', []), true)) {
+            return $next($request);
+        }
+
         $dailyKey = 'ai_budget:'.now()->format('Y-m-d');
         $currentCount = (int) Cache::get($dailyKey, 0);
 

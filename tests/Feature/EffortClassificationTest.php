@@ -99,7 +99,7 @@ class EffortClassificationTest extends TestCase
         $high = $tier->thinkingBudgetForEffort('high');
         $max = $tier->thinkingBudgetForEffort('max');
 
-        $this->assertEquals(512, $low['budget_tokens']);
+        $this->assertEquals(1024, $low['budget_tokens']);
         $this->assertEquals(2048, $low['max_tokens']);
 
         $this->assertEquals(1024, $medium['budget_tokens']);
@@ -119,7 +119,7 @@ class EffortClassificationTest extends TestCase
         $low = $tier->thinkingBudgetForEffort('low');
         $max = $tier->thinkingBudgetForEffort('max');
 
-        $this->assertEquals(512, $low['budget_tokens']);
+        $this->assertEquals(1024, $low['budget_tokens']);
         $this->assertEquals(2000, $max['budget_tokens']);
     }
 

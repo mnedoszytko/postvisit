@@ -221,7 +221,18 @@ const emit = defineEmits<{
 const weekDays = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 const timeSlots = ['9:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
-const selectedDate = ref<Date | null>(null);
+function nextAvailableWeekday(daysFromNow: number): Date {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + daysFromNow);
+  // Skip weekends
+  while (d.getDay() === 0 || d.getDay() === 6) {
+    d.setDate(d.getDate() + 1);
+  }
+  return d;
+}
+
+const selectedDate = ref<Date | null>(nextAvailableWeekday(2));
 const selectedTime = ref<string>('');
 const scheduled = ref(false);
 
