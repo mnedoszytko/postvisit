@@ -31,7 +31,7 @@ class PatientController extends Controller
     {
         $visits = $patient->visits()
             ->with(['practitioner', 'organization'])
-            ->orderByDesc('started_at')
+            ->orderBy('started_at')
             ->get();
 
         return response()->json(['data' => $visits]);
